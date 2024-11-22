@@ -68,11 +68,12 @@ aside p { /* Texto en el sidebar */
 }
 
 .location-icon { /* Icono de ubicación */
-    width: 20px;
-    height: 20px;
+    width: 15px; /* Tamaño más pequeño */
+    height: 15px;
     vertical-align: middle; /* Alineación con el texto */
-    margin-right: 5px;
+    margin-right: 5px; /* Espaciado entre icono y texto */
 }
+
 
 .social-links { /* Enlaces a redes sociales */
     display: flex;
