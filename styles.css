@@ -61,8 +61,8 @@ aside {
 }
 
 .profile-pic {
-    width: 120px; /* Tamaño fijo */
-    height: 120px;
+    width: 200px; /* Tamaño fijo */
+    height: 200px;
     border-radius: 50%; /* Forma circular */
     object-fit: cover; /* Recorte sin deformación */
     box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
