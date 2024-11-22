@@ -1,5 +1,5 @@
 /* Estilo general */
-body {
+body { /* Cuerpo de la página */
     font-family: Arial, sans-serif;
     margin: 0;
     padding: 0;
@@ -7,7 +7,7 @@ body {
     color: #333;
 }
 
-header {
+header { /* Cabecera */
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -16,24 +16,18 @@ header {
     color: white;
 }
 
-.logo {
+.logo { /* Logotipo */
     display: flex;
     align-items: center;
 }
 
-.logo-icon {
-    width: 40px; /* Tamaño ajustado */
-    height: 40px;
-    margin-right: 10px;
-}
-
-.logo-text {
+.logo-text { /* Texto del logotipo */
     font-size: 1.5rem;
     color: white;
     text-decoration: none;
 }
 
-.menu {
+.menu { /* Menú de navegación */
     list-style: none;
     margin: 0;
     padding: 0;
@@ -41,26 +35,26 @@ header {
     gap: 15px;
 }
 
-.menu a {
+.menu a { /* Enlaces del menú */
     color: white;
     text-decoration: none;
     font-size: 1rem;
 }
 
-.container {
+.container { /* Contenedor principal */
     display: flex;
     flex-wrap: wrap; /* Diseño adaptable */
     margin: 2rem;
 }
 
-aside {
+aside { /* Barra lateral */
     width: 100%;
     max-width: 250px;
     text-align: center;
     margin: 0 auto 2rem;
 }
 
-.profile-pic {
+.profile-pic { /* Imagen de perfil */
     width: 200px; /* Tamaño fijo */
     height: 200px;
     border-radius: 50%; /* Forma circular */
@@ -69,20 +63,31 @@ aside {
     margin-bottom: 1rem;
 }
 
-.social-links {
+aside p { /* Texto en el sidebar */
+    margin: 0.5rem 0;
+}
+
+.location-icon { /* Icono de ubicación */
+    width: 20px;
+    height: 20px;
+    vertical-align: middle; /* Alineación con el texto */
+    margin-right: 5px;
+}
+
+.social-links { /* Enlaces a redes sociales */
     display: flex;
     justify-content: center;
     gap: 15px;
     margin-top: 1rem;
 }
 
-.social-links img {
+.social-links img { /* Iconos de redes sociales */
     width: 25px; /* Tamaño reducido */
     height: 25px;
     transition: transform 0.3s ease;
 }
 
-.social-links img:hover {
+.social-links img:hover { 
     transform: scale(1.1); /* Efecto hover */
 }
 
@@ -93,17 +98,17 @@ main {
     margin: 0 auto;
 }
 
-.about h2 {
+.about h2 { /* Títulos más grandes */
     font-size: 1.8rem;
-    color: #0073e6;
+    color: #1553ADff; /* Color igual al de la cabecera */
     margin-bottom: 1rem;
 }
 
-.about p {
+.about p { /* Texto más grande */
     line-height: 1.6; /* Mejor legibilidad */
 }
 
-footer {
+footer { /* Pie de página */
     background-color: #333;
     color: white;
     text-align: center;
