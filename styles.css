@@ -22,7 +22,8 @@ header {
 }
 
 .logo-icon {
-    width: 40px;
+    width: 30px; /* Tamaño más pequeño */
+    height: 30px;
     margin-right: 10px;
 }
 
@@ -48,34 +49,57 @@ header {
 
 .container {
     display: flex;
+    flex-wrap: wrap; /* Permite que se adapte en pantallas pequeñas */
     margin: 2rem;
 }
 
 aside {
-    width: 25%;
+    width: 100%; /* Se adapta a la pantalla */
+    max-width: 250px; /* Tamaño máximo del contenedor */
     text-align: center;
+    margin: 0 auto 2rem; /* Centramos el contenido en pantallas pequeñas */
 }
 
 .profile-pic {
-    width: 150px;
-    height: 150px;
+    width: 120px; /* Tamaño reducido */
+    height: 120px;
     border-radius: 50%;
     margin-bottom: 1rem;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.social-links {
+    display: flex;
+    justify-content: center;
+    gap: 15px; /* Espaciado entre íconos */
+    margin-top: 1rem;
 }
 
 .social-links img {
-    width: 30px;
-    margin: 0 10px;
+    width: 25px; /* Tamaño reducido */
+    height: 25px;
+    transition: transform 0.3s ease;
+}
+
+.social-links img:hover {
+    transform: scale(1.1); /* Efecto de hover */
 }
 
 main {
-    width: 75%;
+    flex: 1;
     padding-left: 2rem;
+    max-width: 800px; /* Limita el ancho */
+    margin: 0 auto;
 }
 
 .about h2 {
     font-size: 1.8rem;
     color: #0073e6;
+    margin-bottom: 1rem;
+}
+
+.about p {
+    line-height: 1.6; /* Mejor legibilidad */
 }
 
 .banner {
@@ -92,7 +116,7 @@ main {
 .media-slider img,
 .media-slider video {
     width: 100%;
-    max-width: 500px;
+    max-width: 300px; /* Tamaño más ajustado */
     border-radius: 8px;
     box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
 }
