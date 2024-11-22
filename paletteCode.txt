@@ -1,0 +1,33 @@
+- Tailwind
+
+{ 'black': { DEFAULT: '#000000', 100: '#000000', 200: '#000000', 300: '#000000', 400: '#000000', 500: '#000000', 600: '#333333', 700: '#666666', 800: '#999999', 900: '#cccccc' }, 'persian_red': { DEFAULT: '#cc2936', 100: '#29080b', 200: '#521016', 300: '#7b1820', 400: '#a4202b', 500: '#cc2936', 600: '#dc4e5a', 700: '#e57a83', 800: '#eda6ac', 900: '#f6d3d6' }, 'sapphire': { DEFAULT: '#1553AD', 100: '#041022', 200: '#092145', 300: '#0d3167', 400: '#11418a', 500: '#1553ad', 600: '#1e6de3', 700: '#5691ea', 800: '#8eb6f1', 900: '#c7daf8' }, 'jonquil': { DEFAULT: '#f1c40f', 100: '#302703', 200: '#604e06', 300: '#917508', 400: '#c19c0b', 500: '#f1c40f', 600: '#f4cf3e', 700: '#f7db6e', 800: '#f9e79f', 900: '#fcf3cf' }, 'platinum': { DEFAULT: '#cdd7d6', 100: '#252e2e', 200: '#4a5d5b', 300: '#708b89', 400: '#9eb1af', 500: '#cdd7d6', 600: '#d6dede', 700: '#e0e6e6', 800: '#ebefee', 900: '#f5f7f7' } }
+
+- CSV
+
+000000,cc2936,1553AD,f1c40f,cdd7d6
+
+- With #
+
+#000000, #cc2936, #1553AD, #f1c40f, #cdd7d6
+
+- Array
+
+["000000","cc2936","1553AD","f1c40f","cdd7d6"]
+
+- Object
+
+{"Black":"000000","Persian red":"cc2936","Sapphire":"1553AD","Jonquil":"f1c40f","Platinum":"cdd7d6"}
+
+- Extended Array
+
+[{"name":"Black","hex":"000000","rgb":[0,0,0],"cmyk":[0,0,0,100],"hsb":[0,0,0],"hsl":[0,0,0],"lab":[0,0,0]},{"name":"Persian red","hex":"cc2936","rgb":[204,41,54],"cmyk":[0,80,74,20],"hsb":[355,80,80],"hsl":[355,67,48],"lab":[45,62,34]},{"name":"Sapphire","hex":"1553AD","rgb":[21,83,173],"cmyk":[88,52,0,32],"hsb":[216,88,68],"hsl":[216,78,38],"lab":[37,16,-53]},{"name":"Jonquil","hex":"f1c40f","rgb":[241,196,15],"cmyk":[0,19,94,5],"hsb":[48,94,95],"hsl":[48,89,50],"lab":[81,2,81]},{"name":"Platinum","hex":"cdd7d6","rgb":[205,215,214],"cmyk":[5,0,0,16],"hsb":[174,5,84],"hsl":[174,11,82],"lab":[85,-4,-1]}]
+
+- XML
+
+<palette>
+  <color name="Black" hex="000000" r="0" g="0" b="0" />
+  <color name="Persian red" hex="cc2936" r="204" g="41" b="54" />
+  <color name="Sapphire" hex="1553AD" r="21" g="83" b="173" />
+  <color name="Jonquil" hex="f1c40f" r="241" g="196" b="15" />
+  <color name="Platinum" hex="cdd7d6" r="205" g="215" b="214" />
+</palette>

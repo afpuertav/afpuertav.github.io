@@ -1,100 +1,106 @@
-/* General styles */
+/* Estilo general */
 body {
-    font-family: "Arial", sans-serif;
-    line-height: 1.6;
+    font-family: Arial, sans-serif;
     margin: 0;
     padding: 0;
-    background-color: #f7f9fc;
+    background-color: #f5f7fa;
     color: #333;
 }
 
-/* Header styles */
 header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
     background-color: #0073e6;
-    color: #fff;
-    text-align: center;
-    padding: 1rem 0;
-    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+    padding: 1rem 2rem;
+    color: white;
 }
 
-header h1 {
-    margin: 0;
-    font-size: 2.5rem;
-    font-weight: bold;
+.logo {
+    display: flex;
+    align-items: center;
 }
 
-header p {
-    font-size: 1.2rem;
-    margin-top: 0.5rem;
+.logo-icon {
+    width: 40px;
+    margin-right: 10px;
 }
 
-/* Container styles */
-.container {
-    width: 85%;
-    max-width: 1100px;
-    margin: 2rem auto;
-    background: #fff;
-    padding: 2rem;
-    border-radius: 8px;
-    box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.1);
-}
-
-/* Section titles */
-h2 {
-    color: #0073e6;
-    font-size: 1.8rem;
-    border-bottom: 2px solid #ddd;
-    padding-bottom: 0.5rem;
-    margin-bottom: 1rem;
-}
-
-/* List styles */
-ul {
-    list-style: none;
-    padding: 0;
-}
-
-ul li {
-    margin: 10px 0;
-    line-height: 1.5;
-}
-
-/* Footer styles */
-footer {
-    background-color: #333;
-    color: #fff;
-    text-align: center;
-    padding: 1rem 0;
-    font-size: 0.9rem;
-    margin-top: 2rem;
-}
-
-/* Links */
-a {
-    color: #0073e6;
+.logo-text {
+    font-size: 1.5rem;
+    color: white;
     text-decoration: none;
 }
 
-a:hover {
-    text-decoration: underline;
+.menu {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    gap: 15px;
 }
 
-/* Responsive design */
-@media (max-width: 768px) {
-    header h1 {
-        font-size: 2rem;
-    }
+.menu a {
+    color: white;
+    text-decoration: none;
+    font-size: 1rem;
+}
 
-    header p {
-        font-size: 1rem;
-    }
+.container {
+    display: flex;
+    margin: 2rem;
+}
 
-    .container {
-        width: 90%;
-        padding: 1.5rem;
-    }
+aside {
+    width: 25%;
+    text-align: center;
+}
 
-    h2 {
-        font-size: 1.5rem;
-    }
+.profile-pic {
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    margin-bottom: 1rem;
+}
+
+.social-links img {
+    width: 30px;
+    margin: 0 10px;
+}
+
+main {
+    width: 75%;
+    padding-left: 2rem;
+}
+
+.about h2 {
+    font-size: 1.8rem;
+    color: #0073e6;
+}
+
+.banner {
+    margin-top: 2rem;
+}
+
+.media-slider {
+    display: flex;
+    gap: 10px;
+    overflow-x: auto;
+    scroll-behavior: smooth;
+}
+
+.media-slider img,
+.media-slider video {
+    width: 100%;
+    max-width: 500px;
+    border-radius: 8px;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+}
+
+footer {
+    background-color: #333;
+    color: white;
+    text-align: center;
+    padding: 1rem;
+    margin-top: 2rem;
 }
