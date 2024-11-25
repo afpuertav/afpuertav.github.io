@@ -116,3 +116,36 @@ footer { /* Pie de página */
     padding: 1rem;
     margin-top: 2rem;
 }
+
+.cv-section h1 { /* Título principal */
+    font-size: 2.2rem;
+    color: #1553ADff;
+    margin-bottom: 1rem;
+    text-align: center;
+}
+
+.cv-section h2 { /* Subtítulos */
+    font-size: 1.5rem;
+    color: #1553ADff;
+    margin-top: 2rem;
+    margin-bottom: 0.5rem;
+}
+
+.cv-section p, .cv-section ul { /* Cuerpo de texto */
+    line-height: 1.6;
+    margin-bottom: 1rem;
+}
+
+.cv-section ul li { /* Elementos de lista */
+    margin-bottom: 1.5rem;
+}
+
+.cv-section ul li strong { /* Títulos en las listas */
+    font-weight: bold;
+    color: #333;
+}
+
+.cv-section ul li em { /* Fechas en las listas */
+    font-style: italic;
+    color: #666;
+}
