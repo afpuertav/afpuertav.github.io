@@ -2,7 +2,7 @@
 body { /* Cuerpo de la página */
     font-family: Arial, sans-serif;
     margin: 0;
-    padding: 0;
+    padding: -115;
     background-color: #f5f7fa;
     color: #333;
 }
@@ -74,7 +74,6 @@ aside p { /* Texto en el sidebar */
     margin-right: 5px; /* Espaciado entre icono y texto */
 }
 
-
 .social-links { /* Enlaces a redes sociales */
     display: flex;
     justify-content: center;
@@ -137,7 +136,7 @@ footer { /* Pie de página */
 }
 
 .cv-section ul li { /* Elementos de lista */
-    margin-bottom: 1.5rem;
+    margin-bottom: 1rem;
 }
 
 .cv-section ul li strong { /* Títulos en las listas */
@@ -148,4 +147,8 @@ footer { /* Pie de página */
 .cv-section ul li em { /* Fechas en las listas */
     font-style: italic;
     color: #666;
+}
+
+.cv-section {
+    margin-left: 0;
 }
