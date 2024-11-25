@@ -1,36 +1,33 @@
-/* General */
-body {
+/* Estilo general */
+body { /* Cuerpo de la página */
     font-family: Arial, sans-serif;
     margin: 0;
     padding: 0;
     background-color: #f5f7fa;
     color: #333;
-    line-height: 1.6; /* Interlineado uniforme */
 }
 
-/* Header */
-header {
+header { /* Cabecera */
     display: flex;
-    flex-direction: column; /* Para centrar el logo sobre la foto */
+    justify-content: space-between;
     align-items: center;
     background-color: #1553ADff;
     padding: 1rem 2rem;
     color: white;
 }
 
-.logo {
-    text-align: center;
+.logo { /* Logotipo */
+    display: flex;
+    align-items: center;
 }
 
-.logo-text {
-    font-size: 2rem; /* Incrementa el tamaño */
+.logo-text { /* Texto del logotipo */
+    font-size: 1.5rem;
     color: white;
     text-decoration: none;
-    margin-bottom: 1rem;
 }
 
-/* Navigation Menu */
-.menu {
+.menu { /* Menú de navegación */
     list-style: none;
     margin: 0;
     padding: 0;
@@ -38,91 +35,117 @@ header {
     gap: 15px;
 }
 
-.menu a {
+.menu a { /* Enlaces del menú */
     color: white;
     text-decoration: none;
-    font-size: 1.2rem; /* Incrementa el tamaño */
+    font-size: 1rem;
 }
 
-/* Container */
-.container {
+.container { /* Contenedor principal */
     display: flex;
-    flex-wrap: wrap;
-    justify-content: center; /* Centra los textos */
+    flex-wrap: wrap; /* Diseño adaptable */
     margin: 2rem;
 }
 
-/* Sidebar */
-aside {
-    text-align: center;
+aside { /* Barra lateral */
+    width: 100%;
     max-width: 250px;
-    margin-bottom: 2rem;
+    text-align: center;
+    margin: 0 auto 2rem;
 }
 
-.profile-pic {
-    width: 200px;
+.profile-pic { /* Imagen de perfil */
+    width: 200px; /* Tamaño fijo */
     height: 200px;
-    border-radius: 50%;
-    object-fit: cover;
+    border-radius: 50%; /* Forma circular */
+    object-fit: cover; /* Recorte sin deformación */
     box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
     margin-bottom: 1rem;
 }
 
-aside p {
-    font-size: 1rem; /* Mantiene el tamaño actual */
+aside p { /* Texto en el sidebar */
     margin: 0.5rem 0;
 }
 
-.location-icon {
-    width: 15px;
+.location-icon { /* Icono de ubicación */
+    width: 15px; /* Tamaño más pequeño */
     height: 15px;
-    vertical-align: middle;
-    margin-right: 5px;
+    vertical-align: middle; /* Alineación con el texto */
+    margin-right: 5px; /* Espaciado entre icono y texto */
 }
 
-/* Social Links */
-.social-links {
+
+.social-links { /* Enlaces a redes sociales */
     display: flex;
     justify-content: center;
     gap: 15px;
     margin-top: 1rem;
 }
 
-.social-links img {
-    width: 25px;
+.social-links img { /* Iconos de redes sociales */
+    width: 25px; /* Tamaño reducido */
     height: 25px;
     transition: transform 0.3s ease;
 }
 
-.social-links img:hover {
-    transform: scale(1.1);
+.social-links img:hover { 
+    transform: scale(1.1); /* Efecto hover */
 }
 
-/* Main Content */
 main {
     flex: 1;
-    max-width: 800px; /* Reduce el ancho para centrar más el texto */
+    padding-left: 2rem;
+    max-width: 800px; /* Limita el ancho del contenido principal */
     margin: 0 auto;
-    padding: 0 1rem;
 }
 
-.about h2 {
-    font-size: 2rem; /* Incrementa el tamaño */
-    color: #1553ADff; /* Mismo color del header */
-    text-align: center; /* Centra el texto */
+.about h2 { /* Títulos más grandes */
+    font-size: 1.8rem;
+    color: #1553ADff; /* Color igual al de la cabecera */
+    margin-bottom: 1rem;
 }
 
-.about p {
-    font-size: 1.2rem; /* Incrementa el tamaño */
-    text-align: justify; /* Mejora la legibilidad */
-    line-height: 1.6; /* Mantiene interlineado consistente */
+.about p { /* Texto más grande */
+    line-height: 1.6; /* Mejor legibilidad */
 }
 
-/* Footer */
-footer {
+footer { /* Pie de página */
     background-color: #333;
     color: white;
     text-align: center;
     padding: 1rem;
     margin-top: 2rem;
+}
+
+.cv-section h1 { /* Título principal */
+    font-size: 2.2rem;
+    color: #1553ADff;
+    margin-bottom: 1rem;
+    text-align: center;
+}
+
+.cv-section h2 { /* Subtítulos */
+    font-size: 1.5rem;
+    color: #1553ADff;
+    margin-top: 2rem;
+    margin-bottom: 0.5rem;
+}
+
+.cv-section p, .cv-section ul { /* Cuerpo de texto */
+    line-height: 1.6;
+    margin-bottom: 1rem;
+}
+
+.cv-section ul li { /* Elementos de lista */
+    margin-bottom: 1.5rem;
+}
+
+.cv-section ul li strong { /* Títulos en las listas */
+    font-weight: bold;
+    color: #333;
+}
+
+.cv-section ul li em { /* Fechas en las listas */
+    font-style: italic;
+    color: #666;
 }
