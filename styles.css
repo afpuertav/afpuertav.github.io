@@ -7,13 +7,14 @@ body { /* Cuerpo de la página */
     color: #333;
 }
 
-header { /* Cabecera */
+header { 
     display: flex;
-    justify-content: space-between;
+    justify-content: flex-start; /* Alinea todo a la izquierda */
     align-items: center;
     background-color: #1553ADff;
     padding: 1rem 2rem;
     color: white;
+    gap: 20px; /* Espaciado entre los elementos */
 }
 
 .logo { /* Logotipo */
@@ -27,19 +28,59 @@ header { /* Cabecera */
     text-decoration: none;
 }
 
-.menu { /* Menú de navegación */
+.menu {
+    display: flex;
     list-style: none;
     margin: 0;
     padding: 0;
-    display: flex;
-    gap: 15px;
+    gap: 30px; /* Separación entre los enlaces */
 }
 
-.menu a { /* Enlaces del menú */
+.logo-text{
     color: white;
-    text-decoration: none;
-    font-size: 1rem;
+    text-decoration: none; /* Sin subrayado por defecto */
+    font-size: 1.5rem;
+    transition: all 0.3s ease; /* Suavidad en el efecto */
+    position: relative; /* Posición relativa para el subrayado */
 }
+
+.menu a {
+    color: white;
+    text-decoration: none; /* Sin subrayado por defecto */
+    font-size: 1.1rem;
+    transition: all 0.3s ease; /* Suavidad en el efecto */
+    position: relative; /* Posición relativa para el subrayado */
+}
+
+.logo-text::after{
+    content: ''; /* Pseudoelemento vacío para la línea */
+    position: absolute;
+    width: 0; /* Inicialmente, la línea tiene ancho 0 */
+    height: 2px; /* Grosor del subrayado */
+    background-color: white; /* Color del subrayado */
+    bottom: -10px; /* Ubicación debajo del texto */
+    left: 50%; /* Empieza desde el centro */
+    transform: translateX(-50%); /* Centra la línea */
+    transition: width 0.3s ease; /* Animación suave */
+}
+
+.menu a::after {
+    content: ''; /* Pseudoelemento vacío para la línea */
+    position: absolute;
+    width: 0; /* Inicialmente, la línea tiene ancho 0 */
+    height: 2px; /* Grosor del subrayado */
+    background-color: white; /* Color del subrayado */
+    bottom: -15px; /* Ubicación debajo del texto */
+    left: 50%; /* Empieza desde el centro */
+    transform: translateX(-50%); /* Centra la línea */
+    transition: width 0.3s ease; /* Animación suave */
+}
+
+.logo-text:hover::after,
+.menu a:hover::after {
+    width: 100%; /* Ancho total al pasar el ratón */
+}
+
 
 .container { /* Contenedor principal */
     display: flex;
@@ -152,3 +193,44 @@ footer { /* Pie de página */
 .cv-section {
     margin-left: 0;
 }
+
+/* Carrusel */
+.image-carousel {
+    text-align: center;
+    margin-top: 3rem;
+}
+
+#carousel {
+    width: 400px; /* Ancho fijo del contenedor */
+    margin: 0 auto;
+    border: 2px solid #1553ADff;
+    border-radius: 10px;
+    overflow: hidden;
+    padding: 10px;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+    background-color: #fff;
+    display: flex;
+    flex-direction: column; /* Asegura que la imagen y la descripción estén apiladas verticalmente */
+    justify-content: center; /* Centra el contenido dentro del contenedor */
+}
+
+#carousel img,
+#carousel video {
+    width: 100%;
+    height: auto;
+    object-fit: cover; /* Recorta la imagen y video sin distorsionarlos */
+    border-radius: 5px;
+}
+
+#carousel-caption {
+    margin-top: 10px;
+    font-size: 0.9rem;
+    color: #333;
+    padding: 5px;
+    background-color: rgba(255, 255, 255, 0.7);
+    border-radius: 5px;
+    width: 100%;
+    text-align: center;
+}
+
+/* End carrusel */
