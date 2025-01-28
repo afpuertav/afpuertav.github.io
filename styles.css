@@ -81,7 +81,6 @@ header {
     width: 100%; /* Ancho total al pasar el ratón */
 }
 
-
 .container { /* Contenedor principal */
     display: flex;
     flex-wrap: wrap; /* Diseño adaptable */
