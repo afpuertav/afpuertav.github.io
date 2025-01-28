@@ -1,7 +1,7 @@
+// index.js
 const mediaItems = [
     { type: 'image', src: "gallery/image1.jpg", caption: "A CNC routing machine with 2 coupled degrees of freedom. It is a 7-bar mechanism with 2 parallel prismatic pair" },
     { type: 'image', src: "gallery/image2.jpg", caption: "Participation in 'IEEE Education Society Initiative #26 : Robotics For The Streets: Open-Source Robotics for Academics and The Community'" },
-    
     { type: 'video', src: "gallery/video1.mp4", caption: "An HMI with touch screen and PLC. In this case, simulating a single-seat parking lot" },
     { type: 'video', src: "gallery/video2.mp4", caption: "My first time programming a URe Universal Robots" },
     { type: 'video', src: "gallery/video3.mp4", caption: "H-bridge for motor direction control"},

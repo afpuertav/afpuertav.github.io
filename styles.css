@@ -134,7 +134,7 @@ aside p { /* Texto en el sidebar */
 
 main {
     flex: 1;
-    padding-left: 2rem;
+    padding-left: 1rem;
     max-width: 800px; /* Limita el ancho del contenido principal */
     margin: 0 auto;
 }
@@ -234,11 +234,6 @@ footer { /* Pie de página */
 }
 
 /* End carrusel */
-
-.menu .active {
-    font-weight: bold;
-    border-bottom: 2px solid white;
-}
 
 
 /* Gallery */
