@@ -1,4 +1,3 @@
-// blog.js
 document.addEventListener("DOMContentLoaded", function () {
     const postsContainer = document.getElementById("posts-container");
     const searchInput = document.getElementById("search-input");
@@ -18,7 +17,7 @@ document.addEventListener("DOMContentLoaded", function () {
             link: "blog/post2.html",
             excerpt: "Esta es mi segunda publicación en el blog. Hablo sobre mi experiencia en robótica."
         }
-        // Puedes agregar más publicaciones aquí
+        // más publicaciones aquí
     ];
 
     // Función para cargar y mostrar las publicaciones
@@ -45,13 +44,13 @@ document.addEventListener("DOMContentLoaded", function () {
         return filteredPosts;
     }
 
-    // Función para ordenar las publicaciones
+    // Function to sort posts
     function sortPosts(posts, sortBy) {
         switch (sortBy) {
-            case "date-asc":
-                return posts.sort((a, b) => new Date(a.date) - new Date(b.date));
             case "date-desc":
                 return posts.sort((a, b) => new Date(b.date) - new Date(a.date));
+            case "date-asc":
+                return posts.sort((a, b) => new Date(a.date) - new Date(b.date));
             case "title-asc":
                 return posts.sort((a, b) => a.title.localeCompare(b.title));
             case "title-desc":
@@ -61,7 +60,7 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     }
 
-    // Evento para buscar publicaciones
+    // Searcher
     searchInput.addEventListener("input", () => {
         const searchText = searchInput.value;
         const filteredPosts = filterPosts(searchText);
@@ -69,7 +68,7 @@ document.addEventListener("DOMContentLoaded", function () {
         loadPosts(sortedPosts);
     });
 
-    // Evento para ordenar publicaciones
+    // Sorter
     sortSelect.addEventListener("change", () => {
         const searchText = searchInput.value;
         const filteredPosts = filterPosts(searchText);
@@ -77,6 +76,6 @@ document.addEventListener("DOMContentLoaded", function () {
         loadPosts(sortedPosts);
     });
 
-    // Cargar todas las publicaciones al inicio
+    // Load all posts
     loadPosts(sortPosts(posts, sortSelect.value));
 });
