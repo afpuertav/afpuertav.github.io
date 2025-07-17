@@ -69,24 +69,33 @@
     #highscores {
       margin-top: 1rem;
       width: 100%;
-      text-align: center;
+      text-align: left;
     }
 
     #highscores h3 {
       margin-bottom: 0.5rem;
     }
 
-    #highscores p {
-      font-size: 1rem;
-      font-weight: bold;
+    #highscores ol {
+      padding-left: 1.2rem;
+      font-size: 0.9rem;
     }
   </style>
 </head>
 <body>
-  <header>
-    <h1>Tetris</h1>
-    <a href="../index.html" style="color:#0077ff;text-decoration:none;">Volver al inicio</a>
-  </header>
+    <header>
+        <div class="logo">
+            <a href="index.html" class="logo-text"><strong>Andrés F. Puerta</strong></a>
+        </div>
+        <nav>
+            <ul class="menu">
+                <li><a href="cv.html" class="active">Curriculum vitae</a></li>
+                <li><a href="blog.html">Blog</a></li>
+                <li><a href="gallery.html">Gallery</a></li>
+                <li><a href="games.html">Games</a></li>
+            </ul>
+        </nav>
+    </header>
 
   <main>
     <canvas id="tetris" width="240" height="400"></canvas>
@@ -103,8 +112,8 @@
       </div>
 
       <div id="highscores">
-        <h3>🏆 Récord actual:</h3>
-        <p id="record">0</p>
+        <h3>🏆 Top 10:</h3>
+        <ol id="scoreList"></ol>
       </div>
     </div>
   </main>
@@ -121,7 +130,17 @@
     let paused = false;
     let gameOver = false;
 
-    const colors = [null, '#FF0D72', '#0DC2FF', '#0DFF72', '#F538FF', '#FF8E0D', '#FFE138', '#3877FF'];
+    const colors = [
+      null,
+      '#FF0D72', // T
+      '#0DC2FF', // L
+      '#0DFF72', // J
+      '#F538FF', // O
+      '#FF8E0D', // Z
+      '#FFE138', // S
+      '#3877FF'  // I
+    ];
+
     const arena = createMatrix(12, 20);
 
     const player = {
@@ -261,39 +280,53 @@
     }
 
     document.addEventListener('keydown', event => {
-      if (gameOver) return;
-      const keys = ['ArrowLeft', 'ArrowRight', 'ArrowDown', 'ArrowUp'];
-      if (keys.includes(event.key)) event.preventDefault();
+        if (gameOver) return;
 
-      if (event.key === 'ArrowLeft') {
-        player.pos.x--;
-        if (collide(arena, player)) player.pos.x++;
-      } else if (event.key === 'ArrowRight') {
-        player.pos.x++;
-        if (collide(arena, player)) player.pos.x--;
-      } else if (event.key === 'ArrowDown') {
-        playerDrop();
-      } else if (event.key === 'ArrowUp') {
-        const pos = player.pos.x;
-        rotate(player.matrix);
-        if (collide(arena, player)) {
-          player.pos.x = pos;
-          rotate(player.matrix); rotate(player.matrix); rotate(player.matrix);
+        const keys = ['ArrowLeft', 'ArrowRight', 'ArrowDown', 'ArrowUp'];
+        if (keys.includes(event.key)) {
+            event.preventDefault(); // ❗ evita que el navegador haga scroll
         }
-      }
-    });
+
+        if (event.key === 'ArrowLeft') {
+            player.pos.x--;
+            if (collide(arena, player)) player.pos.x++;
+        } else if (event.key === 'ArrowRight') {
+            player.pos.x++;
+            if (collide(arena, player)) player.pos.x--;
+        } else if (event.key === 'ArrowDown') {
+            playerDrop();
+        } else if (event.key === 'ArrowUp') {
+            const pos = player.pos.x;
+            rotate(player.matrix);
+            if (collide(arena, player)) {
+            player.pos.x = pos;
+            rotate(player.matrix); rotate(player.matrix); rotate(player.matrix);
+            }
+        }
+        });
+
 
     function saveHighScore(newScore) {
-      const record = parseInt(localStorage.getItem('tetrisHighScore') || '0');
-      if (newScore > record) {
-        localStorage.setItem('tetrisHighScore', newScore);
-        updateHighScore();
+      const highscores = JSON.parse(localStorage.getItem('tetrisScores') || '[]');
+      const lowest = highscores[9]?.score || 0;
+      if (newScore > lowest || highscores.length < 10) {
+        const name = prompt("¡Nuevo récord! Ingresa tu nombre (3 letras):", "AAA").toUpperCase().slice(0, 3);
+        highscores.push({ name, score: newScore });
+        highscores.sort((a, b) => b.score - a.score);
+        localStorage.setItem('tetrisScores', JSON.stringify(highscores.slice(0, 10)));
+        updateHighScores();
       }
     }
 
-    function updateHighScore() {
-      const record = parseInt(localStorage.getItem('tetrisHighScore') || '0');
-      document.getElementById('record').textContent = record;
+    function updateHighScores() {
+      const list = document.getElementById('scoreList');
+      list.innerHTML = '';
+      const scores = JSON.parse(localStorage.getItem('tetrisScores') || '[]');
+      scores.forEach(s => {
+        const li = document.createElement('li');
+        li.textContent = `${s.name} – ${s.score}`;
+        list.appendChild(li);
+      });
     }
 
     let dropCounter = 0;
@@ -314,7 +347,7 @@
     }
 
     resetGame();
-    updateHighScore();
+    updateHighScores();
     update();
   </script>
 </body>
