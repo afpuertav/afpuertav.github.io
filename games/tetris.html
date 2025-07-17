@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../styles.css">
+    <link rel="icon" href="../assets/icon.svg" type="image/svg+xml">
+    <title>Tetris</title>
+    <style>
+        canvas { background: #111; display: block; margin: 0 auto; }
+        #scoreboard { text-align: center; margin-top: 1rem; color: rgb(0, 72, 255); }
+        #controls { text-align: center; margin-top: 1rem; }
+        button { padding: 0.5rem 1rem; margin: 0.5rem; }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="logo">
+            <a href="../index.html" class="logo-text"><strong>Andrés F. Puerta</strong></a>
+        </div>
+        <nav>
+            <ul class="menu">
+                <li><a href="../cv.html">Curriculum vitae</a></li>
+                <li><a href="../blog.html">Blog</a></li>
+                <li><a href="../gallery.html">Gallery</a></li>
+                <li><a href="../games.html" class="active">Games</a></li>
+            </ul>
+        </nav>
+    </header>
+    <main>
+        <canvas id="tetris" width="240" height="400"></canvas>
+        <div id="scoreboard">
+            <p>Puntaje: <span id="score">0</span></p>
+            <p>Vidas: <span id="lives">1</span></p>
+        </div>
+        <div id="controls">
+            <button onclick="resetGame()">Reiniciar</button>
+            <button onclick="togglePause()" id="pauseBtn">Pausar</button>
+        </div>
+        <script>
+            const canvas = document.getElementById('tetris');
+            const context = canvas.getContext('2d');
+            context.scale(20, 20);
+
+            let score = 0;
+            let lives = 1;
+            let paused = false;
+
+            function updateScore(rowsCleared) {
+                const points = rowsCleared * rowsCleared * 100;
+                score += points;
+                document.getElementById('score').textContent = score;
+                const newLives = Math.floor(score / 3000) + 1;
+                if (newLives !== lives) {
+                    lives = newLives;
+                    document.getElementById('lives').textContent = lives;
+                }
+            }
+
+            function createMatrix(w, h) {
+                const matrix = [];
+                while (h--) {
+                    matrix.push(new Array(w).fill(0));
+                }
+                return matrix;
+            }
+
+            function createPiece(type) {
+                switch (type) {
+                    case 'T':
+                        return [
+                            [0, 0, 0],
+                            [1, 1, 1],
+                            [0, 1, 0],
+                        ];
+                    case 'L':
+                        return [
+                            [0, 2, 0],
+                            [0, 2, 0],
+                            [0, 2, 2],
+                        ];
+                    case 'J':
+                        return [
+                            [0, 3, 0],
+                            [0, 3, 0],
+                            [3, 3, 0],
+                        ];
+                    case 'O':
+                        return [
+                            [4, 4],
+                            [4, 4],
+                        ];
+                    case 'Z':
+                        return [
+                            [5, 5, 0],
+                            [0, 5, 5],
+                            [0, 0, 0],
+                        ];
+                    case 'S':
+                        return [
+                            [0, 6, 6],
+                            [6, 6, 0],
+                            [0, 0, 0],
+                        ];
+                    case 'I':
+                        return [
+                            [0, 0, 0, 0],
+                            [7, 7, 7, 7],
+                            [0, 0, 0, 0],
+                            [0, 0, 0, 0],
+                        ];
+                }
+            }
+
+            const arena = createMatrix(12, 20);
+
+            function drawMatrix(matrix, offset) {
+                matrix.forEach((row, y) => {
+                    row.forEach((value, x) => {
+                        if (value !== 0) {
+                            context.fillStyle = 'red';
+                            context.fillRect(x + offset.x, y + offset.y, 1, 1);
+                        }
+                    });
+                });
+            }
+
+            function draw() {
+                context.fillStyle = '#000';
+                context.fillRect(0, 0, canvas.width, canvas.height);
+
+                drawMatrix(arena, { x: 0, y: 0 });
+                drawMatrix(player.matrix, player.pos);
+            }
+
+            function merge(arena, player) {
+                player.matrix.forEach((row, y) => {
+                    row.forEach((value, x) => {
+                        if (value !== 0) {
+                            arena[y + player.pos.y][x + player.pos.x] = value;
+                        }
+                    });
+                });
+            }
+
+            function collide(arena, player) {
+                const [m, o] = [player.matrix, player.pos];
+                for (let y = 0; y < m.length; ++y) {
+                    for (let x = 0; x < m[y].length; ++x) {
+                        if (m[y][x] !== 0 &&
+                            (arena[y + o.y] && arena[y + o.y][x + o.x]) !== 0) {
+                            return true;
+                        }
+                    }
+                }
+                return false;
+            }
+
+            function rotate(matrix) {
+                for (let y = 0; y < matrix.length; ++y) {
+                    for (let x = 0; x < y; ++x) {
+                        [matrix[x][y], matrix[y][x]] = [matrix[y][x], matrix[x][y]];
+                    }
+                }
+                matrix.forEach(row => row.reverse());
+            }
+
+            function playerDrop() {
+                player.pos.y++;
+                if (collide(arena, player)) {
+                    player.pos.y--;
+                    merge(arena, player);
+                    arenaSweep();
+                    playerReset();
+                }
+                dropCounter = 0;
+            }
+
+            function arenaSweep() {
+                let rowCount = 0;
+                outer: for (let y = arena.length - 1; y >= 0; --y) {
+                    for (let x = 0; x < arena[y].length; ++x) {
+                        if (arena[y][x] === 0) {
+                            continue outer;
+                        }
+                    }
+                    const row = arena.splice(y, 1)[0].fill(0);
+                    arena.unshift(row);
+                    ++rowCount;
+                }
+                if (rowCount > 0) updateScore(rowCount);
+            }
+
+            function playerReset() {
+                const pieces = 'ILJOTSZ';
+                player.matrix = createPiece(pieces[Math.floor(Math.random() * pieces.length)]);
+                player.pos.y = 0;
+                player.pos.x = (arena[0].length / 2 | 0) - (player.matrix[0].length / 2 | 0);
+                if (collide(arena, player)) {
+                    document.getElementById('pauseBtn').disabled = true;
+                    gameOver = true;
+                }
+            }
+
+            function resetGame() {
+                arena.forEach(row => row.fill(0));
+                score = 0;
+                lives = 1;
+                gameOver = false;
+                document.getElementById('score').textContent = score;
+                document.getElementById('lives').textContent = lives;
+                document.getElementById('pauseBtn').disabled = false;
+                playerReset();
+            }
+
+            function togglePause() {
+                paused = !paused;
+                document.getElementById('pauseBtn').textContent = paused ? 'Continuar' : 'Pausar';
+            }
+
+            let dropCounter = 0;
+            let dropInterval = 1000;
+            let lastTime = 0;
+            let gameOver = false;
+
+            function update(time = 0) {
+                if (!paused && !gameOver) {
+                    const deltaTime = time - lastTime;
+                    lastTime = time;
+
+                    dropCounter += deltaTime;
+                    if (dropCounter > dropInterval) {
+                        playerDrop();
+                    }
+
+                    draw();
+                }
+                requestAnimationFrame(update);
+            }
+
+            document.addEventListener('keydown', event => {
+                if (gameOver) return;
+                if (event.key === 'ArrowLeft') {
+                    player.pos.x--;
+                    if (collide(arena, player)) player.pos.x++;
+                } else if (event.key === 'ArrowRight') {
+                    player.pos.x++;
+                    if (collide(arena, player)) player.pos.x--;
+                } else if (event.key === 'ArrowDown') {
+                    playerDrop();
+                } else if (event.key === 'ArrowUp') {
+                    const pos = player.pos.x;
+                    rotate(player.matrix);
+                    if (collide(arena, player)) {
+                        player.pos.x = pos;
+                        rotate(player.matrix);
+                        rotate(player.matrix);
+                        rotate(player.matrix);
+                    }
+                }
+            });
+
+            const player = {
+                pos: { x: 0, y: 0 },
+                matrix: null
+            };
+
+            resetGame();
+            update();
+        </script>
+    </main>
+    <footer>
+        &copy; 2024 Andrés Felipe Puerta Vélez's page
+    </footer>
+</body>
+</html>
