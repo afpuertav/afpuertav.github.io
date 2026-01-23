@@ -1,56 +1,49 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8">
-  <title>ESP32 IoT Dashboard</title>
+<meta charset="UTF-8">
+<title>ESP32 IoT Dashboard</title>
 
-  <!-- MQTT.js -->
-  <script src="https://unpkg.com/mqtt/dist/mqtt.min.js"></script>
+<script src="https://unpkg.com/mqtt/dist/mqtt.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
-  <!-- Chart.js -->
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      background: #0f172a;
-      color: #e5e7eb;
-      text-align: center;
-    }
-    h1 {
-      margin-top: 20px;
-    }
-    canvas {
-      max-width: 800px;
-      margin: 20px auto;
-    }
-    button {
-      padding: 12px 24px;
-      font-size: 16px;
-      background: #22c55e;
-      border: none;
-      border-radius: 6px;
-      cursor: pointer;
-      margin-top: 20px;
-    }
-    button.off {
-      background: #ef4444;
-    }
-  </style>
+<style>
+body {
+  font-family: Arial;
+  background: #0f172a;
+  color: #e5e7eb;
+  text-align: center;
+}
+canvas {
+  max-width: 800px;
+  margin: 20px auto;
+}
+button {
+  padding: 14px 28px;
+  font-size: 16px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  background: #22c55e;
+  color: black;
+}
+button.off {
+  background: #ef4444;
+  color: white;
+}
+</style>
 </head>
 
 <body>
 
-<h1>Prueba dashboard</h1>
+<h1>🌡️ ESP32 – Temperatura y Humedad (24h)</h1>
 
 <canvas id="chart"></canvas>
 
-<button id="ledBtn">BOMBA AGUA</button>
+<button id="ledBtn">CONECTANDO…</button>
 
 <script>
-/* =========================
-   MQTT CONFIG
-========================= */
+/* MQTT CONFIG */
 const MQTT_URL = "wss://d0c74dd51f244a5b87e0373b99197ba7.s1.eu.hivemq.cloud:8884/mqtt";
 const MQTT_OPTIONS = {
   username: "andresPuerta",
@@ -58,105 +51,73 @@ const MQTT_OPTIONS = {
   clientId: "web_" + Math.random().toString(16).substr(2, 8)
 };
 
-const TOPIC_DATA = "iot/esp32/data";
-const TOPIC_CMD  = "iot/esp32/cmd";
+const TOPIC_DATA   = "iot/esp32/data";
+const TOPIC_CMD    = "iot/esp32/cmd";
+const TOPIC_STATUS = "iot/esp32/status";
 
-/* =========================
-   DATA STORAGE (24h)
-========================= */
+/* DATA */
 let dataPoints = [];
+let ledState = false;
 
-/* =========================
-   CHART
-========================= */
+/* CHART */
 const ctx = document.getElementById("chart").getContext("2d");
-
 const chart = new Chart(ctx, {
   type: "line",
   data: {
     labels: [],
     datasets: [
-      {
-        label: "Temperatura (°C)",
-        borderColor: "#f97316",
-        data: [],
-        yAxisID: "y1"
-      },
-      {
-        label: "Humedad (%)",
-        borderColor: "#38bdf8",
-        data: [],
-        yAxisID: "y2"
-      }
+      { label: "Temperatura (°C)", borderColor: "#f97316", data: [] },
+      { label: "Humedad (%)", borderColor: "#38bdf8", data: [] }
     ]
-  },
-  options: {
-    scales: {
-      y1: {
-        type: "linear",
-        position: "left"
-      },
-      y2: {
-        type: "linear",
-        position: "right"
-      }
-    }
   }
 });
 
-/* =========================
-   MQTT CONNECT
-========================= */
+/* MQTT */
 const client = mqtt.connect(MQTT_URL, MQTT_OPTIONS);
 
 client.on("connect", () => {
-  console.log("✅ Conectado a MQTT");
   client.subscribe(TOPIC_DATA);
+  client.subscribe(TOPIC_STATUS);
 });
 
 client.on("message", (topic, message) => {
+
+  if (topic === TOPIC_STATUS) {
+    ledState = (message.toString() === "ON");
+    updateButton();
+  }
+
   if (topic === TOPIC_DATA) {
+    const d = JSON.parse(message.toString());
     const now = new Date();
-    const data = JSON.parse(message.toString());
 
-    dataPoints.push({
-      time: now,
-      temp: data.temp,
-      hum: data.hum
-    });
+    dataPoints.push({ time: now, temp: d.temp, hum: d.hum });
 
-    // Mantener solo últimas 24h
-    const limit = new Date(Date.now() - 24 * 60 * 60 * 1000);
-    dataPoints = dataPoints.filter(d => d.time > limit);
+    const limit = new Date(Date.now() - 24*60*60*1000);
+    dataPoints = dataPoints.filter(p => p.time > limit);
 
-    updateChart();
+    chart.data.labels = dataPoints.map(p => p.time.toLocaleTimeString());
+    chart.data.datasets[0].data = dataPoints.map(p => p.temp);
+    chart.data.datasets[1].data = dataPoints.map(p => p.hum);
+    chart.update();
   }
 });
 
-/* =========================
-   UPDATE CHART
-========================= */
-function updateChart() {
-  chart.data.labels = dataPoints.map(d =>
-    d.time.toLocaleTimeString()
-  );
+/* BUTTON */
+const btn = document.getElementById("ledBtn");
 
-  chart.data.datasets[0].data = dataPoints.map(d => d.temp);
-  chart.data.datasets[1].data = dataPoints.map(d => d.hum);
-
-  chart.update();
+function updateButton() {
+  if (ledState) {
+    btn.textContent = "APAGAR BOMBA";
+    btn.classList.add("off");
+  } else {
+    btn.textContent = "ENCENDER BOMBA";
+    btn.classList.remove("off");
+  }
 }
 
-/* =========================
-   LED BUTTON
-========================= */
-const btn = document.getElementById("ledBtn");
-let ledState = false;
-
 btn.onclick = () => {
-  client.publish(TOPIC_CMD, "LED");
-  ledState = !ledState;
-  btn.className = ledState ? "off" : "";
+  client.publish(TOPIC_CMD, ledState ? "LED_OFF" : "LED_ON");
 };
 </script>
 
