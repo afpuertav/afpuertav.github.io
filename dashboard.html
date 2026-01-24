@@ -4,678 +4,337 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="icon" href="assets/icon.svg" type="image/svg+xml">
-    <title>Control</title>
+    <title>Control & Historial IoT</title>
     <script src="https://unpkg.com/mqtt/dist/mqtt.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/moment@2.29.1/moment.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-moment@1.0.0/dist/chartjs-adapter-moment.min.js"></script>
+    
     <style>
         /* =======================
-           ESTILOS GENERALES (igual a tu página)
+           ESTILOS (Mantenemos tu diseño)
         ======================= */
-        body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 0;
-            background-color: #f5f7fa;
-            color: #333;
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-        }
+        body { font-family: Arial, sans-serif; margin: 0; background-color: #f5f7fa; color: #333; display: flex; flex-direction: column; min-height: 100vh; }
+        header { background-color: #1553ADff; padding: 1rem 2rem; color: white; display: flex; justify-content: space-between; align-items: center; }
+        .logo-text { color: white; text-decoration: none; font-size: 1.5rem; font-weight: bold; }
+        .menu { display: flex; list-style: none; gap: 30px; margin: 0; padding: 0; }
+        .menu a { color: white; text-decoration: none; font-size: 1.1rem; }
+        
+        .container { display: flex; flex-wrap: wrap; margin: 2rem; flex: 1; }
+        aside { width: 100%; max-width: 250px; text-align: center; margin-bottom: 2rem; }
+        .profile-pic { width: 200px; height: 200px; border-radius: 50%; object-fit: cover; box-shadow: 0 4px 8px rgba(0,0,0,0.2); }
+        main { flex: 1; padding-left: 2rem; max-width: 1000px; }
+        
+        .card { background: white; padding: 25px; margin: 20px auto; border-radius: 10px; border: 2px solid #1553ADff; box-shadow: 0 4px 8px rgba(0,0,0,0.1); }
+        h2 { color: #1553ADff; margin-top: 0; }
 
-        /* Header */
-        header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            background-color: #1553ADff;
-            padding: 1rem 2rem;
-            color: white;
-        }
+        .btn-control { padding: 15px 30px; font-size: 18px; border: none; border-radius: 8px; cursor: pointer; background-color: #1553ADff; color: white; transition: 0.3s; width: 100%; max-width: 300px; }
+        .btn-control.off { background-color: #e74c3c; }
+        .btn-control:disabled { background-color: #ccc; cursor: not-allowed; }
 
-        .logo {
-            display: flex;
-            align-items: center;
-        }
+        .chart-container { position: relative; height: 350px; margin-top: 20px; }
+        
+        /* Botones de filtro de tiempo */
+        .time-filters { display: flex; justify-content: center; gap: 10px; margin-bottom: 15px; flex-wrap: wrap; }
+        .filter-btn { padding: 5px 15px; border: 1px solid #1553ADff; background: white; color: #1553ADff; border-radius: 20px; cursor: pointer; transition: 0.2s; }
+        .filter-btn.active, .filter-btn:hover { background: #1553ADff; color: white; }
 
-        .logo-text {
-            color: white;
-            text-decoration: none;
-            font-size: 1.5rem;
-            transition: all 0.3s ease;
-            position: relative;
-        }
+        /* Controles inferiores */
+        .footer-controls { display: flex; justify-content: space-between; align-items: center; margin-top: 20px; flex-wrap: wrap; gap: 15px; border-top: 1px solid #eee; padding-top: 15px; }
+        
+        .btn-action { padding: 8px 15px; border-radius: 5px; cursor: pointer; border: none; display: flex; align-items: center; gap: 5px; color: white; font-size: 0.9rem; }
+        .btn-download { background-color: #27ae60; }
+        .btn-download:hover { background-color: #219653; }
+        
+        /* Botón de borrar discreto */
+        .btn-clear { background-color: white; color: #999; border: 1px solid #eee; font-size: 0.8rem; }
+        .btn-clear:hover { background-color: #fff5f5; color: #e74c3c; border-color: #e74c3c; }
 
-        .logo-text::after {
-            content: '';
-            position: absolute;
-            width: 0;
-            height: 2px;
-            background-color: white;
-            bottom: -10px;
-            left: 50%;
-            transform: translateX(-50%);
-            transition: width 0.3s ease;
-        }
+        .status-dot { width: 10px; height: 10px; border-radius: 50%; background: #ccc; display: inline-block; margin-right: 5px; }
+        .status-dot.connected { background: #2ecc71; }
 
-        .logo-text:hover::after {
-            width: 100%;
-        }
-
-        nav {
-            display: flex;
-        }
-
-        .menu {
-            display: flex;
-            list-style: none;
-            margin: 0;
-            padding: 0;
-            gap: 30px;
-        }
-
-        .menu a {
-            color: white;
-            text-decoration: none;
-            font-size: 1.1rem;
-            transition: all 0.3s ease;
-            position: relative;
-        }
-
-        .menu a::after {
-            content: '';
-            position: absolute;
-            width: 0;
-            height: 2px;
-            background-color: white;
-            bottom: -15px;
-            left: 50%;
-            transform: translateX(-50%);
-            transition: width 0.3s ease;
-        }
-
-        .menu a:hover::after {
-            width: 100%;
-        }
-
-        /* Contenedor principal */
-        .container {
-            display: flex;
-            flex-wrap: wrap;
-            margin: 2rem;
-            flex: 1;
-        }
-
-        aside {
-            width: 100%;
-            max-width: 250px;
-            text-align: center;
-            margin: 0 auto 2rem;
-        }
-
-        .profile-pic {
-            width: 200px;
-            height: 200px;
-            border-radius: 50%;
-            object-fit: cover;
-            box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
-            margin-bottom: 1rem;
-        }
-
-        aside p {
-            margin: 0.5rem 0;
-        }
-
-        .social-links {
-            display: flex;
-            justify-content: center;
-            gap: 15px;
-            margin-top: 1rem;
-        }
-
-        .social-links img {
-            width: 25px;
-            height: 25px;
-            transition: transform 0.3s ease;
-        }
-
-        .social-links img:hover {
-            transform: scale(1.1);
-        }
-
-        main {
-            flex: 1;
-            padding-left: 2rem;
-            max-width: 1000px;
-        }
-
-        /* Cards estilo similar al carrusel */
-        .card {
-            background: white;
-            padding: 25px;
-            margin: 25px auto;
-            width: 90%;
-            max-width: 800px;
-            border-radius: 10px;
-            border: 2px solid #1553ADff;
-            box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
-        }
-
-        .card h2 {
-            color: #1553ADff;
-            margin-top: 0;
-            font-size: 1.5rem;
-        }
-
-        /* Botones con estilo similar al hover del menú */
-        .btn-control {
-            padding: 15px 30px;
-            font-size: 18px;
-            border: none;
-            border-radius: 8px;
-            cursor: pointer;
-            background-color: #1553ADff;
-            color: white;
-            transition: all 0.3s ease;
-            position: relative;
-            overflow: hidden;
-            min-width: 200px;
-        }
-
-        .btn-control::after {
-            content: '';
-            position: absolute;
-            width: 0;
-            height: 2px;
-            background-color: white;
-            bottom: 10px;
-            left: 50%;
-            transform: translateX(-50%);
-            transition: width 0.3s ease;
-        }
-
-        .btn-control:hover::after {
-            width: 80%;
-        }
-
-        .btn-control.off {
-            background-color: #e74c3c;
-        }
-
-        .btn-control:disabled {
-            background-color: #777;
-            cursor: not-allowed;
-        }
-
-        .btn-control:disabled::after {
-            display: none;
-        }
-
-        /* Gráfico */
-        .chart-container {
-            position: relative;
-            height: 300px;
-            margin-top: 20px;
-        }
-
-        canvas {
-            background: white;
-            border-radius: 8px;
-            padding: 10px;
-        }
-
-        /* Controles adicionales */
-        .controls {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-top: 20px;
-            flex-wrap: wrap;
-            gap: 15px;
-        }
-
-        .status-indicator {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .status-dot {
-            width: 12px;
-            height: 12px;
-            border-radius: 50%;
-            background-color: #ccc;
-        }
-
-        .status-dot.connected {
-            background-color: #2ecc71;
-            animation: pulse 2s infinite;
-        }
-
-        @keyframes pulse {
-            0% { opacity: 1; }
-            50% { opacity: 0.5; }
-            100% { opacity: 1; }
-        }
-
-        /* Botón de descarga */
-        .btn-download {
-            padding: 10px 20px;
-            background-color: #27ae60;
-            color: white;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .btn-download:hover {
-            background-color: #219653;
-            transform: translateY(-2px);
-        }
-
-        /* Footer */
-        footer {
-            background-color: #1553ADff;
-            color: white;
-            text-align: center;
-            padding: 1rem;
-            margin-top: 2rem;
-        }
-
-        /* Responsive */
         @media (max-width: 768px) {
-            .container {
-                flex-direction: column;
-                margin: 1rem;
-            }
-            
-            aside {
-                max-width: 100%;
-                margin-bottom: 1rem;
-            }
-            
-            main {
-                padding-left: 0;
-            }
-            
-            .card {
-                width: 95%;
-            }
-            
-            .controls {
-                flex-direction: column;
-                align-items: stretch;
-            }
-            
-            header {
-                flex-direction: column;
-                gap: 15px;
-                padding: 1rem;
-            }
-            
-            .menu {
-                gap: 15px;
-                flex-wrap: wrap;
-                justify-content: center;
-            }
+            .container { flex-direction: column; margin: 1rem; }
+            main { padding-left: 0; }
+            header { flex-direction: column; gap: 10px; }
+            .menu { flex-wrap: wrap; justify-content: center; }
         }
     </style>
 </head>
 <body>
     <header>
-        <div class="logo">
-            <a href="index.html" class="logo-text"><strong>Andrés F. Puerta</strong></a>
-        </div>
-        <nav>
-            <ul class="menu">
-                <li><a href="index.html">Home</a></li>
-                <li><a href="cv.html">Curriculum vitae</a></li>
-                <li><a href="publications.html">Publications</a></li>
-                <li><a href="blog.html">Blog</a></li>
-                <li><a href="gallery.html">Gallery</a></li>
-                <li><a href="#" style="color: #00d4ff;">IoT Dashboard</a></li>
-            </ul>
-        </nav>
+        <div class="logo"><a href="index.html" class="logo-text">Andrés F. Puerta</a></div>
+        <ul class="menu">
+            <li><a href="index.html">Home</a></li>
+            <li><a href="#" style="color: #00d4ff;">IoT Dashboard</a></li>
+        </ul>
     </header>
     
     <div class="container">
         <aside>
-            <img src="assets/fotoperfil.jpg" alt="Foto de perfil" class="profile-pic">
+            <img src="assets/fotoperfil.jpg" alt="Perfil" class="profile-pic">
             <p><strong>Andrés Felipe Puerta Vélez</strong></p>
-            <p>
-                <img src="assets/location-icon.svg" alt="Ubicación" style="width:15px;height:15px;vertical-align:middle;margin-right:5px;">
-                Medellín, COL
-            </p>
-            <div class="social-links">
-                <a href="https://github.com/afpuertav" target="_blank">
-                    <img src="assets/github-icon.svg" alt="GitHub">
-                </a>
-                <a href="https://www.linkedin.com/in/afpuertav/" target="_blank">
-                    <img src="assets/linkedin-icon.svg" alt="LinkedIn">
-                </a>
-                <a href="https://scholar.google.com/citations?user=z9xhJ5wAAAAJ" target="_blank">
-                    <img src="assets/scholar-icon.svg" alt="Google Scholar">
-                </a>
-                <a href="https://www.youtube.com/@afpuertav" target="_blank">
-                    <img src="assets/youtube-icon.svg" alt="YouTube">
-                </a>
-            </div>
+            <p>Medellín, COL</p>
         </aside>
         
         <main>
-            <div class="card">
-                <h1 style="color: #1553ADff; text-align: center; margin-bottom: 20px;">Control</h1>
-                
-                <h2>Control de Bomba / LED</h2>
-                <div style="text-align: center; margin: 20px 0;">
-                    <button id="btn" class="btn-control">CONECTANDO...</button>
-                </div>
-                
-                <div class="status-indicator">
-                    <span>Estado MQTT:</span>
-                    <div id="statusDot" class="status-dot"></div>
-                    <span id="statusText">Desconectado</span>
+            <div class="card" style="text-align: center;">
+                <h2>Control de Bomba</h2>
+                <button id="btnPump" class="btn-control">CONECTANDO...</button>
+                <div style="margin-top: 10px; font-size: 0.9rem; color: #666;">
+                    <span id="statusDot" class="status-dot"></span> <span id="statusText">Desconectado</span>
                 </div>
             </div>
             
             <div class="card">
-                <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap;">
-                    <h2>Monitoreo de variables</h2>
-                    <button id="downloadBtn" class="btn-download" disabled>
-                        <svg width="16" height="16" viewBox="0 0 24 24" fill="white">
-                            <path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/>
-                        </svg>
-                        Descargar CSV
-                    </button>
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+                    <h2>Historial de Temperatura y Humedad</h2>
+                    <div style="text-align: right; font-size: 0.9rem;">
+                        <strong>Actual:</strong> <span id="currTemp">--</span>°C / <span id="currHum">--</span>%
+                    </div>
+                </div>
+
+                <div class="time-filters">
+                    <button class="filter-btn" onclick="setTimeRange(24)">24 Horas</button>
+                    <button class="filter-btn" onclick="setTimeRange(72)">3 Días</button>
+                    <button class="filter-btn" onclick="setTimeRange(168)">7 Días</button>
+                    <button class="filter-btn active" onclick="setTimeRange('all')">Todo el Historial</button>
                 </div>
                 
                 <div class="chart-container">
                     <canvas id="chart"></canvas>
                 </div>
                 
-                <div class="controls">
-                    <div>
-                        <label for="dataPoints">Mostrar últimos: </label>
-                        <select id="dataPoints">
-                            <option value="100">100 puntos</option>
-                            <option value="500">500 puntos</option>
-                            <option value="1000">1000 puntos</option>
-                            <option value="all" selected>Todos los puntos</option>
-                        </select>
-                    </div>
+                <div class="footer-controls">
+                    <button id="downloadBtn" class="btn-action btn-download" disabled onclick="downloadCSV()">
+                        📥 Descargar Historial CSV
+                    </button>
                     
-                    <div id="currentData">
-                        <strong>Última lectura:</strong>
-                        <span id="tempValue">--</span>°C,
-                        <span id="humValue">--</span>%
-                    </div>
+                    <button id="clearBtn" class="btn-action btn-clear" onclick="clearESP32Data()">
+                        ⚠️ Borrar Memoria ESP32
+                    </button>
                 </div>
             </div>
         </main>
     </div>
-    
-    <footer>
-        &copy; 2024 Andrés Felipe Puerta Vélez - IoT Dashboard
-    </footer>
 
     <script>
-        /* =======================
-           MQTT CONFIG
-        ======================= */
+        // CONFIGURACION
         const MQTT_URL = "wss://d0c74dd51f244a5b87e0373b99197ba7.s1.eu.hivemq.cloud:8884/mqtt";
-        const MQTT_OPTIONS = {
-            username: "andresPuerta",
-            password: "aGROW123",
-            reconnectPeriod: 2000
+        const MQTT_OPT = { username: "andresPuerta", password: "aGROW123", reconnectPeriod: 2000 };
+        const TOPICS = {
+            DATA: "iot/esp32/data",
+            CMD: "iot/esp32/cmd",
+            STATUS: "iot/esp32/status",
+            HISTORY: "iot/esp32/history"
         };
 
-        const TOPIC_DATA   = "iot/esp32/data";
-        const TOPIC_CMD    = "iot/esp32/cmd";
-        const TOPIC_STATUS = "iot/esp32/status";
+        // VARIABLES
+        let client;
+        let pumpState = null;
+        let allHistoryData = []; // Aquí guardaremos todo lo que llegue del ESP32 + nuevos datos
+        let currentTimeRange = 'all';
 
-        /* =======================
-           STATE
-        ======================= */
-        let ledState = null;
-        let isConnected = false;
-        const btn = document.getElementById("btn");
-        const statusDot = document.getElementById("statusDot");
+        // UI ELEMENTS
+        const btnPump = document.getElementById("btnPump");
         const statusText = document.getElementById("statusText");
+        const statusDot = document.getElementById("statusDot");
         const downloadBtn = document.getElementById("downloadBtn");
-        const dataPointsSelect = document.getElementById("dataPoints");
-        const tempValue = document.getElementById("tempValue");
-        const humValue = document.getElementById("humValue");
+        const currTemp = document.getElementById("currTemp");
+        const currHum = document.getElementById("currHum");
 
-        // Array para almacenar todos los datos para CSV
-        let allData = [];
-
-        /* =======================
-           CHART
-        ======================= */
+        // CHART SETUP
         const ctx = document.getElementById("chart").getContext("2d");
-
         const chart = new Chart(ctx, {
             type: "line",
             data: {
-                labels: [],
                 datasets: [
-                    {
-                        label: "Temperatura (°C)",
-                        data: [],
-                        borderColor: "#e74c3c",
-                        backgroundColor: "rgba(231, 76, 60, 0.1)",
-                        tension: 0.3,
-                        fill: true
-                    },
-                    {
-                        label: "Humedad (%)",
-                        data: [],
-                        borderColor: "#3498db",
-                        backgroundColor: "rgba(52, 152, 219, 0.1)",
-                        tension: 0.3,
-                        fill: true
-                    }
+                    { label: "Temp (°C)", data: [], borderColor: "#e74c3c", backgroundColor: "rgba(231,76,60,0.1)", yAxisID: 'y', fill: true, pointRadius: 2 },
+                    { label: "Hum (%)", data: [], borderColor: "#3498db", backgroundColor: "rgba(52,152,219,0.1)", yAxisID: 'y1', fill: true, pointRadius: 2 }
                 ]
             },
             options: {
                 responsive: true,
                 maintainAspectRatio: false,
+                interaction: { mode: 'index', intersect: false },
                 scales: {
                     x: {
-                        display: true,
-                        grid: {
-                            color: 'rgba(0,0,0,0.05)'
-                        }
+                        type: 'time', // Eje de tiempo real
+                        time: { unit: 'minute', displayFormats: { minute: 'HH:mm', hour: 'DD MMM HH:mm' } },
+                        title: { display: true, text: 'Fecha / Hora' }
                     },
-                    y: {
-                        beginAtZero: false,
-                        grid: {
-                            color: 'rgba(0,0,0,0.05)'
-                        }
-                    }
-                },
-                plugins: {
-                    legend: {
-                        labels: {
-                            color: '#333'
-                        }
-                    }
+                    y: { type: 'linear', display: true, position: 'left', title: { display: true, text: 'Temperatura' } },
+                    y1: { type: 'linear', display: true, position: 'right', grid: { drawOnChartArea: false }, title: { display: true, text: 'Humedad' } }
                 }
             }
         });
 
-        /* =======================
-           BUTTON UI
-        ======================= */
-        function updateButton() {
-            if (ledState === null) {
-                btn.textContent = "CONECTANDO...";
-                btn.disabled = true;
-                btn.classList.remove("off");
-                return;
-            }
+        // ============================
+        // FUNCIONES LÓGICAS
+        // ============================
 
-            btn.disabled = false;
+        function connectMQTT() {
+            client = mqtt.connect(MQTT_URL, MQTT_OPT);
 
-            if (ledState) {
-                btn.textContent = "APAGAR BOMBA";
-                btn.classList.add("off");
-            } else {
-                btn.textContent = "ENCENDER BOMBA";
-                btn.classList.remove("off");
-            }
-        }
-
-        function updateStatus(connected) {
-            isConnected = connected;
-            if (connected) {
-                statusDot.classList.add("connected");
-                statusText.textContent = "Conectado";
-                statusText.style.color = "#2ecc71";
-                downloadBtn.disabled = false;
-            } else {
-                statusDot.classList.remove("connected");
-                statusText.textContent = "Desconectado";
-                statusText.style.color = "#e74c3c";
-                downloadBtn.disabled = true;
-            }
-        }
-
-        updateButton();
-        updateStatus(false);
-
-        /* =======================
-           MQTT CONNECT
-        ======================= */
-        const client = mqtt.connect(MQTT_URL, MQTT_OPTIONS);
-
-        client.on("connect", () => {
-            console.log("✅ MQTT conectado");
-            client.subscribe([TOPIC_DATA, TOPIC_STATUS]);
-            updateStatus(true);
-        });
-
-        client.on("reconnect", () => {
-            updateStatus(false);
-        });
-
-        client.on("offline", () => {
-            updateStatus(false);
-        });
-
-        client.on("message", (topic, payload) => {
-            /* ----- ESTADO BOMBA ----- */
-            if (topic === TOPIC_STATUS) {
-                const msg = payload.toString();
-                ledState = (msg === "ON");
-                updateButton();
-            }
-
-            /* ----- DATOS SENSOR ----- */
-            if (topic === TOPIC_DATA) {
-                const data = JSON.parse(payload.toString());
-                const timestamp = new Date();
-                const time = timestamp.toLocaleTimeString();
-
-                // Actualizar valores actuales
-                tempValue.textContent = data.temp.toFixed(1);
-                humValue.textContent = data.hum.toFixed(1);
-
-                // Guardar datos para CSV
-                allData.push({
-                    timestamp: timestamp.toISOString(),
-                    time: time,
-                    temperature: data.temp,
-                    humidity: data.hum
-                });
-
-                // Actualizar gráfico
-                chart.data.labels.push(time);
-                chart.data.datasets[0].data.push(data.temp);
-                chart.data.datasets[1].data.push(data.hum);
-
-                // Limitar datos según selección
-                const maxPoints = dataPointsSelect.value === 'all' ? Infinity : parseInt(dataPointsSelect.value);
-                if (chart.data.labels.length > maxPoints) {
-                    chart.data.labels.shift();
-                    chart.data.datasets.forEach(ds => ds.data.shift());
-                }
-
-                chart.update();
-            }
-        });
-
-        /* =======================
-           BUTTON ACTION
-        ======================= */
-        btn.onclick = () => {
-            if (ledState === null) return;
-
-            const cmd = ledState ? "LED_OFF" : "LED_ON";
-            client.publish(TOPIC_CMD, cmd);
-        };
-
-        /* =======================
-           CSV DOWNLOAD FUNCTION
-        ======================= */
-        function downloadCSV() {
-            if (allData.length === 0) {
-                alert("No hay datos para descargar");
-                return;
-            }
-
-            // Crear encabezados CSV
-            let csvContent = "data:text/csv;charset=utf-8,";
-            csvContent += "Fecha y Hora,Hora Local,Temperatura (°C),Humedad (%)\r\n";
-
-            // Agregar datos
-            allData.forEach(item => {
-                csvContent += `${item.timestamp},${item.time},${item.temperature},${item.humidity}\r\n`;
+            client.on("connect", () => {
+                console.log("✅ MQTT Conectado");
+                updateStatus(true);
+                
+                // Suscribirse a todo
+                client.subscribe([TOPICS.DATA, TOPICS.STATUS, TOPICS.HISTORY]);
+                
+                // 1. Pedir el estado del LED
+                // 2. PEDIR EL HISTORIAL AL ESP32 AL INICIAR
+                console.log("📂 Solicitando historial...");
+                client.publish(TOPICS.CMD, "GET_HISTORY");
             });
 
-            // Crear enlace de descarga
-            const encodedUri = encodeURI(csvContent);
-            const link = document.createElement("a");
-            link.setAttribute("href", encodedUri);
-            link.setAttribute("download", `iot_data_${new Date().toISOString().split('T')[0]}.csv`);
-            document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
+            client.on("offline", () => updateStatus(false));
+
+            client.on("message", (topic, payload) => {
+                const msg = payload.toString();
+
+                if (topic === TOPICS.STATUS) {
+                    pumpState = (msg === "ON");
+                    renderButton();
+                }
+                
+                else if (topic === TOPICS.DATA) {
+                    // Dato en tiempo real: {"temp": 25, "hum": 60, "ts": "2024-..."}
+                    try {
+                        const data = JSON.parse(msg);
+                        processIncomingData(data.ts, data.temp, data.hum);
+                    } catch(e) { console.error("Error JSON live", e); }
+                }
+
+                else if (topic === TOPICS.HISTORY) {
+                    // Archivo CSV completo o mensaje de estado
+                    if (msg === "EMPTY") {
+                        console.log("📭 Historial vacío en ESP32");
+                    } else if (msg === "CLEARED") {
+                        alert("✅ Memoria del ESP32 borrada correctamente.");
+                        allHistoryData = [];
+                        updateChart();
+                    } else {
+                        console.log("📥 Recibido historial (" + msg.length + " bytes)");
+                        parseCSVHistory(msg);
+                    }
+                }
+            });
         }
 
-        // Asignar evento al botón de descarga
-        downloadBtn.onclick = downloadCSV;
-
-        /* =======================
-           FILTER DATA POINTS
-        ======================= */
-        dataPointsSelect.onchange = function() {
-            const maxPoints = this.value === 'all' ? Infinity : parseInt(this.value);
+        // Procesa el CSV recibido del ESP32
+        function parseCSVHistory(csvText) {
+            const lines = csvText.split("\n");
+            // Reiniciamos array local para evitar duplicados si reconecta
+            allHistoryData = []; 
             
-            if (maxPoints < chart.data.labels.length) {
-                // Recortar datos si se selecciona menos puntos
-                const excess = chart.data.labels.length - maxPoints;
-                chart.data.labels.splice(0, excess);
-                chart.data.datasets.forEach(ds => ds.data.splice(0, excess));
-                chart.update();
+            lines.forEach(line => {
+                const parts = line.trim().split(",");
+                if (parts.length === 3) {
+                    // Formato: Fecha Hora, Temp, Hum
+                    // parts[0] = "2026-01-23 20:00:00"
+                    const ts = parts[0]; 
+                    const temp = parseFloat(parts[1]);
+                    const hum = parseFloat(parts[2]);
+                    
+                    if (!isNaN(temp) && !isNaN(hum)) {
+                        allHistoryData.push({ x: moment(ts), temp: temp, hum: hum });
+                    }
+                }
+            });
+            updateChart();
+        }
+
+        // Procesa un dato individual (tiempo real)
+        function processIncomingData(ts, temp, hum) {
+            currTemp.innerText = temp.toFixed(1);
+            currHum.innerText = hum.toFixed(1);
+
+            // Agregar al array principal
+            allHistoryData.push({ x: moment(ts), temp: temp, hum: hum });
+            
+            updateChart();
+        }
+
+        // Filtra y actualiza la gráfica
+        function updateChart() {
+            if (allHistoryData.length === 0) return;
+
+            let filteredData = allHistoryData;
+            
+            // Lógica de filtrado
+            if (currentTimeRange !== 'all') {
+                const hoursBack = currentTimeRange;
+                const cutoffTime = moment().subtract(hoursBack, 'hours');
+                filteredData = allHistoryData.filter(d => d.x.isAfter(cutoffTime));
             }
+
+            // Mapear para Chart.js
+            chart.data.datasets[0].data = filteredData.map(d => ({ x: d.x, y: d.temp }));
+            chart.data.datasets[1].data = filteredData.map(d => ({ x: d.x, y: d.hum }));
+            chart.update();
+        }
+
+        function setTimeRange(hours) {
+            currentTimeRange = hours;
+            // Actualizar estilo botones
+            document.querySelectorAll('.filter-btn').forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+            updateChart();
+        }
+
+        // ============================
+        // CONTROL BOMBA & DATA
+        // ============================
+
+        function updateStatus(connected) {
+            statusDot.className = connected ? "status-dot connected" : "status-dot";
+            statusText.innerText = connected ? "Conectado" : "Desconectado";
+            downloadBtn.disabled = !connected;
+            btnPump.disabled = !connected;
+            if(!connected) btnPump.innerText = "CONECTANDO...";
+        }
+
+        function renderButton() {
+            if (pumpState) {
+                btnPump.innerText = "APAGAR BOMBA";
+                btnPump.classList.add("off");
+            } else {
+                btnPump.innerText = "ENCENDER BOMBA";
+                btnPump.classList.remove("off");
+            }
+        }
+
+        btnPump.onclick = () => {
+            const cmd = pumpState ? "LED_OFF" : "LED_ON";
+            client.publish(TOPICS.CMD, cmd);
         };
 
-        /* =======================
-           EXPORT DATA FOR EXTERNAL USE
-        ======================= */
-        window.getIoTData = function() {
-            return {
-                allData: allData,
-                currentData: allData.length > 0 ? allData[allData.length - 1] : null,
-                chartData: chart.data,
-                isConnected: isConnected,
-                ledState: ledState
-            };
-        };
+        function downloadCSV() {
+            if (allHistoryData.length === 0) return alert("No hay datos");
+            let csv = "Fecha,Temperatura,Humedad\n";
+            allHistoryData.forEach(d => {
+                csv += `${d.x.format("YYYY-MM-DD HH:mm:ss")},${d.temp},${d.hum}\n`;
+            });
+            
+            const blob = new Blob([csv], { type: 'text/csv' });
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `historial_iot_${moment().format("YYYYMMDD")}.csv`;
+            a.click();
+        }
+
+        function clearESP32Data() {
+            if (confirm("⚠️ ¿Seguro que quieres borrar la base de datos del ESP32?\nEsta acción no se puede deshacer.")) {
+                client.publish(TOPICS.CMD, "CLEAR_DATA");
+            }
+        }
+
+        // INICIAR
+        connectMQTT();
+
     </script>
 </body>
 </html>
