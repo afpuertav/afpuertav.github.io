@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="icon" href="assets/icon.svg" type="image/svg+xml">
-    <title>Control & Historial IoT</title>
+    <title>IoT Dashboard</title>
+    
     <script src="https://unpkg.com/mqtt/dist/mqtt.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/moment@2.29.1/moment.min.js"></script>
@@ -12,110 +12,173 @@
     
     <style>
         /* =======================
-           ESTILOS (Mantenemos tu diseño)
+           ESTILOS GENERALES
         ======================= */
-        body { font-family: Arial, sans-serif; margin: 0; background-color: #f5f7fa; color: #333; display: flex; flex-direction: column; min-height: 100vh; }
-        header { background-color: #1553ADff; padding: 1rem 2rem; color: white; display: flex; justify-content: space-between; align-items: center; }
-        .logo-text { color: white; text-decoration: none; font-size: 1.5rem; font-weight: bold; }
-        .menu { display: flex; list-style: none; gap: 30px; margin: 0; padding: 0; }
-        .menu a { color: white; text-decoration: none; font-size: 1.1rem; }
+        body { 
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+            margin: 0; 
+            background-color: #f0f2f5; 
+            color: #333; 
+            display: flex; 
+            flex-direction: column; 
+            min-height: 100vh; 
+        }
         
-        .container { display: flex; flex-wrap: wrap; margin: 2rem; flex: 1; }
-        aside { width: 100%; max-width: 250px; text-align: center; margin-bottom: 2rem; }
-        .profile-pic { width: 200px; height: 200px; border-radius: 50%; object-fit: cover; box-shadow: 0 4px 8px rgba(0,0,0,0.2); }
-        main { flex: 1; padding-left: 2rem; max-width: 1000px; }
+        /* Header simplificado */
+        header { 
+            background-color: #1553AD; 
+            padding: 1rem 2rem; 
+            color: white; 
+            display: flex; 
+            justify-content: center; /* Centrado */
+            align-items: center; 
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
         
-        .card { background: white; padding: 25px; margin: 20px auto; border-radius: 10px; border: 2px solid #1553ADff; box-shadow: 0 4px 8px rgba(0,0,0,0.1); }
-        h2 { color: #1553ADff; margin-top: 0; }
+        .logo-text { 
+            color: white; 
+            text-decoration: none; 
+            font-size: 1.5rem; 
+            font-weight: bold; 
+            letter-spacing: 1px;
+        }
+        
+        /* Contenedor principal centrado */
+        .container { 
+            width: 100%;
+            max-width: 1000px;
+            margin: 2rem auto; 
+            padding: 0 20px;
+            box-sizing: border-box;
+            flex: 1; 
+        }
 
-        .btn-control { padding: 15px 30px; font-size: 18px; border: none; border-radius: 8px; cursor: pointer; background-color: #1553ADff; color: white; transition: 0.3s; width: 100%; max-width: 300px; }
-        .btn-control.off { background-color: #e74c3c; }
-        .btn-control:disabled { background-color: #ccc; cursor: not-allowed; }
+        /* Tarjetas */
+        .card { 
+            background: white; 
+            padding: 25px; 
+            margin-bottom: 20px; 
+            border-radius: 12px; 
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05); 
+            border-top: 4px solid #1553AD;
+        }
+        
+        h2 { color: #1553AD; margin-top: 0; font-size: 1.4rem; }
 
+        /* Botón de Bomba */
+        .btn-control { 
+            padding: 15px 30px; 
+            font-size: 18px; 
+            border: none; 
+            border-radius: 8px; 
+            cursor: pointer; 
+            background-color: #1553AD; 
+            color: white; 
+            transition: 0.3s; 
+            width: 100%; 
+            max-width: 300px; 
+            font-weight: bold;
+            box-shadow: 0 4px 6px rgba(21, 83, 173, 0.2);
+        }
+        .btn-control:hover { background-color: #124694; transform: translateY(-2px); }
+        .btn-control:active { transform: translateY(0); }
+        .btn-control.off { background-color: #e74c3c; box-shadow: 0 4px 6px rgba(231, 76, 60, 0.2); }
+        .btn-control.off:hover { background-color: #c0392b; }
+        .btn-control:disabled { background-color: #bdc3c7; cursor: not-allowed; box-shadow: none; transform: none; }
+
+        /* Gráfica */
         .chart-container { position: relative; height: 350px; margin-top: 20px; }
         
-        /* Botones de filtro de tiempo */
-        .time-filters { display: flex; justify-content: center; gap: 10px; margin-bottom: 15px; flex-wrap: wrap; }
-        .filter-btn { padding: 5px 15px; border: 1px solid #1553ADff; background: white; color: #1553ADff; border-radius: 20px; cursor: pointer; transition: 0.2s; }
-        .filter-btn.active, .filter-btn:hover { background: #1553ADff; color: white; }
+        /* Filtros de tiempo */
+        .time-filters { display: flex; justify-content: center; gap: 10px; margin-bottom: 20px; flex-wrap: wrap; }
+        .filter-btn { 
+            padding: 6px 16px; 
+            border: 1px solid #1553AD; 
+            background: white; 
+            color: #1553AD; 
+            border-radius: 20px; 
+            cursor: pointer; 
+            transition: 0.2s; 
+            font-weight: 500;
+        }
+        .filter-btn.active, .filter-btn:hover { background: #1553AD; color: white; }
 
-        /* Controles inferiores */
-        .footer-controls { display: flex; justify-content: space-between; align-items: center; margin-top: 20px; flex-wrap: wrap; gap: 15px; border-top: 1px solid #eee; padding-top: 15px; }
+        /* Footer controles */
+        .footer-controls { 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
+            margin-top: 25px; 
+            flex-wrap: wrap; 
+            gap: 15px; 
+            border-top: 1px solid #eee; 
+            padding-top: 15px; 
+        }
         
-        .btn-action { padding: 8px 15px; border-radius: 5px; cursor: pointer; border: none; display: flex; align-items: center; gap: 5px; color: white; font-size: 0.9rem; }
-        .btn-download { background-color: #27ae60; }
+        .btn-action { padding: 8px 16px; border-radius: 6px; cursor: pointer; border: none; display: flex; align-items: center; gap: 6px; font-size: 0.9rem; transition: 0.2s; }
+        .btn-download { background-color: #27ae60; color: white; }
         .btn-download:hover { background-color: #219653; }
+        .btn-download:disabled { background-color: #ccc; cursor: not-allowed; }
         
-        /* Botón de borrar discreto */
-        .btn-clear { background-color: white; color: #999; border: 1px solid #eee; font-size: 0.8rem; }
+        .btn-clear { background-color: transparent; color: #95a5a6; border: 1px solid #e0e0e0; }
         .btn-clear:hover { background-color: #fff5f5; color: #e74c3c; border-color: #e74c3c; }
 
         .status-dot { width: 10px; height: 10px; border-radius: 50%; background: #ccc; display: inline-block; margin-right: 5px; }
-        .status-dot.connected { background: #2ecc71; }
+        .status-dot.connected { background: #2ecc71; box-shadow: 0 0 5px #2ecc71; }
 
-        @media (max-width: 768px) {
-            .container { flex-direction: column; margin: 1rem; }
-            main { padding-left: 0; }
-            header { flex-direction: column; gap: 10px; }
-            .menu { flex-wrap: wrap; justify-content: center; }
+        /* Responsive */
+        @media (max-width: 600px) {
+            .footer-controls { flex-direction: column; width: 100%; }
+            .btn-action { width: 100%; justify-content: center; }
+            h2 { text-align: center; }
         }
     </style>
 </head>
 <body>
     <header>
-        <div class="logo"><a href="index.html" class="logo-text">Andrés F. Puerta</a></div>
-        <ul class="menu">
-            <li><a href="index.html">Home</a></li>
-            <li><a href="#" style="color: #00d4ff;">IoT Dashboard</a></li>
-        </ul>
+        <div class="logo-text">📡 IoT Monitor</div>
     </header>
     
     <div class="container">
-        <aside>
-            <img src="assets/fotoperfil.jpg" alt="Perfil" class="profile-pic">
-            <p><strong>Andrés Felipe Puerta Vélez</strong></p>
-            <p>Medellín, COL</p>
-        </aside>
         
-        <main>
-            <div class="card" style="text-align: center;">
-                <h2>Control de Bomba</h2>
-                <button id="btnPump" class="btn-control">CONECTANDO...</button>
-                <div style="margin-top: 10px; font-size: 0.9rem; color: #666;">
-                    <span id="statusDot" class="status-dot"></span> <span id="statusText">Desconectado</span>
+        <div class="card" style="text-align: center;">
+            <h2>Control de Bomba</h2>
+            <button id="btnPump" class="btn-control">CONECTANDO...</button>
+            <div style="margin-top: 15px; font-size: 0.9rem; color: #666;">
+                <span id="statusDot" class="status-dot"></span> <span id="statusText">Desconectado</span>
+            </div>
+        </div>
+        
+        <div class="card">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; flex-wrap: wrap; gap: 10px;">
+                <h2 style="margin: 0;">Monitor de Clima</h2>
+                <div style="font-size: 1rem; background: #f8f9fa; padding: 5px 15px; border-radius: 20px; border: 1px solid #e1e4e8;">
+                    🌡️ <span id="currTemp" style="font-weight: bold;">--</span>°C &nbsp;|&nbsp; 
+                    💧 <span id="currHum" style="font-weight: bold;">--</span>%
                 </div>
+            </div>
+
+            <div class="time-filters">
+                <button class="filter-btn" onclick="setTimeRange(24)">24h</button>
+                <button class="filter-btn" onclick="setTimeRange(72)">3 Días</button>
+                <button class="filter-btn" onclick="setTimeRange(168)">7 Días</button>
+                <button class="filter-btn active" onclick="setTimeRange('all')">Todo</button>
             </div>
             
-            <div class="card">
-                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
-                    <h2>Historial de Temperatura y Humedad</h2>
-                    <div style="text-align: right; font-size: 0.9rem;">
-                        <strong>Actual:</strong> <span id="currTemp">--</span>°C / <span id="currHum">--</span>%
-                    </div>
-                </div>
-
-                <div class="time-filters">
-                    <button class="filter-btn" onclick="setTimeRange(24)">24 Horas</button>
-                    <button class="filter-btn" onclick="setTimeRange(72)">3 Días</button>
-                    <button class="filter-btn" onclick="setTimeRange(168)">7 Días</button>
-                    <button class="filter-btn active" onclick="setTimeRange('all')">Todo el Historial</button>
-                </div>
-                
-                <div class="chart-container">
-                    <canvas id="chart"></canvas>
-                </div>
-                
-                <div class="footer-controls">
-                    <button id="downloadBtn" class="btn-action btn-download" disabled onclick="downloadCSV()">
-                        📥 Descargar Historial CSV
-                    </button>
-                    
-                    <button id="clearBtn" class="btn-action btn-clear" onclick="clearESP32Data()">
-                        ⚠️ Borrar Memoria ESP32
-                    </button>
-                </div>
+            <div class="chart-container">
+                <canvas id="chart"></canvas>
             </div>
-        </main>
+            
+            <div class="footer-controls">
+                <button id="downloadBtn" class="btn-action btn-download" disabled onclick="downloadCSV()">
+                    📥 Descargar CSV
+                </button>
+                
+                <button id="clearBtn" class="btn-action btn-clear" onclick="clearESP32Data()">
+                    🗑️ Resetear Datos
+                </button>
+            </div>
+        </div>
     </div>
 
     <script>
@@ -132,7 +195,7 @@
         // VARIABLES
         let client;
         let pumpState = null;
-        let allHistoryData = []; // Aquí guardaremos todo lo que llegue del ESP32 + nuevos datos
+        let allHistoryData = [];
         let currentTimeRange = 'all';
 
         // UI ELEMENTS
@@ -149,44 +212,45 @@
             type: "line",
             data: {
                 datasets: [
-                    { label: "Temp (°C)", data: [], borderColor: "#e74c3c", backgroundColor: "rgba(231,76,60,0.1)", yAxisID: 'y', fill: true, pointRadius: 2 },
-                    { label: "Hum (%)", data: [], borderColor: "#3498db", backgroundColor: "rgba(52,152,219,0.1)", yAxisID: 'y1', fill: true, pointRadius: 2 }
+                    { label: "Temp (°C)", data: [], borderColor: "#e74c3c", backgroundColor: "rgba(231,76,60,0.1)", yAxisID: 'y', fill: true, pointRadius: 2, tension: 0.3 },
+                    { label: "Hum (%)", data: [], borderColor: "#3498db", backgroundColor: "rgba(52,152,219,0.1)", yAxisID: 'y1', fill: true, pointRadius: 2, tension: 0.3 }
                 ]
             },
             options: {
                 responsive: true,
                 maintainAspectRatio: false,
                 interaction: { mode: 'index', intersect: false },
+                plugins: {
+                    legend: { position: 'top' },
+                    tooltip: {
+                        callbacks: {
+                            title: function(context) {
+                                return moment(context[0].parsed.x).format('MMM D, HH:mm:ss');
+                            }
+                        }
+                    }
+                },
                 scales: {
                     x: {
-                        type: 'time', // Eje de tiempo real
-                        time: { unit: 'minute', displayFormats: { minute: 'HH:mm', hour: 'DD MMM HH:mm' } },
-                        title: { display: true, text: 'Fecha / Hora' }
+                        type: 'time',
+                        time: { unit: 'minute', displayFormats: { minute: 'HH:mm', hour: 'DD HH:mm' } },
+                        grid: { display: false }
                     },
-                    y: { type: 'linear', display: true, position: 'left', title: { display: true, text: 'Temperatura' } },
-                    y1: { type: 'linear', display: true, position: 'right', grid: { drawOnChartArea: false }, title: { display: true, text: 'Humedad' } }
+                    y: { type: 'linear', display: true, position: 'left', title: { display: true, text: 'Temperatura (°C)' } },
+                    y1: { type: 'linear', display: true, position: 'right', grid: { drawOnChartArea: false }, title: { display: true, text: 'Humedad (%)' } }
                 }
             }
         });
 
-        // ============================
-        // FUNCIONES LÓGICAS
-        // ============================
-
+        // LÓGICA
         function connectMQTT() {
             client = mqtt.connect(MQTT_URL, MQTT_OPT);
 
             client.on("connect", () => {
                 console.log("✅ MQTT Conectado");
                 updateStatus(true);
-                
-                // Suscribirse a todo
                 client.subscribe([TOPICS.DATA, TOPICS.STATUS, TOPICS.HISTORY]);
-                
-                // 1. Pedir el estado del LED
-                // 2. PEDIR EL HISTORIAL AL ESP32 AL INICIAR
-                console.log("📂 Solicitando historial...");
-                client.publish(TOPICS.CMD, "GET_HISTORY");
+                client.publish(TOPICS.CMD, "GET_HISTORY"); // Pedir historial al conectar
             });
 
             client.on("offline", () => updateStatus(false));
@@ -197,47 +261,34 @@
                 if (topic === TOPICS.STATUS) {
                     pumpState = (msg === "ON");
                     renderButton();
-                }
-                
-                else if (topic === TOPICS.DATA) {
-                    // Dato en tiempo real: {"temp": 25, "hum": 60, "ts": "2024-..."}
+                } else if (topic === TOPICS.DATA) {
                     try {
                         const data = JSON.parse(msg);
                         processIncomingData(data.ts, data.temp, data.hum);
-                    } catch(e) { console.error("Error JSON live", e); }
-                }
-
-                else if (topic === TOPICS.HISTORY) {
-                    // Archivo CSV completo o mensaje de estado
+                    } catch(e) { console.error("Error live data", e); }
+                } else if (topic === TOPICS.HISTORY) {
                     if (msg === "EMPTY") {
-                        console.log("📭 Historial vacío en ESP32");
+                        console.log("📭 Historial vacío");
                     } else if (msg === "CLEARED") {
-                        alert("✅ Memoria del ESP32 borrada correctamente.");
+                        alert("✅ Memoria borrada.");
                         allHistoryData = [];
                         updateChart();
                     } else {
-                        console.log("📥 Recibido historial (" + msg.length + " bytes)");
                         parseCSVHistory(msg);
                     }
                 }
             });
         }
 
-        // Procesa el CSV recibido del ESP32
         function parseCSVHistory(csvText) {
             const lines = csvText.split("\n");
-            // Reiniciamos array local para evitar duplicados si reconecta
             allHistoryData = []; 
-            
             lines.forEach(line => {
                 const parts = line.trim().split(",");
                 if (parts.length === 3) {
-                    // Formato: Fecha Hora, Temp, Hum
-                    // parts[0] = "2026-01-23 20:00:00"
                     const ts = parts[0]; 
                     const temp = parseFloat(parts[1]);
                     const hum = parseFloat(parts[2]);
-                    
                     if (!isNaN(temp) && !isNaN(hum)) {
                         allHistoryData.push({ x: moment(ts), temp: temp, hum: hum });
                     }
@@ -246,31 +297,20 @@
             updateChart();
         }
 
-        // Procesa un dato individual (tiempo real)
         function processIncomingData(ts, temp, hum) {
             currTemp.innerText = temp.toFixed(1);
             currHum.innerText = hum.toFixed(1);
-
-            // Agregar al array principal
             allHistoryData.push({ x: moment(ts), temp: temp, hum: hum });
-            
             updateChart();
         }
 
-        // Filtra y actualiza la gráfica
         function updateChart() {
             if (allHistoryData.length === 0) return;
-
             let filteredData = allHistoryData;
-            
-            // Lógica de filtrado
             if (currentTimeRange !== 'all') {
-                const hoursBack = currentTimeRange;
-                const cutoffTime = moment().subtract(hoursBack, 'hours');
+                const cutoffTime = moment().subtract(currentTimeRange, 'hours');
                 filteredData = allHistoryData.filter(d => d.x.isAfter(cutoffTime));
             }
-
-            // Mapear para Chart.js
             chart.data.datasets[0].data = filteredData.map(d => ({ x: d.x, y: d.temp }));
             chart.data.datasets[1].data = filteredData.map(d => ({ x: d.x, y: d.hum }));
             chart.update();
@@ -278,15 +318,10 @@
 
         function setTimeRange(hours) {
             currentTimeRange = hours;
-            // Actualizar estilo botones
             document.querySelectorAll('.filter-btn').forEach(btn => btn.classList.remove('active'));
             event.target.classList.add('active');
             updateChart();
         }
-
-        // ============================
-        // CONTROL BOMBA & DATA
-        // ============================
 
         function updateStatus(connected) {
             statusDot.className = connected ? "status-dot connected" : "status-dot";
@@ -306,10 +341,7 @@
             }
         }
 
-        btnPump.onclick = () => {
-            const cmd = pumpState ? "LED_OFF" : "LED_ON";
-            client.publish(TOPICS.CMD, cmd);
-        };
+        btnPump.onclick = () => client.publish(TOPICS.CMD, pumpState ? "LED_OFF" : "LED_ON");
 
         function downloadCSV() {
             if (allHistoryData.length === 0) return alert("No hay datos");
@@ -317,7 +349,6 @@
             allHistoryData.forEach(d => {
                 csv += `${d.x.format("YYYY-MM-DD HH:mm:ss")},${d.temp},${d.hum}\n`;
             });
-            
             const blob = new Blob([csv], { type: 'text/csv' });
             const url = window.URL.createObjectURL(blob);
             const a = document.createElement('a');
@@ -327,14 +358,12 @@
         }
 
         function clearESP32Data() {
-            if (confirm("⚠️ ¿Seguro que quieres borrar la base de datos del ESP32?\nEsta acción no se puede deshacer.")) {
+            if (confirm("⚠️ ¿Borrar TODOS los datos del ESP32?")) {
                 client.publish(TOPICS.CMD, "CLEAR_DATA");
             }
         }
 
-        // INICIAR
         connectMQTT();
-
     </script>
 </body>
 </html>
