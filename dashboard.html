@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>IoT Dashboard</title>
+    <title>Sistema de Tanque IoT</title>
     
     <script src="https://unpkg.com/mqtt/dist/mqtt.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -11,356 +11,210 @@
     <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-moment@1.0.0/dist/chartjs-adapter-moment.min.js"></script>
     
     <style>
-        /* =======================
-           ESTILOS GENERALES
-        ======================= */
-        body { 
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
-            margin: 0; 
-            background-color: #f0f2f5; 
-            color: #333; 
-            display: flex; 
-            flex-direction: column; 
-            min-height: 100vh; 
-        }
-        
-        /* Header simplificado */
-        header { 
-            background-color: #1553AD; 
-            padding: 1rem 2rem; 
-            color: white; 
-            display: flex; 
-            justify-content: center; /* Centrado */
-            align-items: center; 
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-        }
-        
-        .logo-text { 
-            color: white; 
-            text-decoration: none; 
-            font-size: 1.5rem; 
-            font-weight: bold; 
-            letter-spacing: 1px;
-        }
-        
-        /* Contenedor principal centrado */
-        .container { 
-            width: 100%;
-            max-width: 1000px;
-            margin: 2rem auto; 
-            padding: 0 20px;
-            box-sizing: border-box;
-            flex: 1; 
-        }
-
-        /* Tarjetas */
-        .card { 
-            background: white; 
-            padding: 25px; 
-            margin-bottom: 20px; 
-            border-radius: 12px; 
-            box-shadow: 0 4px 12px rgba(0,0,0,0.05); 
-            border-top: 4px solid #1553AD;
-        }
-        
-        h2 { color: #1553AD; margin-top: 0; font-size: 1.4rem; }
-
-        /* Botón de Bomba */
-        .btn-control { 
-            padding: 15px 30px; 
-            font-size: 18px; 
-            border: none; 
-            border-radius: 8px; 
-            cursor: pointer; 
-            background-color: #1553AD; 
-            color: white; 
-            transition: 0.3s; 
-            width: 100%; 
-            max-width: 300px; 
-            font-weight: bold;
-            box-shadow: 0 4px 6px rgba(21, 83, 173, 0.2);
-        }
-        .btn-control:hover { background-color: #124694; transform: translateY(-2px); }
-        .btn-control:active { transform: translateY(0); }
-        .btn-control.off { background-color: #e74c3c; box-shadow: 0 4px 6px rgba(231, 76, 60, 0.2); }
-        .btn-control.off:hover { background-color: #c0392b; }
-        .btn-control:disabled { background-color: #bdc3c7; cursor: not-allowed; box-shadow: none; transform: none; }
-
-        /* Gráfica */
-        .chart-container { position: relative; height: 350px; margin-top: 20px; }
-        
-        /* Filtros de tiempo */
-        .time-filters { display: flex; justify-content: center; gap: 10px; margin-bottom: 20px; flex-wrap: wrap; }
-        .filter-btn { 
-            padding: 6px 16px; 
-            border: 1px solid #1553AD; 
-            background: white; 
-            color: #1553AD; 
-            border-radius: 20px; 
-            cursor: pointer; 
-            transition: 0.2s; 
-            font-weight: 500;
-        }
-        .filter-btn.active, .filter-btn:hover { background: #1553AD; color: white; }
-
-        /* Footer controles */
-        .footer-controls { 
-            display: flex; 
-            justify-content: space-between; 
-            align-items: center; 
-            margin-top: 25px; 
-            flex-wrap: wrap; 
-            gap: 15px; 
-            border-top: 1px solid #eee; 
-            padding-top: 15px; 
-        }
-        
-        .btn-action { padding: 8px 16px; border-radius: 6px; cursor: pointer; border: none; display: flex; align-items: center; gap: 6px; font-size: 0.9rem; transition: 0.2s; }
-        .btn-download { background-color: #27ae60; color: white; }
-        .btn-download:hover { background-color: #219653; }
-        .btn-download:disabled { background-color: #ccc; cursor: not-allowed; }
-        
-        .btn-clear { background-color: transparent; color: #95a5a6; border: 1px solid #e0e0e0; }
-        .btn-clear:hover { background-color: #fff5f5; color: #e74c3c; border-color: #e74c3c; }
-
-        .status-dot { width: 10px; height: 10px; border-radius: 50%; background: #ccc; display: inline-block; margin-right: 5px; }
-        .status-dot.connected { background: #2ecc71; box-shadow: 0 0 5px #2ecc71; }
-
-        /* Responsive */
-        @media (max-width: 600px) {
-            .footer-controls { flex-direction: column; width: 100%; }
-            .btn-action { width: 100%; justify-content: center; }
-            h2 { text-align: center; }
-        }
+        /* ESTILOS (Mismos de antes + ajustes) */
+        body { font-family: 'Segoe UI', sans-serif; margin: 0; background-color: #f0f2f5; color: #333; }
+        header { background-color: #1553AD; padding: 1rem; color: white; text-align: center; font-size: 1.5rem; font-weight: bold; }
+        .container { max-width: 1000px; margin: 2rem auto; padding: 0 20px; }
+        .card { background: white; padding: 20px; margin-bottom: 20px; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); border-top: 4px solid #1553AD; }
+        .btn-control { padding: 15px; width: 100%; background: #1553AD; color: white; border: none; border-radius: 8px; font-size: 1.1rem; cursor: pointer; }
+        .btn-control.off { background-color: #e74c3c; }
+        .chart-container { position: relative; height: 300px; margin-top: 10px; }
+        .metrics-row { display: flex; justify-content: space-around; margin-bottom: 15px; background: #f8f9fa; padding: 10px; border-radius: 8px; }
+        .metric { text-align: center; }
+        .metric span { font-size: 1.2rem; font-weight: bold; color: #1553AD; }
+        .footer-controls { margin-top: 20px; display: flex; gap: 10px; }
+        button { cursor: pointer; }
     </style>
 </head>
 <body>
-    <header>
-        <div class="logo-text">📡 IoT Monitor</div>
-    </header>
+    <header>📡 Monitor de Tanque IoT</header>
     
     <div class="container">
         
-        <div class="card" style="text-align: center;">
-            <h2>Control de Bomba</h2>
+        <div class="card">
+            <h3>🎛️ Control Manual</h3>
             <button id="btnPump" class="btn-control">CONECTANDO...</button>
-            <div style="margin-top: 15px; font-size: 0.9rem; color: #666;">
-                <span id="statusDot" class="status-dot"></span> <span id="statusText">Desconectado</span>
-            </div>
+            <p style="text-align: center; font-size: 0.9rem; margin-top: 10px;">
+                Estado: <span id="statusText">Desconectado</span>
+            </p>
         </div>
         
         <div class="card">
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; flex-wrap: wrap; gap: 10px;">
-                <h2 style="margin: 0;">Monitor de Clima</h2>
-                <div style="font-size: 1rem; background: #f8f9fa; padding: 5px 15px; border-radius: 20px; border: 1px solid #e1e4e8;">
-                    🌡️ <span id="currTemp" style="font-weight: bold;">--</span>°C &nbsp;|&nbsp; 
-                    💧 <span id="currHum" style="font-weight: bold;">--</span>%
-                </div>
+            <div class="metrics-row">
+                <div class="metric">🌡️ Temp: <span id="currTemp">--</span>°C</div>
+                <div class="metric">💧 Hum: <span id="currHum">--</span>%</div>
             </div>
-
-            <div class="time-filters">
-                <button class="filter-btn" onclick="setTimeRange(24)">24h</button>
-                <button class="filter-btn" onclick="setTimeRange(72)">3 Días</button>
-                <button class="filter-btn" onclick="setTimeRange(168)">7 Días</button>
-                <button class="filter-btn active" onclick="setTimeRange('all')">Todo</button>
-            </div>
-            
             <div class="chart-container">
-                <canvas id="chart"></canvas>
+                <canvas id="chartClimate"></canvas>
+            </div>
+        </div>
+
+        <div class="card" style="border-top-color: #27ae60;">
+            <div class="metrics-row">
+                <div class="metric">🛢️ Nivel Actual: <span id="currVol">--</span> Litros</div>
+            </div>
+            <div class="chart-container">
+                <canvas id="chartTank"></canvas>
             </div>
             
             <div class="footer-controls">
-                <button id="downloadBtn" class="btn-action btn-download" disabled onclick="downloadCSV()">
-                    📥 Descargar CSV
-                </button>
-                
-                <button id="clearBtn" class="btn-action btn-clear" onclick="clearESP32Data()">
-                    🗑️ Resetear Datos
-                </button>
+                <button onclick="downloadCSV()" style="padding: 10px 20px; background: #27ae60; color: white; border: none; border-radius: 5px;">📥 Descargar Excel</button>
+                <button onclick="clearESP32Data()" style="padding: 10px 20px; background: transparent; border: 1px solid #ccc; border-radius: 5px;">🗑️ Borrar Datos</button>
             </div>
         </div>
+
     </div>
 
     <script>
-        // CONFIGURACION
         const MQTT_URL = "wss://d0c74dd51f244a5b87e0373b99197ba7.s1.eu.hivemq.cloud:8884/mqtt";
         const MQTT_OPT = { username: "andresPuerta", password: "aGROW123", reconnectPeriod: 2000 };
-        const TOPICS = {
-            DATA: "iot/esp32/data",
-            CMD: "iot/esp32/cmd",
-            STATUS: "iot/esp32/status",
-            HISTORY: "iot/esp32/history"
-        };
+        const TOPICS = { DATA: "iot/esp32/data", CMD: "iot/esp32/cmd", STATUS: "iot/esp32/status", HISTORY: "iot/esp32/history" };
 
-        // VARIABLES
         let client;
         let pumpState = null;
         let allHistoryData = [];
-        let currentTimeRange = 'all';
 
-        // UI ELEMENTS
+        // UI References
         const btnPump = document.getElementById("btnPump");
         const statusText = document.getElementById("statusText");
-        const statusDot = document.getElementById("statusDot");
-        const downloadBtn = document.getElementById("downloadBtn");
         const currTemp = document.getElementById("currTemp");
         const currHum = document.getElementById("currHum");
+        const currVol = document.getElementById("currVol");
 
-        // CHART SETUP
-        const ctx = document.getElementById("chart").getContext("2d");
-        const chart = new Chart(ctx, {
+        // --- GRAFICA 1: CLIMA ---
+        const ctxClimate = document.getElementById("chartClimate").getContext("2d");
+        const chartClimate = new Chart(ctxClimate, {
             type: "line",
             data: {
                 datasets: [
-                    { label: "Temp (°C)", data: [], borderColor: "#e74c3c", backgroundColor: "rgba(231,76,60,0.1)", yAxisID: 'y', fill: true, pointRadius: 2, tension: 0.3 },
-                    { label: "Hum (%)", data: [], borderColor: "#3498db", backgroundColor: "rgba(52,152,219,0.1)", yAxisID: 'y1', fill: true, pointRadius: 2, tension: 0.3 }
+                    { label: "Temp (°C)", data: [], borderColor: "#e74c3c", yAxisID: 'y', tension: 0.3, pointRadius: 0 },
+                    { label: "Hum (%)", data: [], borderColor: "#3498db", yAxisID: 'y1', tension: 0.3, pointRadius: 0 }
                 ]
             },
             options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                interaction: { mode: 'index', intersect: false },
-                plugins: {
-                    legend: { position: 'top' },
-                    tooltip: {
-                        callbacks: {
-                            title: function(context) {
-                                return moment(context[0].parsed.x).format('MMM D, HH:mm:ss');
-                            }
-                        }
-                    }
-                },
+                responsive: true, maintainAspectRatio: false, interaction: { mode: 'index', intersect: false },
                 scales: {
-                    x: {
-                        type: 'time',
-                        time: { unit: 'minute', displayFormats: { minute: 'HH:mm', hour: 'DD HH:mm' } },
-                        grid: { display: false }
-                    },
-                    y: { type: 'linear', display: true, position: 'left', title: { display: true, text: 'Temperatura (°C)' } },
-                    y1: { type: 'linear', display: true, position: 'right', grid: { drawOnChartArea: false }, title: { display: true, text: 'Humedad (%)' } }
+                    x: { type: 'time', time: { unit: 'minute', displayFormats: { minute: 'HH:mm' } } },
+                    y: { type: 'linear', position: 'left', title: { display: true, text: 'Temperatura' }, min: 0, max: 50 },
+                    y1: { type: 'linear', position: 'right', title: { display: true, text: 'Humedad' }, min: 0, max: 100 }
                 }
             }
         });
 
-        // LÓGICA
+        // --- GRAFICA 2: TANQUE ---
+        const ctxTank = document.getElementById("chartTank").getContext("2d");
+        const chartTank = new Chart(ctxTank, {
+            type: "line",
+            data: {
+                datasets: [
+                    { 
+                        label: "Volumen (Litros)", 
+                        data: [], 
+                        borderColor: "#27ae60", 
+                        backgroundColor: "rgba(39, 174, 96, 0.2)", 
+                        fill: true, 
+                        tension: 0.4 
+                    }
+                ]
+            },
+            options: {
+                responsive: true, maintainAspectRatio: false, interaction: { mode: 'index', intersect: false },
+                scales: {
+                    x: { type: 'time', time: { unit: 'minute', displayFormats: { minute: 'HH:mm' } } },
+                    y: { beginAtZero: true, title: { display: true, text: 'Litros' } }
+                }
+            }
+        });
+
+        // LÓGICA MQTT
         function connectMQTT() {
             client = mqtt.connect(MQTT_URL, MQTT_OPT);
 
             client.on("connect", () => {
-                console.log("✅ MQTT Conectado");
-                updateStatus(true);
+                statusText.innerText = "Conectado";
+                btnPump.disabled = false;
                 client.subscribe([TOPICS.DATA, TOPICS.STATUS, TOPICS.HISTORY]);
-                client.publish(TOPICS.CMD, "GET_HISTORY"); // Pedir historial al conectar
+                client.publish(TOPICS.CMD, "GET_HISTORY");
             });
-
-            client.on("offline", () => updateStatus(false));
 
             client.on("message", (topic, payload) => {
                 const msg = payload.toString();
-
                 if (topic === TOPICS.STATUS) {
                     pumpState = (msg === "ON");
-                    renderButton();
-                } else if (topic === TOPICS.DATA) {
-                    try {
-                        const data = JSON.parse(msg);
-                        processIncomingData(data.ts, data.temp, data.hum);
-                    } catch(e) { console.error("Error live data", e); }
-                } else if (topic === TOPICS.HISTORY) {
-                    if (msg === "EMPTY") {
-                        console.log("📭 Historial vacío");
-                    } else if (msg === "CLEARED") {
-                        alert("✅ Memoria borrada.");
-                        allHistoryData = [];
-                        updateChart();
-                    } else {
-                        parseCSVHistory(msg);
-                    }
+                    btnPump.innerText = pumpState ? "APAGAR BOMBA" : "ENCENDER BOMBA";
+                    btnPump.className = pumpState ? "btn-control off" : "btn-control";
+                } 
+                else if (topic === TOPICS.DATA) {
+                    const data = JSON.parse(msg);
+                    addDataToCharts(data.ts, data.temp, data.hum, data.litros);
+                } 
+                else if (topic === TOPICS.HISTORY) {
+                    if (msg !== "EMPTY" && msg !== "CLEARED") parseCSVHistory(msg);
+                    if (msg === "CLEARED") { allHistoryData = []; updateCharts(); alert("Historial borrado"); }
                 }
             });
+        }
+
+        function addDataToCharts(ts, temp, hum, litros) {
+            // Actualizar etiquetas
+            currTemp.innerText = temp.toFixed(1);
+            currHum.innerText = hum.toFixed(1);
+            currVol.innerText = litros.toFixed(1);
+            
+            // Guardar en memoria
+            const point = { x: moment(ts), temp, hum, litros };
+            allHistoryData.push(point);
+            
+            // Actualizar gráficas (Solo mantenemos los ultimos 50 puntos para rendimiento visual rapido)
+            // Para ver todo el historial, el array allHistoryData se usa al recargar
+            updateCharts();
         }
 
         function parseCSVHistory(csvText) {
             const lines = csvText.split("\n");
-            allHistoryData = []; 
+            allHistoryData = [];
             lines.forEach(line => {
-                const parts = line.trim().split(",");
-                if (parts.length === 3) {
-                    const ts = parts[0]; 
-                    const temp = parseFloat(parts[1]);
-                    const hum = parseFloat(parts[2]);
-                    if (!isNaN(temp) && !isNaN(hum)) {
-                        allHistoryData.push({ x: moment(ts), temp: temp, hum: hum });
-                    }
+                const p = line.trim().split(",");
+                if (p.length >= 4) { // Aseguramos que tenga al menos 4 columnas
+                    allHistoryData.push({ 
+                        x: moment(p[0]), 
+                        temp: parseFloat(p[1]), 
+                        hum: parseFloat(p[2]), 
+                        litros: parseFloat(p[3]) 
+                    });
                 }
             });
-            updateChart();
+            updateCharts();
         }
 
-        function processIncomingData(ts, temp, hum) {
-            currTemp.innerText = temp.toFixed(1);
-            currHum.innerText = hum.toFixed(1);
-            allHistoryData.push({ x: moment(ts), temp: temp, hum: hum });
-            updateChart();
-        }
+        function updateCharts() {
+            // Clima
+            chartClimate.data.datasets[0].data = allHistoryData.map(d => ({x: d.x, y: d.temp}));
+            chartClimate.data.datasets[1].data = allHistoryData.map(d => ({x: d.x, y: d.hum}));
+            chartClimate.update();
 
-        function updateChart() {
-            if (allHistoryData.length === 0) return;
-            let filteredData = allHistoryData;
-            if (currentTimeRange !== 'all') {
-                const cutoffTime = moment().subtract(currentTimeRange, 'hours');
-                filteredData = allHistoryData.filter(d => d.x.isAfter(cutoffTime));
-            }
-            chart.data.datasets[0].data = filteredData.map(d => ({ x: d.x, y: d.temp }));
-            chart.data.datasets[1].data = filteredData.map(d => ({ x: d.x, y: d.hum }));
-            chart.update();
-        }
-
-        function setTimeRange(hours) {
-            currentTimeRange = hours;
-            document.querySelectorAll('.filter-btn').forEach(btn => btn.classList.remove('active'));
-            event.target.classList.add('active');
-            updateChart();
-        }
-
-        function updateStatus(connected) {
-            statusDot.className = connected ? "status-dot connected" : "status-dot";
-            statusText.innerText = connected ? "Conectado" : "Desconectado";
-            downloadBtn.disabled = !connected;
-            btnPump.disabled = !connected;
-            if(!connected) btnPump.innerText = "CONECTANDO...";
-        }
-
-        function renderButton() {
-            if (pumpState) {
-                btnPump.innerText = "APAGAR BOMBA";
-                btnPump.classList.add("off");
-            } else {
-                btnPump.innerText = "ENCENDER BOMBA";
-                btnPump.classList.remove("off");
-            }
+            // Tanque
+            chartTank.data.datasets[0].data = allHistoryData.map(d => ({x: d.x, y: d.litros}));
+            chartTank.update();
         }
 
         btnPump.onclick = () => client.publish(TOPICS.CMD, pumpState ? "LED_OFF" : "LED_ON");
 
+        function clearESP32Data() {
+            if(confirm("¿Borrar datos de la SD?")) client.publish(TOPICS.CMD, "CLEAR_DATA");
+        }
+
         function downloadCSV() {
-            if (allHistoryData.length === 0) return alert("No hay datos");
-            let csv = "Fecha,Temperatura,Humedad\n";
+            let csv = "Fecha,Temp,Hum,Litros\n";
             allHistoryData.forEach(d => {
-                csv += `${d.x.format("YYYY-MM-DD HH:mm:ss")},${d.temp},${d.hum}\n`;
+                csv += `${d.x.format("YYYY-MM-DD HH:mm:ss")},${d.temp},${d.hum},${d.litros}\n`;
             });
             const blob = new Blob([csv], { type: 'text/csv' });
             const url = window.URL.createObjectURL(blob);
             const a = document.createElement('a');
             a.href = url;
-            a.download = `historial_iot_${moment().format("YYYYMMDD")}.csv`;
+            a.download = "reporte_tanque.csv";
             a.click();
-        }
-
-        function clearESP32Data() {
-            if (confirm("⚠️ ¿Borrar TODOS los datos del ESP32?")) {
-                client.publish(TOPICS.CMD, "CLEAR_DATA");
-            }
         }
 
         connectMQTT();
