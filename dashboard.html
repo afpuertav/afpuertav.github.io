@@ -141,6 +141,28 @@
         .status-dot { width: 10px; height: 10px; border-radius: 50%; background: #ccc; display: inline-block; margin-right: 5px; }
         .status-dot.connected { background: #2ecc71; box-shadow: 0 0 5px #2ecc71; }
 
+        /* Estado de la bomba */
+        .pump-status {
+            font-size: 0.9rem;
+            margin-top: 10px;
+            padding: 8px 15px;
+            border-radius: 20px;
+            display: inline-block;
+            font-weight: bold;
+        }
+        
+        .pump-on {
+            background-color: rgba(231, 76, 60, 0.1);
+            color: #e74c3c;
+            border: 1px solid #e74c3c;
+        }
+        
+        .pump-off {
+            background-color: rgba(52, 152, 219, 0.1);
+            color: #3498db;
+            border: 1px solid #3498db;
+        }
+
         /* Responsive */
         @media (max-width: 600px) {
             .footer-controls { flex-direction: column; width: 100%; }
@@ -158,8 +180,9 @@
     <div class="container">
         
         <div class="card" style="text-align: center;">
-            <h2>Control</h2>
+            <h2>Control de Bomba</h2>
             <button id="btnPump" class="btn-control" disabled>CONECTANDO...</button>
+            <div id="pumpStatus" class="pump-status pump-off">Bomba: APAGADA</div>
             <div style="margin-top: 15px; font-size: 0.9rem; color: #666;">
                 <span id="statusDot" class="status-dot"></span> <span id="statusText">Desconectado</span>
             </div>
@@ -234,6 +257,7 @@
         const statusText = document.getElementById("statusText");
         const statusDot = document.getElementById("statusDot");
         const downloadBtn = document.getElementById("downloadBtn");
+        const pumpStatus = document.getElementById("pumpStatus");
         
         // Badges de datos actuales
         const currTemp = document.getElementById("currTemp");
@@ -370,13 +394,14 @@
 
                 if (topic === TOPICS.STATUS) {
                     pumpState = (msg === "ON");
+                    updatePumpStatus();
                     renderButton();
                 } 
                 else if (topic === TOPICS.DATA) {
                     try {
                         const data = JSON.parse(msg);
-                        // El ESP32 envía: {ts, temp, hum, litros}
-                        processIncomingData(data.ts, data.temp, data.hum, data.litros);
+                        // El ESP32 envía: {ts, temp, hum, litros, pump}
+                        processIncomingData(data.ts, data.temp, data.hum, data.litros, data.pump);
                     } catch(e) { console.error("Error parsing live data", e); }
                 } 
                 else if (topic === TOPICS.HISTORY) {
@@ -417,11 +442,18 @@
         }
 
         // Procesa dato individual en tiempo real
-        function processIncomingData(ts, temp, hum, litros) {
+        function processIncomingData(ts, temp, hum, litros, pump) {
             // Actualizar textos
             currTemp.innerText = temp.toFixed(1);
             currHum.innerText = hum.toFixed(1);
             if(litros !== undefined) currVol.innerText = litros.toFixed(1);
+            
+            // Actualizar estado de la bomba si está disponible
+            if (pump !== undefined) {
+                pumpState = (pump === "true" || pump === true);
+                updatePumpStatus();
+                renderButton();
+            }
 
             // Guardar en array
             const newPoint = { 
@@ -482,6 +514,17 @@
             if(!connected) {
                 btnPump.innerText = "CONECTANDO...";
                 btnPump.classList.remove("off");
+            }
+        }
+
+        // Actualizar estado visual de la bomba
+        function updatePumpStatus() {
+            if (pumpState) {
+                pumpStatus.textContent = "Bomba: ENCENDIDA";
+                pumpStatus.className = "pump-status pump-on";
+            } else {
+                pumpStatus.textContent = "Bomba: APAGADA";
+                pumpStatus.className = "pump-status pump-off";
             }
         }
 
