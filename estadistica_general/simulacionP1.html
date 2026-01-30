@@ -1,0 +1,2433 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simulador de Parcial - Estadística Descriptiva</title>
+    <style>
+        :root {
+            --primary-color: #2c3e50;
+            --secondary-color: #3498db;
+            --accent-color: #e74c3c;
+            --light-color: #ecf0f1;
+            --success-color: #27ae60;
+            --warning-color: #f39c12;
+            --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: #f5f7fa;
+            color: #333;
+            line-height: 1.6;
+            padding: 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding: 20px;
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: var(--shadow);
+        }
+        
+        h1 {
+            color: var(--primary-color);
+            margin-bottom: 10px;
+            font-size: 2.2rem;
+        }
+        
+        .subtitle {
+            color: var(--secondary-color);
+            font-size: 1.1rem;
+            margin-bottom: 20px;
+        }
+        
+        .instructions {
+            background-color: var(--light-color);
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 25px;
+            border-left: 5px solid var(--secondary-color);
+        }
+        
+        .instructions h3 {
+            color: var(--primary-color);
+            margin-bottom: 10px;
+        }
+        
+        .exam-container {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 25px;
+        }
+        
+        .questions-section {
+            background-color: white;
+            padding: 25px;
+            border-radius: 10px;
+            box-shadow: var(--shadow);
+        }
+        
+        .control-panel {
+            background-color: white;
+            padding: 25px;
+            border-radius: 10px;
+            box-shadow: var(--shadow);
+            height: fit-content;
+            position: sticky;
+            top: 20px;
+        }
+        
+        .question-card {
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .question-card:last-child {
+            border-bottom: none;
+        }
+        
+        .question-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        
+        .question-number {
+            background-color: var(--primary-color);
+            color: white;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+        }
+        
+        .topic-badge {
+            background-color: var(--secondary-color);
+            color: white;
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: bold;
+        }
+        
+        .question-text {
+            margin-bottom: 20px;
+            font-size: 1.1rem;
+            line-height: 1.5;
+        }
+        
+        .table-container, .graph-container {
+            margin: 15px 0;
+            padding: 15px;
+            background-color: #f9f9f9;
+            border-radius: 8px;
+            overflow-x: auto;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 10px 0;
+        }
+        
+        th, td {
+            padding: 10px;
+            text-align: center;
+            border: 1px solid #ddd;
+        }
+        
+        th {
+            background-color: var(--primary-color);
+            color: white;
+        }
+        
+        .graph-placeholder {
+            height: 250px;
+            background-color: #f0f0f0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            border-radius: 8px;
+            margin: 15px 0;
+            border: 1px dashed #ccc;
+        }
+        
+        .graph-placeholder span {
+            color: #777;
+            font-style: italic;
+        }
+        
+        /* Estilos para gráficos SVG */
+        .svg-graph {
+            width: 100%;
+            height: 200px;
+            background-color: white;
+            border-radius: 8px;
+            padding: 10px;
+            margin: 10px 0;
+        }
+        
+        .box-plot {
+            height: 120px;
+            position: relative;
+        }
+        
+        .box {
+            fill: rgba(52, 152, 219, 0.3);
+            stroke: var(--secondary-color);
+            stroke-width: 2;
+        }
+        
+        .median-line {
+            stroke: var(--accent-color);
+            stroke-width: 2;
+        }
+        
+        .whisker {
+            stroke: var(--primary-color);
+            stroke-width: 2;
+        }
+        
+        .histogram-bar {
+            fill: var(--secondary-color);
+            stroke: var(--primary-color);
+            stroke-width: 1;
+        }
+        
+        .histogram-bar:hover {
+            fill: #2980b9;
+        }
+        
+        .scatter-dot {
+            fill: var(--secondary-color);
+            stroke: var(--primary-color);
+            stroke-width: 1;
+        }
+        
+        .scatter-dot:hover {
+            fill: var(--accent-color);
+        }
+        
+        .graph-title {
+            text-align: center;
+            font-weight: bold;
+            margin: 5px 0;
+        }
+        
+        .graph-axis {
+            stroke: #333;
+            stroke-width: 1;
+        }
+        
+        .options-container {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        
+        .option {
+            padding: 12px 15px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .option:hover {
+            background-color: #f0f8ff;
+            border-color: var(--secondary-color);
+        }
+        
+        .option.selected {
+            background-color: #e1f0ff;
+            border-color: var(--secondary-color);
+        }
+        
+        .option.correct {
+            background-color: #d4edda;
+            border-color: var(--success-color);
+        }
+        
+        .option.incorrect {
+            background-color: #f8d7da;
+            border-color: var(--accent-color);
+        }
+        
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s;
+            font-size: 1rem;
+            margin-right: 10px;
+            margin-bottom: 10px;
+        }
+        
+        .btn-primary {
+            background-color: var(--secondary-color);
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background-color: #2980b9;
+        }
+        
+        .btn-secondary {
+            background-color: var(--light-color);
+            color: var(--primary-color);
+            border: 1px solid #ddd;
+        }
+        
+        .btn-secondary:hover {
+            background-color: #d5dbdb;
+        }
+        
+        .results-container {
+            margin-top: 25px;
+            padding: 20px;
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: var(--shadow);
+            display: none;
+        }
+        
+        .score-display {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        
+        .score-circle {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            background-color: var(--light-color);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 0 auto 20px;
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: var(--primary-color);
+            border: 5px solid var(--secondary-color);
+        }
+        
+        .score-circle.low {
+            border-color: var(--accent-color);
+            color: var(--accent-color);
+        }
+        
+        .score-circle.medium {
+            border-color: var(--warning-color);
+            color: var(--warning-color);
+        }
+        
+        .score-circle.high {
+            border-color: var(--success-color);
+            color: var(--success-color);
+        }
+        
+        .recommendations {
+            background-color: #fff9e6;
+            padding: 20px;
+            border-radius: 8px;
+            border-left: 5px solid var(--warning-color);
+            margin-top: 20px;
+        }
+        
+        .recommendations h3 {
+            margin-bottom: 15px;
+            color: #d35400;
+        }
+        
+        .recommendations ul {
+            padding-left: 20px;
+        }
+        
+        .recommendations li {
+            margin-bottom: 8px;
+        }
+        
+        .stats {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 20px;
+        }
+        
+        .stat-box {
+            flex: 1;
+            text-align: center;
+            padding: 15px;
+            background-color: var(--light-color);
+            border-radius: 8px;
+            margin: 0 5px;
+        }
+        
+        .stat-value {
+            font-size: 2rem;
+            font-weight: bold;
+            color: var(--primary-color);
+        }
+        
+        .stat-label {
+            font-size: 0.9rem;
+            color: #7f8c8d;
+        }
+        
+        .topic-progress {
+            margin-top: 20px;
+        }
+        
+        .topic-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px 0;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .topic-name {
+            flex: 1;
+        }
+        
+        .topic-status {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            margin-left: 10px;
+        }
+        
+        .topic-status.correct {
+            background-color: var(--success-color);
+        }
+        
+        .topic-status.incorrect {
+            background-color: var(--accent-color);
+        }
+        
+        .topic-status.unanswered {
+            background-color: #ddd;
+        }
+        
+        footer {
+            text-align: center;
+            margin-top: 30px;
+            padding: 20px;
+            color: #7f8c8d;
+            font-size: 0.9rem;
+        }
+        
+        @media (max-width: 900px) {
+            .exam-container {
+                grid-template-columns: 1fr;
+            }
+            
+            .stats {
+                flex-direction: column;
+                gap: 15px;
+            }
+            
+            .stat-box {
+                margin: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Simulador de Parcial - Estadística Descriptiva</h1>
+        <p class="subtitle">10 preguntas - Una por cada tema - Calificación de 0 a 5</p>
+    </header>
+    
+    <div class="instructions">
+        <h3>Instrucciones</h3>
+        <p>Este simulador contiene 10 preguntas, una por cada tema. Cada pregunta tiene 4 opciones, pero solo una es correcta. Al finalizar, verás tu calificación (entre 0 y 5) y recibirás recomendaciones de estudio según los temas que necesites reforzar.</p>
+        <p><strong>Nota:</strong> Cada vez que recargues la página, se seleccionarán preguntas diferentes de manera aleatoria de un banco de 10 preguntas por tema.</p>
+    </div>
+    
+    <div class="exam-container">
+        <section class="questions-section">
+            <h2>Preguntas del Parcial</h2>
+            <p id="question-count">Seleccionando preguntas aleatorias de cada tema...</p>
+            
+            <div id="questions-container">
+                <!-- Las preguntas se generarán aquí con JavaScript -->
+            </div>
+            
+            <div class="button-group">
+                <button id="submit-btn" class="btn btn-primary">Calificar Examen</button>
+                <button id="reset-btn" class="btn btn-secondary">Reiniciar Examen</button>
+                <button id="new-exam-btn" class="btn btn-secondary">Nuevo Examen Aleatorio</button>
+            </div>
+        </section>
+        
+        <section class="control-panel">
+            <h3>Progreso del Examen</h3>
+            <div class="stats">
+                <div class="stat-box">
+                    <div class="stat-value" id="answered-count">0</div>
+                    <div class="stat-label">Respondidas</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-value" id="total-count">10</div>
+                    <div class="stat-label">Total</div>
+                </div>
+            </div>
+            
+            <div class="topic-progress">
+                <h4>Temas evaluados:</h4>
+                <div id="topics-list">
+                    <!-- Los temas se generarán aquí -->
+                </div>
+            </div>
+            
+            <div style="margin-top: 25px; font-size: 0.9rem; color: #7f8c8d;">
+                <p><strong>Sistema de calificación:</strong> Cada pregunta tiene el mismo peso (0.5 puntos). La calificación final se calcula sobre 5 puntos.</p>
+            </div>
+        </section>
+    </div>
+    
+    <div class="results-container" id="results-container">
+        <h2>Resultados del Parcial</h2>
+        
+        <div class="score-display">
+            <div class="score-circle" id="final-score">0.0</div>
+            <h3>Calificación Final</h3>
+            <p id="score-text">Sobre 5.0 puntos</p>
+        </div>
+        
+        <div class="stats">
+            <div class="stat-box">
+                <div class="stat-value" id="correct-count">0</div>
+                <div class="stat-label">Correctas</div>
+            </div>
+            <div class="stat-box">
+                <div class="stat-value" id="incorrect-count">0</div>
+                <div class="stat-label">Incorrectas</div>
+            </div>
+            <div class="stat-box">
+                <div class="stat-value" id="percentage-score">0%</div>
+                <div class="stat-label">Porcentaje</div>
+            </div>
+        </div>
+        
+        <div class="recommendations" id="recommendations">
+            <h3>Recomendaciones de estudio</h3>
+            <p id="recommendations-text">Responde el examen para ver tus recomendaciones personalizadas.</p>
+            <ul id="topics-to-study">
+                <!-- Las recomendaciones se generarán aquí -->
+            </ul>
+        </div>
+        
+        <div style="text-align: center; margin-top: 20px;">
+            <button id="review-btn" class="btn btn-secondary">Revisar Respuestas</button>
+            <button id="restart-btn" class="btn btn-primary">Intentar Otro Examen</button>
+        </div>
+    </div>
+    
+    <footer>
+        <p>Simulador de parcial de estadística descriptiva - Generado con fines educativos</p>
+        <p>Cada examen selecciona aleatoriamente 1 pregunta de cada tema de un banco de 10 preguntas por tema</p>
+    </footer>
+    
+    <script>
+        // Banco de preguntas por tema (10 temas, 10 preguntas por tema = 100 preguntas)
+        const questionBank = {
+            // Tema 1: Interpretación de tablas
+            "interpretacionTablas": [
+                {
+                    id: "IT1",
+                    question: "La siguiente tabla muestra la distribución de edades de los empleados en una empresa. ¿Qué conclusión es correcta?",
+                    table: `
+                        <table>
+                            <tr><th>Edad</th><th>Número de empleados</th></tr>
+                            <tr><td>20-29</td><td>15</td></tr>
+                            <tr><td>30-39</td><td>28</td></tr>
+                            <tr><td>40-49</td><td>22</td></tr>
+                            <tr><td>50-59</td><td>12</td></tr>
+                            <tr><td>60+</td><td>3</td></tr>
+                        </table>
+                    `,
+                    options: [
+                        "a) La mayoría de los empleados tienen más de 50 años",
+                        "b) El grupo de edad más numeroso es el de 30-39 años",
+                        "c) Hay más empleados menores de 30 que mayores de 50",
+                        "d) La distribución de edades es uniforme"
+                    ],
+                    correct: 1,
+                    explanation: "El grupo de 30-39 años tiene 28 empleados, que es el valor más alto en la tabla."
+                },
+                {
+                    id: "IT2",
+                    question: "Analiza la tabla de frecuencia de ventas mensuales. ¿Qué afirmación es falsa?",
+                    table: `
+                        <table>
+                            <tr><th>Ventas (miles $)</th><th>Frecuencia</th><th>Frecuencia acumulada</th></tr>
+                            <tr><td>10-20</td><td>5</td><td>5</td></tr>
+                            <tr><td>20-30</td><td>12</td><td>17</td></tr>
+                            <tr><td>30-40</td><td>18</td><td>35</td></tr>
+                            <tr><td>40-50</td><td>8</td><td>43</td></tr>
+                            <tr><td>50-60</td><td>2</td><td>45</td></tr>
+                        </table>
+                    `,
+                    options: [
+                        "a) El 40% de las ventas mensuales fueron menores a $30,000",
+                        "b) La clase modal es 30-40 (miles de $)",
+                        "c) Solo 2 meses tuvieron ventas superiores a $50,000",
+                        "d) Más de la mitad de las ventas fueron mayores a $40,000"
+                    ],
+                    correct: 3,
+                    explanation: "Solo 10 meses (8+2) de 45 tuvieron ventas mayores a $40,000, lo que es menos de la mitad."
+                },
+                {
+                    id: "IT3",
+                    question: "Según la tabla de distribución de notas de un examen, ¿qué porcentaje de estudiantes obtuvo una calificación menor a 70?",
+                    table: `
+                        <table>
+                            <tr><th>Nota</th><th>Frecuencia</th><th>Frecuencia relativa</th></tr>
+                            <tr><td>50-59</td><td>8</td><td>0.16</td></tr>
+                            <tr><td>60-69</td><td>12</td><td>0.24</td></tr>
+                            <tr><td>70-79</td><td>15</td><td>0.30</td></tr>
+                            <tr><td>80-89</td><td>10</td><td>0.20</td></tr>
+                            <tr><td>90-100</td><td>5</td><td>0.10</td></tr>
+                        </table>
+                    `,
+                    options: [
+                        "a) 16%",
+                        "b) 24%",
+                        "c) 40%",
+                        "d) 60%"
+                    ],
+                    correct: 2,
+                    explanation: "El 16% obtuvo notas entre 50-59 y el 24% entre 60-69, suman 40% con notas menores a 70."
+                },
+                {
+                    id: "IT4",
+                    question: "En la siguiente tabla de distribución de tiempos de respuesta (en segundos), ¿cuál es el intervalo que contiene la mediana?",
+                    table: `
+                        <table>
+                            <tr><th>Tiempo (s)</th><th>Frecuencia</th><th>Frecuencia acumulada</th></tr>
+                            <tr><td>0-5</td><td>8</td><td>8</td></tr>
+                            <tr><td>5-10</td><td>12</td><td>20</td></tr>
+                            <tr><td>10-15</td><td>15</td><td>35</td></tr>
+                            <tr><td>15-20</td><td>10</td><td>45</td></tr>
+                            <tr><td>20-25</td><td>5</td><td>50</td></tr>
+                        </table>
+                    `,
+                    options: [
+                        "a) 0-5",
+                        "b) 5-10",
+                        "c) 10-15",
+                        "d) 15-20"
+                    ],
+                    correct: 2,
+                    explanation: "Con 50 observaciones, la mediana está en la posición 25.5. La frecuencia acumulada alcanza 20 en el intervalo 5-10 y 35 en el 10-15, por lo que la mediana está en el intervalo 10-15."
+                },
+                {
+                    id: "IT5",
+                    question: "La tabla muestra el número de clientes atendidos por hora en una tienda. ¿Cuál es el rango intercuartílico aproximado?",
+                    table: `
+                        <table>
+                            <tr><th>Clientes/hora</th><th>Frecuencia</th></tr>
+                            <tr><td>0-10</td><td>4</td></tr>
+                            <tr><td>10-20</td><td>8</td></tr>
+                            <tr><td>20-30</td><td>12</td></tr>
+                            <tr><td>30-40</td><td>10</td></tr>
+                            <tr><td>40-50</td><td>6</td></tr>
+                        </table>
+                    `,
+                    options: [
+                        "a) 10-15",
+                        "b) 15-20",
+                        "c) 20-25",
+                        "d) 25-30"
+                    ],
+                    correct: 1,
+                    explanation: "Con 40 observaciones, Q1 está alrededor del percentil 25 (posición 10) y Q3 en el percentil 75 (posición 30). Q1 está en el intervalo 10-20 y Q3 en el 30-40, dando un IQR aproximado de 20."
+                },
+                {
+                    id: "IT6",
+                    question: "Según la tabla de distribución de salarios, ¿qué porcentaje de empleados gana entre $2000 y $4000?",
+                    table: `
+                        <table>
+                            <tr><th>Salario ($)</th><th>Número de empleados</th></tr>
+                            <tr><td>1000-2000</td><td>25</td></tr>
+                            <tr><td>2000-3000</td><td>40</td></tr>
+                            <tr><td>3000-4000</td><td>30</td></tr>
+                            <tr><td>4000-5000</td><td>15</td></tr>
+                            <tr><td>5000-6000</td><td>10</td></tr>
+                        </table>
+                    `,
+                    options: [
+                        "a) 40%",
+                        "b) 58.3%",
+                        "c) 70%",
+                        "d) 33.3%"
+                    ],
+                    correct: 1,
+                    explanation: "Hay 40+30=70 empleados entre $2000 y $4000. Total empleados: 120. 70/120 = 0.583 = 58.3%."
+                },
+                {
+                    id: "IT7",
+                    question: "En la tabla de distribución de pesos de paquetes, ¿cuál es la marca de clase del intervalo modal?",
+                    table: `
+                        <table>
+                            <tr><th>Peso (kg)</th><th>Frecuencia</th></tr>
+                            <tr><td>1-3</td><td>8</td></tr>
+                            <tr><td>3-5</td><td>15</td></tr>
+                            <tr><td>5-7</td><td>22</td></tr>
+                            <tr><td>7-9</td><td>12</td></tr>
+                            <tr><td>9-11</td><td>5</td></tr>
+                        </table>
+                    `,
+                    options: [
+                        "a) 2 kg",
+                        "b) 4 kg",
+                        "c) 6 kg",
+                        "d) 8 kg"
+                    ],
+                    correct: 2,
+                    explanation: "El intervalo modal es 5-7 kg (frecuencia 22). La marca de clase es (5+7)/2 = 6 kg."
+                },
+                {
+                    id: "IT8",
+                    question: "¿Qué proporción de los datos en la tabla están por encima de 50?",
+                    table: `
+                        <table>
+                            <tr><th>Valor</th><th>Frecuencia acumulada</th></tr>
+                            <tr><td>≤ 30</td><td>12</td></tr>
+                            <tr><td>≤ 40</td><td>25</td></tr>
+                            <tr><td>≤ 50</td><td>45</td></tr>
+                            <tr><td>≤ 60</td><td>60</td></tr>
+                            <tr><td>≤ 70</td><td>68</td></tr>
+                        </table>
+                    `,
+                    options: [
+                        "a) 23/68",
+                        "b) 45/68",
+                        "c) 60/68",
+                        "d) 12/68"
+                    ],
+                    correct: 0,
+                    explanation: "Hay 68 datos totales. 45 son ≤ 50, por lo que 68-45 = 23 son > 50. La proporción es 23/68."
+                },
+                {
+                    id: "IT9",
+                    question: "En la tabla de tiempos de espera, ¿cuál es el percentil 60?",
+                    table: `
+                        <table>
+                            <tr><th>Tiempo (min)</th><th>Frecuencia</th><th>Frecuencia acumulada</th></tr>
+                            <tr><td>0-5</td><td>10</td><td>10</td></tr>
+                            <tr><td>5-10</td><td>15</td><td>25</td></tr>
+                            <tr><td>10-15</td><td>20</td><td>45</td></tr>
+                            <tr><td>15-20</td><td>12</td><td>57</td></tr>
+                            <tr><td>20-25</td><td>8</td><td>65</td></tr>
+                        </table>
+                    `,
+                    options: [
+                        "a) 10-12 minutos",
+                        "b) 12-14 minutos",
+                        "c) 14-16 minutos",
+                        "d) 16-18 minutos"
+                    ],
+                    correct: 1,
+                    explanation: "El percentil 60 corresponde a la posición 0.6*65 = 39. Esto cae en el intervalo 10-15 (frecuencia acumulada 45)."
+                },
+                {
+                    id: "IT10",
+                    question: "¿Qué porcentaje de observaciones en la tabla tiene valores entre 25 y 35?",
+                    table: `
+                        <table>
+                            <tr><th>Intervalo</th><th>Frecuencia relativa</th></tr>
+                            <tr><td>15-20</td><td>0.10</td></tr>
+                            <tr><td>20-25</td><td>0.15</td></tr>
+                            <tr><td>25-30</td><td>0.25</td></tr>
+                            <tr><td>30-35</td><td>0.30</td></tr>
+                            <tr><td>35-40</td><td>0.20</td></tr>
+                        </table>
+                    `,
+                    options: [
+                        "a) 25%",
+                        "b) 30%",
+                        "c) 55%",
+                        "d) 75%"
+                    ],
+                    correct: 2,
+                    explanation: "Entre 25-30 hay 25% y entre 30-35 hay 30%, suman 55%."
+                }
+            ],
+            
+            // Tema 2: Interpretación de gráficas (ahora con SVG)
+            "interpretacionGraficas": [
+                {
+                    id: "IG1",
+                    question: "Observa el siguiente diagrama de caja que representa los tiempos de respuesta (en ms) de dos sistemas. ¿Qué conclusión es correcta?",
+                    graph: "boxplot",
+                    graphData: {
+                        systemA: {min: 10, q1: 20, median: 30, q3: 40, max: 50},
+                        systemB: {min: 15, q1: 22, median: 28, q3: 35, max: 45}
+                    },
+                    options: [
+                        "a) El sistema A tiene mayor variabilidad que el sistema B",
+                        "b) El sistema B tiene más valores atípicos que el sistema A",
+                        "c) La mediana del sistema A es mayor que la del sistema B",
+                        "d) El 25% de los datos del sistema B están por encima de 80 ms"
+                    ],
+                    correct: 2,
+                    explanation: "La mediana del sistema A es 30 ms y del sistema B es 28 ms, por lo que la mediana del sistema A es mayor."
+                },
+                {
+                    id: "IG2",
+                    question: "En el siguiente histograma de distribución de calificaciones de un examen (escala 0-100), ¿qué interpretación es adecuada?",
+                    graph: "histogram",
+                    graphData: {
+                        bins: [40, 50, 60, 70, 80, 90, 100],
+                        frequencies: [5, 10, 25, 30, 20, 10]
+                    },
+                    options: [
+                        "a) La distribución es simétrica y normal",
+                        "b) Hay sesgo positivo (a la derecha)",
+                        "c) La mayoría de los estudiantes obtuvo calificaciones altas",
+                        "d) No hay valores atípicos en la distribución"
+                    ],
+                    correct: 1,
+                    explanation: "El histograma muestra una cola más larga hacia la derecha (calificaciones altas), indicando sesgo positivo."
+                },
+                {
+                    id: "IG3",
+                    question: "En un diagrama de dispersión entre horas de estudio y calificación, se observa una tendencia creciente. ¿Qué coeficiente de correlación es más probable?",
+                    graph: "scatter",
+                    graphData: {
+                        points: [
+                            {x: 5, y: 60}, {x: 10, y: 65}, {x: 15, y: 70}, 
+                            {x: 20, y: 75}, {x: 25, y: 80}, {x: 30, y: 85}
+                        ]
+                    },
+                    options: [
+                        "a) r = -0.85",
+                        "b) r = 0.05",
+                        "c) r = 0.78",
+                        "d) r = 1.00"
+                    ],
+                    correct: 2,
+                    explanation: "Una tendencia creciente indica correlación positiva, y valores alrededor de 0.7-0.8 son típicos para esta relación (no perfecta)."
+                },
+                {
+                    id: "IG4",
+                    question: "En un diagrama de caja de salarios por departamento, el departamento A tiene un bigote superior más largo que el departamento B. ¿Qué significa?",
+                    graph: "boxplot",
+                    graphData: {
+                        deptA: {min: 2000, q1: 2500, median: 3000, q3: 3500, max: 5000},
+                        deptB: {min: 2200, q1: 2600, median: 2900, q3: 3200, max: 3800}
+                    },
+                    options: [
+                        "a) El departamento A tiene salarios máximos más altos",
+                        "b) El departamento B tiene mayor variabilidad",
+                        "c) La mediana del departamento A es mayor",
+                        "d) Hay más valores atípicos en el departamento B"
+                    ],
+                    correct: 0,
+                    explanation: "Un bigote superior más largo indica que los valores máximos (dentro de 1.5 IQR) son más altos."
+                },
+                {
+                    id: "IG5",
+                    question: "En un gráfico de líneas de ventas mensuales, se observa un pico en diciembre. ¿Qué tipo de variación representa?",
+                    graph: "line",
+                    graphData: {
+                        months: ["Ene", "Feb", "Mar", "Abr", "May", "Jun", "Jul", "Ago", "Sep", "Oct", "Nov", "Dic"],
+                        values: [100, 110, 120, 115, 125, 130, 135, 140, 145, 150, 160, 300]
+                    },
+                    options: [
+                        "a) Variación aleatoria",
+                        "b) Tendencia",
+                        "c) Estacionalidad",
+                        "d) Ciclicidad"
+                    ],
+                    correct: 2,
+                    explanation: "Los picos consistentes en periodos específicos (como diciembre) indican estacionalidad."
+                },
+                {
+                    id: "IG6",
+                    question: "En un histograma con forma de U, ¿qué se puede concluir?",
+                    graph: "histogram",
+                    graphData: {
+                        bins: [0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100],
+                        frequencies: [25, 15, 10, 5, 2, 2, 5, 10, 15, 25]
+                    },
+                    options: [
+                        "a) Los datos están normalmente distribuidos",
+                        "b) Hay dos modas en los extremos",
+                        "c) La media y mediana coinciden",
+                        "d) No hay valores extremos"
+                    ],
+                    correct: 1,
+                    explanation: "Una distribución en forma de U tiene modas en ambos extremos y valores bajos en el centro."
+                },
+                {
+                    id: "IG7",
+                    question: "En un diagrama de Pareto de causas de defectos, ¿qué porcentaje de defectos suelen cubrir las primeras 2-3 causas?",
+                    graph: "pareto",
+                    graphData: {
+                        causes: ["Causa A", "Causa B", "Causa C", "Causa D", "Causa E"],
+                        values: [45, 25, 15, 10, 5]
+                    },
+                    options: [
+                        "a) 20-30%",
+                        "b) 40-50%",
+                        "c) 60-80%",
+                        "d) 90-100%"
+                    ],
+                    correct: 2,
+                    explanation: "El principio de Pareto (80/20) sugiere que pocas causas (20%) generan la mayoría de los efectos (80%)."
+                },
+                {
+                    id: "IG8",
+                    question: "En un gráfico de barras de preferencias por producto, la barra del producto C es el doble que la del producto A. ¿Qué se puede afirmar?",
+                    graph: "barchart",
+                    graphData: {
+                        products: ["A", "B", "C", "D", "E"],
+                        values: [20, 30, 40, 25, 35]
+                    },
+                    options: [
+                        "a) El producto C tiene el doble de preferencia que el A",
+                        "b) El producto A es el menos preferido",
+                        "c) No se puede comparar sin conocer los valores absolutos",
+                        "d) La diferencia es estadísticamente significativa"
+                    ],
+                    correct: 0,
+                    explanation: "En gráficos de barras bien construidos, las alturas son proporcionales a los valores representados."
+                },
+                {
+                    id: "IG9",
+                    question: "En un diagrama de tallo y hojas, el tallo '5' tiene hojas: 1, 3, 7, 9. ¿Qué valores representa?",
+                    graph: "stemleaf",
+                    options: [
+                        "a) 0.51, 0.53, 0.57, 0.59",
+                        "b) 5.1, 5.3, 5.7, 5.9",
+                        "c) 51, 53, 57, 59",
+                        "d) Depende de la clave del diagrama"
+                    ],
+                    correct: 3,
+                    explanation: "La interpretación depende de la clave proporcionada (ej: tallo=decenas, hojas=unidades)."
+                },
+                {
+                    id: "IG10",
+                    question: "En un polígono de frecuencias, ¿qué representa el punto más alto?",
+                    graph: "line",
+                    graphData: {
+                        x: [10, 20, 30, 40, 50, 60, 70],
+                        y: [5, 15, 30, 45, 30, 15, 5]
+                    },
+                    options: [
+                        "a) La media de la distribución",
+                        "b) La moda o intervalo modal",
+                        "c) La mediana",
+                        "d) El percentil 75"
+                    ],
+                    correct: 1,
+                    explanation: "El punto más alto corresponde a la moda (valor o intervalo con mayor frecuencia)."
+                }
+            ],
+            
+            // Tema 3: Formulación
+            "formulacion": [
+                {
+                    id: "F1",
+                    question: "Un instituto de capacitación para personal de empresas ofrece cursos que requieren participación mínima de 20 personas y máxima de 30. Si a 80 profesores se les cobra el curso 'Formación de docentes' y siempre se forma la mínima cantidad de grupos posibles, ¿cuánto pagará cada profesor si el costo total del curso es de $2400?",
+                    options: [
+                        "a) $30",
+                        "b) $40", 
+                        "c) $60",
+                        "d) $80"
+                    ],
+                    correct: 0,
+                    explanation: "Con 80 personas y grupos de máximo 30, se forman 4 grupos de 20 (mínimo por grupo). $2400/4 = $600 por grupo. $600/20 = $30 por persona."
+                },
+                {
+                    id: "F2", 
+                    question: "Un equipo evalúa el tiempo que los usuarios tardan en dos versiones de interfaz. La versión A tiene IQR estrecho sin valores atípicos; la B tiene IQR amplio con valores atípicos. ¿Cuál versión debería priorizarse para una experiencia consistente?",
+                    options: [
+                        "a) Versión A: IQR estrecho indica menor variabilidad",
+                        "b) Versión B: algunos usuarios tienen experiencia excepcionalmente rápida",
+                        "c) Versión A: menos variabilidad significa experiencia más predecible",
+                        "d) Ambas tienen ventajas similares"
+                    ],
+                    correct: 2,
+                    explanation: "La versión A con IQR estrecho y sin valores atípicos indica consistencia, lo que sugiere una experiencia de usuario más predecible."
+                },
+                {
+                    id: "F3",
+                    question: "En una fábrica, el tiempo de producción sigue una distribución normal con media 45 min y desviación 5 min. ¿Qué porcentaje de productos tomará entre 40 y 50 minutos?",
+                    options: [
+                        "a) 34%",
+                        "b) 68%",
+                        "c) 95%",
+                        "d) 99.7%"
+                    ],
+                    correct: 1,
+                    explanation: "Entre media ± 1 desviación estándar cae aproximadamente el 68% de los datos en una distribución normal."
+                },
+                {
+                    id: "F4",
+                    question: "Para estimar el promedio de ventas diarias con un error máximo de $100 y confianza 95% (Z=1.96), se sabe que la desviación es $500. ¿Qué tamaño muestral mínimo se necesita?",
+                    options: [
+                        "a) 25",
+                        "b) 50",
+                        "c) 97",
+                        "d) 385"
+                    ],
+                    correct: 2,
+                    explanation: "n = (Z² * σ²) / E² = (1.96² * 500²) / 100² = (3.8416 * 250000) / 10000 = 960400 / 10000 = 96.04 ≈ 97."
+                },
+                {
+                    id: "F5",
+                    question: "En un estudio sobre hábitos de lectura, se quiere determinar si hay diferencia entre hombres y mujeres. ¿Qué prueba estadística sería más apropiada para comparar promedios?",
+                    options: [
+                        "a) Prueba t para muestras independientes",
+                        "b) ANOVA de una vía",
+                        "c) Correlación de Pearson",
+                        "d) Chi-cuadrado"
+                    ],
+                    correct: 0,
+                    explanation: "Para comparar medias de dos grupos independientes (hombres vs mujeres), la prueba t para muestras independientes es apropiada."
+                },
+                {
+                    id: "F6",
+                    question: "Se quiere analizar la relación entre horas de estudio y calificación final. ¿Qué medida es más adecuada?",
+                    options: [
+                        "a) Coeficiente de correlación de Pearson",
+                        "b) Chi-cuadrado",
+                        "c) ANOVA",
+                        "d) Prueba de rangos de Wilcoxon"
+                    ],
+                    correct: 0,
+                    explanation: "Para medir la relación lineal entre dos variables cuantitativas (horas de estudio y calificación), el coeficiente de correlación de Pearson es adecuado."
+                },
+                {
+                    id: "F7",
+                    question: "En un proceso industrial, se quiere detectar si hay cambios en la media del diámetro de piezas. Se toman muestras de 5 piezas cada hora. ¿Qué gráfico de control usar?",
+                    options: [
+                        "a) Gráfico X-barra y R",
+                        "b) Gráfico p",
+                        "c) Gráfico c",
+                        "d) Gráfico de individuales"
+                    ],
+                    correct: 0,
+                    explanation: "Para variables continuas con subgrupos (5 piezas cada hora), el gráfico X-barra (para medias) y R (para rangos) es apropiado."
+                },
+                {
+                    id: "F8",
+                    question: "Se quiere comparar el rendimiento de tres métodos de enseñanza. Los datos no siguen distribución normal. ¿Qué prueba usar?",
+                    options: [
+                        "a) ANOVA de una vía",
+                        "b) Prueba de Kruskal-Wallis",
+                        "c) Prueba t para muestras pareadas",
+                        "d) Prueba de Friedman"
+                    ],
+                    correct: 1,
+                    explanation: "Para comparar más de dos grupos con datos no normales, la prueba no paramétrica de Kruskal-Wallis es adecuada."
+                },
+                {
+                    id: "F9",
+                    question: "Para predecir ventas en función de gastos en publicidad y número de vendedores, ¿qué técnica usar?",
+                    options: [
+                        "a) Regresión lineal simple",
+                        "b) Regresión lineal múltiple",
+                        "c) ANOVA",
+                        "d) Análisis de correlación"
+                    ],
+                    correct: 1,
+                    explanation: "Con múltiples variables predictoras (gastos en publicidad y número de vendedores), la regresión lineal múltiple es apropiada."
+                },
+                {
+                    id: "F10",
+                    question: "Se quiere determinar si la proporción de defectos es diferente entre tres turnos. ¿Qué prueba estadística usar?",
+                    options: [
+                        "a) Prueba t",
+                        "b) ANOVA",
+                        "c) Chi-cuadrado de homogeneidad",
+                        "d) Correlación"
+                    ],
+                    correct: 2,
+                    explanation: "Para comparar proporciones entre múltiples grupos (tres turnos), la prueba chi-cuadrado de homogeneidad es adecuada."
+                }
+            ],
+            
+            // Tema 4: Argumentación
+            "argumentacion": [
+                {
+                    id: "A1",
+                    question: "En una encuesta a 30 fumadores sobre cigarrillos/día, al eliminar un dato atípico, las medidas de tendencia central cambian significativamente. ¿Qué se debe hacer con el dato atípico?",
+                    options: [
+                        "a) Eliminarlo porque introduce sesgo",
+                        "b) Mantenerlo porque es parte de los datos reales",
+                        "c) Reemplazarlo por la mediana",
+                        "d) Analizar por qué es atípico antes de decidir"
+                    ],
+                    correct: 3,
+                    explanation: "Los valores atípicos deben investigarse primero para entender su causa antes de decidir eliminarlos o mantenerlos."
+                },
+                {
+                    id: "A2",
+                    question: "En análisis de calidad del aire con valores extremos, un estudiante propone usar la media. ¿Cuál es el mejor argumento para objetar?",
+                    options: [
+                        "a) La media y mediana siempre dan resultados idénticos con más de 30 observaciones",
+                        "b) La media es sensible a valores extremos y podría sobrestimar la exposición típica",
+                        "c) La mediana es siempre mejor que la media",
+                        "d) Debe usarse la moda en estos casos"
+                    ],
+                    correct: 1,
+                    explanation: "La media es sensible a valores extremos, por lo que en presencia de outliers podría no representar adecuadamente la tendencia central."
+                },
+                {
+                    id: "A3",
+                    question: "En un estudio sobre ingresos, la media es $50,000 y la mediana $35,000. ¿Qué argumento es correcto?",
+                    options: [
+                        "a) Los datos tienen sesgo negativo",
+                        "b) Los datos tienen sesgo positivo",
+                        "c) La distribución es simétrica",
+                        "d) Hay un error en los cálculos"
+                    ],
+                    correct: 1,
+                    explanation: "Cuando la media > mediana, la distribución tiene sesgo positivo (cola hacia la derecha), común en datos de ingresos."
+                },
+                {
+                    id: "A4",
+                    question: "Para comparar la variabilidad de dos conjuntos de datos con unidades diferentes, ¿qué medida es más apropiada?",
+                    options: [
+                        "a) Varianza",
+                        "b) Desviación estándar",
+                        "c) Coeficiente de variación",
+                        "d) Rango intercuartílico"
+                    ],
+                    correct: 2,
+                    explanation: "El coeficiente de variación (CV = σ/μ) es adimensional y permite comparar variabilidad entre conjuntos con diferentes unidades o escalas."
+                },
+                {
+                    id: "A5",
+                    question: "En un estudio clínico, se encuentra correlación entre dosis de medicamento y mejoría (r=0.15, p=0.04). ¿Qué argumento es válido?",
+                    options: [
+                        "a) La correlación es fuerte y significativa",
+                        "b) La correlación es débil pero estadísticamente significativa",
+                        "c) La correlación no es significativa",
+                        "d) Se necesita regresión para interpretar"
+                    ],
+                    correct: 1,
+                    explanation: "r=0.15 indica correlación débil, pero p=0.04 < 0.05 indica que es estadísticamente significativa (no debida al azar)."
+                },
+                {
+                    id: "A6",
+                    question: "Al presentar resultados de una encuesta con escala Likert de 1-5, ¿qué medida de tendencia central es más apropiada?",
+                    options: [
+                        "a) Media",
+                        "b) Mediana",
+                        "c) Moda",
+                        "d) Media y mediana son igualmente apropiadas"
+                    ],
+                    correct: 1,
+                    explanation: "Para datos ordinales como escalas Likert, la mediana es más apropiada que la media porque preserva la propiedad ordinal."
+                },
+                {
+                    id: "A7",
+                    question: "En un experimento con grupo control y tratamiento, la diferencia de medias tiene p=0.06. ¿Qué argumento es correcto?",
+                    options: [
+                        "a) El tratamiento es efectivo (p<0.05)",
+                        "b) El tratamiento no es efectivo (p>0.05)",
+                        "c) Se necesita mayor tamaño muestral para concluir",
+                        "d) Debe usarse prueba no paramétrica"
+                    ],
+                    correct: 2,
+                    explanation: "p=0.06 está cerca del umbral de 0.05, sugiriendo que con mayor tamaño muestral podría alcanzar significación estadística."
+                },
+                {
+                    id: "A8",
+                    question: "Para datos de conteo (número de accidentes por día), ¿qué distribución teórica es más apropiada como modelo?",
+                    options: [
+                        "a) Distribución normal",
+                        "b) Distribución de Poisson",
+                        "c) Distribución exponencial",
+                        "d) Distribución uniforme"
+                    ],
+                    correct: 1,
+                    explanation: "La distribución de Poisson es apropiada para modelar datos de conteo en intervalos fijos (como accidentes por día)."
+                },
+                {
+                    id: "A9",
+                    question: "Al comparar dos pruebas diagnósticas, la prueba A tiene mayor sensibilidad y la B mayor especificidad. ¿Qué argumento es válido?",
+                    options: [
+                        "a) La prueba A es siempre mejor",
+                        "b) La prueba B es siempre mejor",
+                        "c) Depende del contexto y costo de errores",
+                        "d) Deben combinarse ambas"
+                    ],
+                    correct: 2,
+                    explanation: "La elección depende del contexto: alta sensibilidad es importante para descartar enfermedad, alta especificidad para confirmarla."
+                },
+                {
+                    id: "A10",
+                    question: "En un estudio observacional se encuentra asociación entre X e Y. ¿Qué afirmación es correcta sobre causalidad?",
+                    options: [
+                        "a) X causa Y",
+                        "b) Y causa X",
+                        "c) Hay una tercera variable que causa ambas",
+                        "d) La asociación no implica causalidad"
+                    ],
+                    correct: 3,
+                    explanation: "En estudios observacionales, la asociación no implica causalidad; podría haber variables confusoras o causalidad inversa."
+                }
+            ],
+            
+            // Tema 5: Naturaleza de los datos
+            "naturalezaDatos": [
+                {
+                    id: "ND1",
+                    question: "¿Qué tipo de variable es 'número de hijos en una familia'?",
+                    options: [
+                        "a) Cualitativa nominal",
+                        "b) Cualitativa ordinal",
+                        "c) Cuantitativa discreta",
+                        "d) Cuantitativa continua"
+                    ],
+                    correct: 2,
+                    explanation: "Número de hijos es una variable cuantitativa discreta (toma valores enteros: 0, 1, 2, ...)."
+                },
+                {
+                    id: "ND2",
+                    question: "La variable 'nivel de satisfacción' (muy insatisfecho, insatisfecho, neutral, satisfecho, muy satisfecho) es:",
+                    options: [
+                        "a) Nominal",
+                        "b) Ordinal",
+                        "c) De intervalo",
+                        "d) De razón"
+                    ],
+                    correct: 1,
+                    explanation: "Tiene un orden natural pero las distancias entre categorías no son iguales, por lo que es ordinal."
+                },
+                {
+                    id: "ND3",
+                    question: "¿Qué escala de medición tiene la variable 'temperatura en grados Celsius'?",
+                    options: [
+                        "a) Nominal",
+                        "b) Ordinal",
+                        "c) De intervalo",
+                        "d) De razón"
+                    ],
+                    correct: 2,
+                    explanation: "La escala Celsius tiene intervalos iguales pero no tiene cero absoluto (0°C no significa ausencia de temperatura)."
+                },
+                {
+                    id: "ND4",
+                    question: "La variable 'color de ojos' es:",
+                    options: [
+                        "a) Cualitativa nominal",
+                        "b) Cualitativa ordinal",
+                        "c) Cuantitativa discreta",
+                        "d) Cuantitativa continua"
+                    ],
+                    correct: 0,
+                    explanation: "Los colores de ojos son categorías sin orden natural, por lo que es una variable cualitativa nominal."
+                },
+                {
+                    id: "ND5",
+                    question: "¿Qué tipo de variable es 'tiempo de reacción en segundos'?",
+                    options: [
+                        "a) Discreta",
+                        "b) Continua",
+                        "c) Ordinal",
+                        "d) Nominal"
+                    ],
+                    correct: 1,
+                    explanation: "El tiempo puede tomar cualquier valor en un intervalo (ej: 2.345 segundos), por lo que es continua."
+                },
+                {
+                    id: "ND6",
+                    question: "La variable 'número de accidentes en un año' es:",
+                    options: [
+                        "a) Continua",
+                        "b) Discreta",
+                        "c) Ordinal",
+                        "d) De intervalo"
+                    ],
+                    correct: 1,
+                    explanation: "Se cuenta el número de accidentes (0, 1, 2, ...), por lo que es discreta."
+                },
+                {
+                    id: "ND7",
+                    question: "¿Qué escala tiene la variable 'ingreso anual en dólares'?",
+                    options: [
+                        "a) Nominal",
+                        "b) Ordinal",
+                        "c) De intervalo",
+                        "d) De razón"
+                    ],
+                    correct: 3,
+                    explanation: "Tiene cero absoluto (ingreso cero) y se pueden hacer razones (ej: $100,000 es el doble que $50,000)."
+                },
+                {
+                    id: "ND8",
+                    question: "La variable 'clasificación en una competencia' (1º, 2º, 3º, ...) es:",
+                    options: [
+                        "a) Nominal",
+                        "b) Ordinal",
+                        "c) De intervalo",
+                        "d) De razón"
+                    ],
+                    correct: 1,
+                    explanation: "Tiene orden pero no se puede decir que la diferencia entre 1º y 2º sea igual que entre 2º y 3º."
+                },
+                {
+                    id: "ND9",
+                    question: "¿Qué tipo de variable es 'estado civil' (soltero, casado, divorciado, viudo)?",
+                    options: [
+                        "a) Cuantitativa discreta",
+                        "b) Cuantitativa continua",
+                        "c) Cualitativa nominal",
+                        "d) Cualitativa ordinal"
+                    ],
+                    correct: 2,
+                    explanation: "Son categorías sin orden natural, por lo que es cualitativa nominal."
+                },
+                {
+                    id: "ND10",
+                    question: "La variable 'pH de una solución' es de escala:",
+                    options: [
+                        "a) Nominal",
+                        "b) Ordinal",
+                        "c) De intervalo",
+                        "d) De razón"
+                    ],
+                    correct: 2,
+                    explanation: "El pH tiene intervalos iguales (diferencia de 1 significa 10 veces más concentración de H+) pero no tiene cero absoluto significativo."
+                }
+            ],
+            
+            // Tema 6: Representación tabular
+            "representacionTabular": [
+                {
+                    id: "RT1",
+                    question: "En una tabla de frecuencias con intervalos de clase, ¿qué representa la marca de clase?",
+                    options: [
+                        "a) El límite inferior del intervalo",
+                        "b) El punto medio del intervalo",
+                        "c) El límite superior del intervalo",
+                        "d) La frecuencia del intervalo"
+                    ],
+                    correct: 1,
+                    explanation: "La marca de clase es el punto medio del intervalo, usado para cálculos como la media."
+                },
+                {
+                    id: "RT2",
+                    question: "¿Cómo se calcula la frecuencia relativa acumulada?",
+                    options: [
+                        "a) Sumando las frecuencias absolutas",
+                        "b) Dividiendo cada frecuencia entre el total",
+                        "c) Acumulando las frecuencias relativas",
+                        "d) Multiplicando frecuencia absoluta por 100"
+                    ],
+                    correct: 2,
+                    explanation: "La frecuencia relativa acumulada es la suma acumulativa de las frecuencias relativas."
+                },
+                {
+                    id: "RT3",
+                    question: "En una tabla con datos agrupados, si el intervalo es '10-20', ¿cuál es su amplitud?",
+                    options: [
+                        "a) 10",
+                        "b) 15",
+                        "c) 20",
+                        "d) 30"
+                    ],
+                    correct: 0,
+                    explanation: "Amplitud = límite superior - límite inferior = 20 - 10 = 10."
+                },
+                {
+                    id: "RT4",
+                    question: "Para construir una tabla de frecuencias, ¿qué regla general se usa para determinar el número de intervalos?",
+                    options: [
+                        "a) √n (raíz cuadrada del número de datos)",
+                        "b) 1 + 3.3 log₁₀(n)",
+                        "c) n/2",
+                        "d) Siempre 10 intervalos"
+                    ],
+                    correct: 1,
+                    explanation: "La regla de Sturges sugiere k = 1 + 3.3 log₁₀(n) para el número de intervalos."
+                },
+                {
+                    id: "RT5",
+                    question: "En una tabla de distribución, ¿qué representa la frecuencia absoluta?",
+                    options: [
+                        "a) El porcentaje de datos en cada categoría",
+                        "b) El número de datos en cada categoría",
+                        "c) La suma acumulada de frecuencias",
+                        "d) La proporción de datos"
+                    ],
+                    correct: 1,
+                    explanation: "La frecuencia absoluta es el conteo simple de observaciones en cada categoría o intervalo."
+                },
+                {
+                    id: "RT6",
+                    question: "¿Cómo se calcula la frecuencia relativa porcentual?",
+                    options: [
+                        "a) Frecuencia absoluta / total × 100",
+                        "b) Frecuencia acumulada / total",
+                        "c) Frecuencia absoluta × total",
+                        "d) Frecuencia relativa × frecuencia absoluta"
+                    ],
+                    correct: 0,
+                    explanation: "Frecuencia relativa porcentual = (frecuencia absoluta / total de datos) × 100."
+                },
+                {
+                    id: "RT7",
+                    question: "En una tabla de contingencia para dos variables cualitativas, ¿qué muestra cada celda?",
+                    options: [
+                        "a) La media de cada combinación",
+                        "b) El conteo de casos para cada combinación",
+                        "c) La correlación entre variables",
+                        "d) La frecuencia relativa marginal"
+                    ],
+                    correct: 1,
+                    explanation: "Cada celda muestra el número de casos que tienen esa combinación de categorías."
+                },
+                {
+                    id: "RT8",
+                    question: "¿Qué información proporcionan las frecuencias marginales en una tabla de contingencia?",
+                    options: [
+                        "a) La distribución de cada variable por separado",
+                        "b) La correlación entre variables",
+                        "c) Los valores atípicos",
+                        "d) Las frecuencias condicionales"
+                    ],
+                    correct: 0,
+                    explanation: "Las frecuencias marginales son los totales por fila y columna, mostrando la distribución de cada variable individualmente."
+                },
+                {
+                    id: "RT9",
+                    question: "En una tabla de frecuencias, ¿para qué se usa la columna de frecuencia acumulada?",
+                    options: [
+                        "a) Para calcular la mediana",
+                        "b) Para calcular la moda",
+                        "c) Para calcular la media",
+                        "d) Para calcular la varianza"
+                    ],
+                    correct: 0,
+                    explanation: "La frecuencia acumulada ayuda a encontrar percentiles como la mediana (percentil 50)."
+                },
+                {
+                    id: "RT10",
+                    question: "¿Qué ventaja tiene presentar datos en una tabla de distribución en lugar de una lista de valores?",
+                    options: [
+                        "a) Muestra cada valor individual",
+                        "b) Resume y organiza la información",
+                        "c) Permite calcular exactamente cada percentil",
+                        "d) Elimina la necesidad de gráficos"
+                    ],
+                    correct: 1,
+                    explanation: "Las tablas resumen y organizan los datos, facilitando ver patrones y características de la distribución."
+                }
+            ],
+            
+            // Tema 7: Medidas de tendencia central
+            "tendenciaCentral": [
+                {
+                    id: "TC1",
+                    question: "Calcula la media de: 12, 15, 18, 21, 24",
+                    options: [
+                        "a) 15",
+                        "b) 18",
+                        "c) 21",
+                        "d) 90"
+                    ],
+                    correct: 1,
+                    explanation: "Media = (12+15+18+21+24)/5 = 90/5 = 18."
+                },
+                {
+                    id: "TC2",
+                    question: "Encuentra la mediana de: 7, 3, 9, 5, 11, 2, 8",
+                    options: [
+                        "a) 5",
+                        "b) 7",
+                        "c) 8",
+                        "d) 9"
+                    ],
+                    correct: 1,
+                    explanation: "Ordenados: 2, 3, 5, 7, 8, 9, 11. La mediana (posición 4) es 7."
+                },
+                {
+                    id: "TC3",
+                    question: "¿Cuál es la moda de: 4, 5, 6, 4, 7, 5, 4, 8, 5?",
+                    options: [
+                        "a) 4",
+                        "b) 5",
+                        "c) 4 y 5",
+                        "d) No hay moda"
+                    ],
+                    correct: 2,
+                    explanation: "El 4 aparece 3 veces, el 5 aparece 3 veces, y los demás menos. Es bimodal: 4 y 5."
+                },
+                {
+                    id: "TC4",
+                    question: "Una compañía tiene salario medio de $33,600 para 30 ingenieros (planta 1) y $42,400 para 20 ingenieros (planta 2). ¿Cuál es el salario medio de los 50 ingenieros?",
+                    options: [
+                        "a) $37,120",
+                        "b) $38,000",
+                        "c) $39,200",
+                        "d) $40,000"
+                    ],
+                    correct: 0,
+                    explanation: "Media ponderada = (30×33600 + 20×42400)/50 = (1,008,000 + 848,000)/50 = 1,856,000/50 = 37,120."
+                },
+                {
+                    id: "TC5",
+                    question: "Para datos agrupados, ¿cómo se estima la media?",
+                    options: [
+                        "a) Sumando marcas de clase",
+                        "b) Σ(marca de clase × frecuencia) / total",
+                        "c) Tomando la marca de clase del intervalo modal",
+                        "d) Promediando límites de intervalos"
+                    ],
+                    correct: 1,
+                    explanation: "Media estimada = Σ(xᵢ × fᵢ) / n, donde xᵢ es la marca de clase y fᵢ es la frecuencia."
+                },
+                {
+                    id: "TC6",
+                    question: "En una distribución con sesgo positivo, ¿cómo se relacionan media, mediana y moda?",
+                    options: [
+                        "a) Media < Mediana < Moda",
+                        "b) Moda < Mediana < Media",
+                        "c) Media = Mediana = Moda",
+                        "d) Mediana < Moda < Media"
+                    ],
+                    correct: 1,
+                    explanation: "En sesgo positivo (cola derecha), la media es mayor que la mediana, que es mayor que la moda."
+                },
+                {
+                    id: "TC7",
+                    question: "¿Cuál es la clase modal en la siguiente tabla? [25.09, 27.32): 2; [27.32, 29.55): 5; [29.55, 31.78): 7; [31.78, 34.01): 4; [34.01, 36.24): 1",
+                    options: [
+                        "a) [25.09, 27.32)",
+                        "b) [27.32, 29.55)",
+                        "c) [29.55, 31.78)",
+                        "d) [31.78, 34.01)"
+                    ],
+                    correct: 2,
+                    explanation: "El intervalo [29.55, 31.78) tiene la mayor frecuencia (7), por lo que es la clase modal."
+                },
+                {
+                    id: "TC8",
+                    question: "¿Qué medida de tendencia central es más afectada por valores extremos?",
+                    options: [
+                        "a) Media",
+                        "b) Mediana",
+                        "c) Moda",
+                        "d) Percentil 50"
+                    ],
+                    correct: 0,
+                    explanation: "La media es sensible a valores extremos porque usa todos los valores en su cálculo."
+                },
+                {
+                    id: "TC9",
+                    question: "Para datos ordinales, ¿qué medida de tendencia central es apropiada?",
+                    options: [
+                        "a) Media",
+                        "b) Mediana",
+                        "c) Moda",
+                        "d) Media geométrica"
+                    ],
+                    correct: 1,
+                    explanation: "Para datos ordinales, la mediana es apropiada porque preserva el orden de los datos."
+                },
+                {
+                    id: "TC10",
+                    question: "En una distribución simétrica, ¿qué relación hay entre media, mediana y moda?",
+                    options: [
+                        "a) Media = Mediana = Moda",
+                        "b) Media > Mediana > Moda",
+                        "c) Moda > Mediana > Media",
+                        "d) No hay relación definida"
+                    ],
+                    correct: 0,
+                    explanation: "En distribuciones simétricas (como la normal), las tres medidas coinciden."
+                }
+            ],
+            
+            // Tema 8: Medidas de posición
+            "medidasPosicion": [
+                {
+                    id: "MP1",
+                    question: "Encuentra el percentil 90 de: 75, 33, 55, 21, 46, 98, 103, 88, 35, 22",
+                    options: [
+                        "a) 88",
+                        "b) 93",
+                        "c) 98",
+                        "d) 103"
+                    ],
+                    correct: 2,
+                    explanation: "Ordenados: 21, 22, 33, 35, 46, 55, 75, 88, 98, 103. Posición = 0.9×10 = 9. Percentil 90 = 98 (valor en posición 9)."
+                },
+                {
+                    id: "MP2",
+                    question: "¿Qué percentil es equivalente al segundo cuartil (Q2)?",
+                    options: [
+                        "a) Percentil 25",
+                        "b) Percentil 50",
+                        "c) Percentil 75",
+                        "d) Percentil 100"
+                    ],
+                    correct: 1,
+                    explanation: "Q2 (segundo cuartil) divide los datos en dos partes iguales, igual que la mediana o percentil 50."
+                },
+                {
+                    id: "MP3",
+                    question: "Para los valores: 350, 370, 390, 410, 430, 450, 470, 490, 510, ¿cuál es Q2?",
+                    options: [
+                        "a) 390",
+                        "b) 430",
+                        "c) 450",
+                        "d) 470"
+                    ],
+                    correct: 1,
+                    explanation: "Con 9 datos ordenados, la mediana (Q2) es el valor central (posición 5): 430."
+                },
+                {
+                    id: "MP4",
+                    question: "¿Cómo se calcula el primer cuartil Q1?",
+                    options: [
+                        "a) Percentil 25",
+                        "b) Mediana de la mitad inferior",
+                        "c) Percentil 75",
+                        "d) Tanto a como b"
+                    ],
+                    correct: 3,
+                    explanation: "Q1 es el percentil 25, que también puede calcularse como la mediana de la mitad inferior de los datos."
+                },
+                {
+                    id: "MP5",
+                    question: "¿Qué porcentaje de datos está entre Q1 y Q3?",
+                    options: [
+                        "a) 25%",
+                        "b) 50%",
+                        "c) 75%",
+                        "d) 100%"
+                    ],
+                    correct: 1,
+                    explanation: "Entre Q1 (percentil 25) y Q3 (percentil 75) hay el 50% central de los datos."
+                },
+                {
+                    id: "MP6",
+                    question: "En una distribución con 100 datos, ¿qué valor ocupa la posición del percentil 80?",
+                    options: [
+                        "a) Posición 80",
+                        "b) Posición 80.5",
+                        "c) Posición 81",
+                        "d) Depende del método usado"
+                    ],
+                    correct: 3,
+                    explanation: "Hay diferentes métodos para calcular percentiles. Uno común: posición = (percentil/100)×(n+1) = 0.8×101 = 80.8."
+                },
+                {
+                    id: "MP7",
+                    question: "¿Qué representan los cuartiles en un diagrama de caja?",
+                    options: [
+                        "a) Los límites de la caja",
+                        "b) Los bigotes",
+                        "c) Los valores atípicos",
+                        "d) La media"
+                    ],
+                    correct: 0,
+                    explanation: "En un diagrama de caja, los bordes de la caja son Q1 y Q3, y la línea dentro es Q2 (mediana)."
+                },
+                {
+                    id: "MP8",
+                    question: "Si un estudiante está en el percentil 85 en un examen, ¿qué significa?",
+                    options: [
+                        "a) Obtuvo 85% de respuestas correctas",
+                        "b) Supera al 85% de los estudiantes",
+                        "c) Está en el 15% superior",
+                        "d) Tanto b como c"
+                    ],
+                    correct: 3,
+                    explanation: "Percentil 85 significa que supera al 85% de los estudiantes, o equivalentemente, está en el 15% superior."
+                },
+                {
+                    id: "MP9",
+                    question: "¿Cómo se relacionan los deciles con los percentiles?",
+                    options: [
+                        "a) D1 = P10, D2 = P20, ..., D9 = P90",
+                        "b) D1 = P1, D2 = P2, ..., D10 = P100",
+                        "c) D5 = P50",
+                        "d) Tanto a como c"
+                    ],
+                    correct: 3,
+                    explanation: "Los deciles dividen los datos en 10 partes: D1=P10, D2=P20, ..., D9=P90. D5 es la mediana (P50)."
+                },
+                {
+                    id: "MP10",
+                    question: "¿Qué medida de posición es más robusta a valores extremos?",
+                    options: [
+                        "a) Media",
+                        "b) Mediana (percentil 50)",
+                        "c) Percentil 90",
+                        "d) Rango"
+                    ],
+                    correct: 1,
+                    explanation: "La mediana (percentil 50) es robusta a valores extremos porque solo depende de la posición central, no de los valores extremos."
+                }
+            ],
+            
+            // Tema 9: Medidas de dispersión
+            "medidasDispersion": [
+                {
+                    id: "MD1",
+                    question: "Calcula el rango de: 12, 5, 7, 9, 15, 11",
+                    options: [
+                        "a) 7",
+                        "b) 10",
+                        "c) 12",
+                        "d) 15"
+                    ],
+                    correct: 1,
+                    explanation: "Rango = máximo - mínimo = 15 - 5 = 10."
+                },
+                {
+                    id: "MD2",
+                    question: "Para los datos: 3, 5, 7, 9, 11, ¿cuál es la varianza?",
+                    options: [
+                        "a) 8",
+                        "b) 10",
+                        "c) √8",
+                        "d) √10"
+                    ],
+                    correct: 0,
+                    explanation: "Media = 7. Varianza = [(3-7)²+(5-7)²+(7-7)²+(9-7)²+(11-7)²]/5 = (16+4+0+4+16)/5 = 40/5 = 8."
+                },
+                {
+                    id: "MD3",
+                    question: "¿Qué mide la desviación estándar?",
+                    options: [
+                        "a) Dispersión promedio alrededor de la media",
+                        "b) Rango de los datos",
+                        "c) Diferencia entre máximo y mínimo",
+                        "d) Distancia entre cuartiles"
+                    ],
+                    correct: 0,
+                    explanation: "La desviación estándar mide la dispersión promedio de los datos alrededor de la media."
+                },
+                {
+                    id: "MD4",
+                    question: "Para comparar variabilidad entre conjuntos con diferentes unidades, ¿qué medida usar?",
+                    options: [
+                        "a) Varianza",
+                        "b) Desviación estándar",
+                        "c) Coeficiente de variación",
+                        "d) Rango intercuartílico"
+                    ],
+                    correct: 2,
+                    explanation: "El coeficiente de variación (CV = σ/μ) es adimensional y permite comparar dispersión entre conjuntos con diferentes escalas."
+                },
+                {
+                    id: "MD5",
+                    question: "¿Cómo se calcula el rango intercuartílico (IQR)?",
+                    options: [
+                        "a) Q3 - Q1",
+                        "b) Máximo - mínimo",
+                        "c) Q2 - Q1",
+                        "d) P90 - P10"
+                    ],
+                    correct: 0,
+                    explanation: "IQR = Q3 - Q1, representa el rango del 50% central de los datos."
+                },
+                {
+                    id: "MD6",
+                    question: "Si todos los valores en un conjunto son iguales, ¿cuál es su desviación estándar?",
+                    options: [
+                        "a) 0",
+                        "b) 1",
+                        "c) Igual a la media",
+                        "d) No se puede calcular"
+                    ],
+                    correct: 0,
+                    explanation: "Si todos los valores son iguales, no hay variabilidad, por lo que la desviación estándar es 0."
+                },
+                {
+                    id: "MD7",
+                    question: "¿Qué medida de dispersión es más afectada por valores extremos?",
+                    options: [
+                        "a) Rango",
+                        "b) Rango intercuartílico",
+                        "c) Desviación estándar",
+                        "d) Tanto a como c"
+                    ],
+                    correct: 3,
+                    explanation: "El rango y la desviación estándar son sensibles a valores extremos, mientras que el IQR es más robusto."
+                },
+                {
+                    id: "MD8",
+                    question: "Para una distribución normal, ¿qué porcentaje de datos está dentro de ±1 desviación estándar de la media?",
+                    options: [
+                        "a) 50%",
+                        "b) 68%",
+                        "c) 95%",
+                        "d) 99.7%"
+                    ],
+                    correct: 1,
+                    explanation: "En una distribución normal, aproximadamente el 68% de los datos está dentro de μ ± σ."
+                },
+                {
+                    id: "MD9",
+                    question: "Si la varianza de un conjunto es 25, ¿cuál es su desviación estándar?",
+                    options: [
+                        "a) 5",
+                        "b) 25",
+                        "c) 625",
+                        "d) 0.2"
+                    ],
+                    correct: 0,
+                    explanation: "Desviación estándar = √varianza = √25 = 5."
+                },
+                {
+                    id: "MD10",
+                    question: "¿Qué indica un coeficiente de variación del 15%?",
+                    options: [
+                        "a) Baja dispersión relativa",
+                        "b) Alta dispersión relativa",
+                        "c) Dispersión absoluta de 15 unidades",
+                        "d) Error del 15% en la media"
+                    ],
+                    correct: 0,
+                    explanation: "CV = 15% indica que la desviación estándar es el 15% de la media, lo que generalmente se considera baja dispersión relativa."
+                }
+            ],
+            
+            // Tema 10: Problemas integradores (reemplaza "Aplicación integral")
+            "problemasIntegradores": [
+                {
+                    id: "PI1",
+                    question: "En un estudio, se mide peso (kg) y estatura (m) para calcular IMC. ¿Qué tipo de análisis permite determinar si hay relación entre estas variables?",
+                    options: [
+                        "a) Tabla de frecuencias",
+                        "b) Diagrama de dispersión y correlación",
+                        "c) Histograma",
+                        "d) Diagrama de caja"
+                    ],
+                    correct: 1,
+                    explanation: "Para estudiar la relación entre dos variables cuantitativas (peso y estatura), el diagrama de dispersión y el coeficiente de correlación son apropiados."
+                },
+                {
+                    id: "PI2",
+                    question: "Para comparar el rendimiento de tres métodos de enseñanza en tres grupos diferentes, ¿qué técnica estadística es más apropiada si asumimos normalidad?",
+                    options: [
+                        "a) Prueba t para dos muestras",
+                        "b) ANOVA de una vía",
+                        "c) Correlación de Pearson",
+                        "d) Regresión lineal"
+                    ],
+                    correct: 1,
+                    explanation: "Para comparar medias de tres o más grupos independientes, el ANOVA de una vía es apropiado (asumiendo normalidad)."
+                },
+                {
+                    id: "PI3",
+                    question: "En un estudio sobre preferencias de marca (A, B, C) por género (Hombre, Mujer), ¿qué análisis permite ver si hay asociación?",
+                    options: [
+                        "a) Prueba t",
+                        "b) ANOVA",
+                        "c) Chi-cuadrado",
+                        "d) Correlación"
+                    ],
+                    correct: 2,
+                    explanation: "Para variables categóricas (marca y género), la prueba chi-cuadrado de independencia verifica si hay asociación."
+                },
+                {
+                    id: "PI4",
+                    question: "Para datos con valores extremos, ¿qué par de medidas resume mejor tendencia central y dispersión?",
+                    options: [
+                        "a) Media y desviación estándar",
+                        "b) Mediana y rango intercuartílico",
+                        "c) Moda y rango",
+                        "d) Media y varianza"
+                    ],
+                    correct: 1,
+                    explanation: "La mediana y el IQR son robustos a valores extremos, proporcionando un resumen más representativo."
+                },
+                {
+                    id: "PI5",
+                    question: "¿Qué gráfico es más adecuado para mostrar la distribución de una variable continua?",
+                    options: [
+                        "a) Gráfico de barras",
+                        "b) Histograma",
+                        "c) Gráfico circular",
+                        "d) Diagrama de dispersión"
+                    ],
+                    correct: 1,
+                    explanation: "El histograma es ideal para mostrar la distribución de frecuencias de una variable continua."
+                },
+                {
+                    id: "PI6",
+                    question: "En un experimento antes-después con los mismos sujetos, ¿qué prueba comparar las medias?",
+                    options: [
+                        "a) Prueba t para muestras independientes",
+                        "b) Prueba t para muestras pareadas",
+                        "c) ANOVA",
+                        "d) Wilcoxon"
+                    ],
+                    correct: 1,
+                    explanation: "Para mediciones repetidas en los mismos sujetos (antes-después), la prueba t para muestras pareadas es apropiada."
+                },
+                {
+                    id: "PI7",
+                    question: "Para evaluar si una muestra proviene de una distribución normal, ¿qué técnica usar?",
+                    options: [
+                        "a) Gráfico Q-Q",
+                        "b) Histograma",
+                        "c) Prueba de Shapiro-Wilk",
+                        "d) Todas las anteriores"
+                    ],
+                    correct: 3,
+                    explanation: "Todas estas técnicas ayudan a evaluar normalidad: gráficos visuales (Q-Q, histograma) y pruebas formales (Shapiro-Wilk)."
+                },
+                {
+                    id: "PI8",
+                    question: "¿Qué análisis permite identificar valores atípicos en un conjunto de datos?",
+                    options: [
+                        "a) Diagrama de caja",
+                        "b) Cálculo de z-scores",
+                        "c) Regla de 1.5×IQR",
+                        "d) Todas las anteriores"
+                    ],
+                    correct: 3,
+                    explanation: "Todas estas técnicas ayudan a identificar valores atípicos."
+                },
+                {
+                    id: "PI9",
+                    question: "Para comparar la variabilidad de ingresos entre dos profesiones con medias muy diferentes, ¿qué medida usar?",
+                    options: [
+                        "a) Varianza",
+                        "b) Desviación estándar",
+                        "c) Coeficiente de variación",
+                        "d) Rango"
+                    ],
+                    correct: 2,
+                    explanation: "El coeficiente de variación permite comparar dispersión relativa cuando las medias son muy diferentes."
+                },
+                {
+                    id: "PI10",
+                    question: "Si la correlación entre horas de estudio y calificación es r=0.8, ¿qué porcentaje de la variabilidad en calificaciones se explica por horas de estudio?",
+                    options: [
+                        "a) 80%",
+                        "b) 64%",
+                        "c) 36%",
+                        "d) 20%"
+                    ],
+                    correct: 1,
+                    explanation: "El coeficiente de determinación r² = 0.8² = 0.64 = 64% de la variabilidad se explica."
+                }
+            ]
+        };
+        
+        // Temas con sus nombres para mostrar
+        const temas = [
+            {id: "interpretacionTablas", nombre: "Interpretación de tablas"},
+            {id: "interpretacionGraficas", nombre: "Interpretación de gráficas"},
+            {id: "formulacion", nombre: "Formulación"},
+            {id: "argumentacion", nombre: "Argumentación"},
+            {id: "naturalezaDatos", nombre: "Naturaleza de los datos"},
+            {id: "representacionTabular", nombre: "Representación tabular"},
+            {id: "tendenciaCentral", nombre: "Medidas de tendencia central"},
+            {id: "medidasPosicion", nombre: "Medidas de posición"},
+            {id: "medidasDispersion", nombre: "Medidas de dispersión"},
+            {id: "problemasIntegradores", nombre: "Problemas integradores"}
+        ];
+        
+        // Variables globales
+        let examenActual = [];
+        let respuestasUsuario = [];
+        let examenCalificado = false;
+        
+        // Función para crear gráficos SVG
+        function crearGraficoSVG(tipo, data) {
+            const svgNS = "http://www.w3.org/2000/svg";
+            const svg = document.createElementNS(svgNS, "svg");
+            svg.setAttribute("class", "svg-graph");
+            svg.setAttribute("viewBox", "0 0 400 200");
+            
+            if (tipo === "boxplot") {
+                // Diagrama de caja
+                const boxHeight = 80;
+                const boxWidth = 30;
+                const startX = 100;
+                const startY = 60;
+                
+                // Sistema A
+                const aMin = data.systemA.min;
+                const aQ1 = data.systemA.q1;
+                const aMedian = data.systemA.median;
+                const aQ3 = data.systemA.q3;
+                const aMax = data.systemA.max;
+                
+                // Sistema B
+                const bMin = data.systemB.min;
+                const bQ1 = data.systemB.q1;
+                const bMedian = data.systemB.median;
+                const bQ3 = data.systemB.q3;
+                const bMax = data.systemB.max;
+                
+                // Escalar valores a coordenadas
+                const scale = 3;
+                const offsetA = 100;
+                const offsetB = 250;
+                
+                // Dibujar bigotes
+                const whiskerA = document.createElementNS(svgNS, "line");
+                whiskerA.setAttribute("class", "whisker");
+                whiskerA.setAttribute("x1", offsetA);
+                whiskerA.setAttribute("y1", 200 - aMin*scale);
+                whiskerA.setAttribute("x2", offsetA);
+                whiskerA.setAttribute("y2", 200 - aMax*scale);
+                svg.appendChild(whiskerA);
+                
+                // Dibujar caja A
+                const boxA = document.createElementNS(svgNS, "rect");
+                boxA.setAttribute("class", "box");
+                boxA.setAttribute("x", offsetA - boxWidth/2);
+                boxA.setAttribute("y", 200 - aQ3*scale);
+                boxA.setAttribute("width", boxWidth);
+                boxA.setAttribute("height", (aQ3 - aQ1)*scale);
+                svg.appendChild(boxA);
+                
+                // Mediana A
+                const medianA = document.createElementNS(svgNS, "line");
+                medianA.setAttribute("class", "median-line");
+                medianA.setAttribute("x1", offsetA - boxWidth/2);
+                medianA.setAttribute("y1", 200 - aMedian*scale);
+                medianA.setAttribute("x2", offsetA + boxWidth/2);
+                medianA.setAttribute("y2", 200 - aMedian*scale);
+                svg.appendChild(medianA);
+                
+                // Sistema B
+                const whiskerB = document.createElementNS(svgNS, "line");
+                whiskerB.setAttribute("class", "whisker");
+                whiskerB.setAttribute("x1", offsetB);
+                whiskerB.setAttribute("y1", 200 - bMin*scale);
+                whiskerB.setAttribute("x2", offsetB);
+                whiskerB.setAttribute("y2", 200 - bMax*scale);
+                svg.appendChild(whiskerB);
+                
+                const boxB = document.createElementNS(svgNS, "rect");
+                boxB.setAttribute("class", "box");
+                boxB.setAttribute("x", offsetB - boxWidth/2);
+                boxB.setAttribute("y", 200 - bQ3*scale);
+                boxB.setAttribute("width", boxWidth);
+                boxB.setAttribute("height", (bQ3 - bQ1)*scale);
+                svg.appendChild(boxB);
+                
+                const medianB = document.createElementNS(svgNS, "line");
+                medianB.setAttribute("class", "median-line");
+                medianB.setAttribute("x1", offsetB - boxWidth/2);
+                medianB.setAttribute("y1", 200 - bMedian*scale);
+                medianB.setAttribute("x2", offsetB + boxWidth/2);
+                medianB.setAttribute("y2", 200 - bMedian*scale);
+                svg.appendChild(medianB);
+                
+                // Etiquetas
+                const labelA = document.createElementNS(svgNS, "text");
+                labelA.setAttribute("x", offsetA);
+                labelA.setAttribute("y", 190);
+                labelA.setAttribute("text-anchor", "middle");
+                labelA.setAttribute("font-size", "12");
+                labelA.textContent = "Sistema A";
+                svg.appendChild(labelA);
+                
+                const labelB = document.createElementNS(svgNS, "text");
+                labelB.setAttribute("x", offsetB);
+                labelB.setAttribute("y", 190);
+                labelB.setAttribute("text-anchor", "middle");
+                labelB.setAttribute("font-size", "12");
+                labelB.textContent = "Sistema B";
+                svg.appendChild(labelB);
+                
+            } else if (tipo === "histogram") {
+                // Histograma
+                const bins = data.bins;
+                const freqs = data.frequencies;
+                const barWidth = 300 / bins.length;
+                const maxFreq = Math.max(...freqs);
+                
+                for (let i = 0; i < freqs.length; i++) {
+                    const barHeight = (freqs[i] / maxFreq) * 150;
+                    const x = 50 + i * barWidth;
+                    const y = 180 - barHeight;
+                    
+                    const bar = document.createElementNS(svgNS, "rect");
+                    bar.setAttribute("class", "histogram-bar");
+                    bar.setAttribute("x", x);
+                    bar.setAttribute("y", y);
+                    bar.setAttribute("width", barWidth - 2);
+                    bar.setAttribute("height", barHeight);
+                    svg.appendChild(bar);
+                    
+                    // Etiqueta del bin
+                    const label = document.createElementNS(svgNS, "text");
+                    label.setAttribute("x", x + barWidth/2);
+                    label.setAttribute("y", 195);
+                    label.setAttribute("text-anchor", "middle");
+                    label.setAttribute("font-size", "10");
+                    label.textContent = bins[i];
+                    svg.appendChild(label);
+                }
+                
+                // Eje Y
+                const axisY = document.createElementNS(svgNS, "line");
+                axisY.setAttribute("class", "graph-axis");
+                axisY.setAttribute("x1", "45");
+                axisY.setAttribute("y1", "30");
+                axisY.setAttribute("x2", "45");
+                axisY.setAttribute("y2", "180");
+                svg.appendChild(axisY);
+                
+                // Eje X
+                const axisX = document.createElementNS(svgNS, "line");
+                axisX.setAttribute("class", "graph-axis");
+                axisX.setAttribute("x1", "45");
+                axisX.setAttribute("y1", "180");
+                axisX.setAttribute("x2", "350");
+                axisX.setAttribute("y2", "180");
+                svg.appendChild(axisX);
+                
+            } else if (tipo === "scatter") {
+                // Diagrama de dispersión
+                const points = data.points;
+                const maxX = Math.max(...points.map(p => p.x));
+                const maxY = Math.max(...points.map(p => p.y));
+                
+                for (let point of points) {
+                    const x = 50 + (point.x / maxX) * 300;
+                    const y = 180 - (point.y / maxY) * 150;
+                    
+                    const dot = document.createElementNS(svgNS, "circle");
+                    dot.setAttribute("class", "scatter-dot");
+                    dot.setAttribute("cx", x);
+                    dot.setAttribute("cy", y);
+                    dot.setAttribute("r", "4");
+                    svg.appendChild(dot);
+                }
+                
+                // Ejes
+                const axisY = document.createElementNS(svgNS, "line");
+                axisY.setAttribute("class", "graph-axis");
+                axisY.setAttribute("x1", "45");
+                axisY.setAttribute("y1", "30");
+                axisY.setAttribute("x2", "45");
+                axisY.setAttribute("y2", "180");
+                svg.appendChild(axisY);
+                
+                const axisX = document.createElementNS(svgNS, "line");
+                axisX.setAttribute("class", "graph-axis");
+                axisX.setAttribute("x1", "45");
+                axisX.setAttribute("y1", "180");
+                axisX.setAttribute("x2", "350");
+                axisX.setAttribute("y2", "180");
+                svg.appendChild(axisX);
+                
+                // Etiquetas
+                const labelX = document.createElementNS(svgNS, "text");
+                labelX.setAttribute("x", "200");
+                labelX.setAttribute("y", "195");
+                labelX.setAttribute("text-anchor", "middle");
+                labelX.setAttribute("font-size", "12");
+                labelX.textContent = "Horas de estudio";
+                svg.appendChild(labelX);
+                
+                const labelY = document.createElementNS(svgNS, "text");
+                labelY.setAttribute("x", "20");
+                labelY.setAttribute("y", "100");
+                labelY.setAttribute("text-anchor", "middle");
+                labelY.setAttribute("font-size", "12");
+                labelY.setAttribute("transform", "rotate(-90, 20, 100)");
+                labelY.textContent = "Calificación";
+                svg.appendChild(labelY);
+            }
+            
+            return svg;
+        }
+        
+        // Función para seleccionar una pregunta aleatoria de cada tema
+        function seleccionarPreguntasAleatorias() {
+            examenActual = [];
+            respuestasUsuario = new Array(10).fill(null);
+            
+            temas.forEach((tema, index) => {
+                const preguntasDelTema = questionBank[tema.id];
+                const preguntaAleatoria = preguntasDelTema[Math.floor(Math.random() * preguntasDelTema.length)];
+                examenActual.push({
+                    ...preguntaAleatoria,
+                    temaId: tema.id,
+                    temaNombre: tema.nombre,
+                    numero: index + 1
+                });
+            });
+            
+            // Actualizar interfaz
+            renderizarExamen();
+            actualizarProgreso();
+            document.getElementById('results-container').style.display = 'none';
+            examenCalificado = false;
+        }
+        
+        // Función para renderizar el examen
+        function renderizarExamen() {
+            const container = document.getElementById('questions-container');
+            container.innerHTML = '';
+            
+            examenActual.forEach((pregunta, index) => {
+                const questionCard = document.createElement('div');
+                questionCard.className = 'question-card';
+                questionCard.id = `pregunta-${index}`;
+                
+                let tableHTML = '';
+                if (pregunta.table) {
+                    tableHTML = `<div class="table-container">${pregunta.table}</div>`;
+                }
+                
+                let graphHTML = '';
+                if (pregunta.graph) {
+                    const graphContainer = document.createElement('div');
+                    graphContainer.className = 'graph-container';
+                    
+                    if (pregunta.graph === "boxplot" || pregunta.graph === "histogram" || pregunta.graph === "scatter") {
+                        const svg = crearGraficoSVG(pregunta.graph, pregunta.graphData);
+                        graphContainer.appendChild(svg);
+                    } else {
+                        const placeholder = document.createElement('div');
+                        placeholder.className = 'graph-placeholder';
+                        placeholder.innerHTML = `<span>[Gráfico: ${pregunta.graph}]</span>`;
+                        graphContainer.appendChild(placeholder);
+                    }
+                    
+                    graphHTML = graphContainer.outerHTML;
+                }
+                
+                const optionsHTML = pregunta.options.map((opcion, optIndex) => `
+                    <div class="option" data-question="${index}" data-option="${optIndex}">
+                        ${opcion}
+                    </div>
+                `).join('');
+                
+                questionCard.innerHTML = `
+                    <div class="question-header">
+                        <div class="question-number">${pregunta.numero}</div>
+                        <div class="topic-badge">${pregunta.temaNombre}</div>
+                    </div>
+                    <div class="question-text">${pregunta.question}</div>
+                    ${tableHTML}
+                    ${graphHTML}
+                    <div class="options-container">
+                        ${optionsHTML}
+                    </div>
+                `;
+                
+                container.appendChild(questionCard);
+            });
+            
+            // Agregar event listeners a las opciones
+            document.querySelectorAll('.option').forEach(option => {
+                option.addEventListener('click', function() {
+                    if (examenCalificado) return;
+                    
+                    const questionIndex = parseInt(this.getAttribute('data-question'));
+                    const optionIndex = parseInt(this.getAttribute('data-option'));
+                    
+                    // Deseleccionar otras opciones de la misma pregunta
+                    const allOptions = document.querySelectorAll(`.option[data-question="${questionIndex}"]`);
+                    allOptions.forEach(opt => opt.classList.remove('selected'));
+                    
+                    // Seleccionar esta opción
+                    this.classList.add('selected');
+                    
+                    // Guardar respuesta
+                    respuestasUsuario[questionIndex] = optionIndex;
+                    actualizarProgreso();
+                });
+            });
+        }
+        
+        // Función para actualizar el progreso
+        function actualizarProgreso() {
+            const answered = respuestasUsuario.filter(r => r !== null).length;
+            document.getElementById('answered-count').textContent = answered;
+            
+            // Actualizar lista de temas
+            const topicsList = document.getElementById('topics-list');
+            topicsList.innerHTML = '';
+            
+            examenActual.forEach((pregunta, index) => {
+                const status = respuestasUsuario[index] !== null ? 'answered' : 'unanswered';
+                const statusClass = respuestasUsuario[index] !== null ? 'correct' : 'unanswered';
+                // Nota: No sabemos si es correcta hasta calificar
+                
+                const topicItem = document.createElement('div');
+                topicItem.className = 'topic-item';
+                topicItem.innerHTML = `
+                    <span class="topic-name">${pregunta.numero}. ${pregunta.temaNombre}</span>
+                    <div class="topic-status ${status === 'answered' ? 'correct' : 'unanswered'}"></div>
+                `;
+                topicsList.appendChild(topicItem);
+            });
+        }
+        
+        // Función para calificar el examen
+        function calificarExamen() {
+            let correctas = 0;
+            const totalPreguntas = examenActual.length;
+            
+            // Calcular respuestas correctas
+            examenActual.forEach((pregunta, index) => {
+                const respuestaUsuario = respuestasUsuario[index];
+                const esCorrecta = respuestaUsuario === pregunta.correct;
+                
+                if (esCorrecta) {
+                    correctas++;
+                }
+                
+                // Marcar respuestas en la interfaz
+                const questionElement = document.getElementById(`pregunta-${index}`);
+                if (questionElement) {
+                    const options = questionElement.querySelectorAll('.option');
+                    
+                    options.forEach((option, optIndex) => {
+                        option.classList.remove('selected', 'correct', 'incorrect');
+                        
+                        if (optIndex === pregunta.correct) {
+                            option.classList.add('correct');
+                        } else if (optIndex === respuestaUsuario && respuestaUsuario !== pregunta.correct) {
+                            option.classList.add('incorrect');
+                        }
+                        
+                        if (optIndex === respuestaUsuario) {
+                            option.classList.add('selected');
+                        }
+                    });
+                }
+            });
+            
+            // Calcular puntuación (0-5)
+            const puntuacion = (correctas / totalPreguntas) * 5;
+            const porcentaje = (correctas / totalPreguntas) * 100;
+            
+            // Mostrar resultados
+            const scoreCircle = document.getElementById('final-score');
+            scoreCircle.textContent = puntuacion.toFixed(1);
+            
+            // Aplicar clase según puntuación
+            scoreCircle.classList.remove('low', 'medium', 'high');
+            if (puntuacion < 2.5) {
+                scoreCircle.classList.add('low');
+            } else if (puntuacion < 4.0) {
+                scoreCircle.classList.add('medium');
+            } else {
+                scoreCircle.classList.add('high');
+            }
+            
+            document.getElementById('correct-count').textContent = correctas;
+            document.getElementById('incorrect-count').textContent = totalPreguntas - correctas;
+            document.getElementById('percentage-score').textContent = porcentaje.toFixed(1) + '%';
+            
+            // Generar recomendaciones
+            generarRecomendaciones(correctas, totalPreguntas);
+            
+            // Mostrar contenedor de resultados
+            document.getElementById('results-container').style.display = 'block';
+            examenCalificado = true;
+            
+            // Desplazarse a resultados
+            document.getElementById('results-container').scrollIntoView({ behavior: 'smooth' });
+        }
+        
+        // Función para generar recomendaciones
+        function generarRecomendaciones(correctas, total) {
+            const porcentaje = (correctas / total) * 100;
+            let recomendacionGeneral = '';
+            let temasDebiles = [];
+            
+            // Identificar temas débiles
+            examenActual.forEach((pregunta, index) => {
+                if (respuestasUsuario[index] !== pregunta.correct) {
+                    temasDebiles.push(pregunta.temaNombre);
+                }
+            });
+            
+            if (porcentaje >= 80) {
+                recomendacionGeneral = "¡Excelente desempeño! Tienes un dominio sólido de los conceptos estadísticos. Considera profundizar en aplicaciones avanzadas.";
+            } else if (porcentaje >= 60) {
+                recomendacionGeneral = "Buen trabajo. Tienes una comprensión adecuada, pero hay áreas que requieren refuerzo.";
+            } else if (porcentaje >= 40) {
+                recomendacionGeneral = "Desempeño regular. Es recomendable revisar los conceptos fundamentales antes de avanzar.";
+            } else {
+                recomendacionGeneral = "Necesitas reforzar significativamente tus conocimientos. Te recomendamos repasar desde los conceptos básicos.";
+            }
+            
+            const recommendationsText = document.getElementById('recommendations-text');
+            recommendationsText.textContent = recomendacionGeneral;
+            
+            const topicsList = document.getElementById('topics-to-study');
+            topicsList.innerHTML = '';
+            
+            if (temasDebiles.length > 0) {
+                topicsList.innerHTML = '<h4>Temas a reforzar:</h4>';
+                const uniqueTemas = [...new Set(temasDebiles)];
+                uniqueTemas.forEach(tema => {
+                    const li = document.createElement('li');
+                    li.textContent = tema;
+                    topicsList.appendChild(li);
+                });
+                
+                // Agregar sugerencias generales
+                const sugerencias = document.createElement('li');
+                sugerencias.innerHTML = "<strong>General:</strong> Practica con más ejercicios de cada tema y revisa los conceptos teóricos.";
+                topicsList.appendChild(sugerencias);
+            } else {
+                topicsList.innerHTML = '<li>¡Felicidades! No hay temas débiles identificados. Sigue practicando para mantener tu nivel.</li>';
+            }
+        }
+        
+        // Función para reiniciar el examen (mismas preguntas)
+        function reiniciarExamen() {
+            respuestasUsuario = new Array(10).fill(null);
+            examenCalificado = false;
+            renderizarExamen();
+            actualizarProgreso();
+            document.getElementById('results-container').style.display = 'none';
+        }
+        
+        // Inicialización
+        document.addEventListener('DOMContentLoaded', function() {
+            // Seleccionar preguntas aleatorias al cargar
+            seleccionarPreguntasAleatorias();
+            
+            // Configurar botones
+            document.getElementById('submit-btn').addEventListener('click', calificarExamen);
+            document.getElementById('reset-btn').addEventListener('click', reiniciarExamen);
+            document.getElementById('new-exam-btn').addEventListener('click', seleccionarPreguntasAleatorias);
+            document.getElementById('restart-btn').addEventListener('click', seleccionarPreguntasAleatorias);
+            document.getElementById('review-btn').addEventListener('click', function() {
+                // Desplazarse al inicio del examen
+                document.querySelector('.questions-section').scrollIntoView({ behavior: 'smooth' });
+            });
+        });
+    </script>
+</body>
+</html>
