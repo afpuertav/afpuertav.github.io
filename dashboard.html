@@ -11,9 +11,6 @@
     <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-moment@1.0.0/dist/chartjs-adapter-moment.min.js"></script>
     
     <style>
-        /* =======================
-           ESTILOS GENERALES
-        ======================= */
         body { 
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
             margin: 0; 
@@ -24,7 +21,6 @@
             min-height: 100vh; 
         }
         
-        /* Header */
         header { 
             background-color: #1553AD; 
             padding: 1rem 2rem; 
@@ -43,7 +39,6 @@
             letter-spacing: 1px;
         }
         
-        /* Contenedor principal */
         .container { 
             width: 100%;
             max-width: 1000px;
@@ -53,7 +48,6 @@
             flex: 1; 
         }
 
-        /* Tarjetas */
         .card { 
             background: white; 
             padding: 25px; 
@@ -63,14 +57,8 @@
             border-top: 4px solid #1553AD;
         }
         
-        /* Variante para tarjeta de tanque */
-        .card.tank-card {
-            border-top-color: #1553AD; /* Azul para diferenciar el tanque */
-        }
-        
-        h2 { color: #1553AD; margin-top: 0; font-size: 1.4rem; display: flex; align-items: center; gap: 10px;}
+        h2 { color: #1553AD; margin-top: 0; font-size: 1.4rem; }
 
-        /* Botón de Bomba */
         .btn-control { 
             padding: 15px 30px; 
             font-size: 18px; 
@@ -91,10 +79,8 @@
         .btn-control.off:hover { background-color: #c0392b; }
         .btn-control:disabled { background-color: #bdc3c7; cursor: not-allowed; box-shadow: none; transform: none; }
 
-        /* Gráficas */
         .chart-container { position: relative; height: 300px; margin-top: 20px; }
         
-        /* Filtros de tiempo */
         .time-filters { display: flex; justify-content: center; gap: 10px; margin-bottom: 20px; flex-wrap: wrap; }
         .filter-btn { 
             padding: 6px 16px; 
@@ -108,7 +94,6 @@
         }
         .filter-btn.active, .filter-btn:hover { background: #1553AD; color: white; }
 
-        /* Métricas en vivo (Badge) */
         .live-badge {
             font-size: 1rem; 
             background: #f8f9fa; 
@@ -118,7 +103,6 @@
             display: inline-block;
         }
 
-        /* Footer controles */
         .footer-controls { 
             display: flex; 
             justify-content: space-between; 
@@ -140,8 +124,8 @@
 
         .status-dot { width: 10px; height: 10px; border-radius: 50%; background: #ccc; display: inline-block; margin-right: 5px; }
         .status-dot.connected { background: #2ecc71; box-shadow: 0 0 5px #2ecc71; }
+        .status-dot.disconnected { background: #e74c3c; }
 
-        /* Estado de la bomba */
         .pump-status {
             font-size: 0.9rem;
             margin-top: 10px;
@@ -162,12 +146,17 @@
             color: #3498db;
             border: 1px solid #3498db;
         }
+        
+        .pump-unknown {
+            background-color: rgba(149, 165, 166, 0.1);
+            color: #7f8c8d;
+            border: 1px solid #95a5a6;
+        }
 
-        /* Responsive */
         @media (max-width: 600px) {
             .footer-controls { flex-direction: column; width: 100%; }
             .btn-action { width: 100%; justify-content: center; }
-            h2 { justify-content: center; flex-wrap: wrap; }
+            h2 { text-align: center; }
             .live-badge { margin-top: 10px; }
         }
     </style>
@@ -182,9 +171,9 @@
         <div class="card" style="text-align: center;">
             <h2>Control de Bomba</h2>
             <button id="btnPump" class="btn-control" disabled>CONECTANDO...</button>
-            <div id="pumpStatus" class="pump-status pump-off">Bomba: APAGADA</div>
+            <div id="pumpStatus" class="pump-status pump-unknown">Estado: Sin conexión</div>
             <div style="margin-top: 15px; font-size: 0.9rem; color: #666;">
-                <span id="statusDot" class="status-dot"></span> <span id="statusText">Desconectado</span>
+                <span id="statusDot" class="status-dot disconnected"></span> <span id="statusText">Desconectado del ESP32</span>
             </div>
         </div>
         
@@ -209,7 +198,7 @@
             </div>
         </div>
 
-        <div class="card tank-card">
+        <div class="card">
             <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap;">
                 <h2 style="color: #1553AD;">Sensor de nivel</h2>
                 <div class="live-badge">
@@ -235,10 +224,15 @@
 
     <script>
         // ==========================================
-        // 1. CONFIGURACIÓN
+        // CONFIGURACIÓN
         // ==========================================
         const MQTT_URL = "wss://d0c74dd51f244a5b87e0373b99197ba7.s1.eu.hivemq.cloud:8884/mqtt";
-        const MQTT_OPT = { username: "andresPuerta", password: "aGROW123", reconnectPeriod: 2000 };
+        const MQTT_OPT = { 
+            username: "andresPuerta", 
+            password: "aGROW123", 
+            reconnectPeriod: 2000,
+            clientId: 'web_client_' + Math.random().toString(16).substr(2, 8)
+        };
         const TOPICS = {
             DATA: "iot/esp32/data",
             CMD: "iot/esp32/cmd",
@@ -248,9 +242,11 @@
 
         // Variables de estado
         let client;
-        let pumpState = null;
-        let allHistoryData = []; // Array principal de datos {x, temp, hum, litros}
+        let pumpState = null; // null = estado desconocido (sin conexión)
+        let allHistoryData = [];
         let currentTimeRange = 'all';
+        let lastDataTime = 0;
+        const DATA_TIMEOUT = 10000; // 10 segundos sin datos = desconectado
 
         // Elementos UI
         const btnPump = document.getElementById("btnPump");
@@ -265,10 +261,10 @@
         const currVol = document.getElementById("currVol");
 
         // ==========================================
-        // 2. CONFIGURACIÓN DE GRÁFICAS (Chart.js)
+        // CONFIGURACIÓN DE GRÁFICAS
         // ==========================================
         
-        // --- Gráfica 1: CLIMA ---
+        // Gráfica 1: CLIMA
         const ctxClimate = document.getElementById("chartClimate").getContext("2d");
         const chartClimate = new Chart(ctxClimate, {
             type: "line",
@@ -327,7 +323,7 @@
             }
         });
 
-        // --- Gráfica 2: TANQUE ---
+        // Gráfica 2: TANQUE
         const ctxTank = document.getElementById("chartTank").getContext("2d");
         const chartTank = new Chart(ctxTank, {
             type: "line",
@@ -350,7 +346,7 @@
                 maintainAspectRatio: false,
                 interaction: { mode: 'index', intersect: false },
                 plugins: {
-                    legend: { display: false }, // No necesitamos leyenda si es solo una línea
+                    legend: { display: false },
                     tooltip: {
                         callbacks: { title: ctx => moment(ctx[0].parsed.x).format('MMM D, HH:mm:ss') }
                     }
@@ -370,43 +366,80 @@
         });
 
         // ==========================================
-        // 3. LÓGICA MQTT Y DATOS
+        // VERIFICACIÓN DE CONEXIÓN PERIÓDICA
+        // ==========================================
+        function verificarConexion() {
+            const ahora = Date.now();
+            const tiempoSinDatos = ahora - lastDataTime;
+            
+            if (lastDataTime > 0 && tiempoSinDatos > DATA_TIMEOUT) {
+                // No hemos recibido datos en 10 segundos, considerar desconectado
+                if (pumpState !== null) {
+                    console.log("⚠️ Sin datos por " + (tiempoSinDatos/1000).toFixed(0) + " segundos");
+                    updateStatus(false, "Sin datos del ESP32");
+                }
+            }
+        }
+
+        // Ejecutar verificación cada 2 segundos
+        setInterval(verificarConexion, 2000);
+
+        // ==========================================
+        // LÓGICA MQTT Y DATOS
         // ==========================================
         function connectMQTT() {
             client = mqtt.connect(MQTT_URL, MQTT_OPT);
 
             client.on("connect", () => {
-                console.log("✅ MQTT Conectado");
-                updateStatus(true);
+                console.log("✅ Conectado al broker MQTT");
+                updateStatus(true, "Conectando al ESP32...");
                 client.subscribe([TOPICS.DATA, TOPICS.STATUS, TOPICS.HISTORY]);
                 
-                // Pedir historial al conectar para rellenar gráficas
+                // Resetear tiempo de último dato
+                lastDataTime = Date.now();
+                
+                // Pedir historial al conectar
                 setTimeout(() => {
-                    client.publish(TOPICS.CMD, "GET_HISTORY");
+                    if (client.connected) {
+                        client.publish(TOPICS.CMD, "GET_HISTORY");
+                    }
                 }, 1000);
             });
 
-            client.on("offline", () => updateStatus(false));
-            client.on("error", (err) => { console.error("MQTT Error:", err); updateStatus(false); });
+            client.on("offline", () => {
+                console.log("❌ Desconectado del broker MQTT");
+                updateStatus(false, "Desconectado del broker MQTT");
+            });
+            
+            client.on("error", (err) => { 
+                console.error("❌ Error MQTT:", err); 
+                updateStatus(false, "Error de conexión MQTT"); 
+            });
 
             client.on("message", (topic, payload) => {
                 const msg = payload.toString();
+                lastDataTime = Date.now(); // Actualizar tiempo del último dato
 
                 if (topic === TOPICS.STATUS) {
                     pumpState = (msg === "ON");
                     updatePumpStatus();
                     renderButton();
+                    updateStatus(true, "Conectado al ESP32");
                 } 
                 else if (topic === TOPICS.DATA) {
                     try {
                         const data = JSON.parse(msg);
-                        // El ESP32 envía: {ts, temp, hum, litros, pump}
                         processIncomingData(data.ts, data.temp, data.hum, data.litros, data.pump);
-                    } catch(e) { console.error("Error parsing live data", e); }
+                        updateStatus(true, "Conectado al ESP32");
+                    } catch(e) { 
+                        console.error("❌ Error parseando datos:", e); 
+                    }
                 } 
                 else if (topic === TOPICS.HISTORY) {
                     if (msg === "EMPTY") {
                         console.log("📭 Historial vacío");
+                        allHistoryData = [];
+                        updateCharts();
                     } else if (msg === "CLEARED") {
                         alert("✅ Memoria del ESP32 borrada.");
                         allHistoryData = [];
@@ -418,49 +451,55 @@
             });
         }
 
-        // Procesa el historial recibido del archivo CSV
+        // Procesa el historial CSV recibido del ESP32
         function parseCSVHistory(csvText) {
-            const lines = csvText.split("\n");
+            const lines = csvText.trim().split("\n");
             allHistoryData = []; // Reiniciamos array local
             
             lines.forEach(line => {
                 const parts = line.trim().split(",");
-                // Formato esperado: timestamp, temp, hum, litros
-                if (parts.length >= 3) {
-                    const ts = parts[0]; 
+                // Formato: timestamp,temperatura,humedad,litros
+                if (parts.length >= 4) {
+                    const ts = parts[0].trim(); 
                     const temp = parseFloat(parts[1]);
                     const hum = parseFloat(parts[2]);
-                    // Si el CSV antiguo no tiene litros (solo 3 columnas), asumimos 0
-                    const litros = parts.length > 3 ? parseFloat(parts[3]) : 0;
+                    const litros = parseFloat(parts[3]);
 
-                    if (!isNaN(temp) && !isNaN(hum)) {
-                        allHistoryData.push({ x: moment(ts), temp, hum, litros });
+                    if (!isNaN(temp) && !isNaN(hum) && !isNaN(litros)) {
+                        allHistoryData.push({ 
+                            x: moment(ts, "YYYY-MM-DD HH:mm:ss"), 
+                            temp, 
+                            hum, 
+                            litros 
+                        });
                     }
                 }
             });
+            
+            console.log(`📊 Historial cargado: ${allHistoryData.length} registros`);
             updateCharts();
         }
 
         // Procesa dato individual en tiempo real
         function processIncomingData(ts, temp, hum, litros, pump) {
-            // Actualizar textos
+            // Actualizar valores en tiempo real
             currTemp.innerText = temp.toFixed(1);
             currHum.innerText = hum.toFixed(1);
-            if(litros !== undefined) currVol.innerText = litros.toFixed(1);
+            currVol.innerText = litros.toFixed(1);
             
-            // Actualizar estado de la bomba si está disponible
+            // Actualizar estado de la bomba
             if (pump !== undefined) {
                 pumpState = (pump === "true" || pump === true);
                 updatePumpStatus();
                 renderButton();
             }
 
-            // Guardar en array
+            // Guardar en array para gráficas
             const newPoint = { 
-                x: moment(ts), 
+                x: moment(ts, "YYYY-MM-DD HH:mm:ss"), 
                 temp: temp, 
                 hum: hum, 
-                litros: litros !== undefined ? litros : 0 
+                litros: litros 
             };
             allHistoryData.push(newPoint);
             
@@ -468,33 +507,32 @@
             updateCharts();
         }
 
-        // Actualiza AMBAS gráficas aplicando el filtro de tiempo
+        // Actualiza ambas gráficas aplicando filtro de tiempo
         function updateCharts() {
             if (allHistoryData.length === 0) return;
             
             let filteredData = allHistoryData;
 
-            // Filtro de tiempo
+            // Aplicar filtro de tiempo
             if (currentTimeRange !== 'all') {
                 const cutoffTime = moment().subtract(currentTimeRange, 'hours');
                 filteredData = allHistoryData.filter(d => d.x.isAfter(cutoffTime));
             }
 
-            // Asignar a Clima
+            // Actualizar gráfica de clima
             chartClimate.data.datasets[0].data = filteredData.map(d => ({ x: d.x, y: d.temp }));
             chartClimate.data.datasets[1].data = filteredData.map(d => ({ x: d.x, y: d.hum }));
-            chartClimate.update('none'); // 'none' para animación suave
+            chartClimate.update('none');
 
-            // Asignar a Tanque
+            // Actualizar gráfica de tanque
             chartTank.data.datasets[0].data = filteredData.map(d => ({ x: d.x, y: d.litros }));
             chartTank.update('none');
         }
 
         // ==========================================
-        // 4. INTERACCIÓN DE USUARIO
+        // INTERACCIÓN DE USUARIO
         // ==========================================
         
-        // Cambiar rango de tiempo
         function setTimeRange(hours) {
             currentTimeRange = hours;
             // Actualizar clases de botones
@@ -504,14 +542,24 @@
         }
 
         // Estado Visual Conexión
-        function updateStatus(connected) {
-            statusDot.className = connected ? "status-dot connected" : "status-dot";
-            statusText.innerText = connected ? "Conectado" : "Desconectado";
-            statusText.style.color = connected ? "#2ecc71" : "#e74c3c";
+        function updateStatus(connected, mensaje = "") {
+            if (connected) {
+                statusDot.className = "status-dot connected";
+                statusText.innerText = mensaje || "Conectado al ESP32";
+                statusText.style.color = "#2ecc71";
+            } else {
+                statusDot.className = "status-dot disconnected";
+                statusText.innerText = mensaje || "Desconectado del ESP32";
+                statusText.style.color = "#e74c3c";
+                // Cuando se pierde conexión, resetear estado de bomba
+                pumpState = null;
+                updatePumpStatus();
+            }
             
             downloadBtn.disabled = !connected;
-            btnPump.disabled = !connected;
-            if(!connected) {
+            btnPump.disabled = !connected || pumpState === null;
+            
+            if(!connected || pumpState === null) {
                 btnPump.innerText = "CONECTANDO...";
                 btnPump.classList.remove("off");
             }
@@ -519,49 +567,61 @@
 
         // Actualizar estado visual de la bomba
         function updatePumpStatus() {
-            if (pumpState) {
+            if (pumpState === true) {
                 pumpStatus.textContent = "Bomba: ENCENDIDA";
                 pumpStatus.className = "pump-status pump-on";
-            } else {
+            } else if (pumpState === false) {
                 pumpStatus.textContent = "Bomba: APAGADA";
                 pumpStatus.className = "pump-status pump-off";
+            } else {
+                pumpStatus.textContent = "Estado: Sin conexión";
+                pumpStatus.className = "pump-status pump-unknown";
             }
         }
 
         // Renderizar botón bomba
         function renderButton() {
-            if (pumpState) {
+            if (pumpState === true) {
                 btnPump.innerText = "APAGAR BOMBA";
                 btnPump.classList.add("off");
-            } else {
+                btnPump.disabled = false;
+            } else if (pumpState === false) {
                 btnPump.innerText = "ENCENDER BOMBA";
                 btnPump.classList.remove("off");
+                btnPump.disabled = false;
+            } else {
+                btnPump.innerText = "CONECTANDO...";
+                btnPump.classList.remove("off");
+                btnPump.disabled = true;
             }
         }
 
         // Click Botón Bomba
         btnPump.onclick = () => {
-            if(!client || !client.connected) return;
+            if(!client || !client.connected || pumpState === null) return;
             client.publish(TOPICS.CMD, pumpState ? "LED_OFF" : "LED_ON");
         };
 
         // Descargar CSV
         function downloadCSV() {
-            if (allHistoryData.length === 0) return alert("No hay datos para descargar");
+            if (allHistoryData.length === 0) {
+                return alert("No hay datos para descargar");
+            }
             
-            let csv = "Fecha,Temperatura,Humedad,Litros\n";
+            let csv = "Fecha,Temperatura (°C),Humedad (%),Litros\n";
             allHistoryData.forEach(d => {
-                csv += `${d.x.format("YYYY-MM-DD HH:mm:ss")},${d.temp},${d.hum},${d.litros}\n`;
+                csv += `${d.x.format("YYYY-MM-DD HH:mm:ss")},${d.temp.toFixed(2)},${d.hum.toFixed(2)},${d.litros.toFixed(2)}\n`;
             });
             
-            const blob = new Blob([csv], { type: 'text/csv' });
+            const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
             const url = window.URL.createObjectURL(blob);
             const a = document.createElement('a');
             a.href = url;
-            a.download = `reporte_tanque_iot_${moment().format("YYYYMMDD_HHmm")}.csv`;
+            a.download = `reporte_aGROW_${moment().format("YYYYMMDD_HHmm")}.csv`;
             document.body.appendChild(a);
             a.click();
             document.body.removeChild(a);
+            window.URL.revokeObjectURL(url);
         }
 
         // Borrar datos remotos
@@ -571,7 +631,7 @@
             }
         }
 
-        // Iniciar
+        // Iniciar conexión MQTT
         connectMQTT();
 
     </script>
