@@ -1,0 +1,751 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simulador del Primer Parcial de Estadística General</title>
+    
+    <script src="https://cdn.plot.ly/plotly-2.27.0.min.js"></script>
+    
+    <script>
+        window.MathJax = {
+            tex: { inlineMath: [['$', '$'], ['\\(', '\\)']] },
+            svg: { fontCache: 'global' }
+        };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+    <style>
+        :root {
+            --primary-color: #2c3e50;
+            --secondary-color: #3498db;
+            --accent-color: #e74c3c;
+            --light-color: #ecf0f1;
+            --success-color: #27ae60;
+            --warning-color: #f39c12;
+            --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: #f5f7fa;
+            color: #333;
+            line-height: 1.6;
+            padding: 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding: 20px;
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: var(--shadow);
+        }
+        
+        h1 {
+            color: var(--primary-color);
+            margin-bottom: 10px;
+            font-size: 2.2rem;
+        }
+        
+        .subtitle {
+            color: var(--secondary-color);
+            font-size: 1.1rem;
+            margin-bottom: 20px;
+        }
+        
+        .instructions {
+            background-color: var(--light-color);
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 25px;
+            border-left: 5px solid var(--secondary-color);
+        }
+        
+        .instructions h3 {
+            color: var(--primary-color);
+            margin-bottom: 10px;
+        }
+        
+        .exam-container {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 25px;
+        }
+        
+        .questions-section {
+            background-color: white;
+            padding: 25px;
+            border-radius: 10px;
+            box-shadow: var(--shadow);
+        }
+        
+        .control-panel {
+            background-color: white;
+            padding: 25px;
+            border-radius: 10px;
+            box-shadow: var(--shadow);
+            height: fit-content;
+            position: sticky;
+            top: 20px;
+        }
+        
+        .question-card {
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid #eee;
+            scroll-margin-top: 20px;
+        }
+        
+        .question-card:last-child {
+            border-bottom: none;
+        }
+        
+        .question-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        
+        .question-number {
+            background-color: var(--primary-color);
+            color: white;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+        }
+        
+        .question-text {
+            margin-bottom: 20px;
+            font-size: 1.1rem;
+            line-height: 1.5;
+        }
+        
+        .table-container {
+            margin: 15px 0;
+            padding: 15px;
+            background-color: #f9f9f9;
+            border-radius: 8px;
+            overflow-x: auto;
+        }
+        
+        /* Estilos de Tablas */
+        table { width: 100%; border-collapse: collapse; margin: 10px 0; font-size: 0.95em; }
+        th { background-color: var(--primary-color); color: white; padding: 10px; text-align: center; border: 1px solid #ddd; }
+        td { padding: 8px; text-align: center; border: 1px solid #ddd; }
+        tr:nth-child(even) { background-color: #f2f2f2; }
+        
+        /* Contenedor Gráficos Plotly */
+        .chart-container {
+            width: 100%;
+            height: 350px;
+            background-color: white;
+            border-radius: 8px;
+            margin: 10px 0;
+            border: 1px solid #eee;
+        }
+        
+        .options-container {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        
+        .option {
+            padding: 12px 15px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+        }
+        
+        .option:hover {
+            background-color: #f0f8ff;
+            border-color: var(--secondary-color);
+        }
+        
+        .option.selected {
+            background-color: #e1f0ff;
+            border-color: var(--secondary-color);
+            font-weight: 600;
+        }
+        
+        .option.correct {
+            background-color: #d4edda;
+            border-color: var(--success-color);
+            color: #155724;
+        }
+        
+        .option.incorrect {
+            background-color: #f8d7da;
+            border-color: var(--accent-color);
+            color: #721c24;
+        }
+        
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s;
+            font-size: 1rem;
+            margin-right: 10px;
+            margin-bottom: 10px;
+        }
+        
+        .btn-primary {
+            background-color: var(--secondary-color);
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background-color: #2980b9;
+        }
+        
+        .btn-secondary {
+            background-color: var(--light-color);
+            color: var(--primary-color);
+            border: 1px solid #ddd;
+        }
+        
+        .btn-secondary:hover {
+            background-color: #d5dbdb;
+        }
+        
+        .results-container {
+            margin-top: 25px;
+            padding: 20px;
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: var(--shadow);
+            display: none;
+        }
+        
+        .score-display {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        
+        .score-circle {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            background-color: var(--light-color);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 0 auto 20px;
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: var(--primary-color);
+            border: 5px solid var(--secondary-color);
+        }
+        
+        .score-circle.low { border-color: var(--accent-color); color: var(--accent-color); }
+        .score-circle.medium { border-color: var(--warning-color); color: var(--warning-color); }
+        .score-circle.high { border-color: var(--success-color); color: var(--success-color); }
+        
+        .recommendations {
+            background-color: #fff9e6;
+            padding: 20px;
+            border-radius: 8px;
+            border-left: 5px solid var(--warning-color);
+            margin-top: 20px;
+        }
+        
+        .recommendations h3 { margin-bottom: 15px; color: #d35400; }
+        .recommendations ul { padding-left: 20px; }
+        .recommendations li { margin-bottom: 8px; }
+        
+        .stats { display: flex; justify-content: space-between; margin-top: 20px; }
+        .stat-box {
+            flex: 1; text-align: center; padding: 15px; background-color: var(--light-color);
+            border-radius: 8px; margin: 0 5px;
+        }
+        .stat-value { font-size: 2rem; font-weight: bold; color: var(--primary-color); }
+        .stat-label { font-size: 0.9rem; color: #7f8c8d; }
+        
+        .topic-progress { margin-top: 20px; }
+        .topic-item {
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 8px 0; border-bottom: 1px solid #eee; cursor: pointer; transition: all 0.2s;
+        }
+        .topic-item:hover { background-color: #f5f5f5; padding-left: 5px; }
+        .topic-name { flex: 1; font-size: 0.9em; }
+        .topic-status { width: 12px; height: 12px; border-radius: 50%; margin-left: 10px; }
+        
+        .topic-status.correct { background-color: var(--success-color); }
+        .topic-status.incorrect { background-color: var(--accent-color); }
+        .topic-status.unanswered { background-color: #ddd; }
+        .topic-status.answered { background-color: var(--secondary-color); }
+        
+        footer {
+            text-align: center; margin-top: 30px; padding: 20px;
+            color: #7f8c8d; font-size: 0.9rem;
+        }
+        
+        @media (max-width: 900px) {
+            .exam-container { grid-template-columns: 1fr; }
+            .stats { flex-direction: column; gap: 15px; }
+            .stat-box { margin: 0; }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Simulador de Primer Parcial - Estadística General</h1>
+        <p class="subtitle">10 preguntas aleatorias - Calificación de 0 a 5</p>
+    </header>
+    
+    <div class="instructions">
+        <h3>Instrucciones</h3>
+        <p>Este simulador contiene 10 preguntas seleccionadas aleatoriamente de un banco extendido. Se evalúan conceptos de variables, tablas, gráficos, medidas de tendencia central, posición y dispersión. Al finalizar el examen, se mostrarán los resultados y recomendaciones para mejorar.</p>
+        <p><strong>Nota:</strong> Las calificaciones se asignan de acuerdo a la cantidad de respuestas correctas. Cada pregunta vale 0.5 puntos. En el parcial real el valor de cada pregunta puede variar.</p>
+    </div>
+    
+    <div class="exam-container">
+        <section class="questions-section">
+            <h2>Preguntas del Parcial</h2>
+            <div id="questions-container">
+                </div>
+            
+            <div class="button-group" style="margin-top:20px;">
+                <button id="submit-btn" class="btn btn-primary">Calificar Examen</button>
+                <button id="new-exam-btn" class="btn btn-secondary">Nuevo Examen Aleatorio</button>
+            </div>
+        </section>
+        
+        <section class="control-panel">
+            <h3>Progreso</h3>
+            <div class="stats">
+                <div class="stat-box">
+                    <div class="stat-value" id="answered-count">0</div>
+                    <div class="stat-label">Respondidas</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-value" id="total-count">10</div>
+                    <div class="stat-label">Total</div>
+                </div>
+            </div>
+            
+            <div class="topic-progress">
+                <h4>Navegación:</h4>
+                <div id="topics-list">
+                    </div>
+            </div>
+        </section>
+    </div>
+    
+    <div class="results-container" id="results-container">
+        <h2>Resultados del Parcial</h2>
+        
+        <div class="score-display">
+            <div class="score-circle" id="final-score">0.0</div>
+            <h3>Calificación Final</h3>
+            <p id="score-text">Sobre 5.0 puntos</p>
+        </div>
+        
+        <div class="stats">
+            <div class="stat-box">
+                <div class="stat-value" id="correct-count">0</div>
+                <div class="stat-label">Correctas</div>
+            </div>
+            <div class="stat-box">
+                <div class="stat-value" id="incorrect-count">0</div>
+                <div class="stat-label">Incorrectas</div>
+            </div>
+            <div class="stat-box">
+                <div class="stat-value" id="percentage-score">0%</div>
+                <div class="stat-label">Porcentaje</div>
+            </div>
+        </div>
+        
+        <div class="recommendations" id="recommendations">
+            <h3>Retroalimentación</h3>
+            <p id="recommendations-text"></p>
+            <ul id="topics-to-study"></ul>
+        </div>
+        
+        <div style="text-align: center; margin-top: 20px;">
+            <button id="review-btn" class="btn btn-secondary">Revisar Respuestas</button>
+            <button id="restart-btn" class="btn btn-primary">Intentar Otro Examen</button>
+        </div>
+    </div>
+    
+    <footer>
+        <p>Simulador del Primer Parcial de Estadística General <br>
+            © 2024 Andrés Felipe Puerta Vélez's page
+        </p>
+    </footer>
+    
+    <script>
+        // ======================================================
+        // BANCO DE PREGUNTAS (Fusionado)
+        // ======================================================
+        
+        const questionBank = {
+            "tiposVariables": [
+                // Del archivo 1
+                { q: "Si recolectamos datos sobre el 'Estado Civil' de 50 personas, ¿qué tipo de variable estamos analizando?", a: ["Cualitativa Nominal", "Cualitativa Ordinal", "Cuantitativa Discreta", "Cuantitativa Continua"], c: 0 },
+                { q: "En un estudio se mide el 'Tiempo de reacción' (en segundos) de un conductor. Esta variable es:", a: ["Cuantitativa Continua", "Cuantitativa Discreta", "Cualitativa Ordinal", "Cualitativa Nominal"], c: 0 },
+                { q: "¿Qué tipo de variable es la 'Cantidad de hijos' por familia?", a: ["Cuantitativa Discreta", "Cuantitativa Continua", "Cualitativa Nominal", "Cualitativa Ordinal"], c: 0 },
+                { q: "La clasificación de la calidad de un servicio en 'Malo', 'Regular', 'Bueno' corresponde a:", a: ["Cualitativa Ordinal", "Cualitativa Nominal", "Cuantitativa Discreta", "Cuantitativa Continua"], c: 0 },
+                { q: "El 'Código Postal' de una zona, aunque es numérico, se clasifica como:", a: ["Cualitativa Nominal", "Cuantitativa Discreta", "Cuantitativa Continua", "Cualitativa Ordinal"], c: 0 },
+                // Del archivo 2
+                { q: "¿Qué tipo de variable es 'color de ojos'?", a: ["Cuantitativa discreta", "Cuantitativa continua", "Cualitativa nominal", "Cualitativa ordinal"], c: 2 },
+                { q: "La variable 'nivel de satisfacción' (muy insatisfecho... muy satisfecho) es:", a: ["Cuantitativa discreta", "Cuantitativa continua", "Cualitativa nominal", "Cualitativa ordinal"], c: 3 },
+                { q: "¿Qué tipo de variable es 'peso de una persona'?", a: ["Cualitativa nominal", "Cualitativa ordinal", "Cuantitativa discreta", "Cuantitativa continua"], c: 3 },
+                { q: "La variable 'precio de las casas' es:", a: ["Cualitativa nominal", "Cualitativa ordinal", "Cuantitativa discreta", "Cuantitativa continua"], c: 3 }
+            ],
+            "tablasFrecuencia": [
+                // Del archivo 1
+                { q: "Observa la siguiente tabla de frecuencias incompleta. ¿Cuál es el valor de la frecuencia relativa ($h_2$) para la Categoría B?", type: "table", tableData: { headers: ["Categoría", "Frecuencia Absoluta ($n_i$)", "Frecuencia Relativa ($h_i$)"], rows: [["A", 10, "0.20"], ["B", 20, "¿?"], ["C", 20, "0.40"], ["Total", 50, "1.00"]] }, a: ["0.40", "0.20", "0.50", "0.10"], c: 0 },
+                { q: "¿Cuántos datos en total ($n$) se recolectaron según esta tabla?", type: "table", tableData: { headers: ["Clase", "$n_i$", "$N_i$ (Acumulada)"], rows: [["[0-10)", 5, 5], ["[10-20)", 8, 13], ["[20-30)", 12, 25], ["[30-40)", 5, 30]] }, a: ["30", "25", "50", "4"], c: 0 },
+                { q: "Si la frecuencia relativa de una clase es 0.25 y el total de datos es $n=40$, ¿cuál es su frecuencia absoluta ($n_i$)?", a: ["10", "4", "25", "100"], c: 0 },
+                { q: "Según la Regla de Sturges, si tenemos $n=100$ datos, ¿cuántas clases ($k$) deberíamos usar aproximadamente? ($k = 1 + 3.3 \log_{10}(n)$)", a: ["7 u 8", "10", "5", "15"], c: 0 },
+                // Del archivo 2
+                { q: "Analiza la siguiente tabla. ¿Cuál es la clase modal?", type: "table", tableData: { headers: ["Calificación", "Num. Estudiantes"], rows: [["50-59", 5], ["60-69", 12], ["70-79", 18], ["80-89", 10], ["90-100", 5]] }, a: ["50-59", "70-79", "80-89", "90-100"], c: 1 },
+                { q: "¿Qué representa la frecuencia acumulada ($N_i$)?", a: ["El porcentaje de datos", "El número de datos acumulados hasta cierta categoría", "La frecuencia modal", "La diferencia entre frecuencias"], c: 1 },
+                { q: "Para datos agrupados, ¿qué es la marca de clase?", a: ["Límite inferior", "Punto medio del intervalo", "Límite superior", "Frecuencia"], c: 1 }
+            ],
+            "graficas": [
+                // Del archivo 1 (Plotly nativo)
+                { q: "¿Cuál es la categoría con mayor frecuencia en este Diagrama de Barras?", type: "chart", chartType: "bar", data: { x: ["A", "B", "C", "D"], y: [5, 12, 8, 3] }, a: ["B", "A", "C", "D"], c: 0 },
+                { q: "Según este Histograma, ¿cómo describirías la asimetría de la distribución?", type: "chart", chartType: "histogram", data: [1,1,2,2,2,3,3,3,3,4,4,4,5,5,6,7,8,10,12,15], a: ["Asimétrica a la derecha (Positiva)", "Simétrica", "Asimétrica a la izquierda (Negativa)", "Uniforme"], c: 0 },
+                { q: "Observando el gráfico circular, ¿qué porcentaje aproximado representa la Categoría X?", type: "chart", chartType: "pie", data: { labels: ["X", "Y", "Z"], values: [50, 25, 25] }, a: ["50%", "25%", "33%", "10%"], c: 0 },
+                { q: "En este gráfico de barras acumuladas (Ojiva), ¿cuántos datos hay por debajo de la categoría 2?", type: "chart", chartType: "scatter-line", data: { x: ["0", "1", "2", "3"], y: [0, 5, 15, 20] }, a: ["15", "5", "20", "10"], c: 0 },
+                // Del archivo 2 (Convertidos a Plotly)
+                { q: "¿Qué gráfico es más adecuado para representar una variable cualitativa nominal?", a: ["Histograma", "Diagrama de barras", "Polígono de frecuencias", "Ojiva"], c: 1 },
+                { q: "En un diagrama circular, ¿qué determina el tamaño de cada segmento?", a: ["La frecuencia absoluta", "La frecuencia relativa", "La marca de clase", "La amplitud"], c: 1 },
+                { q: "¿Qué gráfico se obtiene al unir los puntos medios de las barras de un histograma?", a: ["Ojiva", "Diagrama de barras", "Polígono de frecuencias", "Diagrama circular"], c: 2 }
+            ],
+            "media": [
+                { q: "Calcula la media de: $2, 4, 6, 8, 10$.", a: ["6", "5", "30", "8"], c: 0 },
+                { q: "Si la media de un examen fue 3.5 y el profesor decide subir 0.5 a todos. ¿Cuál es la nueva media?", a: ["4.0", "3.5", "3.0", "1.75"], c: 0 },
+                { q: "Propiedad de la media: $\\sum (x_i - \\bar{x}) =$ ?", a: ["0", "1", "n", "Varianza"], c: 0 },
+                { q: "La media de 5 números es 20. ¿Cuál es su suma total?", a: ["4", "20", "100", "120"], c: 2 },
+                { q: "¿Qué medida de tendencia central es más afectada por valores extremos?", a: ["Media", "Mediana", "Moda", "Percentil 50"], c: 0 },
+                { q: "Calcula la media de: 12, 15, 18, 21, 24", a: ["15", "18", "21", "90"], c: 1 }
+            ],
+            "mediana": [
+                { q: "Encuentra la mediana de: $3, 1, 4, 15, 9$. (Recuerda ordenar)", a: ["4", "3", "9", "15"], c: 0 },
+                { q: "Mediana de: $2, 4, 6, 8$.", a: ["5", "4", "6", "5.5"], c: 0 },
+                { q: "La mediana es igual al percentil:", a: ["$P_{50}$", "$P_{25}$", "$P_{75}$", "$P_{10}$"], c: 0 },
+                { q: "En una distribución simétrica, ¿cómo se relacionan media y mediana?", a: ["Media > Mediana", "Media < Mediana", "Media = Mediana", "No hay relación"], c: 2 },
+                { q: "La mediana es robusta (resistente) frente a:", a: ["Valores atípicos extremos", "Datos negativos", "Datos decimales", "Cambios en el centro"], c: 0 },
+                { q: "Encuentra la mediana de: 7, 3, 9, 5, 11, 2, 8", a: ["5", "7", "8", "9"], c: 1 }
+            ],
+            "moda": [
+                { q: "Halla la moda del conjunto: $2, 3, 3, 5, 7, 3, 2$.", a: ["3", "2", "5", "7"], c: 0 },
+                { q: "Si un conjunto de datos tiene dos valores con la misma frecuencia máxima, es:", a: ["Bimodal", "Unimodal", "Amodal", "Trimodal"], c: 0 },
+                { q: "¿Cuál es la moda de: 4, 5, 6, 4, 7, 5, 4, 8, 5?", a: ["4", "5", "4 y 5", "No hay moda"], c: 2 },
+                { q: "¿Cuál es la moda de: 2, 3, 5, 7, 11, 13?", a: ["5", "7", "Todos tienen misma frecuencia (Amodal)", "No hay moda"], c: 2 },
+                { q: "En una distribución unimodal simétrica:", a: ["Media = Mediana = Moda", "Media > Mediana", "Moda > Media", "No hay relación"], c: 0 }
+            ],
+            "cuartiles": [
+                { q: "El Primer Cuartil ($Q_1$) acumula el:", a: ["25% de los datos", "50% de los datos", "75% de los datos", "10% de los datos"], c: 0 },
+                { q: "El Tercer Cuartil ($Q_3$) equivale al percentil:", a: ["75", "25", "30", "50"], c: 0 },
+                { q: "¿Qué porcentaje de datos está entre $Q_1$ y $Q_3$?", a: ["25%", "50%", "75%", "100%"], c: 1 },
+                { q: "Calcula $Q_1$ (aprox) de: 2, 4, 6, 8, 10, 12, 14, 16.", a: ["4 o 5", "2", "8", "12"], c: 0 },
+                { q: "Si un estudiante está en el percentil 85, significa que:", a: ["Supera al 85% de los compañeros", "Sacó 8.5", "Falló el 15%", "Supera al 15%"], c: 0 }
+            ],
+            "rangoVarianza": [
+                { q: "El Rango se calcula como:", a: ["$X_{max} - X_{min}$", "Media - Moda", "$Q_3 - Q_1$", "Suma total"], c: 0 },
+                { q: "La varianza ($s^2$) puede ser negativa:", a: ["Nunca, es suma de cuadrados", "Sí, si la media es negativa", "Sí, con atípicos", "A veces"], c: 0 },
+                { q: "La desviación estándar ($s$) es:", a: ["La raíz cuadrada de la varianza", "El cuadrado de la varianza", "La mitad del rango", "La media"], c: 0 },
+                { q: "Si la varianza es 100, la desviación estándar es:", a: ["10", "100", "50", "20"], c: 0 },
+                { q: "Calcula la varianza poblacional de 2, 4, 6, 8, 10.", a: ["8", "10", "40", "6.67"], c: 0 },
+                { q: "¿Por qué se elevan al cuadrado las diferencias en la varianza?", a: ["Para evitar que se cancelen signos positivos y negativos", "Para hacer el número más grande", "Por estética", "No se elevan"], c: 0 }
+            ],
+            "riqBoxplot": [
+                { q: "En este Boxplot, ¿cuál es el valor aproximado de la Mediana?", type: "chart", chartType: "box", data: [10, 12, 14, 15, 15, 16, 18, 20, 20, 22, 25, 30], a: ["Alrededor de 17", "10", "30", "22"], c: 0 },
+                { q: "¿Qué representa el punto aislado en la parte superior del gráfico?", type: "chart", chartType: "box", data: [5,6,7,7,8,8,9,9,10,25], a: ["Un valor atípico (Outlier)", "La media", "El error", "El máximo normal"], c: 0 },
+                { q: "El ancho de la caja en un Boxplot representa:", a: ["El Rango Intercuartílico (RIQ)", "El Rango total", "La desviación estándar", "La mediana"], c: 0 },
+                { q: "Si $Q_1=20$ y $Q_3=40$, ¿cuál es el RIQ?", a: ["20", "30", "40", "60"], c: 0 },
+                { q: "En un diagrama de caja, ¿qué representan los bordes de la caja?", a: ["Q1 y Q3", "Mínimo y Máximo", "Media y Mediana", "P10 y P90"], c: 0 }
+            ],
+            "coefVariacion": [
+                { q: "Fórmula del Coeficiente de Variación (CV):", a: ["$\\frac{s}{\\bar{x}} \\times 100\\%$", "$\\frac{\\bar{x}}{s}$", "$s^2 \\times 100$", "Media - Desviación"], c: 0 },
+                { q: "El CV sirve principalmente para:", a: ["Comparar variabilidad entre grupos con distintas unidades o medias", "Calcular la media", "Ver la forma", "Hallar atípicos"], c: 0 },
+                { q: "Si la media es 50 y la desviación estándar es 10, ¿cuál es el CV?", a: ["20%", "50%", "5%", "500%"], c: 0 },
+                { q: "El CV es una medida:", a: ["Adimensional (Porcentaje)", "En metros", "En la unidad de la variable", "Al cuadrado"], c: 0 },
+                { q: "Si todos los datos son iguales, el CV es:", a: ["0%", "100%", "Indefinido", "1"], c: 0 }
+            ]
+        };
+
+        const topics = [
+            {id: "tiposVariables", nombre: "Tipos de Variables"},
+            {id: "tablasFrecuencia", nombre: "Tablas de Frecuencia"},
+            {id: "graficas", nombre: "Gráficos Estadísticos"},
+            {id: "media", nombre: "Media Aritmética"},
+            {id: "mediana", nombre: "Mediana"},
+            {id: "moda", nombre: "Moda"},
+            {id: "cuartiles", nombre: "Cuartiles y Percentiles"},
+            {id: "rangoVarianza", nombre: "Varianza y Desviación"},
+            {id: "riqBoxplot", nombre: "Boxplot y RIQ"},
+            {id: "coefVariacion", nombre: "Coeficiente de Variación"}
+        ];
+
+        let currentExam = [];
+        let userAnswers = {}; // { index: optionIndex }
+        let examFinished = false;
+
+        // ======================================================
+        // LÓGICA DEL EXAMEN
+        // ======================================================
+
+        function shuffle(array) {
+            return array.sort(() => Math.random() - 0.5);
+        }
+
+        function generateExam() {
+            currentExam = [];
+            userAnswers = {};
+            examFinished = false;
+            document.getElementById('results-container').style.display = 'none';
+            document.querySelectorAll('.option').forEach(el => el.className = 'option');
+            
+            topics.forEach((topic) => {
+                const pool = questionBank[topic.id];
+                if (!pool) return;
+                
+                const randomIndex = Math.floor(Math.random() * pool.length);
+                const originalQ = pool[randomIndex];
+                
+                // Clonar y mezclar opciones
+                const qData = JSON.parse(JSON.stringify(originalQ));
+                const originalCorrectText = qData.a[qData.c];
+                const shuffledOpts = shuffle([...qData.a]);
+                
+                qData.c = shuffledOpts.indexOf(originalCorrectText);
+                qData.a = shuffledOpts;
+                qData.topicId = topic.id;
+                qData.topicName = topic.nombre;
+                
+                currentExam.push(qData);
+            });
+
+            renderExam();
+            updateProgress();
+            
+            // Renderizar MathJax
+            setTimeout(() => {
+                if(window.MathJax) MathJax.typesetPromise();
+            }, 100);
+        }
+
+        function renderExam() {
+            const container = document.getElementById('questions-container');
+            container.innerHTML = "";
+            
+            const topicsList = document.getElementById('topics-list');
+            topicsList.innerHTML = "";
+
+            currentExam.forEach((item, index) => {
+                // 1. Crear Tarjeta de Pregunta
+                const card = document.createElement('div');
+                card.className = 'question-card';
+                card.id = `q-${index}`;
+
+                // Contenido visual (Tabla o Gráfico)
+                let visualContent = "";
+                
+                // TABLAS
+                if (item.type === 'table') {
+                    let rowsHtml = "";
+                    item.tableData.rows.forEach(row => {
+                        rowsHtml += "<tr>" + row.map(cell => `<td>${cell}</td>`).join("") + "</tr>";
+                    });
+                    visualContent = `
+                        <div class="table-container">
+                            <table>
+                                <thead><tr>${item.tableData.headers.map(h => `<th>${h}</th>`).join("")}</tr></thead>
+                                <tbody>${rowsHtml}</tbody>
+                            </table>
+                        </div>`;
+                }
+                // GRÁFICOS (Plotly)
+                else if (item.type === 'chart') {
+                    visualContent = `<div id="chart-${index}" class="chart-container"></div>`;
+                    setTimeout(() => drawChart(index, item.chartType, item.data), 100);
+                }
+
+                card.innerHTML = `
+                    <div class="question-header">
+                        <div class="question-number">${index + 1}</div>
+                        <span style="color:#7f8c8d; font-weight:600;">${item.topicName}</span>
+                    </div>
+                    <div class="question-text">
+                        <p>${item.q}</p>
+                        ${visualContent}
+                    </div>
+                    <div class="options-container" id="opts-${index}">
+                        ${item.a.map((opt, i) => `
+                            <div class="option" onclick="selectOption(${index}, ${i}, this)">
+                                <span style="font-weight:bold; margin-right:10px;">${String.fromCharCode(97+i)})</span> ${opt}
+                            </div>
+                        `).join('')}
+                    </div>
+                `;
+                container.appendChild(card);
+
+                // 2. Crear Item en Sidebar
+                const navItem = document.createElement('div');
+                navItem.className = 'topic-item';
+                navItem.id = `nav-${index}`;
+                navItem.onclick = () => document.getElementById(`q-${index}`).scrollIntoView({ behavior: 'smooth', block: 'center' });
+                navItem.innerHTML = `
+                    <span class="topic-name">${index + 1}. ${item.topicName}</span>
+                    <div class="topic-status unanswered" id="dot-${index}"></div>
+                `;
+                topicsList.appendChild(navItem);
+            });
+        }
+
+        function drawChart(id, type, data) {
+            const divId = `chart-${id}`;
+            let plotData = [];
+            let layout = { 
+                autosize: true, 
+                margin: { t: 30, b: 30, l: 40, r: 20 },
+                font: { family: 'Segoe UI' },
+                paper_bgcolor: '#fff',
+                plot_bgcolor: '#fff',
+                height: 330
+            };
+
+            if (type === 'bar') {
+                plotData = [{ x: data.x, y: data.y, type: 'bar', marker: { color: '#3498db' } }];
+            } else if (type === 'histogram') {
+                plotData = [{ x: data, type: 'histogram', marker: { color: '#e74c3c' }, opacity: 0.7 }];
+            } else if (type === 'pie') {
+                plotData = [{ labels: data.labels, values: data.values, type: 'pie' }];
+            } else if (type === 'box') {
+                plotData = [{ y: data, type: 'box', boxpoints: 'outliers', marker: { color: '#9b59b6' } }];
+            } else if (type === 'scatter-line') {
+                plotData = [{ x: data.x, y: data.y, type: 'scatter', mode: 'lines+markers', line: {shape: 'hv', color: '#27ae60'} }];
+            }
+
+            Plotly.newPlot(divId, plotData, layout, {displayModeBar: false, responsive: true});
+        }
+
+        function selectOption(qIdx, optIdx, el) {
+            if (examFinished) return;
+
+            userAnswers[qIdx] = optIdx;
+            
+            // UI Update Options
+            const parent = document.getElementById(`opts-${qIdx}`);
+            Array.from(parent.children).forEach(child => child.classList.remove('selected'));
+            el.classList.add('selected');
+
+            // UI Update Sidebar
+            document.getElementById(`dot-${qIdx}`).className = 'topic-status answered';
+            updateProgress();
+        }
+
+        function updateProgress() {
+            const count = Object.keys(userAnswers).length;
+            document.getElementById('answered-count').innerText = count;
+        }
+
+        function submitExam() {
+            if (examFinished) return;
+            if (Object.keys(userAnswers).length < 10) {
+                if(!confirm("Aún faltan preguntas por responder. ¿Deseas finalizar?")) return;
+            }
+
+            examFinished = true;
+            let correctCount = 0;
+            let incorrectTopics = [];
+
+            currentExam.forEach((item, i) => {
+                const userAns = userAnswers[i];
+                const optsContainer = document.getElementById(`opts-${i}`);
+                const opts = optsContainer.children;
+                const dot = document.getElementById(`dot-${i}`);
+
+                // Quitar selección visual previa
+                if (userAns !== undefined) opts[userAns].classList.remove('selected');
+
+                if (userAns === item.c) {
+                    correctCount++;
+                    if(userAns !== undefined) opts[userAns].classList.add('correct');
+                    dot.className = 'topic-status correct';
+                } else {
+                    incorrectTopics.push(item.topicName);
+                    if(userAns !== undefined) opts[userAns].classList.add('incorrect');
+                    opts[item.c].classList.add('correct'); // Mostrar la correcta
+                    dot.className = 'topic-status incorrect';
+                }
+            });
+
+            // Calcular Nota
+            const score = (correctCount / 10) * 5;
+            const percentage = (correctCount / 10) * 100;
+
+            // Mostrar Resultados
+            const resultBox = document.getElementById('results-container');
+            const scoreCircle = document.getElementById('final-score');
+            
+            scoreCircle.innerText = score.toFixed(1);
+            scoreCircle.className = `score-circle ${score >= 4 ? 'high' : score >= 3 ? 'medium' : 'low'}`;
+            
+            document.getElementById('correct-count').innerText = correctCount;
+            document.getElementById('incorrect-count').innerText = 10 - correctCount;
+            document.getElementById('percentage-score').innerText = `${percentage}%`;
+
+            // Recomendaciones
+            const recText = document.getElementById('recommendations-text');
+            const recList = document.getElementById('topics-to-study');
+            recList.innerHTML = "";
+
+            if (score >= 4.0) recText.innerText = "¡Excelente trabajo! Tienes un gran dominio de los temas.";
+            else if (score >= 3.0) recText.innerText = "Buen intento, pero revisa los temas en rojo.";
+            else recText.innerText = "Es necesario reforzar los conceptos básicos.";
+
+            if (incorrectTopics.length > 0) {
+                [...new Set(incorrectTopics)].forEach(topic => {
+                    const li = document.createElement('li');
+                    li.innerText = `Repasar: ${topic}`;
+                    recList.appendChild(li);
+                });
+            } else {
+                recList.innerHTML = "<li>¡Sin temas pendientes!</li>";
+            }
+
+            resultBox.style.display = 'block';
+            resultBox.scrollIntoView({ behavior: 'smooth' });
+        }
+
+        // Botones Globales
+        document.getElementById('submit-btn').addEventListener('click', submitExam);
+        document.getElementById('new-exam-btn').addEventListener('click', generateExam);
+        document.getElementById('restart-btn').addEventListener('click', generateExam);
+        document.getElementById('review-btn').addEventListener('click', () => {
+            document.querySelector('.questions-section').scrollIntoView({ behavior: 'smooth' });
+        });
+
+        // Iniciar
+        document.addEventListener('DOMContentLoaded', generateExam);
+
+    </script>
+</body>
+</html>
