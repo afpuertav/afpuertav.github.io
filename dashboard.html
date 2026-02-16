@@ -596,10 +596,10 @@
             }
         }
 
-        // Click Botón Bomba
+        // Click Botón Bomba (comando actualizado: PUMP_ON / PUMP_OFF)
         btnPump.onclick = () => {
             if(!client || !client.connected || pumpState === null) return;
-            client.publish(TOPICS.CMD, pumpState ? "LED_OFF" : "LED_ON");
+            client.publish(TOPICS.CMD, pumpState ? "PUMP_OFF" : "PUMP_ON");
         };
 
         // Descargar CSV
