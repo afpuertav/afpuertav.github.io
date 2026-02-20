@@ -9,7 +9,6 @@
     <script src="https://cdn.jsdelivr.net/npm/moment@2.29.1/moment.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-moment@1.0.0/dist/chartjs-adapter-moment.min.js"></script>
     <style>
-        /* (Mantén los mismos estilos que ya tienes) */
         * { box-sizing: border-box; }
         body { font-family: 'Segoe UI', sans-serif; margin: 0; background: #f0f2f5; color: #333; }
         header { background: #1553AD; color: white; padding: 1rem; text-align: center; font-size: 1.8rem; font-weight: bold; }
@@ -41,7 +40,7 @@
     </style>
 </head>
 <body>
-    <header>📡 aGROW - Dashboard Definitivo (Corregido)</header>
+    <header>📡 aGROW - Dashboard Definitivo</header>
     <div class="container">
         <div class="card" style="text-align: center;">
             <h2>Control de Bomba</h2>
@@ -194,7 +193,7 @@
                 const msg = payload.toString();
                 console.log(`📨 ${topic}: ${msg.substring(0, 50)}...`);
                 lastDataTime = Date.now();
-                connected = true; // Si recibimos mensaje, estamos conectados
+                connected = true;
                 actualizarEstadoConexion();
 
                 if (topic === TOPICS.STATUS) {
@@ -239,15 +238,13 @@
             elements.connDot.className = 'dot ' + (conectado ? 'green' : 'red');
             elements.connText.innerText = conectado ? 'Conectado' : 'Desconectado';
             elements.downloadBtn.disabled = !conectado;
-            // Habilitar botones solo si conectado y pumpState no es null
             const habilitar = conectado && pumpState !== null;
             elements.btnPump.disabled = !habilitar;
-            elements.btnAuto.disabled = !conectado; // El botón auto solo necesita conexión, no pumpState
+            elements.btnAuto.disabled = !conectado;
             console.log('Estado conexión:', conectado, 'pumpState:', pumpState, 'btnPump disabled:', elements.btnPump.disabled);
         }
 
         function actualizarUI() {
-            // Actualizar texto y clases según pumpState
             if (pumpState === true) {
                 elements.pumpStatus.textContent = 'Bomba: ENCENDIDA';
                 elements.pumpStatus.className = 'status-badge badge-on';
@@ -263,12 +260,8 @@
                 elements.pumpStatus.className = 'status-badge badge-unknown';
                 elements.btnPump.textContent = 'CONECTANDO...';
             }
-
-            // Actualizar modo
             elements.modeStatus.textContent = autoMode ? 'Modo: Automático' : 'Modo: Manual';
             elements.modeStatus.className = 'status-badge ' + (autoMode ? 'badge-auto' : 'badge-manual');
-
-            // Re-evaluar habilitación de botones (por si cambió pumpState)
             actualizarEstadoConexion();
         }
 
@@ -306,7 +299,7 @@
             });
             // Feedback visual optimista
             autoMode = false;
-            pumpState = !pumpState; // Cambiar inmediatamente para feedback
+            pumpState = !pumpState;
             actualizarUI();
         };
 
