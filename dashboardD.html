@@ -3,35 +3,33 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard aGROW - Definitivo</title>
+    <title>aGROW - Dashboard Definitivo</title>
     <script src="https://unpkg.com/mqtt/dist/mqtt.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/moment@2.29.1/moment.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-moment@1.0.0/dist/chartjs-adapter-moment.min.js"></script>
     <style>
+        /* (Mantén aquí los mismos estilos que ya tienes, o usa los que te envié antes) */
         * { box-sizing: border-box; }
         body { font-family: 'Segoe UI', sans-serif; margin: 0; background: #f0f2f5; color: #333; }
         header { background: #1553AD; color: white; padding: 1rem; text-align: center; font-size: 1.8rem; font-weight: bold; }
         .container { max-width: 1200px; margin: 2rem auto; padding: 0 20px; }
         .card { background: white; border-radius: 12px; padding: 25px; margin-bottom: 25px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); border-top: 4px solid #1553AD; }
         h2 { color: #1553AD; margin-top: 0; }
-        .flex-row { display: flex; gap: 15px; flex-wrap: wrap; align-items: center; justify-content: center; }
-        button { padding: 12px 25px; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; transition: 0.2s; font-size: 1rem; }
+        button { padding: 12px 25px; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; transition: 0.2s; font-size: 1rem; margin: 5px; }
         button:disabled { opacity: 0.5; cursor: not-allowed; }
         .btn-primary { background: #1553AD; color: white; }
         .btn-primary.off { background: #e74c3c; }
         .btn-warning { background: #f39c12; color: white; }
-        .status-badge { padding: 8px 20px; border-radius: 30px; font-weight: bold; display: inline-block; }
+        .status-badge { padding: 8px 20px; border-radius: 30px; font-weight: bold; display: inline-block; margin: 5px; }
         .badge-on { background: #ffebee; color: #e74c3c; border: 1px solid #e74c3c; }
         .badge-off { background: #e3f2fd; color: #1553AD; border: 1px solid #1553AD; }
         .badge-auto { background: #e8f5e9; color: #2e7d32; border: 1px solid #2e7d32; }
         .badge-manual { background: #fff3e0; color: #e65100; border: 1px solid #e65100; }
-        .badge-unknown { background: #f5f5f5; color: #9e9e9e; border: 1px solid #9e9e9e; }
         .mqtt-status { margin-top: 15px; font-size: 0.9rem; }
         .dot { width: 12px; height: 12px; border-radius: 50%; display: inline-block; margin-right: 5px; }
         .dot.green { background: #2ecc71; box-shadow: 0 0 8px #2ecc71; }
         .dot.red { background: #e74c3c; }
-        .dot.yellow { background: #f1c40f; }
         .chart-container { height: 300px; margin-top: 20px; }
         .time-filters { display: flex; gap: 10px; justify-content: center; margin: 20px 0; flex-wrap: wrap; }
         .filter-btn { background: white; border: 1px solid #1553AD; color: #1553AD; padding: 6px 16px; border-radius: 20px; cursor: pointer; }
@@ -43,16 +41,15 @@
     </style>
 </head>
 <body>
-    <header>📡 aGROW - Monitoreo y Riego IoT</header>
+    <header>📡 aGROW - Dashboard Definitivo (Local)</header>
     <div class="container">
-        <!-- Tarjeta de control -->
         <div class="card" style="text-align: center;">
             <h2>Control de Bomba</h2>
-            <div class="flex-row">
+            <div>
                 <button id="btnPump" class="btn-primary" disabled>CONECTANDO...</button>
                 <button id="btnAuto" class="btn-warning" disabled>🤖 FORZAR MODO AUTO</button>
             </div>
-            <div class="flex-row" style="margin-top: 20px; justify-content: center;">
+            <div>
                 <span id="pumpStatus" class="status-badge badge-unknown">Bomba: ?</span>
                 <span id="modeStatus" class="status-badge badge-unknown">Modo: ?</span>
             </div>
@@ -62,13 +59,10 @@
             </div>
         </div>
 
-        <!-- Tarjeta de sensores y gráficas -->
         <div class="card">
             <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap;">
                 <h2>🌡️ Clima</h2>
-                <div class="live-value">
-                    🌡️ <span id="currTemp">--</span>°C | 💧 <span id="currHum">--</span>%
-                </div>
+                <div class="live-value">🌡️ <span id="currTemp">--</span>°C | 💧 <span id="currHum">--</span>%</div>
             </div>
             <div class="time-filters">
                 <button class="filter-btn" onclick="setTimeRange(1)">1h</button>
@@ -76,20 +70,15 @@
                 <button class="filter-btn" onclick="setTimeRange(72)">3d</button>
                 <button class="filter-btn active" onclick="setTimeRange('all')">Todo</button>
             </div>
-            <div class="chart-container">
-                <canvas id="chartClimate"></canvas>
-            </div>
+            <div class="chart-container"><canvas id="chartClimate"></canvas></div>
         </div>
 
-        <!-- Tarjeta de nivel de agua -->
         <div class="card">
             <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap;">
                 <h2>💧 Nivel Tanque</h2>
                 <div class="live-value">📦 <span id="currVol">--</span> L</div>
             </div>
-            <div class="chart-container">
-                <canvas id="chartTank"></canvas>
-            </div>
+            <div class="chart-container"><canvas id="chartTank"></canvas></div>
             <div class="footer">
                 <button id="downloadBtn" class="btn-download" disabled onclick="downloadCSV()">📥 Descargar CSV</button>
                 <button id="clearBtn" class="btn-clear" onclick="clearESP32Data()">🗑️ Resetear SD</button>
@@ -98,7 +87,7 @@
     </div>
 
     <script>
-        // ================= CONFIGURACIÓN MQTT =================
+        // --- CONFIGURACIÓN (¡NO CAMBIES NADA!) ---
         const MQTT_URL = "wss://d0c74dd51f244a5b87e0373b99197ba7.s1.eu.hivemq.cloud:8884/mqtt";
         const MQTT_OPT = {
             username: "andresPuerta",
@@ -113,16 +102,16 @@
             HISTORY: "iot/esp32/history"
         };
 
-        // ================= VARIABLES GLOBALES =================
+        // --- Variables de estado ---
         let client = null;
-        let pumpState = null;          // true = encendida, false = apagada, null = desconocido
-        let autoMode = true;            // true = auto, false = manual
+        let pumpState = null;
+        let autoMode = true;
         let allHistoryData = [];
         let currentTimeRange = 'all';
         let lastDataTime = 0;
-        const DATA_TIMEOUT = 30000;     // 30 seg sin datos = desconectado
+        const DATA_TIMEOUT = 30000; // 30 seg
 
-        // Elementos DOM
+        // --- Elementos DOM ---
         const elements = {
             btnPump: document.getElementById('btnPump'),
             btnAuto: document.getElementById('btnAuto'),
@@ -136,20 +125,15 @@
             currVol: document.getElementById('currVol')
         };
 
-        // ================= GRÁFICAS =================
-        const ctxClimate = document.getElementById('chartClimate').getContext('2d');
-        const chartClimate = new Chart(ctxClimate, {
+        // --- Gráficas (igual que antes) ---
+        const chartClimate = new Chart(document.getElementById('chartClimate'), {
             type: 'line',
-            data: {
-                datasets: [
-                    { label: 'Temp (°C)', data: [], borderColor: '#e74c3c', backgroundColor: 'rgba(231,76,60,0.1)', yAxisID: 'y', fill: true, tension: 0.3 },
-                    { label: 'Humedad (%)', data: [], borderColor: '#3498db', backgroundColor: 'rgba(52,152,219,0.1)', yAxisID: 'y1', fill: true, tension: 0.3 }
-                ]
-            },
+            data: { datasets: [
+                { label: 'Temp (°C)', data: [], borderColor: '#e74c3c', yAxisID: 'y', fill: true },
+                { label: 'Humedad (%)', data: [], borderColor: '#3498db', yAxisID: 'y1', fill: true }
+            ]},
             options: {
                 responsive: true, maintainAspectRatio: false,
-                interaction: { mode: 'index', intersect: false },
-                plugins: { tooltip: { callbacks: { title: ctx => moment(ctx[0].parsed.x).format('DD/MM HH:mm') } } },
                 scales: {
                     x: { type: 'time', time: { unit: 'minute' } },
                     y: { type: 'linear', position: 'left', min: 0, max: 50 },
@@ -158,22 +142,16 @@
             }
         });
 
-        const ctxTank = document.getElementById('chartTank').getContext('2d');
-        const chartTank = new Chart(ctxTank, {
+        const chartTank = new Chart(document.getElementById('chartTank'), {
             type: 'line',
-            data: { datasets: [{ label: 'Volumen (L)', data: [], borderColor: '#27ae60', backgroundColor: 'rgba(39,174,96,0.2)', fill: true, tension: 0.3 }] },
-            options: {
-                responsive: true, maintainAspectRatio: false,
-                scales: { x: { type: 'time' }, y: { beginAtZero: true } }
-            }
+            data: { datasets: [{ label: 'Volumen (L)', data: [], borderColor: '#27ae60', fill: true }] },
+            options: { responsive: true, maintainAspectRatio: false, scales: { x: { type: 'time' }, y: { beginAtZero: true } } }
         });
 
-        // ================= FUNCIONES DE CONEXIÓN MQTT =================
+        // --- Funciones de conexión MQTT (mejoradas) ---
         function conectarMQTT() {
-            if (client) {
-                client.end(true);
-            }
-            console.log('📡 Conectando MQTT...');
+            if (client) client.end(true);
+            console.log('📡 Conectando MQTT (local)...');
             client = mqtt.connect(MQTT_URL, MQTT_OPT);
 
             client.on('connect', () => {
@@ -182,7 +160,6 @@
                 client.subscribe([TOPICS.DATA, TOPICS.STATUS, TOPICS.HISTORY], (err) => {
                     if (!err) console.log('📥 Suscrito a tópicos');
                 });
-                // Solicitar historial al conectar
                 setTimeout(() => {
                     if (client && client.connected) {
                         console.log('📤 Solicitando historial...');
@@ -249,15 +226,8 @@
         }
 
         function actualizarEstadoConexion(conectado, texto = '') {
-            const dot = elements.connDot;
-            const txt = elements.connText;
-            if (conectado) {
-                dot.className = 'dot green';
-                txt.innerText = texto || 'Conectado';
-            } else {
-                dot.className = 'dot red';
-                txt.innerText = texto || 'Desconectado';
-            }
+            elements.connDot.className = 'dot ' + (conectado ? 'green' : 'red');
+            elements.connText.innerText = texto || (conectado ? 'Conectado' : 'Desconectado');
             elements.downloadBtn.disabled = !conectado;
             elements.btnPump.disabled = !conectado || pumpState === null;
             elements.btnAuto.disabled = !conectado;
@@ -268,7 +238,6 @@
         }
 
         function actualizarUI() {
-            // Estado bomba
             if (pumpState === true) {
                 elements.pumpStatus.textContent = 'Bomba: ENCENDIDA';
                 elements.pumpStatus.className = 'status-badge badge-on';
@@ -284,14 +253,8 @@
                 elements.pumpStatus.className = 'status-badge badge-unknown';
                 elements.btnPump.textContent = 'CONECTANDO...';
             }
-            // Modo
-            if (autoMode) {
-                elements.modeStatus.textContent = 'Modo: Automático';
-                elements.modeStatus.className = 'status-badge badge-auto';
-            } else {
-                elements.modeStatus.textContent = 'Modo: Manual';
-                elements.modeStatus.className = 'status-badge badge-manual';
-            }
+            elements.modeStatus.textContent = autoMode ? 'Modo: Automático' : 'Modo: Manual';
+            elements.modeStatus.className = 'status-badge ' + (autoMode ? 'badge-auto' : 'badge-manual');
         }
 
         function actualizarGraficas() {
@@ -314,14 +277,13 @@
             actualizarGraficas();
         }
 
-        // ================= ACCIONES DE USUARIO =================
+        // --- Acciones de usuario ---
         elements.btnPump.onclick = () => {
             if (!client || !client.connected || pumpState === null) return;
             const cmd = pumpState ? 'PUMP_OFF' : 'PUMP_ON';
             console.log('📤 Enviando:', cmd);
             client.publish(TOPICS.CMD, cmd);
-            // Feedback visual inmediato (optimista)
-            autoMode = false;
+            autoMode = false; // Feedback visual inmediato
             actualizarUI();
         };
 
@@ -349,14 +311,14 @@
             }
         }
 
-        // Verificar timeout de datos
+        // --- Verificar timeout de datos ---
         setInterval(() => {
             if (lastDataTime > 0 && Date.now() - lastDataTime > DATA_TIMEOUT) {
                 actualizarEstadoConexion(false, 'Sin datos del ESP32');
             }
         }, 5000);
 
-        // Iniciar
+        // --- Iniciar ---
         conectarMQTT();
     </script>
 </body>
