@@ -9,7 +9,7 @@
     <script src="https://cdn.jsdelivr.net/npm/moment@2.29.1/moment.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-moment@1.0.0/dist/chartjs-adapter-moment.min.js"></script>
     <style>
-        /* (Mantén aquí los mismos estilos que ya tienes, o usa los que te envié antes) */
+        /* (Mantén los mismos estilos que ya tienes) */
         * { box-sizing: border-box; }
         body { font-family: 'Segoe UI', sans-serif; margin: 0; background: #f0f2f5; color: #333; }
         header { background: #1553AD; color: white; padding: 1rem; text-align: center; font-size: 1.8rem; font-weight: bold; }
@@ -41,7 +41,7 @@
     </style>
 </head>
 <body>
-    <header>📡 aGROW - Dashboard Definitivo (Local)</header>
+    <header>📡 aGROW - Dashboard Definitivo (Corregido)</header>
     <div class="container">
         <div class="card" style="text-align: center;">
             <h2>Control de Bomba</h2>
@@ -87,13 +87,15 @@
     </div>
 
     <script>
-        // --- CONFIGURACIÓN (¡NO CAMBIES NADA!) ---
+        // --- CONFIGURACIÓN ---
         const MQTT_URL = "wss://d0c74dd51f244a5b87e0373b99197ba7.s1.eu.hivemq.cloud:8884/mqtt";
         const MQTT_OPT = {
             username: "andresPuerta",
             password: "aGROW123",
             reconnectPeriod: 2000,
-            clientId: 'web_' + Math.random().toString(16).substr(2, 8)
+            clientId: 'web_' + Math.random().toString(16).substr(2, 8),
+            keepalive: 60,
+            reschedulePings: true
         };
         const TOPICS = {
             DATA: "iot/esp32/data",
@@ -109,6 +111,7 @@
         let allHistoryData = [];
         let currentTimeRange = 'all';
         let lastDataTime = 0;
+        let connected = false;
         const DATA_TIMEOUT = 30000; // 30 seg
 
         // --- Elementos DOM ---
@@ -125,7 +128,7 @@
             currVol: document.getElementById('currVol')
         };
 
-        // --- Gráficas (igual que antes) ---
+        // --- Gráficas ---
         const chartClimate = new Chart(document.getElementById('chartClimate'), {
             type: 'line',
             data: { datasets: [
@@ -148,15 +151,16 @@
             options: { responsive: true, maintainAspectRatio: false, scales: { x: { type: 'time' }, y: { beginAtZero: true } } }
         });
 
-        // --- Funciones de conexión MQTT (mejoradas) ---
+        // --- Funciones de conexión MQTT ---
         function conectarMQTT() {
             if (client) client.end(true);
-            console.log('📡 Conectando MQTT (local)...');
+            console.log('📡 Conectando MQTT...');
             client = mqtt.connect(MQTT_URL, MQTT_OPT);
 
             client.on('connect', () => {
                 console.log('✅ Conectado al broker');
-                actualizarEstadoConexion(true);
+                connected = true;
+                actualizarEstadoConexion();
                 client.subscribe([TOPICS.DATA, TOPICS.STATUS, TOPICS.HISTORY], (err) => {
                     if (!err) console.log('📥 Suscrito a tópicos');
                 });
@@ -170,23 +174,28 @@
 
             client.on('reconnect', () => {
                 console.log('🔄 Reconnectando...');
-                actualizarEstadoConexion(false, 'Reconectando...');
+                connected = false;
+                actualizarEstadoConexion();
             });
 
             client.on('offline', () => {
                 console.log('🔌 Offline');
-                actualizarEstadoConexion(false, 'Desconectado');
+                connected = false;
+                actualizarEstadoConexion();
             });
 
             client.on('error', (err) => {
                 console.error('❌ Error MQTT:', err);
-                actualizarEstadoConexion(false, 'Error');
+                connected = false;
+                actualizarEstadoConexion();
             });
 
             client.on('message', (topic, payload) => {
                 const msg = payload.toString();
                 console.log(`📨 ${topic}: ${msg.substring(0, 50)}...`);
                 lastDataTime = Date.now();
+                connected = true; // Si recibimos mensaje, estamos conectados
+                actualizarEstadoConexion();
 
                 if (topic === TOPICS.STATUS) {
                     pumpState = (msg === 'ON');
@@ -225,19 +234,20 @@
             });
         }
 
-        function actualizarEstadoConexion(conectado, texto = '') {
+        function actualizarEstadoConexion() {
+            const conectado = connected && client && client.connected;
             elements.connDot.className = 'dot ' + (conectado ? 'green' : 'red');
-            elements.connText.innerText = texto || (conectado ? 'Conectado' : 'Desconectado');
+            elements.connText.innerText = conectado ? 'Conectado' : 'Desconectado';
             elements.downloadBtn.disabled = !conectado;
-            elements.btnPump.disabled = !conectado || pumpState === null;
-            elements.btnAuto.disabled = !conectado;
-            if (!conectado) {
-                pumpState = null;
-                actualizarUI();
-            }
+            // Habilitar botones solo si conectado y pumpState no es null
+            const habilitar = conectado && pumpState !== null;
+            elements.btnPump.disabled = !habilitar;
+            elements.btnAuto.disabled = !conectado; // El botón auto solo necesita conexión, no pumpState
+            console.log('Estado conexión:', conectado, 'pumpState:', pumpState, 'btnPump disabled:', elements.btnPump.disabled);
         }
 
         function actualizarUI() {
+            // Actualizar texto y clases según pumpState
             if (pumpState === true) {
                 elements.pumpStatus.textContent = 'Bomba: ENCENDIDA';
                 elements.pumpStatus.className = 'status-badge badge-on';
@@ -253,8 +263,13 @@
                 elements.pumpStatus.className = 'status-badge badge-unknown';
                 elements.btnPump.textContent = 'CONECTANDO...';
             }
+
+            // Actualizar modo
             elements.modeStatus.textContent = autoMode ? 'Modo: Automático' : 'Modo: Manual';
             elements.modeStatus.className = 'status-badge ' + (autoMode ? 'badge-auto' : 'badge-manual');
+
+            // Re-evaluar habilitación de botones (por si cambió pumpState)
+            actualizarEstadoConexion();
         }
 
         function actualizarGraficas() {
@@ -279,11 +294,19 @@
 
         // --- Acciones de usuario ---
         elements.btnPump.onclick = () => {
-            if (!client || !client.connected || pumpState === null) return;
+            if (!client || !client.connected || pumpState === null) {
+                console.log('No se puede enviar: cliente no conectado o estado desconocido');
+                return;
+            }
             const cmd = pumpState ? 'PUMP_OFF' : 'PUMP_ON';
-            console.log('📤 Enviando:', cmd);
-            client.publish(TOPICS.CMD, cmd);
-            autoMode = false; // Feedback visual inmediato
+            console.log('📤 Enviando comando:', cmd);
+            client.publish(TOPICS.CMD, cmd, {}, (err) => {
+                if (err) console.error('Error al publicar:', err);
+                else console.log('Comando enviado con éxito');
+            });
+            // Feedback visual optimista
+            autoMode = false;
+            pumpState = !pumpState; // Cambiar inmediatamente para feedback
             actualizarUI();
         };
 
@@ -314,7 +337,8 @@
         // --- Verificar timeout de datos ---
         setInterval(() => {
             if (lastDataTime > 0 && Date.now() - lastDataTime > DATA_TIMEOUT) {
-                actualizarEstadoConexion(false, 'Sin datos del ESP32');
+                connected = false;
+                actualizarEstadoConexion();
             }
         }, 5000);
 
