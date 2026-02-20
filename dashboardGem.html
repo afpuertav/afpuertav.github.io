@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - aGROW</title>
+    
+    <script src="https://unpkg.com/mqtt/dist/mqtt.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/moment@2.29.1/moment.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-moment@1.0.0/dist/chartjs-adapter-moment.min.js"></script>
+    
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin: 0; background-color: #f0f2f5; color: #333; display: flex; flex-direction: column; min-height: 100vh; }
+        header { background-color: #1553AD; padding: 1rem 2rem; color: white; display: flex; justify-content: center; align-items: center; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        .logo-text { color: white; text-decoration: none; font-size: 1.5rem; font-weight: bold; letter-spacing: 1px; }
+        .container { width: 100%; max-width: 1000px; margin: 2rem auto; padding: 0 20px; box-sizing: border-box; flex: 1; }
+        .card { background: white; padding: 25px; margin-bottom: 20px; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); border-top: 4px solid #1553AD; }
+        h2 { color: #1553AD; margin-top: 0; font-size: 1.4rem; }
+        
+        .btn-group { display: flex; gap: 10px; justify-content: center; margin-top: 15px; flex-wrap: wrap;}
+        .btn-control { padding: 15px 30px; font-size: 16px; border: none; border-radius: 8px; cursor: pointer; background-color: #1553AD; color: white; transition: 0.3s; font-weight: bold; flex: 1; min-width: 150px; max-width: 250px;}
+        .btn-control:hover { background-color: #124694; }
+        .btn-control.off { background-color: #e74c3c; }
+        .btn-control.off:hover { background-color: #c0392b; }
+        .btn-control.auto { background-color: #f39c12; }
+        .btn-control:disabled { background-color: #bdc3c7; cursor: not-allowed; }
+
+        .chart-container { position: relative; height: 300px; margin-top: 20px; }
+        .time-filters { display: flex; justify-content: center; gap: 10px; margin-bottom: 20px; flex-wrap: wrap; }
+        .filter-btn { padding: 6px 16px; border: 1px solid #1553AD; background: white; color: #1553AD; border-radius: 20px; cursor: pointer; transition: 0.2s; font-weight: 500; }
+        .filter-btn.active, .filter-btn:hover { background: #1553AD; color: white; }
+        .live-badge { font-size: 1rem; background: #f8f9fa; padding: 8px 15px; border-radius: 20px; border: 1px solid #e1e4e8; display: inline-block; margin-bottom: 10px; }
+        .footer-controls { display: flex; justify-content: space-between; align-items: center; margin-top: 25px; flex-wrap: wrap; gap: 15px; border-top: 1px solid #eee; padding-top: 15px; }
+        .btn-action { padding: 10px 20px; border-radius: 6px; cursor: pointer; border: none; display: flex; align-items: center; gap: 6px; font-size: 0.9rem; font-weight: 500;}
+        .btn-download { background-color: #27ae60; color: white; }
+        .btn-clear { background-color: transparent; color: #7f8c8d; border: 1px solid #bdc3c7; }
+        
+        .status-dot { width: 10px; height: 10px; border-radius: 50%; background: #ccc; display: inline-block; margin-right: 5px; }
+        .status-dot.connected { background: #2ecc71; box-shadow: 0 0 5px #2ecc71; }
+        .status-dot.disconnected { background: #e74c3c; }
+        
+        .status-badges { display: flex; justify-content: center; gap: 15px; flex-wrap: wrap; margin-top: 15px; }
+        .sys-status { font-size: 0.9rem; padding: 8px 15px; border-radius: 20px; font-weight: bold; }
+        .pump-on { background-color: rgba(231, 76, 60, 0.1); color: #e74c3c; border: 1px solid #e74c3c; }
+        .pump-off { background-color: rgba(52, 152, 219, 0.1); color: #3498db; border: 1px solid #3498db; }
+        
+        .mode-auto { background-color: rgba(46, 204, 113, 0.1); color: #27ae60; border: 1px solid #2ecc71; }
+        .mode-manual { background-color: rgba(243, 156, 18, 0.1); color: #e67e22; border: 1px solid #f39c12; }
+        .status-unknown { background-color: rgba(149, 165, 166, 0.1); color: #7f8c8d; border: 1px solid #95a5a6; }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="logo-text">📡 Monitoreo IoT - aGROW 🌿</div>
+    </header>
+    
+    <div class="container">
+        
+        <div class="card" style="text-align: center;">
+            <h2>Control de Riego</h2>
+            
+            <div class="btn-group">
+                <button id="btnPump" class="btn-control" disabled>CONECTANDO...</button>
+                <button id="btnAuto" class="btn-control auto" disabled onclick="resetAutoMode()">🤖 Forzar Modo Auto</button>
+            </div>
+            
+            <div class="status-badges">
+                <div id="pumpStatus" class="sys-status status-unknown">Bomba: Sin conexión</div>
+                <div id="sysMode" class="sys-status status-unknown">Modo: Esperando datos...</div>
+            </div>
+
+            <div style="margin-top: 15px; font-size: 0.9rem; color: #666;">
+                <span id="statusDot" class="status-dot disconnected"></span> <span id="statusText">Desconectado del ESP32</span>
+            </div>
+        </div>
+        
+        <div class="card">
+            <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap;">
+                <h2>Sensor DHT11</h2>
+                <div class="live-badge">
+                    🌡️ <span id="currTemp" style="font-weight: bold; color: #e74c3c;">--</span>°C &nbsp;|&nbsp; 
+                    💧 <span id="currHum" style="font-weight: bold; color: #3498db;">--</span>%
+                </div>
+            </div>
+            <div class="time-filters">
+                <button class="filter-btn" onclick="setTimeRange(1)">1h</button>
+                <button class="filter-btn" onclick="setTimeRange(24)">24h</button>
+                <button class="filter-btn" onclick="setTimeRange(72)">3 Días</button>
+                <button class="filter-btn active" onclick="setTimeRange('all')">Todo</button>
+            </div>
+            <div class="chart-container"><canvas id="chartClimate"></canvas></div>
+        </div>
+
+        <div class="card">
+            <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap;">
+                <h2 style="color: #1553AD;">Sensor de Nivel</h2>
+                <div class="live-badge">
+                    Tanque: <span id="currVol" style="font-weight: bold; color: #27ae60;">--</span> L
+                </div>
+            </div>
+            <div class="chart-container"><canvas id="chartTank"></canvas></div>
+            
+            <div class="footer-controls">
+                <button id="downloadBtn" class="btn-action btn-download" disabled onclick="downloadCSV()">📥 Descargar CSV</button>
+                <button id="clearBtn" class="btn-action btn-clear" onclick="clearESP32Data()">🗑️ Resetear ESP32</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const MQTT_URL = "wss://d0c74dd51f244a5b87e0373b99197ba7.s1.eu.hivemq.cloud:8884/mqtt";
+        const MQTT_OPT = { username: "andresPuerta", password: "aGROW123", reconnectPeriod: 2000, clientId: 'web_' + Math.random().toString(16).substr(2, 8) };
+        const TOPICS = { DATA: "iot/esp32/data", CMD: "iot/esp32/cmd", STATUS: "iot/esp32/status", HISTORY: "iot/esp32/history" };
+
+        let client, pumpState = null, allHistoryData = [], currentTimeRange = 'all', lastDataTime = 0;
+        const DATA_TIMEOUT = 120000;
+
+        const elements = {
+            btnPump: document.getElementById("btnPump"), btnAuto: document.getElementById("btnAuto"),
+            statusText: document.getElementById("statusText"), statusDot: document.getElementById("statusDot"),
+            downloadBtn: document.getElementById("downloadBtn"), pumpStatus: document.getElementById("pumpStatus"),
+            sysMode: document.getElementById("sysMode"), currTemp: document.getElementById("currTemp"),
+            currHum: document.getElementById("currHum"), currVol: document.getElementById("currVol")
+        };
+
+        const configChart = (id, datasets, scalesOpts) => new Chart(document.getElementById(id).getContext("2d"), {
+            type: "line", data: { datasets },
+            options: {
+                responsive: true, maintainAspectRatio: false, interaction: { mode: 'index', intersect: false },
+                plugins: { tooltip: { callbacks: { title: ctx => moment(ctx[0].parsed.x).format('MMM D, HH:mm:ss') } } },
+                scales: { x: { type: 'time', time: { unit: 'minute', displayFormats: { minute: 'HH:mm', hour: 'DD HH:mm' } }, grid: { display: false } }, ...scalesOpts }
+            }
+        });
+
+        const chartClimate = configChart("chartClimate", [
+            { label: "Temp (°C)", data: [], borderColor: "#e74c3c", backgroundColor: "rgba(231,76,60,0.1)", yAxisID: 'y', fill: true, tension: 0.3 },
+            { label: "Hum (%)", data: [], borderColor: "#3498db", backgroundColor: "rgba(52,152,219,0.1)", yAxisID: 'y1', fill: true, tension: 0.3 }
+        ], { y: { type: 'linear', position: 'left', min: 0, max: 50 }, y1: { type: 'linear', position: 'right', grid: { drawOnChartArea: false }, min: 20, max: 90 } });
+
+        const chartTank = configChart("chartTank", [
+            { label: "Volumen (L)", data: [], borderColor: "#27ae60", backgroundColor: "rgba(39, 174, 96, 0.2)", fill: true, tension: 0.4 }
+        ], { y: { beginAtZero: true } });
+
+        setInterval(() => {
+            if (lastDataTime > 0 && (Date.now() - lastDataTime) > DATA_TIMEOUT && pumpState !== null) updateStatus(false, "Sin datos recientes del ESP32");
+        }, 5000);
+
+        function connectMQTT() {
+            client = mqtt.connect(MQTT_URL, MQTT_OPT);
+            client.on("connect", () => {
+                updateStatus(true, "Conectado");
+                client.subscribe([TOPICS.DATA, TOPICS.STATUS, TOPICS.HISTORY]);
+                setTimeout(() => { if (client.connected) client.publish(TOPICS.CMD, "GET_HISTORY"); }, 1000);
+            });
+            client.on("offline", () => updateStatus(false, "Desconectado del broker"));
+            
+            client.on("message", (topic, payload) => {
+                const msg = payload.toString();
+                lastDataTime = Date.now();
+
+                if (topic === TOPICS.STATUS) {
+                    pumpState = (msg === "ON");
+                    updateUI(); updateStatus(true, "Conectado al ESP32");
+                } else if (topic === TOPICS.DATA) {
+                    try {
+                        const data = JSON.parse(msg);
+                        elements.currTemp.innerText = data.temp.toFixed(1);
+                        elements.currHum.innerText = data.hum.toFixed(1);
+                        elements.currVol.innerText = data.litros.toFixed(1);
+                        
+                        pumpState = (data.pump === "true" || data.pump === true);
+                        updateUI();
+                        
+                        // Actualizar visual del MODO (Auto vs Manual)
+                        if(data.mode === "auto") {
+                            elements.sysMode.textContent = "Modo: Automático";
+                            elements.sysMode.className = "sys-status mode-auto";
+                        } else {
+                            elements.sysMode.textContent = "Modo Manual (Temporal)";
+                            elements.sysMode.className = "sys-status mode-manual";
+                        }
+                        
+                        allHistoryData.push({ x: moment(data.ts, "YYYY-MM-DD HH:mm:ss"), temp: data.temp, hum: data.hum, litros: data.litros });
+                        updateCharts();
+                    } catch(e) {}
+                } else if (topic === TOPICS.HISTORY) {
+                    if (msg === "EMPTY" || msg === "CLEARED") { allHistoryData = []; updateCharts(); }
+                    else {
+                        msg.trim().split("\n").forEach(line => {
+                            const p = line.split(",");
+                            if (p.length >= 4) allHistoryData.push({ x: moment(p[0]), temp: +p[1], hum: +p[2], litros: +p[3] });
+                        });
+                        updateCharts();
+                    }
+                }
+            });
+        }
+
+        function updateCharts() {
+            let filtered = currentTimeRange === 'all' ? allHistoryData : allHistoryData.filter(d => d.x.isAfter(moment().subtract(currentTimeRange, 'hours')));
+            chartClimate.data.datasets[0].data = filtered.map(d => ({ x: d.x, y: d.temp }));
+            chartClimate.data.datasets[1].data = filtered.map(d => ({ x: d.x, y: d.hum }));
+            chartTank.data.datasets[0].data = filtered.map(d => ({ x: d.x, y: d.litros }));
+            chartClimate.update('none'); chartTank.update('none');
+        }
+
+        function setTimeRange(hours) {
+            currentTimeRange = hours;
+            document.querySelectorAll('.filter-btn').forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+            updateCharts();
+        }
+
+        function updateStatus(connected, txt) {
+            elements.statusDot.className = "status-dot " + (connected ? "connected" : "disconnected");
+            elements.statusText.innerText = txt;
+            elements.statusText.style.color = connected ? "#2ecc71" : "#e74c3c";
+            elements.downloadBtn.disabled = !connected;
+            if (!connected) { 
+                pumpState = null; updateUI(); 
+                elements.sysMode.textContent = "Modo: Desconocido";
+                elements.sysMode.className = "sys-status status-unknown";
+            }
+        }
+
+        function updateUI() {
+            elements.btnPump.disabled = (pumpState === null);
+            elements.btnAuto.disabled = (pumpState === null);
+            
+            if (pumpState === true) {
+                elements.pumpStatus.textContent = "Bomba: ENCENDIDA";
+                elements.pumpStatus.className = "sys-status pump-on";
+                elements.btnPump.innerText = "APAGAR BOMBA";
+                elements.btnPump.classList.add("off");
+            } else if (pumpState === false) {
+                elements.pumpStatus.textContent = "Bomba: APAGADA";
+                elements.pumpStatus.className = "sys-status pump-off";
+                elements.btnPump.innerText = "ENCENDER BOMBA";
+                elements.btnPump.classList.remove("off");
+            } else {
+                elements.pumpStatus.textContent = "Bomba: Sin conexión";
+                elements.pumpStatus.className = "sys-status status-unknown";
+                elements.btnPump.innerText = "CONECTANDO...";
+            }
+        }
+
+        elements.btnPump.onclick = () => {
+            if(client && client.connected && pumpState !== null) {
+                client.publish(TOPICS.CMD, pumpState ? "PUMP_OFF" : "PUMP_ON");
+                // Predecimos el estado visualmente para mejor respuesta UI
+                elements.sysMode.textContent = "Modo Manual (Temporal)";
+                elements.sysMode.className = "sys-status mode-manual";
+            }
+        };
+
+        function resetAutoMode() {
+            if(client && client.connected) {
+                client.publish(TOPICS.CMD, "AUTO_MODE");
+                elements.sysMode.textContent = "Modo: Automático";
+                elements.sysMode.className = "sys-status mode-auto";
+            }
+        }
+
+        function downloadCSV() {
+            let csv = "Fecha,Temperatura (°C),Humedad (%),Litros\n" + allHistoryData.map(d => `${d.x.format("YYYY-MM-DD HH:mm:ss")},${d.temp.toFixed(2)},${d.hum.toFixed(2)},${d.litros.toFixed(2)}`).join("\n");
+            const a = document.createElement('a');
+            a.href = window.URL.createObjectURL(new Blob([csv], { type: 'text/csv' }));
+            a.download = `reporte_aGROW_${moment().format("YYYYMMDD_HHmm")}.csv`;
+            a.click();
+        }
+
+        function clearESP32Data() {
+            if (confirm("⚠️ ¿Seguro que deseas borrar el historial de la tarjeta SD?")) client.publish(TOPICS.CMD, "CLEAR_DATA");
+        }
+
+        connectMQTT();
+    </script>
+</body>
+</html>
