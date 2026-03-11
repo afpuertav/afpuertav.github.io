@@ -525,9 +525,9 @@
         },
         { 
             q: "Defina un espacio muestral para el experimento: 'lanzar una moneda y un dado'.",
-            a: ["{C, S} × {1,2,3,4,5,6}", "12 resultados posibles", "Ambas son correctas", "Ninguna"],
+            a: ["{C, S} x {1,2,3,4,5,6}", "12 resultados posibles", "Ambas son correctas", "Ninguna"],
             c: 2,
-            explanation: "El espacio muestral son todos los pares ordenados (resultado de la moneda, resultado del dado). Esto da 2×6=12 resultados, ambas descripciones son válidas."
+            explanation: "El espacio muestral son todos los pares ordenados (resultado de la moneda, resultado del dado). Esto da 2x6=12 resultados, ambas descripciones son válidas."
         },
         { 
             q: "En el experimento 'tiempo de vida de una bombilla', ¿qué tipo de espacio muestral se tiene?",
@@ -561,19 +561,19 @@
             q: "En un examen, 60% de los estudiantes estudió y 40% no. Entre los que estudiaron, 75% aprueba; entre los que no, solo 20% aprueba. Si un estudiante aprueba, ¿cuál es la probabilidad de que haya estudiado?",
             a: ["0.85", "0.69", "0.75", "0.80"],
             c: 0,
-            explanation: "Aplicamos el teorema de Bayes: P(Estudió|Aprueba) = [P(Aprueba|Estudió) P(Estudió)] / [P(Aprueba|Estudió)P(Estudió) + P(Aprueba|No estudió)P(No estudió)] = (0.75×0.6) / (0.75×0.6 + 0.2×0.4) = 0.45 / (0.45+0.08) = 0.45/0.53 ≈ 0.849. En R: (0.75*0.6)/(0.75*0.6+0.2*0.4)."
+            explanation: "Aplicamos el teorema de Bayes: P(Estudió|Aprueba) = [P(Aprueba|Estudió) P(Estudió)] / [P(Aprueba|Estudió)P(Estudió) + P(Aprueba|No estudió)P(No estudió)] = (0.75x0.6) / (0.75x0.6 + 0.2x0.4) = 0.45 / (0.45+0.08) = 0.45/0.53 ≈ 0.849. En R: (0.75*0.6)/(0.75*0.6+0.2*0.4)."
         },
         { 
             q: "Una prueba detecta una enfermedad con 99% de sensibilidad y 98% de especificidad. La prevalencia es 0.1%. Si una persona da positivo, ¿cuál es la probabilidad de que realmente tenga la enfermedad?",
             a: ["0.047", "0.99", "0.02", "0.001"],
             c: 0,
-            explanation: "P(Enfermo|Positivo) = (0.99×0.001) / (0.99×0.001 + 0.02×0.999) = 0.00099 / (0.00099 + 0.01998) = 0.00099/0.02097 ≈ 0.0472. En R: (0.99*0.001)/(0.99*0.001+0.02*0.999)."
+            explanation: "P(Enfermo|Positivo) = (0.99x0.001) / (0.99x0.001 + 0.02x0.999) = 0.00099 / (0.00099 + 0.01998) = 0.00099/0.02097 ≈ 0.0472. En R: (0.99*0.001)/(0.99*0.001+0.02*0.999)."
         },
         { 
             q: "Dos urnas: U1 con 3 bolas blancas y 7 negras, U2 con 6 blancas y 6 negras. Se elige una urna al azar y se extrae una bola blanca. ¿Cuál es la probabilidad de que haya sido de la U1?",
             a: ["1/2", "3/10", "1/3", "3/8"],
             c: 3,
-            explanation: "P(U1|Blanca) = (P(Blanca|U1)P(U1)) / (P(Blanca|U1)P(U1)+P(Blanca|U2)P(U2)) = (0.3×0.5)/(0.3×0.5+0.5×0.5)=0.15/(0.15+0.25)=0.15/0.4=0.375 = 3/8. En R: (0.3*0.5)/(0.3*0.5+0.5*0.5)."
+            explanation: "P(U1|Blanca) = (P(Blanca|U1)P(U1)) / (P(Blanca|U1)P(U1)+P(Blanca|U2)P(U2)) = (0.3x0.5)/(0.3x0.5+0.5x0.5)=0.15/(0.15+0.25)=0.15/0.4=0.375 = 3/8. En R: (0.3*0.5)/(0.3*0.5+0.5*0.5)."
         },
         // Nuevas
         { 
@@ -601,19 +601,19 @@
             q: "Según estudios, el 70% de las aeronaves ligeras que desaparecen en vuelo son localizadas. De las localizadas, 60% tienen localizador; de las no localizadas, 90% no tienen localizador. ¿Cuál es la probabilidad de que una aeronave tenga localizador?",
             a: ["0.35", "0.45", "0.51", "0.55"],
             c: 1,
-            explanation: "P(Localizador) = P(Localizador|Localizada)P(Localizada) + P(Localizador|No localizada)P(No localizada) = 0.60×0.7 + 0.10×0.3 = 0.42 + 0.03 = 0.45. En R: 0.6*0.7 + 0.1*0.3."
+            explanation: "P(Localizador) = P(Localizador|Localizada)P(Localizada) + P(Localizador|No localizada)P(No localizada) = 0.60x0.7 + 0.10x0.3 = 0.42 + 0.03 = 0.45. En R: 0.6*0.7 + 0.1*0.3."
         },
         { 
             q: "En una fábrica, tres máquinas producen el 50%, 30% y 20% de los artículos, con porcentajes de defectos 1%, 2% y 3% respectivamente. ¿Cuál es la probabilidad de que un artículo elegido al azar sea defectuoso?",
             a: ["0.017", "0.02", "0.015", "0.01"],
             c: 0,
-            explanation: "P(Defectuoso) = 0.5×0.01 + 0.3×0.02 + 0.2×0.03 = 0.005 + 0.006 + 0.006 = 0.017. En R: sum(c(0.5,0.3,0.2)*c(0.01,0.02,0.03))."
+            explanation: "P(Defectuoso) = 0.5x0.01 + 0.3x0.02 + 0.2x0.03 = 0.005 + 0.006 + 0.006 = 0.017. En R: sum(c(0.5,0.3,0.2)*c(0.01,0.02,0.03))."
         },
         { 
             q: "En un lote, 60% son de proveedor 1 con 5% defectuosos, y 40% de proveedor 2 con 10% defectuosos. Halle la probabilidad de que un artículo elegido al azar sea defectuoso.",
             a: ["0.07", "0.08", "0.09", "0.10"],
             c: 0,
-            explanation: "P(defectuoso)=0.6×0.05+0.4×0.10=0.03+0.04=0.07. En R: 0.6*0.05+0.4*0.1."
+            explanation: "P(defectuoso)=0.6x0.05+0.4x0.10=0.03+0.04=0.07. En R: 0.6*0.05+0.4*0.1."
         },
         // Nuevas
         { 
@@ -641,7 +641,7 @@
             q: "Sea X una variable aleatoria discreta con función de probabilidad: P(X=0)=0.2, P(X=1)=0.3, P(X=2)=0.3, P(X=3)=0.2. ¿Cuál es la esperanza de X?",
             a: ["1.0", "1.5", "2.0", "2.5"],
             c: 1,
-            explanation: "E(X)=0×0.2 + 1×0.3 + 2×0.3 + 3×0.2 = 0+0.3+0.6+0.6 = 1.5. En R: sum(0:3 * c(0.2,0.3,0.3,0.2))."
+            explanation: "E(X)=0x0.2 + 1x0.3 + 2x0.3 + 3x0.2 = 0+0.3+0.6+0.6 = 1.5. En R: sum(0:3 * c(0.2,0.3,0.3,0.2))."
         },
         { 
             q: "Sea X una variable aleatoria continua con función de densidad f(x)=2 para 1≤x≤a y 0 en otro caso. Halle el valor de a y la esperanza de X.",
@@ -681,7 +681,7 @@
             q: "En un experimento Bernoulli con probabilidad de éxito p=0.4, ¿cuál es la varianza?",
             a: ["0.24", "0.4", "0.6", "0.16"],
             c: 0,
-            explanation: "Var(X)=p(1-p)=0.4×0.6=0.24. En R: p=0.4; p*(1-p)."
+            explanation: "Var(X)=p(1-p)=0.4x0.6=0.24. En R: p=0.4; p*(1-p)."
         },
         { 
             q: "Si X ~ Ber(p) y se sabe que P(X=1)=0.3, ¿cuánto vale P(X=0)?",
