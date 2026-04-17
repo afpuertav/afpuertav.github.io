@@ -560,19 +560,128 @@
             // TEMA 4: Distribución media muestral (placeholder)
             dist_media_muestral: [
                 {
-                    q: "(Pregunta temporal) Este tema es Distribución media muestral. Reemplace con una pregunta real.",
-                    a: ["Opción A", "Opción B", "Opción C", "Opción D"],
+                    q: "Dada una población de media μ = 100 y varianza σ² = 81, se obtiene una muestra aleatoria de tamaño n = 25. Puede suponerse que la distribución poblacional es normal. ¿Cuál es la probabilidad de que X̄ > 102?",
+                    a: ["0.1333", "0.86675", "1.1", "0.5"],
                     c: 0,
-                    explanation: "Por favor, reemplace esta pregunta con una del tema Distribución media muestral."
+                    explanation: "El error estándar es σ/√n = 9/5 = 1.8. El valor Z = (102-100)/1.8 = 2/1.8 ≈ 1.1111. P(Z > 1.1111) = 1 - Φ(1.1111) ≈ 0.1333. En R: `1 - pnorm(102, mean=100, sd=9/sqrt(25))`."
+                },
+                {
+                    q: "Dada una población de media μ = 100 y varianza σ² = 900, se obtiene una muestra aleatoria de tamaño n = 30. Puede suponerse que la distribución poblacional es normal. ¿Cuáles son la media y la varianza de la distribución de las medias muestrales en el muestreo?",
+                    a: ["E(x̄) = 100 y Var(x̄) = 30", "E(x̄) = 100 y Var(x̄) = 900", "E(x̄) = 50 y Var(x̄) = 30", "E(x̄) = 50 y Var(x̄) = 900"],
+                    c: 0,
+                    explanation: "La media de la distribución muestral de medias es igual a la media poblacional: μ_x̄ = μ = 100. La varianza de la distribución muestral de medias es σ²/n = 900/30 = 30. En R: `mu <- 100; sigma2 <- 900; n <- 30; media_muestral <- mu; var_muestral <- sigma2/n`."
+                },
+                {
+                    q: "La duración de las bombillas de un fabricante tiene una media de 1200 horas y una desviación típica de 400 horas. La población sigue una distribución normal. Suponga que compra 9 bombillas, que pueden considerarse que son una muestra aleatoria de la producción del fabricante. ¿Cuál es la varianza de la media muestral?",
+                    a: ["17777.7̅", "160000", "400", "133.3"],
+                    c: 0,
+                    explanation: "La varianza de la media muestral es σ²/n = (400)² / 9 = 160000 / 9 ≈ 17777.777... En R: `(400^2)/9`."
+                },
+                {
+                    q: "El consumo de combustible, en kilómetros por litro, de todos los automóviles de un determinado modelo tiene una media de 25 y una desviación típica de 2. Puede suponerse que la distribución poblacional es normal. Se toma una muestra aleatoria de estos automóviles. Si se toma una muestra de una observación, la probabilidad de que la media muestral del consumo de combustible sea inferior a 24 kilómetros por litro es:",
+                    a: ["0.3085", "0.1587", "0.0228", "0.7165"],
+                    c: 0,
+                    explanation: "Con n=1, la media muestral es la observación individual. Z = (24-25)/2 = -0.5. P(Z < -0.5) = 0.3085. En R: `pnorm(24, mean=25, sd=2)`."
+                },
+                {
+                    q: "El precio medio de venta de las viviendas nuevas fue en una ciudad de \\$115000 durante un año. La desviación típica poblacional fue de \\$25000. Se extrajo una muestra aleatoria de 100 ventas de viviendas nuevas de esta ciudad. ¿Cuál es la probabilidad de que la media muestral de los precios de venta fuera de más de \\$110000?",
+                    a: ["0.0228", "0.9772", "0.8017", "0.015"],
+                    c: 1,
+                    explanation: "Error estándar = 25000/√100 = 2500. Z = (110000-115000)/2500 = -5000/2500 = -2. P(X̄ > 110000) = P(Z > -2) = 0.9772. En R: `1 - pnorm(110000, mean=115000, sd=25000/sqrt(100))`."
+                },
+                {
+                    q: "La resistencia a la ruptura de vidrio templado promedia 14 (medida en miles de libras por pulgada cuadrada) y tiene una desviación estándar de 2. ¿Cuál es la probabilidad de que el promedio de resistencia a la ruptura de 100 piezas seleccionadas aleatoriamente de este vidrio exceda las 14.5?",
+                    a: ["0.0062", "0.1062", "0.8062", "0.9062"],
+                    c: 0,
+                    explanation: "Error estándar = 2/√100 = 0.2. Z = (14.5-14)/0.2 = 2.5. P(Z > 2.5) = 0.0062. En R: `1 - pnorm(14.5, mean=14, sd=2/sqrt(100))`."
+                },
+                {
+                    q: "Según un estudio, el peso de los perros adultos de una determinada raza es una variable aleatoria normal con media de 15 Kg y desviación estándar de 2 Kg. Se consideran 8 perros de esta raza y cada uno es pesado. Dado que el peso promedio de los perros de la muestra es inferior a 15.8 Kg, ¿cuál es la probabilidad de que sea superior a 14.4 Kg?",
+                    a: ["0.7726", "0.8019", "0.6730", "0.9102"],
+                    c: 0,
+                    explanation: "Error estándar = 2/√8 ≈ 0.7071. Z1 = (14.4-15)/0.7071 ≈ -0.8485, Z2 = (15.8-15)/0.7071 ≈ 1.1314. P(14.4 < X̄ < 15.8) = Φ(1.1314)-Φ(-0.8485) ≈ 0.8710-0.1981=0.6729. P(X̄ < 15.8)=Φ(1.1314)=0.8710. Probabilidad condicional = 0.6729/0.8710 ≈ 0.7726. En R: `(pnorm(15.8,15,2/sqrt(8))-pnorm(14.4,15,2/sqrt(8))) / pnorm(15.8,15,2/sqrt(8))`."
+                },
+                {
+                    q: "Un equipo de manufactura quiere garantizar que el diámetro de una pieza producida en serie se mantenga dentro de los estándares de calidad. Se toman muestras de tamaño 100 y se obtiene una media muestral de 50.2 mm con una desviación estándar poblacional de 1.5 mm. ¿Cuál es la probabilidad de que una nueva muestra tenga una media mayor a 50.5 mm?",
+                    a: ["0.0228", "0.0475", "0.1587", "0.8413"],
+                    c: 0,
+                    explanation: "Asumiendo que la media poblacional es la estimada (50.2), error estándar = 1.5/√100 = 0.15. Z = (50.5-50.2)/0.15 = 0.3/0.15 = 2. P(Z > 2) = 0.0228. En R: `1 - pnorm(50.5, mean=50.2, sd=1.5/sqrt(100))`."
+                },
+                {
+                    q: "El tiempo de producción de determinado artículo en una fábrica manufacturera sigue una distribución normal con media de 8 horas y desviación estándar de una hora. Si se desea realizar un estudio a partir de una muestra de n artículos, ¿cuál debe ser el tamaño de una muestra n para que su media no difiera en más de 30 minutos con respecto al verdadero valor medio con una probabilidad del 90%?",
+                    a: ["7", "9", "11", "13"],
+                    c: 2,
+                    explanation: "30 minutos = 0.5 horas. El margen de error E = z_{0.05} * σ/√n, con z_{0.05}=1.645 para probabilidad 90% (dos colas). Despejando n = (z * σ / E)^2 = (1.645*1/0.5)^2 = (3.29)^2 = 10.8241 → redondeado al alza: 11. En R: `ceiling((qnorm(0.95)*1/0.5)^2)`."
+                },
+                {
+                    q: "El número de clientes que diariamente atiende una oficina de publicidad es una variable aleatoria con media igual a 8 clientes y varianza de 3. Se consideran 60 días laborales en la oficina de publicidad. Dado que el promedio diario de clientes atendidos en este tiempo es inferior a 8.3, ¿cuál es la probabilidad de que sea superior a 7.9?",
+                    a: ["0.6403", "0.6726", "0.5828", "0.5531"],
+                    c: 0,
+                    explanation: "Error estándar = √(3/60) = √0.05 ≈ 0.2236. Z1 = (7.9-8)/0.2236 ≈ -0.4472, Z2 = (8.3-8)/0.2236 ≈ 1.3416. P(7.9<X̄<8.3) = Φ(1.3416)-Φ(-0.4472) ≈ 0.9102-0.3274=0.5828. P(X̄<8.3)=Φ(1.3416)=0.9102. Probabilidad condicional = 0.5828/0.9102 ≈ 0.6403. En R: `(pnorm(8.3,8,sqrt(3/60))-pnorm(7.9,8,sqrt(3/60))) / pnorm(8.3,8,sqrt(3/60))`."
                 }
+
             ],
             // TEMA 5: Distribución varianza muestral (placeholder)
             dist_varianza_muestral: [
                 {
-                    q: "(Pregunta temporal) Este tema es Distribución varianza muestral. Reemplace con una pregunta real.",
-                    a: ["Opción A", "Opción B", "Opción C", "Opción D"],
+                    q: "En una gran ciudad se ha observado que durante el verano las facturas del consumo de electricidad siguen una distribución normal que tiene una desviación típica de \$100. Se ha tomado una muestra aleatoria de 25 facturas. ¿Cuál es la probabilidad de que la desviación típica muestral sea inferior a \$75?",
+                    a: ["0.04285", "0.00043", "0.4285", "0.0426"],
+                    c: 3,
+                    explanation: "La distribución de (n-1)S²/σ² sigue una χ² con n-1 grados de libertad. Aquí n=25, σ=100, S=75 → S²=5625. (n-1)S²/σ² = 24*5625/10000 = 13.5. P(χ²(24) < 13.5) = 0.0426. En R: `pchisq(13.5, df=24)`."
+                },
+                {
+                    q: "Jorge Sánchez es responsable de la garantía de la calidad de Electrónica Integrada. Le ha pedido que cree un proceso de control de la calidad para la fabricación de un mecanismo de control A. La variabilidad de la resistencia eléctrica, expresada en ohmios, es fundamental para este mecanismo. Las normas de fabricación especifican una desviación típica de 3,6 y la distribución poblacional de las medidas de la resistencia es normal. El proceso de control requiere que se obtenga una muestra aleatoria de n=6 observaciones de la población de mecanismos y que se calcule la varianza muestral. ¿Cuál es el límite superior de la varianza muestral tal que la probabilidad de que se supere este límite, sea igual a 0.05?",
+                    a: ["28.69", "12.96", "11.07", "12.54"],
                     c: 0,
-                    explanation: "Por favor, reemplace esta pregunta con una del tema Distribución varianza muestral."
+                    explanation: "Se busca el percentil 95 de S²: (n-1)S²/σ² ~ χ²(5). χ²_{0.95,5}=11.0705, σ²=3.6²=12.96, entonces límite = (11.0705*12.96)/5 = 28.69. En R: `(qchisq(0.95,5)*3.6^2)/5`."
+                },
+                {
+                    q: "Susana Méndez es la directora de garantía de calidad de Alimentos Valleverde, una empaquetadora de verduras congeladas. Susana quiere estar segura de que la variación del peso de las bolsas de verduras es pequeña, de manera que la empresa no produzca una elevada proporción de bolsas que tengan un peso inferior al indicado. Le ha pedido que halle el límite superior e inferior del cociente entre la varianza muestral y la varianza poblacional de una muestra aleatoria de n=20 observaciones. Los límites son tales que la probabilidad de que el cociente sea inferior al límite inferior es 0,025 y la probabilidad de que sea superior al límite superior es 0,025. Por lo tanto, el 95 por ciento de los cocientes estará entre estos límites. Puede suponerse que la distribución poblacional es normal. ¿Cuál es el extremo superior solicitado?",
+                    a: ["1.729", "0.469", "8.91", "32.85"],
+                    c: 0,
+                    explanation: "Se busca c tal que P(S²/σ² > c)=0.025. (n-1)S²/σ² ~ χ²(19). Entonces (n-1)c = χ²_{0.975,19}=32.852, luego c = 32.852/19 = 1.729. En R: `qchisq(0.975,19)/19`."
+                },
+                {
+                    q: "Para estudiar la efectividad de un medicamento contra la diabetes, el interés se centra en la variabilidad de la cantidad de glucemia en sangre después de la administración de dicho medicamento. Se sabe que la cantidad de glucemia en sangre sigue una distribución normal con desviación típica 3 unidades. Se toma una muestra aleatoria de tamaño 25 personas que consumen dicho medicamento. Obtener la probabilidad de que el valor de la varianza muestral de la cantidad de glucemia en sangre sea mayor de 14 unidades cuadradas.",
+                    a: ["0.3202", "0.9594", "0.1269", "0.0405"],
+                    c: 3,
+                    explanation: "σ²=9, n=25, S²>14. (n-1)S²/σ² = 24*14/9 = 336/9 = 37.333. P(χ²(24) > 37.333) = 0.0405. En R: `1 - pchisq(37.333, df=24)`."
+                },
+                {
+                    q: "Supongamos que el rendimiento mensual de un fondo de inversión se modela como una distribución normal. Se sabe que la varianza de estos rendimientos es 4%. Un analista financiero decide tomar una muestra de 15 meses para estudiar el comportamiento del fondo. Los valores b1 y b2 tales que: P(b1 ≤ S² ≤ b2)=0.95 para S² la varianza muestral de los rendimientos corresponden a:",
+                    a: ["0.0160 y 0.0746", "0.0160 y 0.0764", "0.0106 y 0.0746", "0.01067 y 0.0764"],
+                    c: 0,
+                    explanation: "σ²=0.04, n=15, gl=14. χ²_{0.025,14}=5.6287, χ²_{0.975,14}=26.119. b1 = (5.6287*0.04)/14 = 0.01608, b2 = (26.119*0.04)/14 = 0.07463. En R: `qchisq(c(0.025,0.975),14)*0.04/14`."
+                },
+                {
+                    q: "Un ingeniero registra valores de los fallos en varios componentes electrónicos. Se tomó una muestra y los resultados fueron: 22, 18, 20, 25, y 15. Si se asume que la varianza poblacional es de 20 y que las observaciones provienen de una distribución normal ¿Cuál es el valor de la estadística ji-cuadrado?",
+                    a: ["5.80", "6.50", "7.20", "2.9"],
+                    c: 3,
+                    explanation: "χ² = (n-1)S²/σ². Media = 20, S² = 58/4 = 14.5, n-1=4, σ²=20 → χ² = 4*14.5/20 = 58/20 = 2.9. En R: `var(c(22,18,20,25,15))*(4)/20`."
+                },
+                {
+                    q: "Se sabe que las calificaciones de cierto curso tienen distribución normal con media 70 y desviación estándar 10. Si se toma una muestra aleatoria de tamaño 25, ¿cuál es la desviación estándar de la media muestral?",
+                    a: ["10", "2", "25", "5"],
+                    c: 1,
+                    explanation: "La desviación estándar de la media muestral es σ/√n = 10/5 = 2. En R: `10/sqrt(25)`."
+                },
+                {
+                    q: "En una gran ciudad se ha observado que durante el verano las facturas del consumo de electricidad siguen una distribución normal que tiene una desviación típica de \$100. Se ha tomado una muestra aleatoria de 25 facturas. ¿Cuál es la probabilidad de que la desviación típica muestral sea superior a \$150?",
+                    a: ["0.00043", "0.04285", "0.000428", "0.0426"],
+                    c: 2,
+                    explanation: "S > 150 → S² > 22500. (n-1)S²/σ² = 24*22500/10000 = 54. P(χ²(24) > 54) = 0.000428. En R: `1 - pchisq(54, df=24)`."
+                },
+                {
+                    q: "En una línea de ensamblaje de microprocesadores, la desviación estándar del tiempo de ensamblaje se modela como una variable aleatoria normal con varianza σ²=1.5². Se toma una muestra de 12 procesadores, y se encuentra una desviación estándar muestral de 1.8. ¿Cuál es la probabilidad de obtener una desviación estándar muestral mayor a 1.8?",
+                    a: ["0.178", "0.255", "0.325", "0.421"],
+                    c: 0,
+                    explanation: "σ²=2.25, n=12, S=1.8 → S²=3.24. (n-1)S²/σ² = 11*3.24/2.25 = 15.84. P(χ²(11) > 15.84) = 0.178. En R: `1 - pchisq(15.84, df=11)`."
+                },
+                {
+                    q: "Un sistema de monitoreo de red mide la variabilidad del retardo en la transmisión de datos. Se asume que la varianza del retardo es σ²=4. Si se toma una muestra de 10 mediciones con una varianza muestral de 5.5, ¿Cuál es la probabilidad de obtener una varianza muestral de al menos 5.5 si la verdadera varianza es 4?",
+                    a: ["0.112", "0.218", "0.374", "0.456"],
+                    c: 1,
+                    explanation: "(n-1)S²/σ² = 9*5.5/4 = 49.5/4 = 12.375. P(χ²(9) ≥ 12.375) = 0.218. En R: `1 - pchisq(12.375, df=9)`."
                 }
             ],
             // TEMA 6: Distribución proporción muestral (placeholder)
