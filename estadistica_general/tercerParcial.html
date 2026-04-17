@@ -1,0 +1,766 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simulador del Tercer Parcial - Estadística General</title>
+    
+    <script src="https://cdn.plot.ly/plotly-2.27.0.min.js"></script>
+    
+    <script>
+        window.MathJax = {
+            tex: { inlineMath: [['$', '$'], ['\\(', '\\)']] },
+            svg: { fontCache: 'global' }
+        };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+    <style>
+        :root {
+            --primary-color: #2c3e50;
+            --secondary-color: #3498db;
+            --accent-color: #e74c3c;
+            --light-color: #ecf0f1;
+            --success-color: #27ae60;
+            --warning-color: #f39c12;
+            --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: #f5f7fa;
+            color: #333;
+            line-height: 1.6;
+            padding: 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding: 20px;
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: var(--shadow);
+        }
+        
+        h1 {
+            color: var(--primary-color);
+            margin-bottom: 10px;
+            font-size: 2.2rem;
+        }
+        
+        .subtitle {
+            color: var(--secondary-color);
+            font-size: 1.1rem;
+            margin-bottom: 20px;
+        }
+        
+        .instructions {
+            background-color: var(--light-color);
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 25px;
+            border-left: 5px solid var(--secondary-color);
+        }
+        
+        .instructions h3 {
+            color: var(--primary-color);
+            margin-bottom: 10px;
+        }
+        
+        .exam-container {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 25px;
+        }
+        
+        .questions-section {
+            background-color: white;
+            padding: 25px;
+            border-radius: 10px;
+            box-shadow: var(--shadow);
+        }
+        
+        .control-panel {
+            background-color: white;
+            padding: 25px;
+            border-radius: 10px;
+            box-shadow: var(--shadow);
+            height: fit-content;
+            position: sticky;
+            top: 20px;
+        }
+        
+        .question-card {
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid #eee;
+            scroll-margin-top: 20px;
+        }
+        
+        .question-card:last-child {
+            border-bottom: none;
+        }
+        
+        .question-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        
+        .question-number {
+            background-color: var(--primary-color);
+            color: white;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+        }
+        
+        .question-text {
+            margin-bottom: 20px;
+            font-size: 1.1rem;
+            line-height: 1.5;
+        }
+        
+        .table-container {
+            margin: 15px 0;
+            padding: 15px;
+            background-color: #f9f9f9;
+            border-radius: 8px;
+            overflow-x: auto;
+        }
+        
+        table { width: 100%; border-collapse: collapse; margin: 10px 0; font-size: 0.95em; }
+        th { background-color: var(--primary-color); color: white; padding: 10px; text-align: center; border: 1px solid #ddd; }
+        td { padding: 8px; text-align: center; border: 1px solid #ddd; }
+        tr:nth-child(even) { background-color: #f2f2f2; }
+        
+        .chart-container {
+            width: 100%;
+            height: 350px;
+            background-color: white;
+            border-radius: 8px;
+            margin: 10px 0;
+            border: 1px solid #eee;
+        }
+        
+        .options-container {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        
+        .option {
+            padding: 12px 15px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+        }
+        
+        .option:hover {
+            background-color: #f0f8ff;
+            border-color: var(--secondary-color);
+        }
+        
+        .option.selected {
+            background-color: #e1f0ff;
+            border-color: var(--secondary-color);
+            font-weight: 600;
+        }
+        
+        .option.correct {
+            background-color: #d4edda;
+            border-color: var(--success-color);
+            color: #155724;
+        }
+        
+        .option.incorrect {
+            background-color: #f8d7da;
+            border-color: var(--accent-color);
+            color: #721c24;
+        }
+        
+        .explanation {
+            margin-top: 20px;
+            padding: 15px;
+            background-color: #fff3cd;
+            border-left: 5px solid #ffc107;
+            border-radius: 5px;
+            font-size: 0.95rem;
+        }
+        
+        .explanation pre {
+            background-color: #f8f9fa;
+            padding: 10px;
+            border-radius: 5px;
+            overflow-x: auto;
+            font-family: 'Courier New', monospace;
+            margin-top: 10px;
+        }
+        
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s;
+            font-size: 1rem;
+            margin-right: 10px;
+            margin-bottom: 10px;
+        }
+        
+        .btn-primary {
+            background-color: var(--secondary-color);
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background-color: #2980b9;
+        }
+        
+        .btn-secondary {
+            background-color: var(--light-color);
+            color: var(--primary-color);
+            border: 1px solid #ddd;
+        }
+        
+        .btn-secondary:hover {
+            background-color: #d5dbdb;
+        }
+        
+        .results-container {
+            margin-top: 25px;
+            padding: 20px;
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: var(--shadow);
+            display: none;
+        }
+        
+        .score-display {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        
+        .score-circle {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            background-color: var(--light-color);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 0 auto 20px;
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: var(--primary-color);
+            border: 5px solid var(--secondary-color);
+        }
+        
+        .score-circle.low { border-color: var(--accent-color); color: var(--accent-color); }
+        .score-circle.medium { border-color: var(--warning-color); color: var(--warning-color); }
+        .score-circle.high { border-color: var(--success-color); color: var(--success-color); }
+        
+        .stats { display: flex; justify-content: space-between; margin-top: 20px; }
+        .stat-box {
+            flex: 1; text-align: center; padding: 15px; background-color: var(--light-color);
+            border-radius: 8px; margin: 0 5px;
+        }
+        .stat-value { font-size: 2rem; font-weight: bold; color: var(--primary-color); }
+        .stat-label { font-size: 0.9rem; color: #7f8c8d; }
+        
+        .topic-progress { margin-top: 20px; }
+        .topic-item {
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 8px 0; border-bottom: 1px solid #eee; cursor: pointer; transition: all 0.2s;
+        }
+        .topic-item:hover { background-color: #f5f5f5; padding-left: 5px; }
+        .topic-name { flex: 1; font-size: 0.9em; }
+        .topic-status { width: 12px; height: 12px; border-radius: 50%; margin-left: 10px; }
+        
+        .topic-status.correct { background-color: var(--success-color); }
+        .topic-status.incorrect { background-color: var(--accent-color); }
+        .topic-status.unanswered { background-color: #ddd; }
+        .topic-status.answered { background-color: var(--secondary-color); }
+        
+        footer {
+            text-align: center; margin-top: 30px; padding: 20px;
+            color: #7f8c8d; font-size: 0.9rem;
+        }
+        
+        @media (max-width: 900px) {
+            .exam-container { grid-template-columns: 1fr; }
+            .stats { flex-direction: column; gap: 15px; }
+            .stat-box { margin: 0; }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Simulador del Tercer Parcial - Estadística General</h1>
+        <p class="subtitle">14 preguntas (una por tema) - Calificación de 0 a 5</p>
+    </header>
+    
+    <div class="instructions">
+        <h3>Instrucciones</h3>
+        <p>Este simulador contiene 14 preguntas, cada una correspondiente a un tema del tercer parcial. Al finalizar, obtendrás tu calificación y una explicación detallada de cada respuesta, incluyendo código R para los cálculos.</p>
+        <p><strong>Temas:</strong> Representación e interpretación, Argumentación, Formulación y ejecución, Distribución media muestral, Distribución varianza muestral, Distribución proporción muestral, TLC, Estimación puntual y propiedades, IC media, IC proporción, IC varianza, PH media, PH proporción, PH varianza.</p>
+        <p><strong>Nota:</strong> Este simulador está en construcción. Los temas que no tengan preguntas reales aún muestran una pregunta temporal. Puedes reemplazarlas fácilmente editando el objeto <code>questionBank3</code> en el código.</p>
+    </div>
+    
+    <div class="exam-container">
+        <section class="questions-section">
+            <h2>Preguntas del Parcial</h2>
+            <div id="questions-container">
+                <!-- Se llena dinámicamente -->
+            </div>
+            
+            <div class="button-group" style="margin-top:20px;">
+                <button id="submit-btn" class="btn btn-primary">Calificar Examen</button>
+                <button id="new-exam-btn" class="btn btn-secondary">Nuevo Examen Aleatorio</button>
+            </div>
+        </section>
+        
+        <section class="control-panel">
+            <h3>Progreso</h3>
+            <div class="stats">
+                <div class="stat-box">
+                    <div class="stat-value" id="answered-count">0</div>
+                    <div class="stat-label">Respondidas</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-value" id="total-count">14</div>
+                    <div class="stat-label">Total</div>
+                </div>
+            </div>
+            
+            <div class="topic-progress">
+                <h4>Navegación:</h4>
+                <div id="topics-list">
+                    <!-- Se llena dinámicamente -->
+                </div>
+            </div>
+        </section>
+    </div>
+    
+    <div class="results-container" id="results-container">
+        <h2>Resultados del Parcial</h2>
+        
+        <div class="score-display">
+            <div class="score-circle" id="final-score">0.0</div>
+            <h3>Calificación Final</h3>
+            <p id="score-text">Sobre 5.0 puntos</p>
+        </div>
+        
+        <div class="stats">
+            <div class="stat-box">
+                <div class="stat-value" id="correct-count">0</div>
+                <div class="stat-label">Correctas</div>
+            </div>
+            <div class="stat-box">
+                <div class="stat-value" id="incorrect-count">0</div>
+                <div class="stat-label">Incorrectas</div>
+            </div>
+            <div class="stat-box">
+                <div class="stat-value" id="percentage-score">0%</div>
+                <div class="stat-label">Porcentaje</div>
+            </div>
+        </div>
+        
+        <div style="text-align: center; margin-top: 20px;">
+            <button id="review-btn" class="btn btn-secondary">Revisar Respuestas</button>
+            <button id="restart-btn" class="btn btn-primary">Intentar Otro Examen</button>
+        </div>
+    </div>
+    
+    <footer>
+        <p>Simulador del Tercer Parcial de Estadística General <br>
+            Basado en materiales de clase y preguntas tipo
+        </p>
+    </footer>
+    
+    <script>
+        // ======================================================
+        // BANCO DE PREGUNTAS - TERCER PARCIAL
+        // ======================================================
+        
+        const questionBank3 = {
+            // TEMA 1: Representación e interpretación
+            representacion_interpretacion: [
+                { 
+                    q: "Un grupo de investigadores estudia el comportamiento de compra en línea de consumidores en distintas regiones. Cada mes, toman una muestra de 120 transacciones de una base de datos de millones de transacciones para analizar el gasto promedio por compra. La distribución del gasto en transacciones es sesgada hacia la derecha por unas pocas compras muy costosas. Según el Teorema Central del Límite, ¿cómo se puede describir la distribución del promedio mensual del gasto en estas muestras de 120 transacciones, a medida que se recolectan más muestras mensuales?",
+                    a: ["La distribución del promedio mensual seguirá siendo sesgada hacia la derecha, similar a la distribución de la población original", "La distribución del promedio mensual tenderá a ser más uniforme y menos variable que la distribución de la población original.", "La distribución del promedio mensual se aproximará a una distribución normal, aunque la distribución original sea sesgada.", "No es posible determinar la forma de la distribución del promedio sin conocer el tamaño exacto de todas las transacciones."],
+                    c: 2,
+                    explanation: "El Teorema Central del Límite (TCL) establece que, para muestras de tamaño suficientemente grande (n ≥ 30), la distribución de la media muestral se aproxima a una distribución normal, independientemente de la forma de la distribución poblacional. En este caso n=120, por lo que la distribución del promedio mensual será aproximadamente normal."
+                },
+                { 
+                    q: "Un equipo de ingeniería de procesos evalúa la eficiencia de un sistema de producción. Se toman 500 muestras y la media observada es 95% de la capacidad esperada. Se quiere probar si la producción está por debajo de lo esperado. ¿Cómo ayuda la ley de los grandes números en esta prueba?",
+                    a: ["Permite asumir que la media muestral sigue una distribución normal", "Asegura que la media muestral es idéntica a la media poblacional", "Permite probar la hipótesis sin necesidad de datos muestrales", "No tiene impacto en pruebas de hipótesis"],
+                    c: 0,
+                    explanation: "Ojo aquí: la Ley de los Grandes Números no da normalidad directamente (eso es TCL), pero en contexto de pruebas se usa para justificar estabilidad de la media. La opción más cercana/esperada en este tipo de pregunta es a, ya que con un tamaño grande la media muestral es un estimador consistente y su distribución es aproximadamente normal por TCL, lo que permite realizar pruebas de hipótesis paramétricas."
+                },
+                { 
+                    q: "Un investigador simula el lanzamiento de una moneda justa 1000 veces y registra la proporción de caras obtenidas. ¿Cuál de las siguientes gráficas sería la más adecuada para representar cómo la proporción de caras se estabiliza a medida que aumenta el número de lanzamientos?",
+                    a: ["Una gráfica de barras que muestre cada lanzamiento por separado.", "Una gráfica de líneas que muestre la proporción acumulada de caras a medida que aumentan los lanzamientos.", "Una gráfica circular mostrando la proporción total de caras y sellos.", "Un histograma de frecuencias de los resultados."],
+                    c: 1,
+                    explanation: "Una gráfica de líneas que muestre la proporción acumulada de caras a medida que aumentan los lanzamientos permite visualizar cómo la frecuencia relativa se estabiliza alrededor de 0.5, ilustrando la Ley de los Grandes Números. Las otras opciones no muestran la evolución con el tamaño de muestra."
+                },
+                { 
+                    q: "Una empresa manufacturera afirma que el tiempo medio de producción de una unidad de su producto más vendido es de 30 minutos. Sin embargo, un sindicato de trabajadores sostiene que el tiempo medio es mayor y decide realizar una prueba de hipótesis para verificar esta afirmación. Los investigadores del sindicato seleccionan una muestra aleatoria de 50 unidades de producción y registran el tiempo de fabricación. El tiempo medio de producción observado en la muestra es de 32 minutos con una desviación estándar de 5 minutos. Considerando la situación descrita, ¿qué par de hipótesis nula (H0) y alternativa (H1) es adecuado para la prueba de hipótesis que el sindicato quiere realizar?",
+                    a: ["H0: μ = 30 minutos; H1: μ ≠ 30 minutos", "H0: μ = 30 minutos; H1: μ < 30 minutos", "H0: μ = 32 minutos; H1: μ ≠ 30 minutos", "H0: μ = 30 minutos; H1: μ > 30 minutos"],
+                    c: 3,
+                    explanation: "El sindicato sostiene que el tiempo medio es mayor a 30 minutos, por lo que la hipótesis alternativa debe ser unilateral derecha: H₁: μ > 30. La hipótesis nula es H₀: μ = 30 (estatus quo). No se usa H₁: μ ≠ 30 porque la sospecha es solo que es mayor, no diferente en ambos sentidos."
+                },
+                { 
+                    q: "Una empresa de logística analiza el tiempo de entrega de paquetes. Se sabe que los tiempos individuales tienen una distribución fuertemente sesgada a la derecha debido a retrasos ocasionales. Cada semana se toman muestras de 80 entregas para calcular el tiempo promedio. Según el Teorema Central del Límite, ¿qué se puede afirmar sobre la distribución de estos promedios semanales?",
+                    a: ["Mantendrá el mismo sesgo que la distribución original", "Será aproximadamente normal a medida que aumente el número de muestras", "Será uniforme si el tamaño de muestra es constante", "No se puede inferir nada sin conocer la varianza poblacional"],
+                    c: 1,
+                    explanation: "Según el Teorema Central del Límite, para tamaños de muestra grandes (n ≥ 30), la distribución de la media muestral se aproxima a una normal, sin importar la forma de la distribución original. Aquí n=80, suficiente para que los promedios semanales sean aproximadamente normales."
+                },
+                { 
+                    q: "Un analista financiero registra diariamente el rendimiento de una acción. A medida que aumenta el número de días observados, la media muestral del rendimiento se acerca al valor esperado real. ¿Qué principio estadístico explica este comportamiento?",
+                    a: ["Teorema Central del Límite", "Ley de los Grandes Números", "Regla empírica", "Distribución uniforme"],
+                    c: 1,
+                    explanation: "La Ley de los Grandes Números establece que la media muestral converge hacia la esperanza (valor esperado real) a medida que el número de observaciones aumenta. El Teorema Central del Límite se refiere a la forma de la distribución, no a la convergencia del valor."
+                },
+                { 
+                    q: "Un estudiante simula la proporción de defectos en una línea de producción conforme aumenta el tamaño de la muestra. ¿Cuál es la mejor forma de visualizar cómo la proporción se estabiliza?",
+                    a: ["Diagrama de cajas por intervalos de muestra", "Gráfico de líneas de la proporción acumulada vs tamaño de muestra", "Histograma de defectos totales", "Gráfico de barras de frecuencias absolutas"],
+                    c: 1,
+                    explanation: "El gráfico de líneas de la proporción acumulada versus el tamaño de muestra es la herramienta adecuada para mostrar cómo la proporción se estabiliza hacia el verdadero valor (Ley de Grandes Números). Los otros gráficos no muestran la evolución secuencial."
+                },
+                { 
+                    q: "Una compañía afirma que la duración promedio de sus baterías es de 10 horas. Un grupo de consumidores cree que duran menos. ¿Cuál es el planteamiento correcto de hipótesis?",
+                    a: ["H0: μ = 10; H1: μ ≠ 10", "H0: μ = 10; H1: μ < 10", "H0: μ = 10; H1: μ > 10", "H0: μ < 10; H1: μ = 10"],
+                    c: 1,
+                    explanation: "Los consumidores creen que la duración es menor a 10 horas, por lo que la hipótesis alternativa es μ < 10. La hipótesis nula es μ = 10 (la afirmación de la compañía). Se trata de una prueba unilateral izquierda."
+                },
+                { 
+                    q: "En una prueba de hipótesis se obtiene un valor-p de 0.03 con α = 0.05. ¿Cuál es la conclusión correcta?",
+                    a: ["No se rechaza H0", "Se rechaza H0", "Se acepta H0 con certeza", "El valor-p no permite tomar decisiones"],
+                    c: 1,
+                    explanation: "El valor-p (0.03) es menor que el nivel de significancia α = 0.05, por lo que se rechaza la hipótesis nula. Esto indica evidencia suficiente en contra de H₀ a favor de la alternativa."
+                }
+            ],
+            // TEMA 2: Argumentación (placeholder)
+            argumentacion: [
+                {
+                    q: "(Pregunta temporal) Este tema es Argumentación. Reemplace con una pregunta real.",
+                    a: ["Opción A", "Opción B", "Opción C", "Opción D"],
+                    c: 0,
+                    explanation: "Por favor, reemplace esta pregunta con una del tema Argumentación. Puede editar el objeto questionBank3 en el código."
+                }
+            ],
+            // TEMA 3: Formulación y ejecución (placeholder)
+            formulacion_ejecucion: [
+                {
+                    q: "(Pregunta temporal) Este tema es Formulación y ejecución. Reemplace con una pregunta real.",
+                    a: ["Opción A", "Opción B", "Opción C", "Opción D"],
+                    c: 0,
+                    explanation: "Por favor, reemplace esta pregunta con una del tema Formulación y ejecución."
+                }
+            ],
+            // TEMA 4: Distribución media muestral
+            dist_media_muestral: [
+                {
+                    q: "(Pregunta temporal) Este tema es Distribución media muestral. Reemplace con una pregunta real.",
+                    a: ["Opción A", "Opción B", "Opción C", "Opción D"],
+                    c: 0,
+                    explanation: "Por favor, reemplace esta pregunta con una del tema Distribución media muestral."
+                }
+            ],
+            // TEMA 5: Distribución varianza muestral
+            dist_varianza_muestral: [
+                {
+                    q: "(Pregunta temporal) Este tema es Distribución varianza muestral. Reemplace con una pregunta real.",
+                    a: ["Opción A", "Opción B", "Opción C", "Opción D"],
+                    c: 0,
+                    explanation: "Por favor, reemplace esta pregunta con una del tema Distribución varianza muestral."
+                }
+            ],
+            // TEMA 6: Distribución proporción muestral
+            dist_proporcion_muestral: [
+                {
+                    q: "(Pregunta temporal) Este tema es Distribución proporción muestral. Reemplace con una pregunta real.",
+                    a: ["Opción A", "Opción B", "Opción C", "Opción D"],
+                    c: 0,
+                    explanation: "Por favor, reemplace esta pregunta con una del tema Distribución proporción muestral."
+                }
+            ],
+            // TEMA 7: TLC (Teorema del Límite Central)
+            tlc: [
+                {
+                    q: "(Pregunta temporal) Este tema es TLC. Reemplace con una pregunta real.",
+                    a: ["Opción A", "Opción B", "Opción C", "Opción D"],
+                    c: 0,
+                    explanation: "Por favor, reemplace esta pregunta con una del tema TLC."
+                }
+            ],
+            // TEMA 8: Estimación puntual y propiedades
+            estimacion_puntual: [
+                {
+                    q: "(Pregunta temporal) Este tema es Estimación puntual y propiedades. Reemplace con una pregunta real.",
+                    a: ["Opción A", "Opción B", "Opción C", "Opción D"],
+                    c: 0,
+                    explanation: "Por favor, reemplace esta pregunta con una del tema Estimación puntual y propiedades."
+                }
+            ],
+            // TEMA 9: IC media
+            ic_media: [
+                {
+                    q: "(Pregunta temporal) Este tema es IC media. Reemplace con una pregunta real.",
+                    a: ["Opción A", "Opción B", "Opción C", "Opción D"],
+                    c: 0,
+                    explanation: "Por favor, reemplace esta pregunta con una del tema IC media."
+                }
+            ],
+            // TEMA 10: IC proporción
+            ic_proporcion: [
+                {
+                    q: "(Pregunta temporal) Este tema es IC proporción. Reemplace con una pregunta real.",
+                    a: ["Opción A", "Opción B", "Opción C", "Opción D"],
+                    c: 0,
+                    explanation: "Por favor, reemplace esta pregunta con una del tema IC proporción."
+                }
+            ],
+            // TEMA 11: IC varianza
+            ic_varianza: [
+                {
+                    q: "(Pregunta temporal) Este tema es IC varianza. Reemplace con una pregunta real.",
+                    a: ["Opción A", "Opción B", "Opción C", "Opción D"],
+                    c: 0,
+                    explanation: "Por favor, reemplace esta pregunta con una del tema IC varianza."
+                }
+            ],
+            // TEMA 12: PH media
+            ph_media: [
+                {
+                    q: "(Pregunta temporal) Este tema es PH media. Reemplace con una pregunta real.",
+                    a: ["Opción A", "Opción B", "Opción C", "Opción D"],
+                    c: 0,
+                    explanation: "Por favor, reemplace esta pregunta con una del tema PH media."
+                }
+            ],
+            // TEMA 13: PH proporción
+            ph_proporcion: [
+                {
+                    q: "(Pregunta temporal) Este tema es PH proporción. Reemplace con una pregunta real.",
+                    a: ["Opción A", "Opción B", "Opción C", "Opción D"],
+                    c: 0,
+                    explanation: "Por favor, reemplace esta pregunta con una del tema PH proporción."
+                }
+            ],
+            // TEMA 14: PH varianza
+            ph_varianza: [
+                {
+                    q: "(Pregunta temporal) Este tema es PH varianza. Reemplace con una pregunta real.",
+                    a: ["Opción A", "Opción B", "Opción C", "Opción D"],
+                    c: 0,
+                    explanation: "Por favor, reemplace esta pregunta con una del tema PH varianza."
+                }
+            ]
+        };
+
+        // Lista de temas en orden (14 temas)
+        const topics = [
+            { id: "representacion_interpretacion", nombre: "Representación e interpretación" },
+            { id: "argumentacion", nombre: "Argumentación" },
+            { id: "formulacion_ejecucion", nombre: "Formulación y ejecución" },
+            { id: "dist_media_muestral", nombre: "Distribución media muestral" },
+            { id: "dist_varianza_muestral", nombre: "Distribución varianza muestral" },
+            { id: "dist_proporcion_muestral", nombre: "Distribución proporción muestral" },
+            { id: "tlc", nombre: "TLC" },
+            { id: "estimacion_puntual", nombre: "Estimación puntual y propiedades" },
+            { id: "ic_media", nombre: "IC media" },
+            { id: "ic_proporcion", nombre: "IC proporción" },
+            { id: "ic_varianza", nombre: "IC varianza" },
+            { id: "ph_media", nombre: "PH media" },
+            { id: "ph_proporcion", nombre: "PH proporción" },
+            { id: "ph_varianza", nombre: "PH varianza" }
+        ];
+
+        let currentExam = [];
+        let userAnswers = {};
+        let examFinished = false;
+
+        function shuffle(array) {
+            return array.sort(() => Math.random() - 0.5);
+        }
+
+        function generateExam() {
+            currentExam = [];
+            userAnswers = {};
+            examFinished = false;
+            document.getElementById('results-container').style.display = 'none';
+            document.querySelectorAll('.explanation').forEach(el => el.remove());
+            
+            topics.forEach((topic) => {
+                const pool = questionBank3[topic.id];
+                if (!pool || pool.length === 0) return;
+                
+                const randomIndex = Math.floor(Math.random() * pool.length);
+                const originalQ = pool[randomIndex];
+                
+                const qData = JSON.parse(JSON.stringify(originalQ));
+                const originalCorrectText = qData.a[qData.c];
+                const shuffledOpts = shuffle([...qData.a]);
+                
+                qData.c = shuffledOpts.indexOf(originalCorrectText);
+                qData.a = shuffledOpts;
+                qData.topicId = topic.id;
+                qData.topicName = topic.nombre;
+                qData.explanation = originalQ.explanation;
+                
+                currentExam.push(qData);
+            });
+
+            renderExam();
+            updateProgress();
+            
+            setTimeout(() => {
+                if(window.MathJax) MathJax.typesetPromise();
+            }, 100);
+        }
+
+        function renderExam() {
+            const container = document.getElementById('questions-container');
+            container.innerHTML = "";
+            
+            const topicsList = document.getElementById('topics-list');
+            topicsList.innerHTML = "";
+
+            currentExam.forEach((item, index) => {
+                const card = document.createElement('div');
+                card.className = 'question-card';
+                card.id = `q-${index}`;
+
+                card.innerHTML = `
+                    <div class="question-header">
+                        <div class="question-number">${index + 1}</div>
+                        <span style="color:#7f8c8d; font-weight:600;">${item.topicName}</span>
+                    </div>
+                    <div class="question-text">
+                        <p>${item.q}</p>
+                    </div>
+                    <div class="options-container" id="opts-${index}">
+                        ${item.a.map((opt, i) => `
+                            <div class="option" onclick="selectOption(${index}, ${i}, this)">
+                                <span style="font-weight:bold; margin-right:10px;">${String.fromCharCode(97+i)})</span> ${opt}
+                            </div>
+                        `).join('')}
+                    </div>
+                `;
+                container.appendChild(card);
+
+                const navItem = document.createElement('div');
+                navItem.className = 'topic-item';
+                navItem.id = `nav-${index}`;
+                navItem.onclick = () => document.getElementById(`q-${index}`).scrollIntoView({ behavior: 'smooth', block: 'center' });
+                navItem.innerHTML = `
+                    <span class="topic-name">${index + 1}. ${item.topicName}</span>
+                    <div class="topic-status unanswered" id="dot-${index}"></div>
+                `;
+                topicsList.appendChild(navItem);
+            });
+        }
+
+        window.selectOption = function(qIdx, optIdx, el) {
+            if (examFinished) return;
+
+            userAnswers[qIdx] = optIdx;
+            
+            const parent = document.getElementById(`opts-${qIdx}`);
+            Array.from(parent.children).forEach(child => child.classList.remove('selected'));
+            el.classList.add('selected');
+
+            document.getElementById(`dot-${qIdx}`).className = 'topic-status answered';
+            updateProgress();
+        };
+
+        function updateProgress() {
+            const count = Object.keys(userAnswers).length;
+            document.getElementById('answered-count').innerText = count;
+        }
+
+        function submitExam() {
+            if (examFinished) return;
+            if (Object.keys(userAnswers).length < 14) {
+                if(!confirm("Aún faltan preguntas por responder. ¿Deseas finalizar?")) return;
+            }
+
+            examFinished = true;
+            let correctCount = 0;
+
+            currentExam.forEach((item, i) => {
+                const userAns = userAnswers[i];
+                const optsContainer = document.getElementById(`opts-${i}`);
+                const opts = optsContainer.children;
+                const dot = document.getElementById(`dot-${i}`);
+
+                if (userAns !== undefined) opts[userAns].classList.remove('selected');
+
+                if (userAns === item.c) {
+                    correctCount++;
+                    if(userAns !== undefined) opts[userAns].classList.add('correct');
+                    dot.className = 'topic-status correct';
+                } else {
+                    if(userAns !== undefined) opts[userAns].classList.add('incorrect');
+                    opts[item.c].classList.add('correct');
+                    dot.className = 'topic-status incorrect';
+                }
+
+                const explanationDiv = document.createElement('div');
+                explanationDiv.className = 'explanation';
+                explanationDiv.innerHTML = `<strong>Explicación:</strong> ${item.explanation}`;
+                optsContainer.parentNode.appendChild(explanationDiv);
+            });
+
+            if (window.MathJax) {
+                MathJax.typesetPromise();
+            }
+
+            const score = (correctCount / 14) * 5;
+            const percentage = (correctCount / 14) * 100;
+
+            const resultBox = document.getElementById('results-container');
+            const scoreCircle = document.getElementById('final-score');
+            
+            scoreCircle.innerText = score.toFixed(1);
+            scoreCircle.className = `score-circle ${score >= 4 ? 'high' : score >= 3 ? 'medium' : 'low'}`;
+            
+            document.getElementById('correct-count').innerText = correctCount;
+            document.getElementById('incorrect-count').innerText = 14 - correctCount;
+            document.getElementById('percentage-score').innerText = `${percentage.toFixed(1)}%`;
+
+            resultBox.style.display = 'block';
+            resultBox.scrollIntoView({ behavior: 'smooth' });
+        }
+
+        document.getElementById('submit-btn').addEventListener('click', submitExam);
+        document.getElementById('new-exam-btn').addEventListener('click', generateExam);
+        document.getElementById('restart-btn').addEventListener('click', generateExam);
+        document.getElementById('review-btn').addEventListener('click', () => {
+            document.querySelector('.questions-section').scrollIntoView({ behavior: 'smooth' });
+        });
+
+        document.addEventListener('DOMContentLoaded', generateExam);
+    </script>
+</body>
+</html>
