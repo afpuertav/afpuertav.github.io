@@ -380,7 +380,7 @@
         // ======================================================
         
         const questionBank3 = {
-            // TEMA 1: Representación e interpretación (9 preguntas ya proporcionadas)
+            // TEMA 1: Representación e interpretación (9 preguntas)
             representacion_interpretacion: [
                 { 
                     q: "Un grupo de investigadores estudia el comportamiento de compra en línea de consumidores en distintas regiones. Cada mes, toman una muestra de 120 transacciones de una base de datos de millones de transacciones para analizar el gasto promedio por compra. La distribución del gasto en transacciones es sesgada hacia la derecha por unas pocas compras muy costosas. Según el Teorema Central del Límite, ¿cómo se puede describir la distribución del promedio mensual del gasto en estas muestras de 120 transacciones, a medida que se recolectan más muestras mensuales?",
@@ -437,7 +437,7 @@
                     explanation: "El valor-p (0.03) es menor que el nivel de significancia α = 0.05, por lo que se rechaza la hipótesis nula. Esto indica evidencia suficiente en contra de H₀ a favor de la alternativa."
                 }
             ],
-            // TEMA 2: Argumentación (10 preguntas proporcionadas)
+            // TEMA 2: Argumentación (10 preguntas, con la corrección de la pregunta 2)
             argumentacion: [
                 { 
                     q: "Un estudio publicado en una revista de estadística examina el desempeño de dos algoritmos de predicción, A y B, en un conjunto de datos de salud. El artículo presenta un análisis detallado del error cuadrático medio (ECM) para ambos algoritmos. El algoritmo A tiene un ECM de 9.5, mientras que el algoritmo B muestra un ECM de 15.2. Además, el artículo discute cómo el ECM puede ser influenciado por la presencia de valores atípicos en los datos, mencionando que el algoritmo B es particularmente sensible a estos. ¿Qué interpretación se puede inferir correctamente sobre los algoritmos A y B con base en el ECM reportado en el estudio?",
@@ -447,9 +447,15 @@
                 },
                 { 
                     q: "Suponga un experimento con un tamaño de muestra fijo y con un estadístico de prueba. Si se reduce el tamaño de la región de rechazo, ¿cuál de las siguientes afirmaciones es verdadera?",
-                    a: ["Se obtiene un valor más pequeño de ALPHA", "Se obtiene un valor más grande de alpha", "Se obtiene un valor más grande de beta", "a y c son verdaderas", "Ninguna de las anteriores"],
+                    a: [
+                        "El nivel de significancia α disminuye",
+                        "El nivel de significancia α aumenta",
+                        "La probabilidad de error tipo II β aumenta",
+                        "α disminuye y β aumenta",
+                        "Ninguna de las anteriores"
+                    ],
                     c: 3,
-                    explanation: "Al reducir la región de rechazo, el nivel de significancia α (probabilidad de error tipo I) disminuye. Esto, a su vez, aumenta la probabilidad de error tipo II β (porque es más difícil rechazar H0). Por lo tanto, α se hace más pequeño y β más grande. En R se puede simular: `alpha <- 0.05; beta <- power.t.test(...)$beta` al variar el tamaño del efecto."
+                    explanation: "Al reducir la región de rechazo, el nivel de significancia α (probabilidad de error tipo I) disminuye. Esto, a su vez, aumenta la probabilidad de error tipo II β (porque es más difícil rechazar H0). Por lo tanto, la opción correcta es 'α disminuye y β aumenta'. En R se puede simular: `alpha <- 0.05; beta <- power.t.test(...)$beta` al variar el tamaño del efecto."
                 },
                 { 
                     q: "Un investigador desea saber si un nuevo tratamiento para reducir el colesterol es efectivo. Realiza un estudio con dos grupos: uno recibe el tratamiento y el otro un placebo (Los placebos son sustancias o intervenciones inactivas que se usan principalmente en ensayos clínicos controlados para comparar sus efectos con los de fármacos presuntamente activos). Al final del estudio, los resultados muestran una disminución promedio en el grupo tratado. ¿Cuál sería la hipótesis nula más adecuada para esta prueba?",
@@ -500,13 +506,55 @@
                     explanation: "La prueba t para una muestra (o dos muestras independientes) asume que los datos provienen de una distribución normal, especialmente cuando la muestra es pequeña. No verificar este supuesto puede afectar la validez de los resultados (errores en los niveles de significancia reales). En muestras grandes, la robustez es mayor."
                 }
             ],
-            // TEMA 3: Formulación y ejecución (placeholder)
+            // TEMA 3: Formulación y ejecución (8 preguntas)
             formulacion_ejecucion: [
                 {
-                    q: "(Pregunta temporal) Este tema es Formulación y ejecución. Reemplace con una pregunta real.",
-                    a: ["Opción A", "Opción B", "Opción C", "Opción D"],
+                    q: "Una empresa desea estimar el consumo promedio de energía eléctrica mensual en hogares de una determinada región para planificar su capacidad de producción de energía para el próximo año. Se decide tomar una muestra aleatoria de hogares y se registra el consumo de energía eléctrica durante varios meses. Basándose en estos datos, se desea emplear métodos estadísticos para proporcionar una estimación fiable del consumo promedio. Si el objetivo es estimar el consumo promedio de energía con un nivel de confianza del 95% y una desviación estándar de 5kWh, ¿cuál de las siguientes acciones debería realizar el equipo de analistas para obtener una estimación adecuada?",
+                    a: ["Calcular el consumo medio de la muestra y asumir que este es el consumo promedio de la población.", "Usar la media muestral y la desviación estándar para construir un intervalo de confianza para el consumo medio poblacional.", "Obtener el consumo total de energía de la muestra y dividirlo por el número de hogares en la región.", "Establecer una expresión analítica que permita relacionar el consumo mensual y el número de personas por hogar."],
+                    c: 1,
+                    explanation: "Para estimar el consumo promedio poblacional con un nivel de confianza del 95%, se debe construir un intervalo de confianza alrededor de la media muestral. Esto proporciona un rango de valores probables para el parámetro poblacional, considerando la variabilidad muestral. En R: `t.test(muestra, conf.level=0.95)`."
+                },
+                {
+                    q: "La lluvia del mes de abril en determinada localidad sigue una distribución normal con desviación estándar de 50 mm. ¿Cuál debe ser el tamaño de una muestra para que su media no difiera en más del 20 mm con respecto al verdadero valor medio con una probabilidad del 90%?",
+                    a: ["15", "16", "17", "13"],
+                    c: 2,
+                    explanation: "El tamaño muestral necesario para un margen de error E con confianza (1-α) se calcula con n = (z_{α/2} * σ / E)^2. Para una probabilidad del 90%, z_{0.05}=1.645. Entonces n = (1.645*50/20)^2 = (4.1125)^2 ≈ 16.91 → se redondea a 17. En R: `ceiling((qnorm(0.95)*50/20)^2)`."
+                },
+                {
+                    q: "Se toma una muestra aleatoria de 10 personas de un pueblo cuya estatura se distribuye normalmente con media poblacional de 170 cm. Si la desviación muestral es de 50 cm, ¿cuál es la probabilidad de que la media muestral exceda la media poblacional en más de 5 cm?",
+                    a: ["0.4", "0.5", "0.6", "0.7"],
                     c: 0,
-                    explanation: "Por favor, reemplace esta pregunta con una del tema Formulación y ejecución."
+                    explanation: "El error estándar estimado es s/√n = 50/√10 ≈ 15.81. La diferencia de 5 cm corresponde a t = 5/15.81 ≈ 0.316 con 9 grados de libertad. La probabilidad P(T > 0.316) ≈ 0.38, que se aproxima a 0.4. En R: `1 - pt(5/(50/sqrt(10)), df=9)`."
+                },
+                {
+                    q: "Para una muestra aleatoria proveniente de una distribución normal con desviación estándar 10.518, ¿cuál debe ser el tamaño de la muestra si se desea que el ancho de un intervalo de confianza para (x̄ - μ) sea de 10 asociado a un nivel de significancia α = 0.05?",
+                    a: ["11", "13", "15", "17"],
+                    c: 3,
+                    explanation: "El ancho del IC para la media es 2 * z_{α/2} * σ / √n. Con α=0.05, z=1.96. Despejando: √n = 2*1.96*10.518 / 10 = 4.123 → n ≈ 17.00. En R: `(2*qnorm(0.975)*10.518/10)^2`."
+                },
+                {
+                    q: "Un investigador quiere estimar la proporción de estudiantes que aprueban un examen. ¿Cuál es el tamaño mínimo de muestra necesario para que el error de estimación no supere 0.05 con un nivel de confianza del 95%? (suponga p = 0.5)",
+                    a: ["385", "100", "500", "200"],
+                    c: 0,
+                    explanation: "Para proporción, n = (z_{α/2}^2 * p*(1-p)) / E^2. Con z=1.96, p=0.5, E=0.05 → n = (1.96^2 * 0.25) / 0.0025 = 384.16 → 385. En R: `ceiling((qnorm(0.975)^2 * 0.5*0.5) / 0.05^2)`."
+                },
+                {
+                    q: "Se desea probar si la media poblacional es mayor a 100. Se toma una muestra de 36 datos con media 105 y desviación estándar 12. ¿Cuál es el valor del estadístico de prueba?",
+                    a: ["1.5", "2.0", "2.5", "3.0"],
+                    c: 2,
+                    explanation: "El estadístico de prueba para la media (con σ conocido o n grande) es z = (x̄ - μ₀) / (s/√n) = (105-100) / (12/6) = 5/2 = 2.5. En R: `(105-100)/(12/sqrt(36))`."
+                },
+                {
+                    q: "Para construir un intervalo de confianza del 90% para la media con una muestra pequeña (n < 30) de una población normal, ¿qué distribución se debe usar?",
+                    a: ["Normal estándar", "t-Student", "Chi-cuadrado", "F"],
+                    c: 1,
+                    explanation: "Cuando la muestra es pequeña y la población es normal pero la desviación estándar poblacional es desconocida, se utiliza la distribución t de Student con n-1 grados de libertad. En R: `t.test(datos, conf.level=0.90)`."
+                },
+                {
+                    q: "Un estudio piloto arroja una desviación estándar de 8 unidades. ¿Cuántas observaciones se necesitan para estimar la media con un error máximo de 2 unidades y confianza del 95%?",
+                    a: ["62", "50", "70", "55"],
+                    c: 0,
+                    explanation: "Aplicando n = (z_{0.025} * σ / E)^2 = (1.96 * 8 / 2)^2 = (7.84)^2 = 61.47 → 62. En R: `ceiling((qnorm(0.975)*8/2)^2)`."
                 }
             ],
             // TEMA 4: Distribución media muestral (placeholder)
