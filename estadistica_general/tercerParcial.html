@@ -135,28 +135,6 @@
             line-height: 1.5;
         }
         
-        .table-container {
-            margin: 15px 0;
-            padding: 15px;
-            background-color: #f9f9f9;
-            border-radius: 8px;
-            overflow-x: auto;
-        }
-        
-        table { width: 100%; border-collapse: collapse; margin: 10px 0; font-size: 0.95em; }
-        th { background-color: var(--primary-color); color: white; padding: 10px; text-align: center; border: 1px solid #ddd; }
-        td { padding: 8px; text-align: center; border: 1px solid #ddd; }
-        tr:nth-child(even) { background-color: #f2f2f2; }
-        
-        .chart-container {
-            width: 100%;
-            height: 350px;
-            background-color: white;
-            border-radius: 8px;
-            margin: 10px 0;
-            border: 1px solid #eee;
-        }
-        
         .options-container {
             display: flex;
             flex-direction: column;
@@ -402,7 +380,7 @@
         // ======================================================
         
         const questionBank3 = {
-            // TEMA 1: Representación e interpretación
+            // TEMA 1: Representación e interpretación (9 preguntas ya proporcionadas)
             representacion_interpretacion: [
                 { 
                     q: "Un grupo de investigadores estudia el comportamiento de compra en línea de consumidores en distintas regiones. Cada mes, toman una muestra de 120 transacciones de una base de datos de millones de transacciones para analizar el gasto promedio por compra. La distribución del gasto en transacciones es sesgada hacia la derecha por unas pocas compras muy costosas. Según el Teorema Central del Límite, ¿cómo se puede describir la distribución del promedio mensual del gasto en estas muestras de 120 transacciones, a medida que se recolectan más muestras mensuales?",
@@ -459,13 +437,67 @@
                     explanation: "El valor-p (0.03) es menor que el nivel de significancia α = 0.05, por lo que se rechaza la hipótesis nula. Esto indica evidencia suficiente en contra de H₀ a favor de la alternativa."
                 }
             ],
-            // TEMA 2: Argumentación (placeholder)
+            // TEMA 2: Argumentación (10 preguntas proporcionadas)
             argumentacion: [
-                {
-                    q: "(Pregunta temporal) Este tema es Argumentación. Reemplace con una pregunta real.",
-                    a: ["Opción A", "Opción B", "Opción C", "Opción D"],
+                { 
+                    q: "Un estudio publicado en una revista de estadística examina el desempeño de dos algoritmos de predicción, A y B, en un conjunto de datos de salud. El artículo presenta un análisis detallado del error cuadrático medio (ECM) para ambos algoritmos. El algoritmo A tiene un ECM de 9.5, mientras que el algoritmo B muestra un ECM de 15.2. Además, el artículo discute cómo el ECM puede ser influenciado por la presencia de valores atípicos en los datos, mencionando que el algoritmo B es particularmente sensible a estos. ¿Qué interpretación se puede inferir correctamente sobre los algoritmos A y B con base en el ECM reportado en el estudio?",
+                    a: ["El algoritmo A es mejor que el algoritmo B para todos los tipos de datos.", "El algoritmo B podría ser más adecuado que el algoritmo A para datos sin valores atípicos.", "El algoritmo A presenta el valor más bajo del ECM, que implica menores desviaciones cuadradas promedio de los valores predichos respecto a los observados en sus predicciones.", "El algoritmo B es menos complejo computacionalmente, lo que justifica su ECM más alto."],
+                    c: 2,
+                    explanation: "El error cuadrático medio (ECM) mide el promedio de las desviaciones cuadráticas entre los valores predichos y los observados. Un ECM menor indica mejor ajuste en términos de menor error cuadrático promedio. La opción c describe correctamente esta propiedad. Las demás opciones introducen supuestos no soportados por la evidencia (superioridad para todos los datos, complejidad computacional, etc.)."
+                },
+                { 
+                    q: "Suponga un experimento con un tamaño de muestra fijo y con un estadístico de prueba. Si se reduce el tamaño de la región de rechazo, ¿cuál de las siguientes afirmaciones es verdadera?",
+                    a: ["Se obtiene un valor más pequeño de ALPHA", "Se obtiene un valor más grande de alpha", "Se obtiene un valor más grande de beta", "a y c son verdaderas", "Ninguna de las anteriores"],
+                    c: 3,
+                    explanation: "Al reducir la región de rechazo, el nivel de significancia α (probabilidad de error tipo I) disminuye. Esto, a su vez, aumenta la probabilidad de error tipo II β (porque es más difícil rechazar H0). Por lo tanto, α se hace más pequeño y β más grande. En R se puede simular: `alpha <- 0.05; beta <- power.t.test(...)$beta` al variar el tamaño del efecto."
+                },
+                { 
+                    q: "Un investigador desea saber si un nuevo tratamiento para reducir el colesterol es efectivo. Realiza un estudio con dos grupos: uno recibe el tratamiento y el otro un placebo (Los placebos son sustancias o intervenciones inactivas que se usan principalmente en ensayos clínicos controlados para comparar sus efectos con los de fármacos presuntamente activos). Al final del estudio, los resultados muestran una disminución promedio en el grupo tratado. ¿Cuál sería la hipótesis nula más adecuada para esta prueba?",
+                    a: ["El tratamiento no tiene efecto en el colesterol.", "El tratamiento reduce el colesterol en promedio.", "La media del colesterol en el grupo tratado es menor que en el grupo placebo.", "No hay diferencia entre el colesterol del grupo tratado y el grupo placebo."],
+                    c: 3,
+                    explanation: "En un ensayo clínico con grupo control (placebo), la hipótesis nula más adecuada es que no hay diferencia entre la media del grupo tratado y la del grupo placebo (μ_tratado = μ_placebo). La opción d expresa esta igualdad. La opción a es conceptualmente similar pero menos precisa para la comparación de dos medias."
+                },
+                { 
+                    q: "Un informe reporta que el intervalo de confianza al 95% para la media del ingreso mensual de una población es (2.1, 3.4) millones de pesos. Un analista afirma que “hay un 95% de probabilidad de que la media poblacional esté en ese intervalo”. ¿Cuál es la mejor evaluación de esta afirmación?",
+                    a: ["Es correcta, porque el intervalo contiene la media con probabilidad 0.95", "Es incorrecta, porque la media poblacional es fija y no aleatoria", "Es correcta solo si la muestra es grande", "Es incorrecta porque el intervalo no depende del nivel de confianza"],
+                    c: 1,
+                    explanation: "La media poblacional es un valor fijo (no aleatorio). La afirmación “hay un 95% de probabilidad de que la media poblacional esté en el intervalo” es incorrecta porque la probabilidad se refiere al procedimiento: si se repitiera el muestreo muchas veces, el 95% de los intervalos construidos contendrían la verdadera media. En R: `set.seed(123); replicas <- replicate(1000, { ... })` y se observa la cobertura."
+                },
+                { 
+                    q: "En una prueba de hipótesis, un investigador decide usar un nivel de significancia muy bajo (α = 0.01). ¿Cuál es una consecuencia razonable de esta decisión?",
+                    a: ["Disminuye la probabilidad de cometer error tipo I", "Disminuye la probabilidad de cometer error tipo II", "Aumenta la potencia de la prueba", "No afecta la región de rechazo"],
                     c: 0,
-                    explanation: "Por favor, reemplace esta pregunta con una del tema Argumentación. Puede editar el objeto questionBank3 en el código."
+                    explanation: "Reducir α disminuye la probabilidad de cometer un error tipo I (rechazar H0 cuando es verdadera). Sin embargo, esto aumenta la probabilidad de error tipo II y reduce la potencia. En R: `power.t.test(n=30, delta=0.5, sd=1, sig.level=0.01, type='one.sample')`."
+                },
+                { 
+                    q: "Un estudio reporta un valor-p de 0.08 al probar una hipótesis con α = 0.05. El investigador concluye que “la hipótesis nula es verdadera”. ¿Cuál es la mejor evaluación?",
+                    a: ["Es correcta, porque el valor-p es mayor que α", "Es incorrecta, porque no rechazar H0 no implica que sea verdadera", "Es correcta solo si la muestra es pequeña", "Es incorrecta porque el valor-p siempre debe ser menor que 0.01"],
+                    c: 1,
+                    explanation: "No rechazar H0 no significa que H0 sea verdadera; solo indica que la evidencia no es suficiente para rechazarla. La conclusión correcta es “no se rechaza H0”, no “H0 es verdadera”. La opción b identifica correctamente este error."
+                },
+                { 
+                    q: "Dos estudios analizan el mismo fenómeno. El estudio A usa n = 30 y el estudio B usa n = 500. Ambos obtienen la misma media muestral. ¿Cuál afirmación es más razonable?",
+                    a: ["Ambios estudios tienen la misma precisión", "El estudio A es más confiable por tener menor tamaño", "El estudio B probablemente tiene menor error estándar", "El tamaño de muestra no influye en la inferencia"],
+                    c: 2,
+                    explanation: "El error estándar de la media es σ/√n. A mayor tamaño de muestra, menor error estándar, lo que implica mayor precisión en la estimación. Por tanto, el estudio B (n=500) tendrá menor error estándar que el estudio A (n=30), asumiendo la misma variabilidad poblacional. En R: `sd / sqrt(n)`."
+                },
+                { 
+                    q: "Un estudio encuentra una alta correlación entre el consumo de café y el rendimiento académico. ¿Cuál conclusión es más adecuada?",
+                    a: ["El café mejora directamente el rendimiento académico", "El rendimiento académico causa mayor consumo de café", "Existe una relación, pero no se puede inferir causalidad", "La correlación implica una relación causal fuerte"],
+                    c: 2,
+                    explanation: "La correlación indica una relación estadística entre dos variables, pero no implica necesariamente causalidad. Podría haber una tercera variable o causalidad inversa. La opción c refleja esta limitación fundamental."
+                },
+                { 
+                    q: "Un investigador recolecta datos sobre hábitos de ejercicio encuestando únicamente a personas en un gimnasio. ¿Cuál es el principal problema del estudio?",
+                    a: ["Error tipo I", "Sesgo de selección", "Error de medición", "Falta de normalidad"],
+                    c: 1,
+                    explanation: "La muestra se obtiene únicamente de personas que asisten a un gimnasio, lo que no es representativo de la población general. Esto introduce un sesgo de selección, invalidando cualquier generalización sobre hábitos de ejercicio en la población total."
+                },
+                { 
+                    q: "Un investigador aplica una prueba t para la media sin verificar los supuestos de normalidad en una muestra pequeña. ¿Cuál es la mejor evaluación?",
+                    a: ["No hay problema, la prueba t siempre es válida", "Es válido solo si la varianza es conocida", "Puede afectar la validez de los resultados", "La normalidad solo importa en muestras grandes"],
+                    c: 2,
+                    explanation: "La prueba t para una muestra (o dos muestras independientes) asume que los datos provienen de una distribución normal, especialmente cuando la muestra es pequeña. No verificar este supuesto puede afectar la validez de los resultados (errores en los niveles de significancia reales). En muestras grandes, la robustez es mayor."
                 }
             ],
             // TEMA 3: Formulación y ejecución (placeholder)
@@ -477,7 +509,7 @@
                     explanation: "Por favor, reemplace esta pregunta con una del tema Formulación y ejecución."
                 }
             ],
-            // TEMA 4: Distribución media muestral
+            // TEMA 4: Distribución media muestral (placeholder)
             dist_media_muestral: [
                 {
                     q: "(Pregunta temporal) Este tema es Distribución media muestral. Reemplace con una pregunta real.",
@@ -486,7 +518,7 @@
                     explanation: "Por favor, reemplace esta pregunta con una del tema Distribución media muestral."
                 }
             ],
-            // TEMA 5: Distribución varianza muestral
+            // TEMA 5: Distribución varianza muestral (placeholder)
             dist_varianza_muestral: [
                 {
                     q: "(Pregunta temporal) Este tema es Distribución varianza muestral. Reemplace con una pregunta real.",
@@ -495,7 +527,7 @@
                     explanation: "Por favor, reemplace esta pregunta con una del tema Distribución varianza muestral."
                 }
             ],
-            // TEMA 6: Distribución proporción muestral
+            // TEMA 6: Distribución proporción muestral (placeholder)
             dist_proporcion_muestral: [
                 {
                     q: "(Pregunta temporal) Este tema es Distribución proporción muestral. Reemplace con una pregunta real.",
@@ -504,7 +536,7 @@
                     explanation: "Por favor, reemplace esta pregunta con una del tema Distribución proporción muestral."
                 }
             ],
-            // TEMA 7: TLC (Teorema del Límite Central)
+            // TEMA 7: TLC (placeholder)
             tlc: [
                 {
                     q: "(Pregunta temporal) Este tema es TLC. Reemplace con una pregunta real.",
@@ -513,7 +545,7 @@
                     explanation: "Por favor, reemplace esta pregunta con una del tema TLC."
                 }
             ],
-            // TEMA 8: Estimación puntual y propiedades
+            // TEMA 8: Estimación puntual y propiedades (placeholder)
             estimacion_puntual: [
                 {
                     q: "(Pregunta temporal) Este tema es Estimación puntual y propiedades. Reemplace con una pregunta real.",
@@ -522,7 +554,7 @@
                     explanation: "Por favor, reemplace esta pregunta con una del tema Estimación puntual y propiedades."
                 }
             ],
-            // TEMA 9: IC media
+            // TEMA 9: IC media (placeholder)
             ic_media: [
                 {
                     q: "(Pregunta temporal) Este tema es IC media. Reemplace con una pregunta real.",
@@ -531,7 +563,7 @@
                     explanation: "Por favor, reemplace esta pregunta con una del tema IC media."
                 }
             ],
-            // TEMA 10: IC proporción
+            // TEMA 10: IC proporción (placeholder)
             ic_proporcion: [
                 {
                     q: "(Pregunta temporal) Este tema es IC proporción. Reemplace con una pregunta real.",
@@ -540,7 +572,7 @@
                     explanation: "Por favor, reemplace esta pregunta con una del tema IC proporción."
                 }
             ],
-            // TEMA 11: IC varianza
+            // TEMA 11: IC varianza (placeholder)
             ic_varianza: [
                 {
                     q: "(Pregunta temporal) Este tema es IC varianza. Reemplace con una pregunta real.",
@@ -549,7 +581,7 @@
                     explanation: "Por favor, reemplace esta pregunta con una del tema IC varianza."
                 }
             ],
-            // TEMA 12: PH media
+            // TEMA 12: PH media (placeholder)
             ph_media: [
                 {
                     q: "(Pregunta temporal) Este tema es PH media. Reemplace con una pregunta real.",
@@ -558,7 +590,7 @@
                     explanation: "Por favor, reemplace esta pregunta con una del tema PH media."
                 }
             ],
-            // TEMA 13: PH proporción
+            // TEMA 13: PH proporción (placeholder)
             ph_proporcion: [
                 {
                     q: "(Pregunta temporal) Este tema es PH proporción. Reemplace con una pregunta real.",
@@ -567,7 +599,7 @@
                     explanation: "Por favor, reemplace esta pregunta con una del tema PH proporción."
                 }
             ],
-            // TEMA 14: PH varianza
+            // TEMA 14: PH varianza (placeholder)
             ph_varianza: [
                 {
                     q: "(Pregunta temporal) Este tema es PH varianza. Reemplace con una pregunta real.",
