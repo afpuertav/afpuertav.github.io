@@ -982,7 +982,7 @@
                     q: "Suponga que se entrevistaron 500 personas, de las cuales 150 admitieron que fuman como mínimo un paquete de cigarrillos al día. Encuentre el límite inferior de un intervalo de confianza del 95% bilateral para la proporción de personas que fuman como mínimo un paquete de cigarrillos al día.",
                     a: ["0.3402", "0.2598", "0.2663", "0.3337"],
                     c: 1,
-                    explanation: "<strong>Paso a paso:</strong>\n1. <strong>Mismos datos:</strong> $n=500$, $x=150$, $\\hat{p}=0.3$, $EE=0.0204939$, $z_{0.025}=1.96$.\n2. <strong>Margen de error:</strong> $ME = 1.96 \\times 0.0204939 = 0.040168$.\n3. <strong>Límite inferior:</strong> $0.3 - 0.040168 = 0.259832 \\approx 0.2598$.\n4. <strong>Código R:</strong> `prop.test(150, 500, conf.level = 0.95)$conf.int` (primer valor)."
+                    explanation: "<strong>Paso a paso:</strong>\n1. <strong>Calcular la proporción muestral:</strong> $n=500$ (total de personas), $x=150$ (fumadores). Proporción: $\\hat{p} = \\frac{x}{n} = \\frac{150}{500} = 0.3$.\n2. <strong>Calcular el error estándar (EE):</strong> $EE = \\sqrt{\\frac{\\hat{p}(1-\\hat{p})}{n}} = \\sqrt{\\frac{0.3 \\times 0.7}{500}} = \\sqrt{\\frac{0.21}{500}} = \\sqrt{0.00042} \\approx 0.0204939$.\n3. <strong>Nivel de confianza 95%:</strong> $\\alpha = 0.05$, $\\alpha/2 = 0.025$, $z_{0.025} = 1.96$.\n4. <strong>Margen de error:</strong> $ME = z_{0.025} \\times EE = 1.96 \\times 0.0204939 \\approx 0.040168$.\n5. <strong>Límite inferior:</strong> $\\hat{p} - ME = 0.3 - 0.040168 = 0.259832 \\approx 0.2598$.\n6. <strong>Código R:</strong> `prop.test(150, 500, conf.level = 0.95)$conf.int` (primer valor da el límite inferior)."
                 }
             ],
 
