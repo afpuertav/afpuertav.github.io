@@ -933,13 +933,13 @@
                     q: "Para el tipo 1 de obleas se tomaron 356 troqueles y se encontró que 201 de estos pasaron la prueba. Suponiendo un proceso estable, calcule el límite superior de un intervalo de confianza (bilateral) de 96% para la proporción de todos los troqueles tipo 1 que pasan la prueba.",
                     a: ["0.5106", "0.6186", "0.5486", "0.6106"],
                     c: 1,
-                    explanation: "<strong>Paso a paso:</strong>\n1. Mismos datos: \\(\\hat{p}=0.5646\\), error estándar=0.02627, margen=0.05396.\n2. Límite superior = \\(0.5646 + 0.05396 = 0.61856\\).\n3. Respuesta: 0.6186."
+                    explanation: "<strong>Paso a paso:</strong>\n1. <strong>Proporción muestral:</strong> $\\hat{p} = \\frac{201}{356} = 0.5646$.\n2. <strong>Error estándar:</strong> $EE = \\sqrt{\\frac{0.5646 \\times (1-0.5646)}{356}} = \\sqrt{\\frac{0.5646 \\times 0.4354}{356}} = \\sqrt{\\frac{0.2457}{356}} = \\sqrt{0.000690} = 0.02627$.\n3. <strong>Nivel de confianza 96%:</strong> $\\alpha = 0.04$, $\\alpha/2 = 0.02$, $z_{0.02} = 2.054$.\n4. <strong>Margen de error:</strong> $ME = 2.054 \\times 0.02627 = 0.05396$.\n5. <strong>Límite superior:</strong> $\\hat{p} + ME = 0.5646 + 0.05396 = 0.6186$.\n6. <strong>Código R:</strong> `prop.test(201, 356, conf.level = 0.96)$conf.int` (segundo valor).\n7. Respuesta: 0.6186."
                     },
                     {
                     q: "Para el tipo 1 de obleas se tomaron 356 troqueles y se encontró que 201 de estos pasaron la prueba. Suponiendo un proceso estable, calcule el límite inferior de un intervalo de confianza (unilateral) de 96% para la proporción de todos los troqueles tipo 1 que pasan la prueba.",
                     a: ["0.5106", "0.6186", "0.5186", "0.6106"],
                     c: 2,
-                    explanation: "<strong>Paso a paso:</strong>\n1. IC unilateral inferior al 96%: \\(\\hat{p} - z_{\\alpha} \\sqrt{\\hat{p}(1-\\hat{p})/n}\\), con \\(\\alpha = 0.04\\) (cola inferior). \\(z_{0.04}=1.751\\).\n2. Margen unilateral = \\(1.751 \\times 0.02627 = 0.04600\\).\n3. Límite inferior = \\(0.5646 - 0.0460 = 0.5186\\).\n4. Respuesta: 0.5186."
+                    explanation: "<strong>Paso a paso:</strong>\n1. <strong>Proporción muestral:</strong> $\\hat{p} = \\frac{201}{356} = 0.5646$.\n2. <strong>Error estándar:</strong> $EE = \\sqrt{\\frac{0.5646 \\times 0.4354}{356}} = 0.02627$ (mismo cálculo que bilateral).\n3. <strong>Intervalo unilateral inferior 96%:</strong> Para unilateral con 96% de confianza, $\\alpha = 0.04$ (en la cola no incluida), por lo que $z_{0.04} = 1.751$.\n4. <strong>Margen de error (unilateral):</strong> $ME = 1.751 \\times 0.02627 = 0.04600$.\n5. <strong>Límite inferior:</strong> $\\hat{p} - ME = 0.5646 - 0.04600 = 0.5186$.\n6. <strong>Nota:</strong> En intervalo unilateral solo hay un límite; el inferior es $0.5186$ y la cota superior es $\\infty$ (teóricamente 1).\n7. Respuesta: 0.5186."
                     },
                     {
                     q: "Para el tipo 2 de obleas se recolectaron 322 troqueles, en donde 180 de ellos pasaron la prueba. Suponiendo un proceso estable, calcule el límite superior de un intervalo de confianza (bilateral) de 96% para la proporción de todos los troqueles tipo 2 que pasan la prueba.",
@@ -951,25 +951,25 @@
                     q: "Para el tipo 2 de obleas se recolectaron 322 troqueles, en donde 180 de ellos pasaron la prueba. Suponiendo un proceso estable, calcule el límite inferior de un intervalo de confianza (bilateral) de 96% para la proporción de todos los troqueles tipo 2 que pasan la prueba.",
                     a: ["0.5022", "0.6158", "0.5106", "0.6074"],
                     c: 0,
-                    explanation: "<strong>Paso a paso:</strong>\n1. Mismos datos: límite inferior = \\(0.5590 - 0.05684 = 0.50216\\).\n2. Respuesta: 0.5022."
+                    explanation: "<strong>Paso a paso:</strong>\n1. <strong>Proporción muestral:</strong> $\\hat{p}=\\frac{180}{322} = 0.5590$.\n2. <strong>Error estándar:</strong> $EE = \\sqrt{\\frac{0.5590 \\times 0.4410}{322}} = \\sqrt{\\frac{0.2465}{322}} = \\sqrt{0.0007655} = 0.02767$.\n3. <strong>Nivel de confianza 96%:</strong> $\\alpha = 0.04$, $\\alpha/2 = 0.02$, $z_{0.02} = 2.054$.\n4. <strong>Margen de error:</strong> $ME = 2.054 \\times 0.02767 = 0.05684$.\n5. <strong>Límite inferior:</strong> $\\hat{p} - ME = 0.5590 - 0.05684 = 0.5022$.\n6. Respuesta: 0.5022."
                     },
                     {
                     q: "Para el tipo 2 de obleas se recolectaron 322 troqueles, en donde 180 de ellos pasaron la prueba. Suponiendo un proceso estable, calcule el límite superior de un intervalo de confianza (bilateral) de 96% para la proporción de todos los troqueles tipo 2 que pasan la prueba.",
                     a: ["0.5022", "0.6158", "0.5106", "0.6074"],
                     c: 1,
-                    explanation: "<strong>Paso a paso:</strong>\n1. Idéntico a la pregunta 4 de este tema. Respuesta: 0.6158."
+                    explanation: "<strong>Paso a paso:</strong>\n1. <strong>Proporción muestral:</strong> $\\hat{p}=\\frac{180}{322} = 0.5590$.\n2. <strong>Error estándar:</strong> $EE = \\sqrt{\\frac{0.5590 \\times 0.4410}{322}} = 0.02767$.\n3. <strong>Margen de error (96% bilateral):</strong> $ME = 2.054 \\times 0.02767 = 0.05684$.\n4. <strong>Límite superior:</strong> $\\hat{p} + ME = 0.5590 + 0.05684 = 0.6158$.\n5. Respuesta: 0.6158."
                     },
                     {
                     q: "Para el tipo 2 de obleas se recolectaron 322 troqueles, en donde 180 de ellos pasaron la prueba. Suponiendo un proceso estable, calcule el límite inferior de un intervalo de confianza (unilateral) de 96% para la proporción de todos los troqueles tipo 2 que pasan la prueba.",
                     a: ["0.5022", "0.6158", "0.5106", "0.6074"],
                     c: 2,
-                    explanation: "<strong>Paso a paso:</strong>\n1. IC unilateral inferior 96%: \\(z_{0.04}=1.751\\). Margen = \\(1.751 \\times 0.02767 = 0.04846\\).\n2. Límite inferior = \\(0.5590 - 0.04846 = 0.51054\\).\n3. Respuesta: 0.5106."
+                    explanation: "<strong>Paso a paso:</strong>\n1. <strong>Proporción muestral:</strong> $\\hat{p}=\\frac{180}{322} = 0.5590$.\n2. <strong>Error estándar:</strong> $EE = \\sqrt{\\frac{0.5590 \\times 0.4410}{322}} = 0.02767$.\n3. <strong>Intervalo unilateral inferior 96%:</strong> $z_{0.04}=1.751$.\n4. <strong>Margen (unilateral):</strong> $ME = 1.751 \\times 0.02767 = 0.04846$.\n5. <strong>Límite inferior:</strong> $0.5590 - 0.04846 = 0.5105$.\n6. Respuesta: 0.5106."
                     },
                     {
                     q: "Para el tipo 2 de obleas se recolectaron 322 troqueles, en donde 180 de ellos pasaron la prueba. Suponiendo un proceso estable, calcule el límite inferior de un intervalo de confianza (unilateral) de 96% para la proporción de todos los troqueles tipo 2 que pasan la prueba.",
                     a: ["0.5022", "0.6158", "0.5106", "0.6074"],
                     c: 2,
-                    explanation: "<strong>Paso a paso:</strong>\n1. Idéntico a la pregunta 7. Respuesta: 0.5106."
+                    explanation: "<strong>Paso a paso:</strong>\n1. <strong>Proporción muestral:</strong> $\\hat{p}=0.5590$, $EE=0.02767$.\n2. <strong>IC unilateral inferior 96%:</strong> $z_{0.04}=1.751$, $ME = 1.751 \\times 0.02767 = 0.04846$.\n3. <strong>Límite inferior:</strong> $0.5590 - 0.04846 = 0.5105 \\approx 0.5106$.\n4. Respuesta: 0.5106."
                 },
               // ==================== TEMA 10: IC proporción (explicaciones mejoradas) ====================
                 {
