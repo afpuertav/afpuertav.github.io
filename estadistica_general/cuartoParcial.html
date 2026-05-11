@@ -1,0 +1,1535 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simulador del Cuarto Parcial - Estadística General</title>
+
+    <script>
+        window.MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                displayMath: [['$$', '$$'], ['\\[', '\\]']],
+                processEscapes: true
+            },
+            svg: { fontCache: 'global' },
+            startup: { pageReady: () => MathJax.typesetPromise().catch(err => console.log(err)) }
+        };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
+
+    <style>
+        :root {
+            --primary-color: #2c3e50;
+            --secondary-color: #3498db;
+            --accent-color: #e74c3c;
+            --light-color: #ecf0f1;
+            --success-color: #27ae60;
+            --warning-color: #f39c12;
+            --shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+        body { background-color: #f5f7fa; color: #333; line-height: 1.6; padding: 20px; max-width: 1200px; margin: 0 auto; }
+        header { text-align: center; margin-bottom: 30px; padding: 20px; background-color: white; border-radius: 10px; box-shadow: var(--shadow); }
+        h1 { color: var(--primary-color); margin-bottom: 10px; font-size: 2.2rem; }
+        .subtitle { color: var(--secondary-color); font-size: 1.1rem; margin-bottom: 20px; }
+        .instructions { background-color: var(--light-color); padding: 15px; border-radius: 8px; margin-bottom: 25px; border-left: 5px solid var(--secondary-color); }
+        .instructions h3 { color: var(--primary-color); margin-bottom: 10px; }
+        .exam-container { display: grid; grid-template-columns: 2fr 1fr; gap: 25px; }
+        .questions-section { background-color: white; padding: 25px; border-radius: 10px; box-shadow: var(--shadow); }
+        .control-panel { background-color: white; padding: 25px; border-radius: 10px; box-shadow: var(--shadow); height: fit-content; position: sticky; top: 20px; }
+        .question-card { margin-bottom: 30px; padding-bottom: 20px; border-bottom: 1px solid #eee; scroll-margin-top: 20px; }
+        .question-card:last-child { border-bottom: none; }
+        .question-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
+        .question-number { background-color: var(--primary-color); color: white; width: 30px; height: 30px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; flex-shrink: 0; }
+        .question-text { margin-bottom: 20px; font-size: 1.05rem; line-height: 1.6; }
+        .options-container { display: flex; flex-direction: column; gap: 12px; }
+        .option { padding: 12px 15px; border: 2px solid #ddd; border-radius: 8px; cursor: pointer; transition: all 0.2s; display: flex; align-items: flex-start; gap: 10px; }
+        .option:hover { background-color: #f0f8ff; border-color: var(--secondary-color); }
+        .option.selected { background-color: #e1f0ff; border-color: var(--secondary-color); font-weight: 600; }
+        .option.correct { background-color: #d4edda; border-color: var(--success-color); color: #155724; }
+        .option.incorrect { background-color: #f8d7da; border-color: var(--accent-color); color: #721c24; }
+        .opt-label { font-weight: bold; flex-shrink: 0; }
+        .explanation { margin-top: 20px; padding: 15px; background-color: #fff3cd; border-left: 5px solid #ffc107; border-radius: 5px; font-size: 0.95rem; line-height: 1.7; }
+        .btn { padding: 12px 24px; border: none; border-radius: 8px; cursor: pointer; font-weight: bold; transition: all 0.3s; font-size: 1rem; margin-right: 10px; margin-bottom: 10px; }
+        .btn-primary { background-color: var(--secondary-color); color: white; }
+        .btn-primary:hover { background-color: #2980b9; }
+        .btn-secondary { background-color: var(--light-color); color: var(--primary-color); border: 1px solid #ddd; }
+        .btn-secondary:hover { background-color: #d5dbdb; }
+        .results-container { margin-top: 25px; padding: 20px; background-color: white; border-radius: 10px; box-shadow: var(--shadow); display: none; }
+        .score-display { text-align: center; margin-bottom: 20px; }
+        .score-circle { width: 120px; height: 120px; border-radius: 50%; background-color: var(--light-color); display: flex; justify-content: center; align-items: center; margin: 0 auto 20px; font-size: 2.5rem; font-weight: bold; color: var(--primary-color); border: 5px solid var(--secondary-color); }
+        .score-circle.low { border-color: var(--accent-color); color: var(--accent-color); }
+        .score-circle.medium { border-color: var(--warning-color); color: var(--warning-color); }
+        .score-circle.high { border-color: var(--success-color); color: var(--success-color); }
+        .stats { display: flex; justify-content: space-between; margin-top: 20px; }
+        .stat-box { flex: 1; text-align: center; padding: 15px; background-color: var(--light-color); border-radius: 8px; margin: 0 5px; }
+        .stat-value { font-size: 2rem; font-weight: bold; color: var(--primary-color); }
+        .stat-label { font-size: 0.9rem; color: #7f8c8d; }
+        .topic-progress { margin-top: 20px; }
+        .topic-item { display: flex; justify-content: space-between; align-items: center; padding: 8px 0; border-bottom: 1px solid #eee; cursor: pointer; transition: all 0.2s; }
+        .topic-item:hover { background-color: #f5f5f5; padding-left: 5px; }
+        .topic-name { flex: 1; font-size: 0.9em; }
+        .topic-status { width: 12px; height: 12px; border-radius: 50%; margin-left: 10px; flex-shrink: 0; }
+        .topic-status.correct { background-color: var(--success-color); }
+        .topic-status.incorrect { background-color: var(--accent-color); }
+        .topic-status.unanswered { background-color: #ddd; }
+        .topic-status.answered { background-color: var(--secondary-color); }
+        .r-output { font-family: 'Courier New', monospace; background: #f8f9fa; padding: 12px; border-radius: 6px; font-size: 0.82rem; margin: 12px 0; border: 1px solid #dee2e6; white-space: pre; overflow-x: auto; line-height: 1.5; }
+        .pending-badge { display: inline-block; background: #fff3cd; border: 1px solid #ffc107; color: #856404; padding: 4px 10px; border-radius: 20px; font-size: 0.85rem; margin-bottom: 8px; }
+        footer { text-align: center; margin-top: 30px; padding: 20px; color: #7f8c8d; font-size: 0.9rem; }
+        @media (max-width: 900px) {
+            .exam-container { grid-template-columns: 1fr; }
+            .stats { flex-direction: column; gap: 15px; }
+            .stat-box { margin: 0; }
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <h1>Simulador del Cuarto Parcial</h1>
+    <p class="subtitle">Estadística General &mdash; 8 preguntas (una por tema) &mdash; Calificación de 0 a 5</p>
+</header>
+
+<div class="instructions">
+    <h3>Instrucciones</h3>
+    <p>Este simulador contiene 8 preguntas, cada una correspondiente a un tema del cuarto parcial. Al finalizar obtendrás tu calificación y una explicación detallada con el procedimiento paso a paso.</p>
+    <p><strong>Temas:</strong> Interpretación y representación &bull; Formulación y ejecución &bull; Argumentación &bull; Coeficiente de correlación &bull; Coeficiente de determinación &bull; Regresión Lineal &bull; Prueba de hipótesis &bull; Error estándar de estimación.</p>
+</div>
+
+<div class="exam-container">
+    <section class="questions-section">
+        <h2>Preguntas del Parcial</h2>
+        <div id="questions-container"></div>
+        <div style="margin-top:20px;">
+            <button id="submit-btn" class="btn btn-primary">Calificar Examen</button>
+            <button id="new-exam-btn" class="btn btn-secondary">Nuevo Examen Aleatorio</button>
+        </div>
+    </section>
+
+    <section class="control-panel">
+        <h3>Progreso</h3>
+        <div class="stats">
+            <div class="stat-box">
+                <div class="stat-value" id="answered-count">0</div>
+                <div class="stat-label">Respondidas</div>
+            </div>
+            <div class="stat-box">
+                <div class="stat-value" id="total-count">8</div>
+                <div class="stat-label">Total</div>
+            </div>
+        </div>
+        <div class="topic-progress">
+            <h4 style="margin-top:15px;">Navegación:</h4>
+            <div id="topics-list"></div>
+        </div>
+    </section>
+</div>
+
+<div class="results-container" id="results-container">
+    <h2>Resultados del Parcial</h2>
+    <div class="score-display">
+        <div class="score-circle" id="final-score">0.0</div>
+        <h3>Calificación Final</h3>
+        <p id="score-text">Sobre 5.0 puntos</p>
+    </div>
+    <div class="stats">
+        <div class="stat-box"><div class="stat-value" id="correct-count">0</div><div class="stat-label">Correctas</div></div>
+        <div class="stat-box"><div class="stat-value" id="incorrect-count">0</div><div class="stat-label">Incorrectas</div></div>
+        <div class="stat-box"><div class="stat-value" id="percentage-score">0%</div><div class="stat-label">Porcentaje</div></div>
+    </div>
+    <div style="text-align:center; margin-top:20px;">
+        <button id="review-btn" class="btn btn-secondary">Revisar Respuestas</button>
+        <button id="restart-btn" class="btn btn-primary">Intentar Otro Examen</button>
+    </div>
+</div>
+
+<footer>
+    <p>Simulador del Cuarto Parcial de Estadística General<br>Basado en materiales de clase y preguntas tipo</p>
+</footer>
+
+<script>
+// ============================================================
+// GENERADORES DE GRÁFICOS SVG
+// ============================================================
+
+function makeScatterSVG(points) {
+    const W = 180, H = 130, pl = 22, pr = 10, pt = 10, pb = 20;
+    const xs = points.map(p => p[0]), ys = points.map(p => p[1]);
+    const xMin = Math.min(...xs), xMax = Math.max(...xs);
+    const yMin = Math.min(...ys), yMax = Math.max(...ys);
+    const sx = x => pl + (x - xMin) / (xMax - xMin) * (W - pl - pr);
+    const sy = y => H - pb - (y - yMin) / (yMax - yMin) * (H - pt - pb);
+    const dots = points.map(p =>
+        `<circle cx="${sx(p[0]).toFixed(1)}" cy="${sy(p[1]).toFixed(1)}" r="3.5" fill="#2980b9" opacity="0.75" stroke="white" stroke-width="0.5"/>`
+    ).join('');
+    return `<svg viewBox="0 0 ${W} ${H}" width="${W}" height="${H}" style="border:1px solid #ccc;border-radius:6px;background:#fafafa;display:block;">
+        <line x1="${pl}" y1="${pt}" x2="${pl}" y2="${H-pb}" stroke="#bbb" stroke-width="1"/>
+        <line x1="${pl}" y1="${H-pb}" x2="${W-pr}" y2="${H-pb}" stroke="#bbb" stroke-width="1"/>
+        ${dots}
+    </svg>`;
+}
+
+const ptsRandom     = [[1,30],[2,8],[3,45],[4,15],[5,50],[6,22],[7,40],[8,5],[9,35],[10,18],[11,48],[12,10],[13,42],[14,25],[15,7],[16,38],[17,20],[18,50],[19,13],[20,33]];
+const ptsQuadratic  = [[1,4],[2,13],[3,22],[4,31],[5,40],[6,47],[7,52],[8,54],[9,52],[10,48],[11,43],[12,36],[13,28],[14,19],[15,11],[16,5],[17,2]];
+const ptsLinear     = [[1,5],[2,9],[3,8],[4,14],[5,13],[6,18],[7,20],[8,23],[9,25],[10,28],[11,30],[12,34],[13,36],[14,39],[15,43],[16,45],[17,47],[18,50],[19,52],[20,56]];
+const ptsExponential= [[1,2],[2,3],[3,4],[4,5],[5,7],[6,9],[7,12],[8,16],[9,21],[10,27],[11,35],[12,44],[13,56],[14,70],[15,85],[16,102],[17,122]];
+
+const svgRandom      = makeScatterSVG(ptsRandom);
+const svgQuadratic   = makeScatterSVG(ptsQuadratic);
+const svgLinear      = makeScatterSVG(ptsLinear);
+const svgExponential = makeScatterSVG(ptsExponential);
+
+// Residuals vs Fitted SVG
+const svgResiduals = `<div style="text-align:center;margin:12px 0;">
+<svg viewBox="0 0 460 260" width="100%" style="max-width:460px;border:1px solid #ccc;border-radius:6px;background:white;">
+  <text x="230" y="18" text-anchor="middle" font-size="13" font-family="Arial" font-weight="bold" fill="#333">Residuals vs Fitted</text>
+  <line x1="55" y1="215" x2="440" y2="215" stroke="#666" stroke-width="1.5"/>
+  <line x1="55" y1="25"  x2="55"  y2="215" stroke="#666" stroke-width="1.5"/>
+  <line x1="55" y1="120" x2="440" y2="120" stroke="#aaa" stroke-width="1" stroke-dasharray="5,4"/>
+  <text x="248" y="240" text-anchor="middle" font-size="11" font-family="Arial" fill="#555">Fitted values</text>
+  <text x="14" y="125" text-anchor="middle" font-size="11" font-family="Arial" fill="#555" transform="rotate(-90,14,125)">Residuals</text>
+  <!-- ticks x -->
+  <text x="100" y="230" text-anchor="middle" font-size="10" fill="#666">100</text>
+  <text x="165" y="230" text-anchor="middle" font-size="10" fill="#666">150</text>
+  <text x="230" y="230" text-anchor="middle" font-size="10" fill="#666">200</text>
+  <text x="310" y="230" text-anchor="middle" font-size="10" fill="#666">300</text>
+  <text x="385" y="230" text-anchor="middle" font-size="10" fill="#666">400</text>
+  <!-- ticks y -->
+  <text x="48" y="75"  text-anchor="end" font-size="10" fill="#666">100</text>
+  <text x="48" y="122" text-anchor="end" font-size="10" fill="#666">0</text>
+  <text x="48" y="185" text-anchor="end" font-size="10" fill="#666">-75</text>
+  <!-- curva suave (línea roja) -->
+  <path d="M65,78 C110,55 155,125 205,155 C255,182 310,145 365,112 C395,98 425,118 440,122" fill="none" stroke="#e74c3c" stroke-width="2"/>
+  <!-- puntos con patrón no aleatorio -->
+  <circle cx="70"  cy="78"  r="4" fill="none" stroke="#444" stroke-width="1.5"/>
+  <circle cx="100" cy="108" r="4" fill="none" stroke="#444" stroke-width="1.5"/>
+  <circle cx="130" cy="128" r="4" fill="none" stroke="#444" stroke-width="1.5"/>
+  <circle cx="148" cy="132" r="4" fill="none" stroke="#444" stroke-width="1.5"/>
+  <circle cx="168" cy="148" r="4" fill="none" stroke="#444" stroke-width="1.5"/>
+  <circle cx="185" cy="158" r="4" fill="none" stroke="#444" stroke-width="1.5"/>
+  <circle cx="205" cy="165" r="4" fill="none" stroke="#444" stroke-width="1.5"/>
+  <circle cx="225" cy="170" r="4" fill="none" stroke="#444" stroke-width="1.5"/>
+  <circle cx="245" cy="172" r="4" fill="none" stroke="#444" stroke-width="1.5"/>
+  <circle cx="270" cy="98"  r="4" fill="none" stroke="#444" stroke-width="1.5"/>
+  <circle cx="290" cy="112" r="4" fill="none" stroke="#444" stroke-width="1.5"/>
+  <circle cx="320" cy="72"  r="4" fill="none" stroke="#444" stroke-width="1.5"/>
+  <circle cx="345" cy="175" r="4" fill="none" stroke="#444" stroke-width="1.5"/>
+  <circle cx="375" cy="108" r="4" fill="none" stroke="#444" stroke-width="1.5"/>
+  <circle cx="405" cy="48"  r="4" fill="none" stroke="#444" stroke-width="1.5"/>
+  <circle cx="428" cy="155" r="4" fill="none" stroke="#444" stroke-width="1.5"/>
+  <!-- etiquetas puntos extremos -->
+  <text x="68"  cy="78"  y="70"  font-size="9" fill="#666">o6</text>
+  <text x="403" cy="48"  y="40"  font-size="9" fill="#666">9o</text>
+</svg></div>`;
+
+// Q-Q Plot SVG
+const svgQQ = `<div style="text-align:center;margin:12px 0;">
+<svg viewBox="0 0 350 260" width="100%" style="max-width:350px;border:1px solid #ccc;border-radius:6px;background:white;">
+  <text x="175" y="18" text-anchor="middle" font-size="13" font-family="Arial" font-weight="bold" fill="#333">Normal Q-Q</text>
+  <line x1="50" y1="215" x2="320" y2="215" stroke="#666" stroke-width="1.5"/>
+  <line x1="50" y1="25"  x2="50"  y2="215" stroke="#666" stroke-width="1.5"/>
+  <!-- línea de referencia diagonal -->
+  <line x1="60" y1="205" x2="310" y2="35" stroke="#aaa" stroke-width="1.5" stroke-dasharray="5,3"/>
+  <!-- puntos cerca de la diagonal -->
+  <circle cx="68"  cy="202" r="4" fill="none" stroke="#2980b9" stroke-width="1.5"/>
+  <circle cx="88"  cy="188" r="4" fill="none" stroke="#2980b9" stroke-width="1.5"/>
+  <circle cx="108" cy="174" r="4" fill="none" stroke="#2980b9" stroke-width="1.5"/>
+  <circle cx="130" cy="158" r="4" fill="none" stroke="#2980b9" stroke-width="1.5"/>
+  <circle cx="152" cy="143" r="4" fill="none" stroke="#2980b9" stroke-width="1.5"/>
+  <circle cx="172" cy="128" r="4" fill="none" stroke="#2980b9" stroke-width="1.5"/>
+  <circle cx="192" cy="114" r="4" fill="none" stroke="#2980b9" stroke-width="1.5"/>
+  <circle cx="212" cy="100" r="4" fill="none" stroke="#2980b9" stroke-width="1.5"/>
+  <circle cx="232" cy="86"  r="4" fill="none" stroke="#2980b9" stroke-width="1.5"/>
+  <circle cx="252" cy="72"  r="4" fill="none" stroke="#2980b9" stroke-width="1.5"/>
+  <circle cx="272" cy="58"  r="4" fill="none" stroke="#2980b9" stroke-width="1.5"/>
+  <circle cx="292" cy="44"  r="4" fill="none" stroke="#2980b9" stroke-width="1.5"/>
+  <text x="185" y="240" text-anchor="middle" font-size="11" font-family="Arial" fill="#555">Theoretical Quantiles</text>
+  <text x="14" y="125" text-anchor="middle" font-size="11" font-family="Arial" fill="#555" transform="rotate(-90,14,125)">Sample Quantiles</text>
+</svg></div>`;
+
+// Tabla lluvia / partículas
+        const tablaLluvia = `<table style="margin:10px auto;border-collapse:collapse;font-size:0.9rem;text-align:center;">
+          <thead><tr style="background:#ecf0f1;">
+            <th style="border:1px solid #bbb;padding:6px 14px;">Lluvia <em>x</em> (0.01 cm)</th>
+            <th style="border:1px solid #bbb;padding:6px 14px;">Partículas <em>y</em> (μg/m³)</th>
+          </tr></thead>
+          <tbody>
+            <tr><td style="border:1px solid #bbb;padding:5px 14px;">4.3</td><td style="border:1px solid #bbb;padding:5px 14px;">126</td></tr>
+            <tr><td style="border:1px solid #bbb;padding:5px 14px;">4.5</td><td style="border:1px solid #bbb;padding:5px 14px;">121</td></tr>
+            <tr><td style="border:1px solid #bbb;padding:5px 14px;">5.9</td><td style="border:1px solid #bbb;padding:5px 14px;">116</td></tr>
+            <tr><td style="border:1px solid #bbb;padding:5px 14px;">5.6</td><td style="border:1px solid #bbb;padding:5px 14px;">118</td></tr>
+            <tr><td style="border:1px solid #bbb;padding:5px 14px;">6.1</td><td style="border:1px solid #bbb;padding:5px 14px;">114</td></tr>
+            <tr><td style="border:1px solid #bbb;padding:5px 14px;">5.2</td><td style="border:1px solid #bbb;padding:5px 14px;">118</td></tr>
+            <tr><td style="border:1px solid #bbb;padding:5px 14px;">3.8</td><td style="border:1px solid #bbb;padding:5px 14px;">132</td></tr>
+            <tr><td style="border:1px solid #bbb;padding:5px 14px;">2.1</td><td style="border:1px solid #bbb;padding:5px 14px;">141</td></tr>
+            <tr><td style="border:1px solid #bbb;padding:5px 14px;">7.5</td><td style="border:1px solid #bbb;padding:5px 14px;">108</td></tr>
+          </tbody>
+        </table>`;
+
+        // Tabla salida R (seguro de vida ~ ingreso)
+        const tablaIngreso = `<div class="r-output">Coefficients:
+             Estimate Std. Error t value Pr(>|t|)
+(Intercept)  2.5002     7.7267   0.324    0.75
+Ingreso      1.7774     0.2021   8.795 1.59e-07 ***
+---
+Signif. codes: 0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+Residual standard error: 11.17 on 16 degrees of freedom
+Multiple R-squared:  0.8286,   Adjusted R-squared:  0.8179
+F-statistic: 77.34 on 1 and 16 DF,  p-value: 1.59e-07</div>`;
+
+        // Tabla LSAT / GPA (15 estudiantes)
+        const tablaLSAT = `<table style="margin:10px auto;border-collapse:collapse;font-size:0.88rem;text-align:center;">
+          <thead><tr style="background:#ecf0f1;">
+            <th style="border:1px solid #bbb;padding:5px 10px;">LSAT</th>
+            <td style="border:1px solid #bbb;padding:5px 10px;">576</td>
+            <td style="border:1px solid #bbb;padding:5px 10px;">635</td>
+            <td style="border:1px solid #bbb;padding:5px 10px;">558</td>
+            <td style="border:1px solid #bbb;padding:5px 10px;">578</td>
+            <td style="border:1px solid #bbb;padding:5px 10px;">666</td>
+            <td style="border:1px solid #bbb;padding:5px 10px;">580</td>
+            <td style="border:1px solid #bbb;padding:5px 10px;">555</td>
+            <td style="border:1px solid #bbb;padding:5px 10px;">661</td>
+            <td style="border:1px solid #bbb;padding:5px 10px;">651</td>
+            <td style="border:1px solid #bbb;padding:5px 10px;">605</td>
+            <td style="border:1px solid #bbb;padding:5px 10px;">653</td>
+            <td style="border:1px solid #bbb;padding:5px 10px;">575</td>
+            <td style="border:1px solid #bbb;padding:5px 10px;">545</td>
+            <td style="border:1px solid #bbb;padding:5px 10px;">572</td>
+            <td style="border:1px solid #bbb;padding:5px 10px;">594</td>
+          </tr></thead>
+          <tbody><tr>
+            <th style="border:1px solid #bbb;padding:5px 10px;">GPA</th>
+            <td style="border:1px solid #bbb;padding:5px 10px;">339</td>
+            <td style="border:1px solid #bbb;padding:5px 10px;">330</td>
+            <td style="border:1px solid #bbb;padding:5px 10px;">281</td>
+            <td style="border:1px solid #bbb;padding:5px 10px;">303</td>
+            <td style="border:1px solid #bbb;padding:5px 10px;">344</td>
+            <td style="border:1px solid #bbb;padding:5px 10px;">307</td>
+            <td style="border:1px solid #bbb;padding:5px 10px;">300</td>
+            <td style="border:1px solid #bbb;padding:5px 10px;">343</td>
+            <td style="border:1px solid #bbb;padding:5px 10px;">336</td>
+            <td style="border:1px solid #bbb;padding:5px 10px;">313</td>
+            <td style="border:1px solid #bbb;padding:5px 10px;">312</td>
+            <td style="border:1px solid #bbb;padding:5px 10px;">274</td>
+            <td style="border:1px solid #bbb;padding:5px 10px;">276</td>
+            <td style="border:1px solid #bbb;padding:5px 10px;">288</td>
+            <td style="border:1px solid #bbb;padding:5px 10px;">296</td>
+          </tr></tbody>
+        </table>`;
+
+        // Tabla datos XY (Q1/Q2 error estándar)
+        const tablaXY_ee = `<table style="margin:10px auto;border-collapse:collapse;font-size:0.88rem;text-align:center;">
+          <thead><tr style="background:#ecf0f1;">
+            <th style="border:1px solid #bbb;padding:5px 10px;">$x$</th>
+            <td style="border:1px solid #bbb;padding:5px 10px;">0.18</td>
+            <td style="border:1px solid #bbb;padding:5px 10px;">0.20</td>
+            <td style="border:1px solid #bbb;padding:5px 10px;">0.21</td>
+            <td style="border:1px solid #bbb;padding:5px 10px;">0.21</td>
+            <td style="border:1px solid #bbb;padding:5px 10px;">0.21</td>
+            <td style="border:1px solid #bbb;padding:5px 10px;">0.22</td>
+            <td style="border:1px solid #bbb;padding:5px 10px;">0.23</td>
+            <td style="border:1px solid #bbb;padding:5px 10px;">0.23</td>
+            <td style="border:1px solid #bbb;padding:5px 10px;">0.24</td>
+            <td style="border:1px solid #bbb;padding:5px 10px;">0.24</td>
+            <td style="border:1px solid #bbb;padding:5px 10px;">0.25</td>
+            <td style="border:1px solid #bbb;padding:5px 10px;">0.28</td>
+            <td style="border:1px solid #bbb;padding:5px 10px;">0.30</td>
+            <td style="border:1px solid #bbb;padding:5px 10px;">0.37</td>
+          </tr></thead>
+          <tbody><tr>
+            <th style="border:1px solid #bbb;padding:5px 10px;">$y$</th>
+            <td style="border:1px solid #bbb;padding:5px 10px;">0.46</td>
+            <td style="border:1px solid #bbb;padding:5px 10px;">0.70</td>
+            <td style="border:1px solid #bbb;padding:5px 10px;">0.41</td>
+            <td style="border:1px solid #bbb;padding:5px 10px;">0.45</td>
+            <td style="border:1px solid #bbb;padding:5px 10px;">0.55</td>
+            <td style="border:1px solid #bbb;padding:5px 10px;">0.44</td>
+            <td style="border:1px solid #bbb;padding:5px 10px;">0.24</td>
+            <td style="border:1px solid #bbb;padding:5px 10px;">0.47</td>
+            <td style="border:1px solid #bbb;padding:5px 10px;">0.22</td>
+            <td style="border:1px solid #bbb;padding:5px 10px;">0.80</td>
+            <td style="border:1px solid #bbb;padding:5px 10px;">0.88</td>
+            <td style="border:1px solid #bbb;padding:5px 10px;">0.70</td>
+            <td style="border:1px solid #bbb;padding:5px 10px;">0.72</td>
+            <td style="border:1px solid #bbb;padding:5px 10px;">0.75</td>
+          </tr></tbody>
+        </table>`;
+
+        // Tabla salida R (anchoas)
+// Tabla salida R (anchoas)
+const tablaAnchoas = `<div class="r-output">Call:
+lm(formula = precioHarina ~ pescaAnchoa)
+
+Residuals:
+    Min      1Q  Median      3Q     Max
+-110.09  -38.34  -19.07   34.47  142.22
+
+Coefficients:
+             Estimate Std. Error t value Pr(>|t|)
+(Intercept)  452.119     36.824  12.278 3.75e-08 ***
+pescaAnchoa  -29.402      5.091  -5.775 8.81e-05 ***
+---
+Signif. codes: 0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+Residual standard error: 71.69 on 12 degrees of freedom
+Multiple R-squared:  0.7354,   Adjusted R-squared:  0.7134
+F-statistic: 33.36 on 1 and 12 DF,  p-value: 8.805e-05</div>`;
+
+// ============================================================
+// BANCO DE PREGUNTAS - CUARTO PARCIAL
+// ============================================================
+
+const questionBank4 = {
+
+    // ── TEMA 1: Interpretación y representación ──────────────
+    interpretacion_representacion: [
+        {
+            q: "¿Para cuál de los siguientes diagramas de dispersión sería recomendable ajustar un modelo de <strong>regresión lineal simple</strong>?",
+            a: [svgRandom, svgQuadratic, svgLinear, svgExponential],
+            c: 2,
+            noShuffle: true,
+            explanation: "<strong>Paso a paso:</strong><br>1. Un modelo de regresión lineal simple es apropiado cuando los puntos siguen aproximadamente una línea recta.<br>2. <strong>Opción a (ruido aleatorio):</strong> No hay patrón; correlación cercana a 0. No es apropiado.<br>3. <strong>Opción b (cuadrática):</strong> La relación tiene forma de parábola (no lineal).<br>4. <strong>Opción c (lineal):</strong> Los puntos siguen una tendencia lineal creciente. ✔ Correcta.<br>5. <strong>Opción d (exponencial):</strong> La relación crece de forma exponencial; requeriría transformación logarítmica.<br><strong>Código R:</strong> <code>plot(x, y); abline(lm(y ~ x))</code>"
+        },
+        {
+            q: `Dada la siguiente gráfica de <em>Residuals vs Fitted</em> del modelo de regresión lineal, se puede establecer que los residuales son:
+            ${svgResiduals}`,
+            a: [
+                "No homogéneos (heterocedasticidad), pues los residuales muestran un patrón sistemático curvo y no se distribuyen aleatoriamente alrededor de cero.",
+                "Homogéneos (homocedasticidad), pues la varianza de los residuales es constante en todo el rango de valores ajustados.",
+                "E(Residuales) = 0, lo que indica que el modelo lineal es perfectamente adecuado.",
+                "Var(Residuales) = 0, lo que indica que no existe variabilidad en los errores del modelo."
+            ],
+            c: 0,
+            explanation: "<strong>Paso a paso:</strong><br>1. En un modelo bien ajustado, la gráfica Residuals vs Fitted debe mostrar puntos dispersos aleatoriamente alrededor de $y = 0$, sin ningún patrón.<br>2. En esta gráfica se observa una curva suave en forma de U (línea roja), indicando que los residuales <em>no son aleatorios</em>: hay un patrón sistemático.<br>3. Esto es evidencia de <strong>heterocedasticidad</strong> (varianza no constante de los errores).<br>4. <strong>Conclusión:</strong> Los residuales son no homogéneos.<br><strong>Código R:</strong> <code>plot(modelo, which = 1)</code>"
+        },
+        {
+            q: `De la siguiente gráfica <em>Normal Q-Q</em> de los residuales se puede concluir que:
+            ${svgQQ}`,
+            a: [
+                "Los residuales se distribuyen normalmente, pues los puntos siguen de cerca la línea diagonal de referencia.",
+                "Los residuales son lineales, pues la gráfica Q-Q muestra una relación proporcional entre cuantiles.",
+                "Los residuales son heterocedásticos, pues la varianza cambia a lo largo de la diagonal.",
+                "Los residuales son homogéneos, pues todos los puntos están sobre la misma línea."
+            ],
+            c: 0,
+            explanation: "<strong>Paso a paso:</strong><br>1. Una gráfica Q-Q normal compara cuantiles de los residuales observados con cuantiles de una distribución normal teórica.<br>2. Si los puntos caen aproximadamente sobre la línea diagonal de referencia → los residuales siguen una distribución normal.<br>3. Este es un supuesto fundamental: $\\varepsilon_i \\sim N(0, \\sigma^2)$.<br>4. La opción b confunde normalidad con linealidad de la relación $X$-$Y$.<br><strong>Código R:</strong> <code>plot(modelo, which = 2)</code>"
+        },
+        {
+            q: "Un científico de datos calculó el coeficiente de correlación de Pearson entre dos variables $X$ e $Y$, obteniendo $r = 0$. ¿Cuál es la conclusión correcta?",
+            a: [
+                "Entre $X$ e $Y$ no existe una relación de tipo lineal, pues el coeficiente de correlación de Pearson cuantifica únicamente la asociación lineal.",
+                "Las variables $X$ e $Y$ son independientes, pues si dos variables son independientes su correlación es cero.",
+                "Las variables $X$ e $Y$ son idénticas, pues si el coeficiente de correlación es cero ambas variables son equivalentes.",
+                "No es posible concluir nada a partir del coeficiente de correlación."
+            ],
+            c: 0,
+            explanation: "<strong>Paso a paso:</strong><br>1. El coeficiente de correlación de Pearson mide la <strong>fuerza y dirección de la relación lineal</strong>.<br>2. $r = 0$ indica <em>ausencia de relación lineal</em>, pero puede existir una relación no lineal (p.ej. cuadrática).<br>3. <strong>Importante:</strong> $r = 0$ no implica independencia. Ejemplo: si $Y = X^2$ con $X$ simétrica, entonces $r = 0$ aunque $Y$ depende completamente de $X$.<br>4. La independencia implica $r = 0$, pero $r = 0$ no implica independencia.<br><strong>Código R:</strong> <code>cor(x, y, method = 'pearson')</code>"
+        },
+        {
+            q: "Una empresa ajustó un modelo de regresión lineal simple para predecir las ventas anuales (millones de pesos) a partir del gasto en publicidad (millones de pesos). El resultado fue $R^2 = 0.85$. ¿Cuál es la interpretación más adecuada?",
+            a: [
+                "El 85% del gasto en publicidad explica la variación en las ventas anuales.",
+                "El 85% de las ventas anuales explica la variación en el gasto en publicidad.",
+                "El 85% de la variación total en las ventas anuales es explicada por el modelo de regresión lineal simple con el gasto en publicidad como variable predictora.",
+                "El modelo de regresión lineal simple explica el 15% de la variación en las ventas anuales."
+            ],
+            c: 2,
+            explanation: "<strong>Paso a paso:</strong><br>1. $R^2 = SSR/SST$ representa la proporción de la variabilidad total de $Y$ (ventas) explicada por el modelo.<br>2. $R^2 = 0.85$: el 85% de la variación total en las ventas es explicada por la relación lineal con el gasto en publicidad.<br>3. <strong>Opción a incorrecta:</strong> El porcentaje describe la variación de $Y$, no de $X$.<br>4. <strong>Opción b incorrecta:</strong> Invierte el rol de las variables.<br>5. <strong>Opción d incorrecta:</strong> El 15% es $1 - R^2$ (variación no explicada).<br><strong>Código R:</strong> <code>summary(lm(ventas ~ publicidad))$r.squared</code>"
+        },
+        {
+            q: "Se ajustó un modelo de regresión con $R^2 = 0.92$ para predecir la concentración de un contaminante en función de la distancia a la fuente. Al analizar los residuos se observa subestimación sistemática para distancias bajas y sobreestimación para distancias altas. ¿Cuál es la conclusión más apropiada?",
+            a: [
+                "El modelo explica el 92% de la variabilidad y el patrón de residuos indica una excelente bondad de ajuste.",
+                "El $R^2$ indica un buen ajuste general, pero el patrón sistemático en los residuos sugiere que el modelo no captura adecuadamente la relación en todo el rango de datos.",
+                "El $R^2$ es suficiente para garantizar la validez del modelo para predicciones en cualquier distancia.",
+                "El patrón de residuos es irrelevante ya que el $R^2$ es alto, lo que indica una fuerte relación entre las variables."
+            ],
+            c: 1,
+            explanation: "<strong>Paso a paso:</strong><br>1. Un $R^2 = 0.92$ indica buen ajuste global, pero no garantiza que el modelo sea adecuado en toda la extensión de los datos.<br>2. Un patrón sistemático en los residuos (no aleatorio) viola el supuesto de que $\\varepsilon_i \\sim N(0, \\sigma^2)$ de forma independiente.<br>3. Subestimar para distancias bajas y sobrestimar para altas sugiere que la relación real es no lineal (posiblemente exponencial o logarítmica).<br>4. La conclusión correcta reconoce tanto el buen ajuste global como la limitación del modelo.<br><strong>Código R:</strong> <code>plot(modelo, which = 1)</code>"
+        },
+        {
+            q: "Un investigador analiza el efecto de dos estrategias de marketing (variables dummy) sobre las ventas, controlando por el gasto en publicidad. Resultados: Estrategia A: $t = 2.85$, $p = 0.005$; Estrategia B: $t = -1.90$, $p = 0.060$. Con $\\alpha = 0.05$, ¿cuál afirmación es correcta?",
+            a: [
+                "Ambas estrategias tienen un efecto estadísticamente significativo sobre las ventas al 5%.",
+                "La Estrategia A tiene efecto significativo sobre las ventas; la Estrategia B no, al nivel de significancia del 5%.",
+                "Ninguna estrategia tiene efecto estadísticamente significativo al 5%.",
+                "La Estrategia B tiene un efecto negativo significativo, mientras que la Estrategia A no es significativa."
+            ],
+            c: 1,
+            explanation: "<strong>Paso a paso:</strong><br>1. Regla: si valor-$p < \\alpha$ → se rechaza $H_0: \\beta_j = 0$ (coeficiente significativo).<br>2. <strong>Estrategia A:</strong> $p = 0.005 < 0.05$ → efecto estadísticamente significativo. ✔<br>3. <strong>Estrategia B:</strong> $p = 0.060 > 0.05$ → no se rechaza $H_0$; efecto no significativo al 5%.<br>4. La Estrategia B tendría un efecto negativo (pendiente $t = -1.90$), pero como $p > 0.05$, no es estadísticamente significativo con este nivel de significancia.<br><strong>Código R:</strong> <code>summary(lm(ventas ~ estrategia_A + estrategia_B + publicidad))</code>"
+        }
+    ],
+
+    // ── TEMA 2: Formulación y ejecución ──────────────────────
+    formulacion_ejecucion: [
+        {
+            q: `A partir de la siguiente tabla que resume el modelo de regresión lineal (pesca de anchoas vs precio de harina de pescado):
+            ${tablaAnchoas}
+            Determine con qué fórmula se estableció el p-valor para $\\beta_0$:`,
+            a: [
+                "$2\\,P(T < -|12.278|)$",
+                "$P(T < -|12.278|)$",
+                "$2\\,P(T > -12.278)$",
+                "$P(T < |12.278|)$"
+            ],
+            c: 0,
+            explanation: "<strong>Paso a paso:</strong><br>1. En la tabla se reporta el estadístico $t = 12.278$ para el intercepto $\\beta_0$.<br>2. La prueba de hipótesis es bilateral: $H_0: \\beta_0 = 0$ vs $H_1: \\beta_0 \\neq 0$.<br>3. Para una prueba bilateral, el p-valor se calcula como $2\\,P(T < -|t_0|)$ donde $t_0$ es el estadístico observado.<br>4. Esto es equivalente a $2\\,P(T < -|12.278|)$, que duplica el área en la cola izquierda de la distribución $t$ con $n-2 = 12$ grados de libertad.<br>5. <strong>Opción b incorrecta:</strong> solo considera una cola. <strong>Opción c incorrecta:</strong> usa el valor negativo directamente. <strong>Opción d incorrecta:</strong> mira la cola derecha del valor absoluto.<br><strong>Código R:</strong> <code>2 * pt(-abs(12.278), df = 12)</code>"
+        },
+        {
+            q: `A partir de la siguiente tabla del modelo de regresión lineal (pesca de anchoas vs precio de harina de pescado):
+            ${tablaAnchoas}
+            Determine con qué fórmula se estableció el p-valor para $\\beta_1$:`,
+            a: [
+                "$2\\,P(T < -|-5.775|)$",
+                "$2\\,P(T < |-5.775|)$",
+                "$2\\,P(T > -12.278)$",
+                "$P(T < |12.278|)$"
+            ],
+            c: 0,
+            explanation: "<strong>Paso a paso:</strong><br>1. En la tabla se reporta el estadístico $t = -5.775$ para el coeficiente $\\beta_1$ (pescaAnchoa).<br>2. La prueba es bilateral: $H_0: \\beta_1 = 0$ vs $H_1: \\beta_1 \\neq 0$.<br>3. El p-valor bilateral es $2\\,P(T < -|t_0|)$ donde $t_0 = -5.775$.<br>4. Entonces: $2\\,P(T < -|-5.775|) = 2\\,P(T < -5.775)$.<br>5. <strong>Opción b incorrecta:</strong> usa $P(T < |-5.775|) = P(T < 5.775)$, que es la probabilidad de la cola derecha (no la correcta para p-valor bilateral).<br>6. El resultado es el p-valor $= 8.81 \\times 10^{-5}$ reportado en la tabla.<br><strong>Código R:</strong> <code>2 * pt(-abs(-5.775), df = 12)</code>"
+        },
+        {
+            q: `A partir de la siguiente tabla del modelo de regresión lineal (pesca de anchoas vs precio de harina de pescado):
+            ${tablaAnchoas}
+            Determine cuál es la hipótesis alternativa $H_1$ para $\\beta_1$:`,
+            a: [
+                "$\\beta_1 \\neq \\beta_{10}$ donde $\\beta_{10} = 0$",
+                "$\\beta_1 < \\beta_{10}$ donde $\\beta_{10} = 0$",
+                "$\\beta_1 \\neq \\beta_{10}$ donde $\\beta_{10} = 1$",
+                "$\\beta_1 > \\beta_{10}$ donde $\\beta_{10} = 1$"
+            ],
+            c: 0,
+            explanation: "<strong>Paso a paso:</strong><br>1. La prueba estándar de regresión lineal para el coeficiente de pendiente es: $H_0: \\beta_1 = 0$ vs $H_1: \\beta_1 \\neq 0$.<br>2. El valor $\\beta_{10} = 0$ es el valor hipotético bajo $H_0$; se prueba si la pendiente es significativamente diferente de cero (existencia de relación lineal).<br>3. La prueba es <strong>bilateral</strong> ($\\neq$), como lo confirma el p-valor reportado que usa $2P(T < -|t|)$.<br>4. <strong>Opción b:</strong> prueba unilateral izquierda — no es la prueba estándar reportada.<br>5. <strong>Opciones c y d:</strong> usan $\\beta_{10} = 1$, lo cual no corresponde a la prueba de significancia de la pendiente.<br><strong>Código R:</strong> <code># H0: beta1 = 0 vs H1: beta1 ≠ 0 (prueba bilateral por defecto en R)</code>"
+        },
+        {
+            q: `A partir de la siguiente tabla del modelo de regresión lineal (pesca de anchoas vs precio de harina de pescado):
+            ${tablaAnchoas}
+            Determine cuál es la región de rechazo para $H_0$ respecto a $\\beta_1$ con $\\alpha = 0.05$:`,
+            a: [
+                "$(-\\infty,\\, t_{\\alpha/2}) \\cup (t_{1-\\alpha/2},\\, \\infty)$ donde $t_{1-\\alpha/2} = 2.178813$",
+                "$(-\\infty,\\, t_{\\alpha/2}) \\cup (t_{1-\\alpha/2},\\, \\infty)$ donde $t_{1-\\alpha/2} = -5.775$",
+                "$(-\\infty,\\, t_{\\alpha})$ donde $t_{\\alpha} = -5.775$",
+                "$(t_{1-\\alpha},\\, \\infty)$ donde $t_{1-\\alpha} = -5.775$"
+            ],
+            c: 0,
+            explanation: "<strong>Paso a paso:</strong><br>1. La prueba es bilateral ($H_1: \\beta_1 \\neq 0$), por lo que la región de rechazo tiene dos colas.<br>2. La región de rechazo es $(-\\infty,\\, t_{\\alpha/2}) \\cup (t_{1-\\alpha/2},\\, \\infty)$.<br>3. Con $\\alpha = 0.05$ y $gl = n - 2 = 14 - 2 = 12$:<br>&nbsp;&nbsp;&nbsp;$t_{1-\\alpha/2} = t_{0.975, 12} = 2.178813$<br>&nbsp;&nbsp;&nbsp;$t_{\\alpha/2} = t_{0.025, 12} = -2.178813$<br>4. El estadístico observado $t = -5.775$ cae en $(-\\infty, -2.178813)$ → se rechaza $H_0$.<br>5. <strong>Opciones b, c, d incorrectas:</strong> usan $-5.775$ como valor crítico, confundiendo el estadístico de prueba con el valor crítico de la tabla $t$.<br><strong>Código R:</strong> <code>qt(0.975, df = 12) # valor crítico = 2.178813</code>"
+        },
+        {
+            q: `Según estudios genéticos existe una relación entre la estatura del padre y la estatura del hijo en edad adulta. A continuación se presenta un diagrama de dispersión que relaciona ambas variables:
+            <div style="text-align:center;margin:12px 0;">
+            <svg viewBox="0 0 360 300" width="100%" style="max-width:360px;border:1px solid #ccc;border-radius:6px;background:white;">
+              <text x="180" y="20" text-anchor="middle" font-size="13" font-family="Arial" font-weight="bold" fill="#333">Diagrama de Dispersión</text>
+              <line x1="55" y1="255" x2="330" y2="255" stroke="#666" stroke-width="1.5"/>
+              <line x1="55" y1="25"  x2="55"  y2="255" stroke="#666" stroke-width="1.5"/>
+              <!-- Etiquetas eje x -->
+              <text x="192" y="278" text-anchor="middle" font-size="11" font-family="Arial" fill="#555">Estatura Padre (cm)</text>
+              <text x="75"  y="270" text-anchor="middle" font-size="9" fill="#666">150</text>
+              <text x="123" y="270" text-anchor="middle" font-size="9" fill="#666">155</text>
+              <text x="171" y="270" text-anchor="middle" font-size="9" fill="#666">160</text>
+              <text x="219" y="270" text-anchor="middle" font-size="9" fill="#666">165</text>
+              <text x="267" y="270" text-anchor="middle" font-size="9" fill="#666">170</text>
+              <!-- Etiquetas eje y -->
+              <text x="14" y="140" text-anchor="middle" font-size="11" font-family="Arial" fill="#555" transform="rotate(-90,14,140)">Estatura Hijo (cm)</text>
+              <text x="50" y="250" text-anchor="end" font-size="9" fill="#666">165</text>
+              <text x="50" y="208" text-anchor="end" font-size="9" fill="#666">170</text>
+              <text x="50" y="166" text-anchor="end" font-size="9" fill="#666">175</text>
+              <text x="50" y="124" text-anchor="end" font-size="9" fill="#666">180</text>
+              <text x="50" y="82"  text-anchor="end" font-size="9" fill="#666">185</text>
+              <!-- Puntos: relación lineal positiva -->
+              <circle cx="65"  cy="243" r="4" fill="none" stroke="#444" stroke-width="1.5"/>
+              <circle cx="113" cy="218" r="4" fill="none" stroke="#444" stroke-width="1.5"/>
+              <circle cx="123" cy="218" r="4" fill="none" stroke="#444" stroke-width="1.5"/>
+              <circle cx="118" cy="214" r="4" fill="none" stroke="#444" stroke-width="1.5"/>
+              <circle cx="128" cy="210" r="4" fill="none" stroke="#444" stroke-width="1.5"/>
+              <circle cx="133" cy="212" r="4" fill="none" stroke="#444" stroke-width="1.5"/>
+              <circle cx="138" cy="208" r="4" fill="none" stroke="#444" stroke-width="1.5"/>
+              <circle cx="143" cy="205" r="4" fill="none" stroke="#444" stroke-width="1.5"/>
+              <circle cx="143" cy="210" r="4" fill="none" stroke="#444" stroke-width="1.5"/>
+              <circle cx="148" cy="203" r="4" fill="none" stroke="#444" stroke-width="1.5"/>
+              <circle cx="153" cy="200" r="4" fill="none" stroke="#444" stroke-width="1.5"/>
+              <circle cx="158" cy="197" r="4" fill="none" stroke="#444" stroke-width="1.5"/>
+              <circle cx="163" cy="197" r="4" fill="none" stroke="#444" stroke-width="1.5"/>
+              <circle cx="168" cy="196" r="4" fill="none" stroke="#444" stroke-width="1.5"/>
+              <circle cx="173" cy="194" r="4" fill="none" stroke="#444" stroke-width="1.5"/>
+              <circle cx="213" cy="170" r="4" fill="none" stroke="#444" stroke-width="1.5"/>
+              <circle cx="218" cy="178" r="4" fill="none" stroke="#444" stroke-width="1.5"/>
+              <circle cx="315" cy="32"  r="4" fill="none" stroke="#444" stroke-width="1.5"/>
+            </svg></div>
+            Si se plantea un modelo de regresión lineal para explicar la relación entre la estatura del padre (variable independiente) y la del hijo en edad adulta (variable dependiente), para que el modelo sea coherente debe ocurrir:`,
+            a: [
+                "Entre las variables debe existir una relación lineal y deben ser directamente proporcionales (a mayor estatura del padre, mayor estatura esperada del hijo).",
+                "Entre las variables debe existir una relación lineal y deben ser inversamente proporcionales (a mayor estatura del padre, menor estatura esperada del hijo).",
+                "La estatura que cada hijo alcanza en edad adulta debe ser exactamente igual a la de su padre.",
+                "Entre las variables debe existir una relación de tipo cíclica y deben ser directamente proporcionales."
+            ],
+            c: 0,
+            explanation: "<strong>Paso a paso:</strong><br>1. En el gráfico de dispersión se observa una tendencia positiva: a mayor estatura del padre, mayor es la estatura del hijo. Esto indica una relación <strong>lineal directamente proporcional</strong>.<br>2. Un modelo de regresión lineal simple $\\hat{Y} = \\beta_0 + \\beta_1 X$ es coherente cuando existe una relación lineal entre $X$ e $Y$, y la pendiente $\\beta_1 > 0$ indicará proporcionalidad directa.<br>3. <strong>Opción b incorrecta:</strong> La relación es directa (pendiente positiva), no inversa.<br>4. <strong>Opción c incorrecta:</strong> La regresión predice la estatura <em>esperada</em>, no la exacta. La genética tiene componente aleatorio.<br>5. <strong>Opción d incorrecta:</strong> Una relación cíclica (sinusoidal) no es apropiada para esta variable.<br><strong>Código R:</strong> <code>lm(estatura_hijo ~ estatura_padre)</code>"
+        },
+        {
+            q: "Un analista evalúa la bondad de ajuste de un modelo de regresión lineal simple (precio de vivienda ~ tamaño en m² + número de habitaciones) y obtiene un Error Estándar de la Estimación (SEE) de \\$15,000,000 COP. ¿Cuál procedimiento es el más apropiado para evaluar si este SEE es aceptablemente bajo?",
+            a: [
+                "Comparar el SEE con el rango de los precios de las viviendas en la muestra.",
+                "Dividir el SEE entre el número de observaciones en la muestra.",
+                "Elevar al cuadrado el SEE para obtener la varianza del error.",
+                "Comparar el SEE con el coeficiente de determinación del modelo."
+            ],
+            c: 0,
+            explanation: "<strong>Paso a paso:</strong><br>1. El SEE (Error Estándar de la Estimación) mide la dispersión promedio de los valores observados alrededor de la recta de regresión: $SEE = \\sqrt{\\frac{SSE}{n-2}}$.<br>2. Para evaluar si un SEE es 'aceptablemente bajo', se debe comparar con la escala de la variable respuesta. Un SEE de \\$15M COP en un mercado donde las casas cuestan entre \\$200M y \\$800M (rango = \\$600M) es relativamente pequeño (2.5% del rango).<br>3. <strong>Opción a correcta:</strong> Comparar con el rango da contexto sobre la magnitud relativa del error.<br>4. <strong>Opción b incorrecta:</strong> Dividir entre $n$ no tiene interpretación estadística directa para evaluar bondad de ajuste.<br>5. <strong>Opción c incorrecta:</strong> Elevar al cuadrado da la varianza del error, no ayuda a evaluar si es 'bajo'.<br>6. <strong>Opción d incorrecta:</strong> El SEE y el $R^2$ son métricas complementarias pero en escalas diferentes y no comparables directamente.<br><strong>Código R:</strong> <code>sigma(modelo) # SEE; range(y) # rango de Y</code>"
+        },
+        {
+            q: "Un economista ajusta un modelo de regresión lineal simple entre la tasa de desempleo $U$ (variable independiente) y la tasa de inflación $\\pi$ (variable dependiente). La estimación para la pendiente es $\\hat{\\beta}_1 = -0.8$ con un error estándar de $0.25$, con $n = 30$ observaciones. Quiere probar si existe una relación <strong>negativa</strong> significativa ($H_1: \\beta_1 < 0$) con $\\alpha = 0.05$. ¿Cuál es la conclusión correcta?",
+            a: [
+                "No se rechaza $H_0$ porque el estadístico $t$ calculado es positivo.",
+                "Se rechaza $H_0$ porque el valor-$p$ del estadístico $t$ es mayor que 0.05.",
+                "No se rechaza $H_0$ porque el valor absoluto del estadístico $t$ calculado es menor que el valor crítico de una prueba de una cola.",
+                "Se rechaza $H_0$ porque el valor-$p$ del estadístico $t$ es menor que 0.05."
+            ],
+            c: 3,
+            explanation: "<strong>Paso a paso:</strong><br>1. <strong>Hipótesis:</strong> $H_0: \\beta_1 = 0$ vs $H_1: \\beta_1 < 0$ (prueba unilateral izquierda).<br>2. <strong>Estadístico de prueba:</strong> $t = \\frac{\\hat{\\beta}_1 - 0}{SE(\\hat{\\beta}_1)} = \\frac{-0.8}{0.25} = -3.2$<br>3. <strong>Grados de libertad:</strong> $gl = n - 2 = 28$.<br>4. <strong>Valor crítico</strong> (cola izquierda, $\\alpha = 0.05$): $t_{0.05, 28} \\approx -1.701$.<br>5. <strong>Decisión:</strong> $t = -3.2 < -1.701$ → se cae en la región de rechazo.<br>6. <strong>Valor-$p$:</strong> $P(T < -3.2 \\mid gl = 28) \\approx 0.0017 < 0.05$ → se rechaza $H_0$.<br>7. <strong>Conclusión:</strong> Hay evidencia estadística de que la relación entre desempleo e inflación es negativa.<br><strong>Código R:</strong> <code>t_stat &lt;- -0.8 / 0.25; pt(t_stat, df = 28) # p-valor unilateral</code>"
+        }
+    ],
+
+    // ── TEMA 3: Argumentación ────────────────────────────────
+    argumentacion: [
+        {
+            q: `A partir del siguiente cuadro que resume los resultados del modelo de regresión lineal sobre la pesca de anchoas en Perú (millones de toneladas métricas) y los precios de harina de pescado (dólares por tonelada) durante 14 años consecutivos:
+            ${tablaAnchoas}
+            Se puede decir que el modelo lineal explica aproximadamente el 74% de la variabilidad total de los datos,`,
+            a: [
+                "debido a que el coeficiente de determinación es igual a 0.7354.",
+                "debido a que el coeficiente de determinación es igual a 71.69.",
+                "debido a que el coeficiente de determinación es igual a 0.7134.",
+                "debido a que el coeficiente de determinación es igual a 6 veces los grados de libertad más el número de coeficientes."
+            ],
+            c: 0,
+            explanation: "<strong>Paso a paso:</strong><br>1. El coeficiente de determinación $R^2$ corresponde al <em>Multiple R-squared</em> en la salida de R: $R^2 = 0.7354 \\approx 74\\%$.<br>2. Interpreta la proporción de variabilidad en el precio de la harina explicada por la pesca de anchoas.<br>3. <strong>Valores incorrectos:</strong> 71.69 es el error estándar residual; 0.7134 es el $R^2$ ajustado (penaliza por número de predictores).<br>4. <strong>Fórmula:</strong> $R^2 = 1 - SSE/SST$<br><strong>Código R:</strong> <code>summary(modelo)$r.squared</code>"
+        },
+        {
+            q: `A partir del siguiente cuadro de regresión lineal (pesca de anchoas vs precio de harina de pescado, 14 años):
+            ${tablaAnchoas}
+            Se puede decir que hay evidencia suficiente para creer que existe una relación lineal entre ambas variables dado que:`,
+            a: [
+                "Se rechaza la hipótesis nula de que $\\beta_1 = 0$, debido a que el p-valor es menor que $\\alpha = 0.05$.",
+                "No se rechaza la hipótesis nula de que $\\beta_1 = 0$, debido a que el p-valor es menor que $\\alpha = 0.05$.",
+                "Se rechaza la hipótesis nula de que $\\beta_1 \\neq 0$, debido a que el p-valor es menor que $\\alpha = 0.05$.",
+                "Se rechaza la hipótesis nula de que $\\beta_1 = -29.402$, debido a que el p-valor es menor que $\\alpha = 0.95$."
+            ],
+            c: 0,
+            explanation: "<strong>Paso a paso:</strong><br>1. Para probar si existe relación lineal entre $X$ y $Y$: $H_0: \\beta_1 = 0$ vs $H_1: \\beta_1 \\neq 0$.<br>2. El p-valor del coeficiente <em>pescaAnchoa</em> en R es $8.81 \\times 10^{-5} \\ll 0.05$.<br>3. Como p-valor $< \\alpha = 0.05$, se rechaza $H_0: \\beta_1 = 0$: hay evidencia de relación lineal.<br>4. <strong>Opción b incorrecta:</strong> dice 'no se rechaza' (incorrecto dado que el p-valor es muy pequeño).<br>5. <strong>Opción c incorrecta:</strong> la $H_0$ de la prueba debe ser $\\beta_1 = 0$, no $\\beta_1 \\neq 0$.<br><strong>Código R:</strong> <code>summary(lm(precioHarina ~ pescaAnchoa))$coefficients</code>"
+        },
+        {
+            q: "El coeficiente de determinación $R^2$ cuantifica la validez del modelo de regresión lineal para representar la relación entre dos variables. El resultado ideal para $R^2$ es:",
+            a: [
+                "Cercano a uno, porque implica que una alta proporción de la variación de la variable respuesta es explicada por la relación lineal con la variable independiente.",
+                "Cercano a cero, porque implica que se comete un mínimo error al predecir la variable respuesta.",
+                "Cercano a 0.5, porque implica un balance en la proporción de variación explicada.",
+                "Lo más grande posible (cercano a infinito), porque implica que la validez del modelo es la más alta posible."
+            ],
+            c: 0,
+            explanation: "<strong>Paso a paso:</strong><br>1. $R^2 \\in [0, 1]$ — no puede ser mayor que 1 ni negativo (en regresión simple).<br>2. $R^2 = 0$: el modelo no explica nada. $R^2 = 1$: el modelo explica toda la variabilidad.<br>3. El resultado ideal es $R^2$ cercano a 1 → el modelo captura bien la variación de $Y$.<br>4. <strong>Opción b:</strong> $R^2$ cercano a 0 indica un modelo muy pobre.<br>5. <strong>Opción c:</strong> No existe razón para preferir $R^2 = 0.5$.<br>6. <strong>Opción d:</strong> $R^2$ está acotado en $[0,1]$; no puede ser mayor que 1.<br><strong>Código R:</strong> <code>summary(modelo)$r.squared</code>"
+        },
+        {
+            q: "El análisis de varianza en regresión descompone la variabilidad total: $SST = SSR + SSE$. En una situación coherente para aplicar regresión lineal, se espera que:",
+            a: [
+                "El SSR represente una alta proporción del SST, pues gran parte de la variabilidad de la variable respuesta es explicada por la relación lineal.",
+                "SSR y SSE sean iguales, porque implica un balance en la variación explicada.",
+                "El SSE represente una alta proporción del SST, pues gran parte de la variabilidad no es explicada por el modelo.",
+                "El SSR sea igual a cero, pues esto implica que el modelo explica toda la variabilidad."
+            ],
+            c: 0,
+            explanation: "<strong>Paso a paso:</strong><br>1. $R^2 = SSR/SST$. Un modelo bueno tiene $R^2$ alto → SSR grande relativo a SST.<br>2. <strong>Opción b:</strong> SSR = SSE → $R^2 = 0.5$, no es criterio de buen modelo.<br>3. <strong>Opción c:</strong> SSE alto → $R^2$ bajo → mal ajuste.<br>4. <strong>Opción d:</strong> SSR = 0 → $R^2 = 0$ → el modelo no explica nada.<br>5. Lo deseable en regresión lineal: SSR sea la mayor parte de SST, SSE sea pequeño.<br><strong>Código R:</strong> <code>anova(modelo)</code>"
+        },
+        {
+            q: "Un analista comparó: Modelo A ($R^2 = 0.75$, SEE = \\$5,000, solo publicidad) y Modelo B ($R^2 = 0.80$, SEE = \\$4,500, publicidad + reseñas), donde el Modelo B incrementa complejidad y costo de datos. ¿Qué argumento justifica mejor la elección?",
+            a: [
+                "El Modelo B es claramente superior ya que tiene mayor $R^2$ y menor SEE, sin importar la complejidad adicional.",
+                "El Modelo A es preferible por su simplicidad y menor costo de datos, a pesar de la ligera disminución en $R^2$.",
+                "La elección debe basarse únicamente en la significancia estadística de los coeficientes de las variables adicionales en el Modelo B.",
+                "Se debe realizar un análisis de costo-beneficio que compare la mejora en capacidad predictiva del Modelo B con el aumento en complejidad y costo de recopilación de datos."
+            ],
+            c: 3,
+            explanation: "<strong>Paso a paso:</strong><br>1. El Modelo B tiene mejor ajuste ($R^2$ y SEE), pero implica mayor costo y complejidad.<br>2. La selección de modelos no puede basarse solo en métricas de ajuste; debe considerar el contexto práctico: costo, interpretabilidad, mejora marginal.<br>3. Una mejora de $R^2$ de 0.75 a 0.80 (5%) puede no justificar el costo adicional.<br>4. <strong>Opción a:</strong> ignora los costos. <strong>Opción b:</strong> elige sin análisis formal. <strong>Opción c:</strong> la significancia es necesaria pero no suficiente.<br>5. <strong>Opción d</strong> propone el enfoque más completo y racional.<br><strong>Criterios adicionales:</strong> AIC, BIC, validación cruzada."
+        },
+        {
+            q: "En un modelo de regresión lineal simple que predice el ingreso mensual (millones de pesos) a partir de los años de experiencia, se obtuvo $\\hat{Y} = 1.2 + 0.35X$. ¿Cuál afirmación justifica correctamente el significado del coeficiente 0.35?",
+            a: [
+                "Indica que, en promedio, cada año adicional de experiencia aumenta el ingreso mensual en 350 mil pesos.",
+                "Indica que, en promedio, el ingreso aumenta un 35% por cada año adicional de experiencia.",
+                "Indica que los trabajadores sin experiencia ganan, en promedio, 350 mil pesos.",
+                "Indica que el ingreso esperado es igual a 1.2 millones cuando la experiencia es de 0.35 años."
+            ],
+            c: 0,
+            explanation: "<strong>Paso a paso:</strong><br>1. En $\\hat{Y} = \\beta_0 + \\beta_1 X$, la pendiente $\\beta_1 = 0.35$ indica el cambio esperado en $Y$ por cada unidad adicional de $X$.<br>2. La unidad de $Y$ es millones de pesos → $0.35$ millones = 350 mil pesos por año de experiencia.<br>3. <strong>Opción b:</strong> 0.35 es un cambio absoluto (millones de pesos), no un porcentaje.<br>4. <strong>Opción c:</strong> El ingreso para $X = 0$ es $\\hat{Y} = 1.2$ millones (el intercepto), no 350 mil.<br>5. <strong>Opción d:</strong> 1.2 es el intercepto ($\\hat{Y}$ cuando $X = 0$), no cuando $X = 0.35$.<br><strong>Código R:</strong> <code>coef(lm(ingreso ~ experiencia))</code>"
+        },
+        {
+            q: "Un investigador concluye: «el modelo de regresión entre horas de estudio y nota final explica el 90% de la variabilidad de las calificaciones; por tanto, estudiar más <em>causa</em> mejores notas». ¿Qué crítica es válida?",
+            a: [
+                "Es correcta, porque un $R^2$ alto siempre implica causalidad.",
+                "Es incorrecta, porque el modelo de regresión describe asociación estadística y no establece causalidad.",
+                "Es inválida, porque la variable dependiente debería ser el número de horas de estudio.",
+                "Es incorrecta, porque un $R^2$ alto indica que las notas son inestables."
+            ],
+            c: 1,
+            explanation: "<strong>Paso a paso:</strong><br>1. La regresión lineal (y el $R^2$) mide <em>asociación estadística</em>, no causalidad.<br>2. Para establecer causalidad se requiere un diseño experimental controlado (aleatorización, control de confusores).<br>3. Pueden existir variables de confusión (p.ej. capacidad del estudiante) que expliquen tanto el tiempo de estudio como las notas.<br>4. Principio fundamental: <em>correlación no implica causalidad</em>.<br>5. <strong>Conclusión:</strong> El investigador comete el error de inferir causalidad a partir de una asociación estadística."
+        },
+        {
+            q: "Un analista ajustó un modelo de regresión entre el consumo de combustible $Y$ (litros/100 km) y la velocidad $X$ (km/h). Al observar que los residuos aumentan sistemáticamente con $X$, vuelve a calcular el modelo sin revisar los supuestos. ¿Es válido su procedimiento?",
+            a: [
+                "Sí, porque el modelo lineal siempre es apropiado para variables continuas.",
+                "Sí, porque eliminar los residuos grandes mejora el ajuste.",
+                "No, porque la varianza de los errores cambia con $X$, violando el supuesto de homocedasticidad.",
+                "No, porque debería transformar $Y$ en su logaritmo para reducir la pendiente."
+            ],
+            c: 2,
+            explanation: "<strong>Paso a paso:</strong><br>1. Los supuestos del modelo lineal incluyen homocedasticidad: $\\text{Var}(\\varepsilon_i) = \\sigma^2$ constante para todo $i$.<br>2. Si los residuos aumentan con $X$, la varianza no es constante → heterocedasticidad → supuesto violado.<br>3. <strong>Consecuencias:</strong> Los estimadores OLS son insesgados pero los errores estándar son incorrectos, invalidando inferencias (pruebas de hipótesis, intervalos de confianza).<br>4. <strong>Procedimiento correcto:</strong> Verificar supuestos primero y si hay heterocedasticidad, aplicar correcciones (errores robustos, WLS, transformación).<br><strong>Código R:</strong> <code>library(lmtest); bptest(modelo) # Test Breusch-Pagan</code>"
+        },
+        {
+            q: "Modelo 1: $\\hat{Y}_1 = 3.0 + 0.8X$, $R^2 = 0.40$, residuos independientes. Modelo 2: $\\hat{Y}_2 = 2.9 + 0.9X$, $R^2 = 0.60$, residuos autocorrelacionados. ¿Cuál es la mejor justificación para preferir el Modelo 1?",
+            a: [
+                "Porque un $R^2$ menor garantiza menor error de predicción.",
+                "Porque la independencia de los errores valida las inferencias estadísticas del modelo.",
+                "Porque el valor de la pendiente es más pequeño y, por tanto, más estable.",
+                "Porque un intercepto mayor indica mejor ajuste del modelo."
+            ],
+            c: 1,
+            explanation: "<strong>Paso a paso:</strong><br>1. Aunque el Modelo 2 tiene mayor $R^2 = 0.60$, sus residuos están autocorrelacionados: $\\text{Cov}(\\varepsilon_i, \\varepsilon_j) \\neq 0$.<br>2. La independencia de los errores es un supuesto fundamental. Sin ella, los errores estándar son incorrectos → p-valores inválidos → inferencias incorrectas.<br>3. El Modelo 1, con menor $R^2$, cumple el supuesto de independencia, garantizando inferencias válidas.<br>4. <strong>Opción a incorrecta:</strong> Un $R^2$ menor no garantiza menor error predictivo.<br>5. <strong>Opciones c y d:</strong> El tamaño de la pendiente o del intercepto no determina la validez del modelo.<br><strong>Código R:</strong> <code>library(lmtest); dwtest(modelo) # Test Durbin-Watson</code>"
+        }
+    ],
+
+    // ── TEMA 4: Coeficiente de correlación ───────────────────
+    coef_correlacion: [
+        {
+            q: `Si se tienen los siguientes datos:<br>
+            <strong>X:</strong> 0.18, 0.20, 0.21, 0.21, 0.21, 0.22, 0.23, 0.23, 0.24, 0.24, 0.25, 0.28, 0.30, 0.37<br>
+            <strong>Y:</strong> 0.46, 0.70, 0.41, 0.45, 0.55, 0.44, 0.24, 0.47, 0.22, 0.80, 0.88, 0.70, 0.72, 0.75<br><br>
+            El grado de asociación lineal entre este par de variables está dado por:`,
+            a: ["1.8941", "0.1352", "0.2017", "0.4491"],
+            c: 3,
+            explanation: "<strong>Paso a paso:</strong><br>1. El grado de asociación lineal se mide con el coeficiente de correlación de Pearson: $r = \\frac{\\sum(x_i - \\bar{x})(y_i - \\bar{y})}{\\sqrt{\\sum(x_i-\\bar{x})^2 \\cdot \\sum(y_i-\\bar{y})^2}}$<br>2. Los valores están acotados en $[-1, 1]$, por lo que la opción a (1.8941) es imposible.<br>3. Calculando con R: $r = 0.4491$, que indica una correlación positiva moderada entre las variables.<br>4. <strong>Interpretación:</strong> Existe una asociación lineal positiva moderada entre $X$ e $Y$.<br><strong>Código R:</strong> <code>x &lt;- c(0.18,0.2,0.21,0.21,0.21,0.22,0.23,0.23,0.24,0.24,0.25,0.28,0.3,0.37)<br>y &lt;- c(0.46,0.7,0.41,0.45,0.55,0.44,0.24,0.47,0.22,0.8,0.88,0.7,0.72,0.75)<br>cor(x, y)</code>"
+        },
+        {
+            q: `Un estudio sobre cantidad de lluvia y contaminación del aire eliminada produjo los siguientes datos:
+            <table style="margin:10px auto;border-collapse:collapse;font-size:0.9rem;text-align:center;">
+              <thead><tr style="background:#ecf0f1;">
+                <th style="border:1px solid #bbb;padding:6px 14px;">Lluvia <em>x</em> (0.01 cm)</th>
+                <th style="border:1px solid #bbb;padding:6px 14px;">Partículas <em>y</em> (μg/m³)</th>
+              </tr></thead>
+              <tbody>
+                <tr><td style="border:1px solid #bbb;padding:5px 14px;">4.3</td><td style="border:1px solid #bbb;padding:5px 14px;">126</td></tr>
+                <tr><td style="border:1px solid #bbb;padding:5px 14px;">4.5</td><td style="border:1px solid #bbb;padding:5px 14px;">121</td></tr>
+                <tr><td style="border:1px solid #bbb;padding:5px 14px;">5.9</td><td style="border:1px solid #bbb;padding:5px 14px;">116</td></tr>
+                <tr><td style="border:1px solid #bbb;padding:5px 14px;">5.6</td><td style="border:1px solid #bbb;padding:5px 14px;">118</td></tr>
+                <tr><td style="border:1px solid #bbb;padding:5px 14px;">6.1</td><td style="border:1px solid #bbb;padding:5px 14px;">114</td></tr>
+                <tr><td style="border:1px solid #bbb;padding:5px 14px;">5.2</td><td style="border:1px solid #bbb;padding:5px 14px;">118</td></tr>
+                <tr><td style="border:1px solid #bbb;padding:5px 14px;">3.8</td><td style="border:1px solid #bbb;padding:5px 14px;">132</td></tr>
+                <tr><td style="border:1px solid #bbb;padding:5px 14px;">2.1</td><td style="border:1px solid #bbb;padding:5px 14px;">141</td></tr>
+                <tr><td style="border:1px solid #bbb;padding:5px 14px;">7.5</td><td style="border:1px solid #bbb;padding:5px 14px;">108</td></tr>
+              </tbody>
+            </table>
+            La covarianza entre estas variables y una interpretación coherente es:`,
+            a: [
+                "$\\text{Cov}(x,y) = -15.225$; las variables son inversamente proporcionales: cuando llueve más, se eliminan más partículas.",
+                "$\\text{Cov}(x,y) = -15.225$; las variables son directamente proporcionales.",
+                "$\\text{Cov}(x,y) = 12.221$; las variables no presentan relación lineal.",
+                "$\\text{Cov}(x,y) = 12.221$; las variables son directamente proporcionales."
+            ],
+            c: 0,
+            explanation: "<strong>Paso a paso:</strong><br>1. $\\bar{x} = 45/9 = 5.0$, $\\bar{y} = 1094/9 \\approx 121.56$<br>2. $\\text{Cov}(x,y) = \\frac{\\sum(x_i-\\bar{x})(y_i-\\bar{y})}{n-1} = \\frac{-121.8}{8} = -15.225$<br>3. La covarianza negativa indica que cuando $x$ aumenta (más lluvia), $y$ disminuye (menos partículas). Sin embargo, en términos del fenómeno: a mayor lluvia, <em>más</em> contaminación eliminada → relación inversa entre acumulación de partículas y lluvia.<br>4. <strong>Limitación de la covarianza:</strong> Solo indica la dirección, no la fuerza de la relación (depende de las unidades).<br><strong>Código R:</strong> <code>x &lt;- c(4.3,4.5,5.9,5.6,6.1,5.2,3.8,2.1,7.5)<br>y &lt;- c(126,121,116,118,114,118,132,141,108)<br>cov(x, y)</code>"
+        },
+        {
+            q: `Un estudio sobre cantidad de lluvia y contaminación del aire eliminada produjo los siguientes datos:
+            <table style="margin:10px auto;border-collapse:collapse;font-size:0.9rem;text-align:center;">
+              <thead><tr style="background:#ecf0f1;">
+                <th style="border:1px solid #bbb;padding:6px 14px;">Lluvia <em>x</em> (0.01 cm)</th>
+                <th style="border:1px solid #bbb;padding:6px 14px;">Partículas <em>y</em> (μg/m³)</th>
+              </tr></thead>
+              <tbody>
+                <tr><td style="border:1px solid #bbb;padding:5px 14px;">4.3</td><td style="border:1px solid #bbb;padding:5px 14px;">126</td></tr>
+                <tr><td style="border:1px solid #bbb;padding:5px 14px;">4.5</td><td style="border:1px solid #bbb;padding:5px 14px;">121</td></tr>
+                <tr><td style="border:1px solid #bbb;padding:5px 14px;">5.9</td><td style="border:1px solid #bbb;padding:5px 14px;">116</td></tr>
+                <tr><td style="border:1px solid #bbb;padding:5px 14px;">5.6</td><td style="border:1px solid #bbb;padding:5px 14px;">118</td></tr>
+                <tr><td style="border:1px solid #bbb;padding:5px 14px;">6.1</td><td style="border:1px solid #bbb;padding:5px 14px;">114</td></tr>
+                <tr><td style="border:1px solid #bbb;padding:5px 14px;">5.2</td><td style="border:1px solid #bbb;padding:5px 14px;">118</td></tr>
+                <tr><td style="border:1px solid #bbb;padding:5px 14px;">3.8</td><td style="border:1px solid #bbb;padding:5px 14px;">132</td></tr>
+                <tr><td style="border:1px solid #bbb;padding:5px 14px;">2.1</td><td style="border:1px solid #bbb;padding:5px 14px;">141</td></tr>
+                <tr><td style="border:1px solid #bbb;padding:5px 14px;">7.5</td><td style="border:1px solid #bbb;padding:5px 14px;">108</td></tr>
+              </tbody>
+            </table>
+            La correlación entre estas variables y una interpretación coherente es:`,
+            a: [
+                "$\\text{cor}(x,y) = -0.9787$; la relación lineal entre las variables es fuerte.",
+                "$\\text{cor}(x,y) = -0.9787$; la relación lineal entre las variables es débil.",
+                "$\\text{cor}(x,y) = 0.0123$; las variables son independientes.",
+                "$\\text{cor}(x,y) = 0.0123$; la relación lineal entre las variables es débil."
+            ],
+            c: 0,
+            explanation: "<strong>Paso a paso:</strong><br>1. $r = \\frac{\\text{Cov}(x,y)}{s_x \\cdot s_y} = \\frac{-15.225}{1.5517 \\times 10.025} = -0.9787$<br>2. $r = -0.9787$ está muy cerca de $-1$ → <strong>relación lineal negativa muy fuerte</strong>.<br>3. <strong>Interpretación:</strong> A mayor cantidad de lluvia, menor concentración de partículas contaminantes. La relación es casi perfectamente lineal.<br>4. <strong>Opción b incorrecta:</strong> $|r| = 0.9787$ indica relación fuerte, no débil. Un $r$ débil sería $|r| < 0.3$.<br><strong>Código R:</strong> <code>cor(x, y) # resultado: -0.9787</code>"
+        },
+        {
+            q: "Si en un estudio se obtiene $r(X,Y) = -0.20$, ¿qué se puede concluir?",
+            a: [
+                "La pendiente de la recta de regresión es pequeña.",
+                "La pendiente de la recta de regresión es grande.",
+                "Las variables $X$ e $Y$ están poco relacionadas linealmente; cuando $X$ disminuye, $Y$ tiende a crecer.",
+                "El modelo lineal explica el 20% de la varianza de una variable en función de la otra."
+            ],
+            c: 2,
+            explanation: "<strong>Paso a paso:</strong><br>1. $r = -0.20$ indica una correlación <strong>negativa débil</strong>: las variables tienen poca asociación lineal.<br>2. El signo negativo indica que cuando $X$ crece, $Y$ tiende a decrecer (y viceversa), pero la relación es muy débil.<br>3. <strong>Opción a/b incorrectas:</strong> El signo de $r$ coincide con el signo de la pendiente, pero $r$ mide la fuerza de la relación, no la magnitud de la pendiente. Una pendiente puede ser grande con $r$ pequeño si hay mucha dispersión.<br>4. <strong>Opción d incorrecta:</strong> El 20% correspondería a $R^2 = r^2 = (-0.20)^2 = 0.04 = 4\\%$ de varianza explicada, no 20%.<br><strong>Código R:</strong> <code>cor(x, y) # r = -0.20</code>"
+        },
+        {
+            q: "El modelo de regresión lineal entre las variables $X$ e $Y$ se muestra como un buen modelo para explicar la relación entre dos variables numéricas. Entonces:",
+            a: [
+                "$Y$ se puede calcular exactamente como una función matemática de $X$.",
+                "$Y$ es independiente de $X$.",
+                "El coeficiente de correlación entre $X$ e $Y$ no es nulo.",
+                "La media de $X$ coincide con la media de $Y$."
+            ],
+            c: 2,
+            explanation: "<strong>Paso a paso:</strong><br>1. Si el modelo lineal es bueno (alto $R^2$, coeficientes significativos), implica que existe una relación lineal apreciable entre $X$ e $Y$.<br>2. Un buen modelo lineal requiere $r \\neq 0$; de hecho, $R^2 = r^2$ (en regresión simple), por lo que si el modelo es bueno, $r$ debe ser alto en valor absoluto.<br>3. <strong>Opción a incorrecta:</strong> La regresión predice valores esperados ($\\hat{Y}$), no exactos. Los residuos existen.<br>4. <strong>Opción b incorrecta:</strong> Si $Y$ fuera independiente de $X$, el modelo no tendría utilidad.<br>5. <strong>Opción d incorrecta:</strong> Las medias pueden ser completamente diferentes en escala y unidades.<br><strong>Conclusión:</strong> Buen modelo lineal ↔ $r \\neq 0$ (correlación no nula)."
+        },
+        {
+            q: "Si dos variables numéricas $X$ e $Y$ <strong>no están correlacionadas linealmente</strong>, entonces:",
+            a: [
+                "$r = 0$.",
+                "El modelo lineal de regresión solo propone un valor como predicción de $Y$.",
+                "La nube de puntos no presenta aspecto creciente.",
+                "Todo lo anterior es cierto."
+            ],
+            c: 0,
+            explanation: "<strong>Paso a paso:</strong><br>1. Por definición, si $X$ e $Y$ no están correlacionadas linealmente, $r = 0$.<br>2. <strong>Opción b incorrecta:</strong> Incluso con $r = 0$, el modelo propone $\\hat{Y} = \\bar{Y}$ para cualquier $X$ (la media de $Y$), no un único valor arbitrario.<br>3. <strong>Opción c incorrecta:</strong> $r = 0$ significa que no hay tendencia lineal; la nube puede no ser ni creciente ni decreciente, pero esto no implica que no pueda haber un aspecto creciente por azar.<br>4. <strong>Opción d incorrecta:</strong> No todo lo anterior es cierto simultáneamente.<br><strong>Nota:</strong> $r = 0$ no implica independencia estadística; puede existir relación no lineal."
+        },
+        {
+            q: "Si el coeficiente de correlación lineal entre dos variables $X$ e $Y$ es $r = -0.8$, se puede decir:",
+            a: [
+                "La relación entre las variables es inversa (negativa) y fuerte.",
+                "Hay poca relación lineal entre las variables.",
+                "Hay un error de cálculo.",
+                "El 80% de las predicciones son correctas."
+            ],
+            c: 0,
+            explanation: "<strong>Paso a paso:</strong><br>1. $r = -0.8$: signo negativo → relación inversa; $|r| = 0.8$ → relación fuerte.<br>2. Clasificación convencional: $|r| < 0.3$ débil, $0.3 \\le |r| < 0.7$ moderada, $|r| \\ge 0.7$ fuerte.<br>3. <strong>Opción b incorrecta:</strong> $|r| = 0.8$ indica relación fuerte, no débil.<br>4. <strong>Opción c incorrecta:</strong> $r \\in [-1, 1]$; $r = -0.8$ es un valor perfectamente válido.<br>5. <strong>Opción d incorrecta:</strong> El 80% correspondería a $R^2 = r^2 = 0.64 = 64\\%$ de varianza explicada; no tiene que ver con porcentaje de predicciones correctas."
+        },
+        {
+            q: "Si el coeficiente de correlación lineal entre dos variables $X$ e $Y$ es $r = -0.1$, se puede decir:",
+            a: [
+                "Hay fuerte relación inversa entre las variables.",
+                "Hay poca relación lineal entre las variables.",
+                "Hay un error de cálculo.",
+                "El 10% de las predicciones son correctas."
+            ],
+            c: 1,
+            explanation: "<strong>Paso a paso:</strong><br>1. $r = -0.1$: el signo negativo indica dirección inversa, pero $|r| = 0.1$ es muy pequeño → relación lineal muy débil o prácticamente nula.<br>2. Un $r$ de $-0.1$ significa que el modelo lineal explica apenas $R^2 = (-0.1)^2 = 0.01 = 1\\%$ de la varianza de $Y$.<br>3. <strong>Opción a incorrecta:</strong> $|r| = 0.1$ es una relación muy débil, no fuerte.<br>4. <strong>Opción c incorrecta:</strong> $-0.1$ es un valor válido del coeficiente de correlación.<br>5. <strong>Opción d incorrecta:</strong> El coeficiente de correlación no representa porcentaje de predicciones correctas."
+        },
+        {
+            q: `La información del puntaje en el LSAT y el GPA de 15 estudiantes es:
+            <div class="r-output">LSAT: 576, 635, 558, 578, 666, 580, 555, 661, 651, 605, 653, 575, 545, 572, 594
+GPA:  339, 330, 281, 303, 344, 307, 300, 343, 336, 313, 312, 274, 276, 288, 296</div>
+            La covarianza entre estas variables y una interpretación coherente es:`,
+            a: [
+                "$\\text{cov}(\\text{lsat}, \\text{gpa}) = 790.1524$; las variables son directamente proporcionales.",
+                "$\\text{cov}(\\text{lsat}, \\text{gpa}) = 790.1524$; las variables son inversamente proporcionales.",
+                "$\\text{cov}(\\text{lsat}, \\text{gpa}) = -422.1892$; las variables no presentan relación lineal.",
+                "$\\text{cov}(\\text{lsat}, \\text{gpa}) = -422.1892$; las variables son inversamente proporcionales."
+            ],
+            c: 0,
+            explanation: "<strong>Paso a paso:</strong><br>1. $\\bar{x}_{\\text{lsat}} \\approx 600.27$, $\\bar{y}_{\\text{gpa}} \\approx 309.47$.<br>2. $\\text{Cov} = \\frac{\\sum(x_i - \\bar{x})(y_i - \\bar{y})}{n-1} = 790.1524 > 0$.<br>3. La covarianza positiva indica que cuando el LSAT es alto, el GPA tiende a ser alto también → <strong>directamente proporcionales</strong>.<br>4. <strong>Opciones c y d incorrectas:</strong> La covarianza es positiva, no negativa.<br><strong>Código R:</strong> <code>lsat &lt;- c(576,635,558,578,666,580,555,661,651,605,653,575,545,572,594)<br>gpa  &lt;- c(339,330,281,303,344,307,300,343,336,313,312,274,276,288,296)<br>cov(lsat, gpa)</code>"
+        },
+        {
+            q: `La información del puntaje en el LSAT y el GPA de 15 estudiantes es:
+            <div class="r-output">LSAT: 576, 635, 558, 578, 666, 580, 555, 661, 651, 605, 653, 575, 545, 572, 594
+GPA:  339, 330, 281, 303, 344, 307, 300, 343, 336, 313, 312, 274, 276, 288, 296</div>
+            La correlación entre estas variables y una interpretación coherente es:`,
+            a: [
+                "$\\text{cor}(\\text{lsat}, \\text{gpa}) = 0.7764$; las variables son directamente proporcionales.",
+                "$\\text{cor}(\\text{lsat}, \\text{gpa}) = 0.7764$; las variables son inversamente proporcionales.",
+                "$\\text{cor}(\\text{lsat}, \\text{gpa}) = -0.0231$; las variables no presentan relación lineal.",
+                "$\\text{cor}(\\text{lsat}, \\text{gpa}) = -0.0231$; las variables son inversamente proporcionales."
+            ],
+            c: 0,
+            explanation: "<strong>Paso a paso:</strong><br>1. $r = \\text{Cov}/( s_{\\text{lsat}} \\cdot s_{\\text{gpa}}) = 0.7764$.<br>2. $r = 0.7764 > 0$ → relación positiva (directamente proporcional) y fuerte ($|r| > 0.7$).<br>3. <strong>Interpretación:</strong> Estudiantes con mayor puntaje en el LSAT tienden a tener mayor GPA.<br>4. <strong>Opciones c y d incorrectas:</strong> $r = -0.0231$ no corresponde a estos datos.<br><strong>Código R:</strong> <code>cor(lsat, gpa) # resultado: 0.7764</code>"
+        },
+        {
+            q: `En la siguiente tabla se presentan datos de ocho automóviles de cuatro cilindros:
+            <table style="margin:10px auto;border-collapse:collapse;font-size:0.9rem;text-align:center;">
+              <thead><tr style="background:#ecf0f1;">
+                <th style="border:1px solid #bbb;padding:6px 12px;">Automóvil</th>
+                <th style="border:1px solid #bbb;padding:6px 12px;">Vol. cilindros <em>x</em> (L)</th>
+                <th style="border:1px solid #bbb;padding:6px 12px;">Caballos de fuerza <em>y</em></th>
+              </tr></thead>
+              <tbody>
+                <tr><td style="border:1px solid #bbb;padding:4px 12px;">Honda Civic</td><td style="border:1px solid #bbb;padding:4px 12px;">1.8</td><td style="border:1px solid #bbb;padding:4px 12px;">51</td></tr>
+                <tr><td style="border:1px solid #bbb;padding:4px 12px;">Toyota Prius</td><td style="border:1px solid #bbb;padding:4px 12px;">1.5</td><td style="border:1px solid #bbb;padding:4px 12px;">51</td></tr>
+                <tr><td style="border:1px solid #bbb;padding:4px 12px;">VW Golf</td><td style="border:1px solid #bbb;padding:4px 12px;">2.0</td><td style="border:1px solid #bbb;padding:4px 12px;">115</td></tr>
+                <tr><td style="border:1px solid #bbb;padding:4px 12px;">VW Beetle</td><td style="border:1px solid #bbb;padding:4px 12px;">2.5</td><td style="border:1px solid #bbb;padding:4px 12px;">150</td></tr>
+                <tr><td style="border:1px solid #bbb;padding:4px 12px;">Toyota Corolla</td><td style="border:1px solid #bbb;padding:4px 12px;">1.8</td><td style="border:1px solid #bbb;padding:4px 12px;">126</td></tr>
+                <tr><td style="border:1px solid #bbb;padding:4px 12px;">VW Jetta</td><td style="border:1px solid #bbb;padding:4px 12px;">2.5</td><td style="border:1px solid #bbb;padding:4px 12px;">150</td></tr>
+                <tr><td style="border:1px solid #bbb;padding:4px 12px;">Mini Cooper</td><td style="border:1px solid #bbb;padding:4px 12px;">1.6</td><td style="border:1px solid #bbb;padding:4px 12px;">118</td></tr>
+                <tr><td style="border:1px solid #bbb;padding:4px 12px;">Toyota Yaris</td><td style="border:1px solid #bbb;padding:4px 12px;">1.5</td><td style="border:1px solid #bbb;padding:4px 12px;">106</td></tr>
+              </tbody>
+            </table>
+            La correlación entre estas variables y una interpretación coherente es:`,
+            a: [
+                "$\\text{cor}(x,y) = 0.6850$; las variables son directamente proporcionales.",
+                "$\\text{cor}(x,y) = 0.6850$; las variables son inversamente proporcionales.",
+                "$\\text{cor}(x,y) = -0.0231$; las variables no presentan relación lineal.",
+                "$\\text{cor}(x,y) = -0.0231$; las variables son inversamente proporcionales."
+            ],
+            c: 0,
+            explanation: "<strong>Paso a paso:</strong><br>1. $r = 0.6850 > 0$ → relación lineal positiva moderada-fuerte.<br>2. <strong>Interpretación:</strong> A mayor volumen del motor (litros), mayor es la potencia en caballos de fuerza. Variables directamente proporcionales.<br>3. La correlación no es perfecta ($r < 1$) porque hay excepciones como el Honda Civic (1.8L, 51 hp) y el Mini Cooper (1.6L, 118 hp).<br><strong>Código R:</strong> <code>x &lt;- c(1.8,1.5,2.0,2.5,1.8,2.5,1.6,1.5)<br>y &lt;- c(51,51,115,150,126,150,118,106)<br>cor(x, y)</code>"
+        },
+        {
+            q: "Con respecto al coeficiente de correlación de Pearson $r$ calculado a partir de dos variables $X$ e $Y$, se puede afirmar que:",
+            a: [
+                "Un valor alto del mismo implica causalidad entre las dos variables.",
+                "Mide el grado de asociación de tipo lineal entre las dos variables.",
+                "Mide el grado de asociación lineal y no lineal entre las dos variables.",
+                "Es un valor en el rango $[0,1]$ que mide la asociación entre las dos variables."
+            ],
+            c: 1,
+            explanation: "<strong>Paso a paso:</strong><br>1. El coeficiente de correlación de Pearson $r \\in [-1, 1]$ mide exclusivamente la <strong>fuerza y dirección de la relación lineal</strong> entre dos variables cuantitativas.<br>2. <strong>Opción a incorrecta:</strong> Correlación no implica causalidad — puede haber variables de confusión o causalidad inversa.<br>3. <strong>Opción c incorrecta:</strong> $r$ solo mide relaciones lineales. Para relaciones no lineales se usan otras medidas (Spearman, Kendall, etc.).<br>4. <strong>Opción d incorrecta:</strong> $r \\in [-1, 1]$, no $[0, 1]$; puede ser negativo.<br><strong>Fórmula:</strong> $r = \\frac{\\text{Cov}(X,Y)}{s_X \\cdot s_Y}$"
+        },
+        {
+            q: "Sea $R^2 = 0.70$ el coeficiente de determinación calculado a partir de una muestra de tamaño $n = 35$ de pares $(X, Y)$. ¿Cuál de las siguientes afirmaciones es verdadera?",
+            a: [
+                "La dependencia entre ambas variables es del 70%.",
+                "El modelo de regresión lineal logra explicar el 70% de la varianza de $Y$.",
+                "Es un valor muy bajo para considerar la aplicabilidad del modelo de regresión simple.",
+                "Es una muestra insuficiente para concluir."
+            ],
+            c: 1,
+            explanation: "<strong>Paso a paso:</strong><br>1. El coeficiente de determinación $R^2 = SSR/SST$ representa la proporción de la variabilidad total de $Y$ explicada por el modelo de regresión.<br>2. $R^2 = 0.70$ → el modelo explica el 70% de la varianza de $Y$.<br>3. <strong>Opción a incorrecta:</strong> $R^2$ no mide 'dependencia' como un porcentaje. Además, si $R^2 = 0.70$, entonces $r = \\sqrt{0.70} \\approx 0.837$ (en regresión simple).<br>4. <strong>Opción c incorrecta:</strong> $R^2 = 0.70$ es un ajuste bueno (umbral de 'aceptable' varía por dominio, pero 0.70 generalmente es considerado bueno).<br>5. <strong>Opción d incorrecta:</strong> $n = 35$ es un tamaño de muestra razonable para regresión simple.<br><strong>Código R:</strong> <code>summary(modelo)$r.squared</code>"
+        },
+        {
+            q: "Si se obtiene un coeficiente de correlación <strong>alto</strong> entre dos variables $X$ e $Y$, se puede decir:",
+            a: [
+                "$X$ implica causalidad sobre $Y$.",
+                "Las variables presentan un alto grado de asociación de tipo lineal.",
+                "Las variables presentan un alto grado de asociación lineal y no lineal.",
+                "$Y$ implica causalidad sobre $X$."
+            ],
+            c: 1,
+            explanation: "<strong>Paso a paso:</strong><br>1. Un $r$ alto (en valor absoluto, cercano a 1) indica que existe una fuerte asociación <strong>lineal</strong> entre $X$ e $Y$.<br>2. <strong>Opciones a y d incorrectas:</strong> La correlación nunca establece causalidad. Esta requiere un diseño experimental controlado con aleatorización.<br>3. <strong>Opción c incorrecta:</strong> $r$ solo mide relación lineal; un valor alto de $r$ no dice nada sobre relaciones no lineales.<br>4. <strong>Principio fundamental:</strong> 'Correlation does not imply causation'.<br><strong>Conclusión:</strong> Un $r$ alto simplemente dice que las variables 'se mueven juntas' de manera lineal, ya sea directa o inversamente."
+        }
+    ],
+
+    // ── TEMA 5: Coeficiente de determinación ─────────────────
+    coef_determinacion: [
+        {
+            q: "En una regresión lineal entre dos variables numéricas $X$ e $Y$, se obtuvo un coeficiente de determinación de $R^2 = 0.95$. ¿Qué se puede concluir?",
+            a: [
+                "Hay poca asociación lineal entre las variables.",
+                "Hay asociación directa (la relación es positiva).",
+                "Hay asociación inversa (la relación es negativa).",
+                "Hay una buena asociación: el modelo explica el 95% de la variabilidad de $Y$."
+            ],
+            c: 3,
+            explanation: "<strong>Paso a paso:</strong><br>1. El coeficiente de determinación $R^2 \\in [0,1]$ representa la proporción de la variabilidad total de $Y$ que es explicada por el modelo de regresión.<br>2. $R^2 = 0.95$ → el modelo explica el 95% de la varianza de $Y$. Esto indica un <strong>ajuste excelente</strong>.<br>3. <strong>Opción a incorrecta:</strong> $R^2 = 0.95$ indica asociación muy fuerte, no poca.<br>4. <strong>Opciones b y c incorrectas:</strong> $R^2$ no indica la dirección de la relación (positiva o negativa); eso lo hace el signo de $r$ o de $\\hat{\\beta}_1$. Con $R^2 = r^2 = 0.95$, se tiene $|r| = \\sqrt{0.95} \\approx 0.975$, pero el signo de $r$ puede ser positivo o negativo.<br>5. <strong>Conclusión:</strong> $R^2 = 0.95$ implica una buena asociación lineal y buen ajuste del modelo.<br><strong>Código R:</strong> <code>summary(lm(y ~ x))$r.squared</code>"
+        },
+        {
+            q: "El porcentaje de variabilidad de $Y$ explicada por un modelo lineal de regresión es del 3%. ¿Cuál es la conclusión más adecuada?",
+            a: [
+                "El modelo lineal de regresión es insuficiente para explicar la variable dependiente.",
+                "El error cometido por el modelo lineal de regresión es pequeño; el ajuste lineal es bueno.",
+                "Hay una relación creciente entre las variables.",
+                "Todo lo anterior es falso."
+            ],
+            c: 0,
+            explanation: "<strong>Paso a paso:</strong><br>1. $R^2 = 0.03$ significa que el modelo lineal solo explica el 3% de la variabilidad total de $Y$. El 97% restante queda sin explicar (es variabilidad no capturada por el modelo).<br>2. Un $R^2$ tan bajo indica que el modelo lineal es un ajuste muy pobre: la variable independiente $X$ prácticamente no explica la variación de $Y$.<br>3. <strong>Opción b incorrecta:</strong> Un $R^2$ bajo implica que el error ($SSE$) es grande relativo al total ($SST$), no pequeño.<br>4. <strong>Opción c incorrecta:</strong> $R^2$ no indica la dirección; además, con una relación tan débil, no es posible afirmar tendencia creciente.<br>5. <strong>Conclusión:</strong> $R^2 = 0.03$ indica que el modelo lineal es insuficiente para explicar $Y$ a partir de $X$.<br><strong>Código R:</strong> <code>summary(lm(y ~ x))$r.squared # ≈ 0.03</code>"
+        },
+        {
+            q: `En la siguiente tabla aparece información de ocho automóviles de cuatro cilindros. Variables: $x$ = volumen del motor (litros), $Y$ = caballos de potencia.
+            <table style="margin:10px auto;border-collapse:collapse;font-size:0.9rem;text-align:center;">
+              <thead><tr style="background:#ecf0f1;">
+                <th style="border:1px solid #bbb;padding:6px 12px;">Automóvil</th>
+                <th style="border:1px solid #bbb;padding:6px 12px;">Vol. cilindros <em>x</em> (L)</th>
+                <th style="border:1px solid #bbb;padding:6px 12px;">Caballos de fuerza <em>y</em></th>
+              </tr></thead>
+              <tbody>
+                <tr><td style="border:1px solid #bbb;padding:4px 12px;">Honda Civic</td><td style="border:1px solid #bbb;padding:4px 12px;">1.8</td><td style="border:1px solid #bbb;padding:4px 12px;">51</td></tr>
+                <tr><td style="border:1px solid #bbb;padding:4px 12px;">Toyota Prius</td><td style="border:1px solid #bbb;padding:4px 12px;">1.5</td><td style="border:1px solid #bbb;padding:4px 12px;">51</td></tr>
+                <tr><td style="border:1px solid #bbb;padding:4px 12px;">VW Golf</td><td style="border:1px solid #bbb;padding:4px 12px;">2.0</td><td style="border:1px solid #bbb;padding:4px 12px;">115</td></tr>
+                <tr><td style="border:1px solid #bbb;padding:4px 12px;">VW Beetle</td><td style="border:1px solid #bbb;padding:4px 12px;">2.5</td><td style="border:1px solid #bbb;padding:4px 12px;">150</td></tr>
+                <tr><td style="border:1px solid #bbb;padding:4px 12px;">Toyota Corolla</td><td style="border:1px solid #bbb;padding:4px 12px;">1.8</td><td style="border:1px solid #bbb;padding:4px 12px;">126</td></tr>
+                <tr><td style="border:1px solid #bbb;padding:4px 12px;">VW Jetta</td><td style="border:1px solid #bbb;padding:4px 12px;">2.5</td><td style="border:1px solid #bbb;padding:4px 12px;">150</td></tr>
+                <tr><td style="border:1px solid #bbb;padding:4px 12px;">Mini Cooper</td><td style="border:1px solid #bbb;padding:4px 12px;">1.6</td><td style="border:1px solid #bbb;padding:4px 12px;">118</td></tr>
+                <tr><td style="border:1px solid #bbb;padding:4px 12px;">Toyota Yaris</td><td style="border:1px solid #bbb;padding:4px 12px;">1.5</td><td style="border:1px solid #bbb;padding:4px 12px;">106</td></tr>
+              </tbody>
+            </table>
+            La proporción de variación de $Y$ (caballos de potencia) explicada por la relación lineal con $x$ (volumen del motor) es:`,
+            a: ["0.4692", "0.2143", "0.9102", "0.0898"],
+            c: 0,
+            explanation: "<strong>Paso a paso:</strong><br>1. El coeficiente de determinación es $R^2 = r^2$, donde $r = \\text{cor}(x, y)$.<br>2. De la sección anterior: $r = \\text{cor}(x, y) = 0.6850$.<br>3. $R^2 = (0.6850)^2 = 0.4692$.<br>4. <strong>Interpretación:</strong> El 46.92% de la variabilidad en los caballos de potencia de los automóviles es explicada por el volumen del motor. El 53.08% restante se debe a otros factores no incluidos en el modelo.<br>5. $R^2 = 0.4692$ indica un ajuste moderado; hay variabilidad no capturada (probablemente por tecnología del motor, turbo, etc.).<br><strong>Código R:</strong> <code>x &lt;- c(1.8,1.5,2.0,2.5,1.8,2.5,1.6,1.5)<br>y &lt;- c(51,51,115,150,126,150,118,106)<br>summary(lm(y ~ x))$r.squared # = 0.4692</code>"
+        }
+    ],
+
+    // ── TEMA 6: Regresión Lineal ──────────────────────────────
+    regresion_lineal: [
+        {
+            q: `Un estudio sobre cantidad de lluvia y contaminación del aire eliminada produjo los siguientes datos:
+            ${tablaLluvia}
+            Asumiendo un modelo de regresión lineal ($\\hat{y} = 153.172 - 6.323x$), un pronóstico de las partículas eliminadas para una cantidad de lluvia diaria de $x = 5.5$ es:`,
+            a: ["118.3935", "116.2101", "120.1234", "119.0102"],
+            c: 0,
+            explanation: "<strong>Paso a paso:</strong><br>1. Primero se obtiene el modelo ajustado por mínimos cuadrados. Con $\\bar{x}=5.0$, $\\bar{y}=121.56$, $\\text{Cov}=-15.225$, $s_x^2=2.4075$:<br>&nbsp;&nbsp;&nbsp;$\\hat{\\beta}_1 = -15.225/2.4075 = -6.323$<br>&nbsp;&nbsp;&nbsp;$\\hat{\\beta}_0 = 121.56 - (-6.323)(5.0) = 153.172$<br>2. Para $x = 5.5$: $\\hat{y} = 153.172 - 6.323(5.5) = 153.172 - 34.777 = \\mathbf{118.395}$<br><strong>Código R:</strong> <code>modelo &lt;- lm(y ~ x); predict(modelo, data.frame(x = 5.5))</code>"
+        },
+        {
+            q: `Un estudio sobre cantidad de lluvia y contaminación del aire eliminada produjo los siguientes datos:
+            ${tablaLluvia}
+            Asumiendo el mismo modelo de regresión lineal ($\\hat{y} = 153.172 - 6.323x$), un pronóstico de las partículas eliminadas para $x = 2.3$ es:`,
+            a: ["138.6303", "120.1202", "144.3241", "135.1198"],
+            c: 0,
+            explanation: "<strong>Paso a paso:</strong><br>1. Usando el modelo ajustado $\\hat{y} = 153.172 - 6.323x$:<br>2. Para $x = 2.3$: $\\hat{y} = 153.172 - 6.323(2.3) = 153.172 - 14.543 = \\mathbf{138.629}$<br>3. <strong>Nota:</strong> $x = 2.3$ está dentro del rango de los datos (2.1 a 7.5), por lo que la predicción es interpolación (más confiable que extrapolación).<br><strong>Código R:</strong> <code>predict(modelo, data.frame(x = 2.3))</code>"
+        },
+        {
+            q: `Un estudio sobre cantidad de lluvia y contaminación del aire eliminada produjo los siguientes datos:
+            ${tablaLluvia}
+            Asumiendo el mismo modelo de regresión lineal ($\\hat{y} = 153.172 - 6.323x$), un pronóstico de las partículas eliminadas para $x = 7$ es:`,
+            a: ["108.9075", "112.2345", "118.1209", "105.3219"],
+            c: 0,
+            explanation: "<strong>Paso a paso:</strong><br>1. Para $x = 7$: $\\hat{y} = 153.172 - 6.323(7) = 153.172 - 44.261 = \\mathbf{108.911}$<br>2. <strong>Nota:</strong> $x=7$ está dentro del rango (2.1 a 7.5). La pendiente negativa $\\hat{\\beta}_1 = -6.323$ indica que a mayor lluvia, se espera menor concentración de partículas contaminantes.<br><strong>Código R:</strong> <code>predict(modelo, data.frame(x = 7))</code>"
+        },
+        {
+            q: `Un estudio sobre cantidad de lluvia y contaminación del aire eliminada produjo los siguientes datos:
+            ${tablaLluvia}
+            Asumiendo el mismo modelo de regresión lineal ($\\hat{y} = 153.172 - 6.323x$), un pronóstico de las partículas eliminadas para $x = 4$ es:`,
+            a: ["127.8795", "131.0912", "125.3128", "140.5678"],
+            c: 0,
+            explanation: "<strong>Paso a paso:</strong><br>1. Para $x = 4$: $\\hat{y} = 153.172 - 6.323(4) = 153.172 - 25.292 = \\mathbf{127.880}$<br>2. Se puede verificar que la predicción tiene sentido: para $x=5$ (la media), $\\hat{y} = 153.172 - 31.615 = 121.557 \\approx \\bar{y}$, lo cual es correcto (la recta pasa por $(\\bar{x}, \\bar{y})$).<br><strong>Código R:</strong> <code>predict(modelo, data.frame(x = 4))</code>"
+        },
+        {
+            q: `Los gerentes de una firma de corretaje quieren saber si el número de nuevos clientes afecta las ventas. Con una muestra de 12 corredores:
+            <table style="margin:10px auto;border-collapse:collapse;font-size:0.88rem;text-align:center;">
+              <thead><tr style="background:#ecf0f1;">
+                <th style="border:1px solid #bbb;padding:5px 10px;">Corredor</th>
+                <th style="border:1px solid #bbb;padding:5px 10px;">Clientes ($x$)</th>
+                <th style="border:1px solid #bbb;padding:5px 10px;">Ventas ($y$, miles USD)</th>
+              </tr></thead>
+              <tbody>
+                <tr><td style="border:1px solid #bbb;padding:4px 10px;">1</td><td style="border:1px solid #bbb;padding:4px 10px;">27</td><td style="border:1px solid #bbb;padding:4px 10px;">52</td></tr>
+                <tr><td style="border:1px solid #bbb;padding:4px 10px;">2</td><td style="border:1px solid #bbb;padding:4px 10px;">11</td><td style="border:1px solid #bbb;padding:4px 10px;">37</td></tr>
+                <tr><td style="border:1px solid #bbb;padding:4px 10px;">3</td><td style="border:1px solid #bbb;padding:4px 10px;">42</td><td style="border:1px solid #bbb;padding:4px 10px;">64</td></tr>
+                <tr><td style="border:1px solid #bbb;padding:4px 10px;">4</td><td style="border:1px solid #bbb;padding:4px 10px;">33</td><td style="border:1px solid #bbb;padding:4px 10px;">55</td></tr>
+                <tr><td style="border:1px solid #bbb;padding:4px 10px;">5</td><td style="border:1px solid #bbb;padding:4px 10px;">15</td><td style="border:1px solid #bbb;padding:4px 10px;">29</td></tr>
+                <tr><td style="border:1px solid #bbb;padding:4px 10px;">6</td><td style="border:1px solid #bbb;padding:4px 10px;">15</td><td style="border:1px solid #bbb;padding:4px 10px;">34</td></tr>
+                <tr><td style="border:1px solid #bbb;padding:4px 10px;">7</td><td style="border:1px solid #bbb;padding:4px 10px;">25</td><td style="border:1px solid #bbb;padding:4px 10px;">58</td></tr>
+                <tr><td style="border:1px solid #bbb;padding:4px 10px;">8</td><td style="border:1px solid #bbb;padding:4px 10px;">36</td><td style="border:1px solid #bbb;padding:4px 10px;">59</td></tr>
+                <tr><td style="border:1px solid #bbb;padding:4px 10px;">9</td><td style="border:1px solid #bbb;padding:4px 10px;">28</td><td style="border:1px solid #bbb;padding:4px 10px;">44</td></tr>
+                <tr><td style="border:1px solid #bbb;padding:4px 10px;">10</td><td style="border:1px solid #bbb;padding:4px 10px;">30</td><td style="border:1px solid #bbb;padding:4px 10px;">48</td></tr>
+                <tr><td style="border:1px solid #bbb;padding:4px 10px;">11</td><td style="border:1px solid #bbb;padding:4px 10px;">17</td><td style="border:1px solid #bbb;padding:4px 10px;">31</td></tr>
+                <tr><td style="border:1px solid #bbb;padding:4px 10px;">12</td><td style="border:1px solid #bbb;padding:4px 10px;">22</td><td style="border:1px solid #bbb;padding:4px 10px;">38</td></tr>
+              </tbody>
+            </table>
+            Los estimadores de mínimos cuadrados del modelo lineal $\\hat{y} = \\hat{\\beta}_0 + \\hat{\\beta}_1 x$ son:`,
+            a: [
+                "$\\hat{\\beta}_0 = -7.01 \\qquad \\hat{\\beta}_1 = 0.701$",
+                "$\\hat{\\beta}_0 = 17.692 \\qquad \\hat{\\beta}_1 = 1.119$",
+                "$\\hat{\\beta}_0 = 0 \\qquad \\hat{\\beta}_1 = 1.743$",
+                "$\\hat{\\beta}_0 = 0 \\qquad \\hat{\\beta}_1 = 0.557$"
+            ],
+            c: 1,
+            explanation: "<strong>Paso a paso:</strong><br>1. $n=12$, $\\bar{x} = 301/12 = 25.083$, $\\bar{y} = 549/12 = 45.75$<br>2. $\\sum x_i y_i = 14868$, $\\sum x_i^2 = 8531$<br>3. $\\hat{\\beta}_1 = \\frac{\\sum x_iy_i - n\\bar{x}\\bar{y}}{\\sum x_i^2 - n\\bar{x}^2} = \\frac{14868 - 13770.75}{8531 - 7550.08} = \\frac{1097.25}{980.92} = 1.119$<br>4. $\\hat{\\beta}_0 = \\bar{y} - \\hat{\\beta}_1 \\bar{x} = 45.75 - 1.119 \\times 25.083 = 17.692$<br>5. <strong>Interpretación:</strong> Cada cliente adicional genera en promedio 1.119 mil USD más en ventas; sin clientes nuevos, el corredor generaría 17.692 mil USD.<br><strong>Código R:</strong> <code>coef(lm(ventas ~ clientes))</code>"
+        },
+        {
+            q: `Una compañía de seguros ajusta un modelo de regresión lineal para predecir el monto del seguro de vida (miles USD) a partir del ingreso familiar (miles USD). Los resultados son:
+            ${tablaIngreso}
+            ¿Cuál de las siguientes afirmaciones interpreta correctamente el coeficiente de la variable <em>Ingreso</em>?`,
+            a: [
+                "Si el ingreso aumenta en 1.78 miles de dólares, el costo del seguro aumentará 1 mil dólares.",
+                "Si el ingreso aumenta en 1 mil dólares, el costo del seguro aumentará en 2.5 mil dólares.",
+                "Si el ingreso aumenta en 1,000 dólares, el costo del seguro aumentará aproximadamente 1,777 dólares.",
+                "Si el ingreso aumenta en 2.5 miles de dólares, el costo del seguro aumentará 1 mil dólares."
+            ],
+            c: 2,
+            explanation: "<strong>Paso a paso:</strong><br>1. El modelo es: $\\hat{Y}_{\\text{seguro}} = 2.5002 + 1.7774 \\cdot X_{\\text{ingreso}}$, con unidades en <em>miles de dólares</em>.<br>2. $\\hat{\\beta}_1 = 1.7774$ significa: por cada <strong>1 mil USD</strong> adicional de ingreso, el seguro aumenta en promedio <strong>1.7774 mil USD = 1,777.4 USD</strong>.<br>3. <strong>Opción a incorrecta:</strong> Invierte el razonamiento; 1.78 miles de ingreso generarían $1.7774 \\times 1.78 \\approx 3.16$ mil USD de seguro.<br>4. <strong>Opción b incorrecta:</strong> 2.5 es el intercepto ($\\hat{\\beta}_0$), no la pendiente.<br>5. <strong>Opción d incorrecta:</strong> Invertiría el cociente: para +1 mil USD de seguro necesitaría $1/1.7774 \\approx 0.56$ mil USD de ingreso.<br><strong>Código R:</strong> <code>coef(lm(seguro ~ ingreso))[2] * 1 # pendiente × 1 mil USD</code>"
+        },
+        {
+            q: `La información del puntaje LSAT y GPA de 15 estudiantes es:
+            <div class="r-output">LSAT: 576, 635, 558, 578, 666, 580, 555, 661, 651, 605, 653, 575, 545, 572, 594
+GPA:  339, 330, 281, 303, 344, 307, 300, 343, 336, 313, 312, 274, 276, 288, 296</div>
+            Asumiendo LSAT como variable independiente y GPA como variable respuesta, por un aumento unitario en el LSAT se espera:`,
+            a: [
+                "Un aumento promedio de 0.4523 unidades en el GPA.",
+                "Que el GPA en promedio permanezca igual.",
+                "Una disminución promedio de 0.4523 unidades en el GPA.",
+                "Una disminución promedio de una unidad en el GPA."
+            ],
+            c: 0,
+            explanation: "<strong>Paso a paso:</strong><br>1. $\\hat{\\beta}_1 = \\frac{\\text{Cov}(\\text{LSAT}, \\text{GPA})}{\\text{Var}(\\text{LSAT})} = \\frac{790.1524}{1746.35} = 0.4523$<br>2. El signo positivo indica relación directa: a mayor puntaje LSAT, mayor GPA esperado.<br>3. Por cada punto adicional en el LSAT, el GPA aumenta en promedio 0.4523 puntos.<br>4. <strong>Opción c incorrecta:</strong> La correlación es positiva ($r = 0.7764$), así que la pendiente es positiva, no negativa.<br><strong>Código R:</strong> <code>coef(lm(gpa ~ lsat))[2] # = 0.4523</code>"
+        },
+        {
+            q: "Suponga un modelo lineal $Y = b + mX$ donde $b$ y $m$ son los parámetros OLS óptimos. ¿Qué implicaría usar un intercepto $b' < b$ manteniendo la misma pendiente $m$?",
+            a: [
+                "El modelo tiende a subestimar los valores de $Y$.",
+                "El modelo tiende a sobrestimar los valores de $Y$.",
+                "El valor de $m$ corrige automáticamente el menor valor de $b$.",
+                "Ninguna de las anteriores."
+            ],
+            c: 0,
+            explanation: "<strong>Paso a paso:</strong><br>1. El modelo modificado es: $\\hat{Y}' = b' + mX$, con $b' < b$.<br>2. Para cualquier valor de $X$: $\\hat{Y}' = b' + mX < b + mX = \\hat{Y}_{\\text{OLS}}$.<br>3. Como las predicciones son sistemáticamente menores que los valores ajustados óptimos, el modelo <strong>subestima</strong> los valores reales de $Y$.<br>4. <strong>Recordatorio:</strong> Los parámetros OLS minimizan $SSE = \\sum(y_i - \\hat{y}_i)^2$. Cualquier otra combinación de parámetros produce un SSE mayor.<br>5. <strong>Opción c incorrecta:</strong> La pendiente $m$ no se ajusta automáticamente al cambiar el intercepto; son parámetros independientes en la estimación.<br><strong>Código R:</strong> <code># SSE con b correcto vs b' < b<br>sum((y - (b_prime + m*x))^2) > sum((y - (b + m*x))^2)</code>"
+        },
+        {
+            q: "Dada la muestra $X = [2,6,4,8,1,4,6,2,4,6,4]$ e $Y = [6,17,13,16,3,8,15,7,13,17,11]$. Si se construye el modelo $\\hat{Y} = 2.5 + 3X$, ¿cuál afirmación es verdadera?",
+            a: [
+                "El valor del intercepto corresponde a la estimación óptima según el método de mínimos cuadrados.",
+                "Los parámetros del modelo son óptimos según el método de mínimos medios.",
+                "No se cuenta con una muestra suficientemente grande para realizar una estimación.",
+                "Ninguna de las anteriores."
+            ],
+            c: 0,
+            explanation: "<strong>Paso a paso:</strong><br>1. Se calcula el intercepto OLS: $\\bar{x} = 47/11 = 4.273$, $\\bar{y} = 126/11 = 11.455$.<br>2. $\\hat{\\beta}_1^{\\text{OLS}} = \\frac{\\sum x_iy_i - n\\bar{x}\\bar{y}}{\\sum x_i^2 - n\\bar{x}^2} = \\frac{631 - 538.36}{245 - 200.82} = \\frac{92.64}{44.18} \\approx 2.097$<br>3. $\\hat{\\beta}_0^{\\text{OLS}} = \\bar{y} - \\hat{\\beta}_1 \\bar{x} = 11.455 - 2.097 \\times 4.273 \\approx 2.50$<br>4. El valor del intercepto del modelo propuesto (2.5) <strong>sí coincide</strong> con la estimación OLS óptima del intercepto.<br>5. <strong>Opción b incorrecta:</strong> 'Mínimos medios' no es un método estadístico estándar.<br>6. <strong>Opción c incorrecta:</strong> $n = 11$ es suficiente para regresión lineal simple.<br><strong>Código R:</strong> <code>coef(lm(y ~ x)) # intercepto ≈ 2.5</code>"
+        },
+        {
+            q: "¿Cuáles son supuestos del modelo de regresión lineal simple?",
+            a: [
+                "Dependencia temporal (autocorrelación) de los errores.",
+                "Normalidad de los errores: $\\varepsilon_i \\sim N(0, \\sigma^2)$.",
+                "Linealidad: la relación entre $X$ e $Y$ es lineal.",
+                "Normalidad y linealidad (opciones b y c)."
+            ],
+            c: 3,
+            explanation: "<strong>Paso a paso:</strong><br>1. Los supuestos clásicos del modelo de regresión lineal (LINE) son:<br>&nbsp;&nbsp;&nbsp;• <strong>L</strong>inealidad: $E(Y|X) = \\beta_0 + \\beta_1 X$<br>&nbsp;&nbsp;&nbsp;• <strong>I</strong>ndependencia: $\\text{Cov}(\\varepsilon_i, \\varepsilon_j) = 0$ para $i \\neq j$<br>&nbsp;&nbsp;&nbsp;• <strong>N</strong>ormalidad: $\\varepsilon_i \\sim N(0, \\sigma^2)$<br>&nbsp;&nbsp;&nbsp;• <strong>E</strong>qual variance (homocedasticidad): $\\text{Var}(\\varepsilon_i) = \\sigma^2$ constante<br>2. <strong>Opción a incorrecta:</strong> La dependencia temporal (autocorrelación) <em>viola</em> el supuesto de independencia; es exactamente lo contrario de un supuesto.<br>3. Tanto la normalidad (b) como la linealidad (c) son supuestos del modelo.<br>4. La opción d engloba ambos correctamente.<br><strong>Código R:</strong> <code>plot(modelo) # verifica supuestos gráficamente</code>"
+        }
+    ],
+
+    // ── TEMA 7: Prueba de hipótesis ───────────────────────────
+    prueba_hipotesis: [
+        {
+            q: `Datos: <strong>X</strong> = 0.18, 0.20, 0.21, 0.21, 0.21, 0.22, 0.23, 0.23, 0.24, 0.24, 0.25, 0.28, 0.30, 0.37<br>
+            <strong>Y</strong> = 0.46, 0.70, 0.41, 0.45, 0.55, 0.44, 0.24, 0.47, 0.22, 0.80, 0.88, 0.70, 0.72, 0.75<br><br>
+            Seleccione la afirmación correcta sobre el modelo de regresión lineal (con $\\alpha = 0.05$):`,
+            a: [
+                "El modelo no es útil puesto que $\\beta_1$ resultó ser <strong>significativo</strong> con un p-valor de 0.107.",
+                "El modelo no es útil puesto que $\\beta_0$ resultó ser <strong>significativo</strong> con un p-valor de 0.713.",
+                "El modelo no es útil puesto que $\\beta_1$ resultó ser <strong>no significativo</strong> con un p-valor de 0.107.",
+                "El modelo no es útil puesto que $\\beta_0$ resultó ser <strong>no significativo</strong> con un p-valor de 0.713."
+            ],
+            c: 2,
+            explanation: "<strong>Paso a paso:</strong><br>1. La utilidad del modelo de regresión depende de si $\\beta_1 \\neq 0$ (si hay relación lineal). Si $\\beta_1 = 0$, la variable $X$ no aporta información sobre $Y$.<br>2. Con $n=14$: el p-valor para $\\beta_1$ es $0.107 > 0.05 = \\alpha$ → <strong>no se rechaza $H_0: \\beta_1 = 0$</strong> → $\\beta_1$ NO es significativo → el modelo no es útil para predecir $Y$.<br>3. El p-valor de $\\beta_0 = 0.713 > 0.05$ también indica no significancia, pero la <em>razón</em> para que el modelo sea inútil es $\\beta_1$ no significativo (sin pendiente, no hay relación lineal).<br>4. <strong>Opciones a y b incorrectas:</strong> confunden significativo con no significativo.<br>5. <strong>Opción d incorrecta:</strong> la razón de inutilidad del modelo es $\\beta_1$, no $\\beta_0$.<br><strong>Código R:</strong> <code>summary(lm(y ~ x))$coefficients # observar p-valores</code>"
+        },
+        {
+            q: `Datos: <strong>X</strong> = 0.18, 0.20, 0.21, 0.21, 0.21, 0.22, 0.23, 0.23, 0.24, 0.24, 0.25, 0.28, 0.30, 0.37<br>
+            <strong>Y</strong> = 0.46, 0.70, 0.41, 0.45, 0.55, 0.44, 0.24, 0.47, 0.22, 0.80, 0.88, 0.70, 0.72, 0.75<br><br>
+            Para el modelo de regresión lineal ajustado ($\\hat{\\beta}_1 = 1.8941$), por una <strong>disminución unitaria</strong> en $X$ se espera:`,
+            a: [
+                "Una disminución de 1.8941 unidades en el <em>valor promedio verdadero</em> de la variable de respuesta.",
+                "Una disminución de 1.8941 unidades en la variable de respuesta.",
+                "Un aumento de 1.8941 unidades en el valor promedio verdadero de la variable de respuesta.",
+                "Un aumento de 1.8941 unidades en la variable de respuesta."
+            ],
+            c: 0,
+            explanation: "<strong>Paso a paso:</strong><br>1. En el modelo $\\hat{Y} = \\hat{\\beta}_0 + \\hat{\\beta}_1 X$, la pendiente $\\hat{\\beta}_1 = 1.8941 > 0$ indica relación positiva.<br>2. Para $\\Delta X = -1$ (disminución unitaria): $\\Delta E[Y|X] = \\hat{\\beta}_1 \\times (-1) = -1.8941$ → el valor promedio de $Y$ <strong>disminuye</strong> en 1.8941 unidades.<br>3. <strong>Clave de interpretación:</strong> la regresión modela el <em>valor promedio verdadero</em> $E[Y|X]$, no un valor individual de $Y$. Por eso se dice 'valor promedio verdadero', no simplemente 'la variable de respuesta'.<br>4. <strong>Opciones c y d incorrectas:</strong> como $\\hat{\\beta}_1 > 0$, una disminución en $X$ produce una disminución (no aumento) en $E[Y|X]$."
+        },
+        {
+            q: `Un estudio sobre cantidad de lluvia y contaminación del aire eliminada:
+            ${tablaLluvia}
+            Asumiendo un modelo de regresión lineal con $\\alpha = 0.05$, es coherente concluir que:`,
+            a: [
+                "Los parámetros $\\beta_0$ y $\\beta_1$ son ambos significativos.",
+                "Los parámetros $\\beta_0$ y $\\beta_1$ no son significativos.",
+                "El parámetro $\\beta_0$ es significativo pero $\\beta_1$ no.",
+                "El parámetro $\\beta_1$ es significativo pero $\\beta_0$ no."
+            ],
+            c: 0,
+            explanation: "<strong>Paso a paso:</strong><br>1. Para los datos de lluvia: $\\hat{\\beta}_1 = -6.323$, $\\hat{\\beta}_0 = 153.172$, $n = 9$, $gl = 7$.<br>2. $\\text{MSE} = SSE/(n-2) = 4.821$; $S_{xx} = 19.26$<br>3. $t(\\hat{\\beta}_1) = -6.323/\\sqrt{4.821/19.26} = -6.323/0.500 = -12.64$ → p-valor $\\ll 0.05$ → <strong>significativo</strong>.<br>4. $t(\\hat{\\beta}_0) = 153.172/\\sqrt{4.821(1/9 + 25/19.26)} = 153.172/2.606 = 58.78$ → p-valor $\\ll 0.05$ → <strong>significativo</strong>.<br>5. Ambos parámetros son significativos al 5%.<br><strong>Código R:</strong> <code>summary(lm(y ~ x))$coefficients</code>"
+        },
+        {
+            q: `Un estudio sobre cantidad de lluvia y contaminación del aire:
+            ${tablaLluvia}
+            Asumiendo modelo de regresión lineal con $\\alpha = 0.05$, ¿qué se puede concluir sobre la significancia del modelo?`,
+            a: [
+                "El modelo es significativo porque $\\beta_1$ es diferente de cero.",
+                "El modelo es significativo porque $\\beta_0$ es diferente de cero.",
+                "El modelo no es significativo porque $\\beta_1$ es igual a cero.",
+                "El modelo no es significativo porque $\\beta_0$ es igual a cero."
+            ],
+            c: 0,
+            explanation: "<strong>Paso a paso:</strong><br>1. La significancia del modelo de regresión lineal se evalúa mediante la prueba $H_0: \\beta_1 = 0$ vs $H_1: \\beta_1 \\neq 0$.<br>2. Como $t(\\hat{\\beta}_1) = -12.64$ con p-valor $\\ll 0.05$, se rechaza $H_0: \\beta_1 = 0$.<br>3. Esto implica que $\\beta_1 \\neq 0$ → existe una relación lineal significativa → el modelo es útil.<br>4. <strong>Opción b incorrecta:</strong> $\\beta_0 \\neq 0$ no determina si el modelo es significativo; lo relevante es $\\beta_1$.<br>5. <strong>Opciones c y d incorrectas:</strong> la evidencia muestra que $\\beta_1 \\neq 0$ (rechazamos $H_0$).<br><strong>Código R:</strong> <code>summary(lm(y ~ x)) # F-statistic también prueba la significancia global</code>"
+        },
+        {
+            q: `La información del puntaje LSAT y GPA de 15 estudiantes:
+            <div class="r-output">LSAT: 576, 635, 558, 578, 666, 580, 555, 661, 651, 605, 653, 575, 545, 572, 594
+GPA:  339, 330, 281, 303, 344, 307, 300, 343, 336, 313, 312, 274, 276, 288, 296</div>
+            Con LSAT como variable independiente y GPA como respuesta, $\\alpha = 0.05$, se concluye:`,
+            a: [
+                "El parámetro $\\beta_1$ es significativo pero $\\beta_0$ no.",
+                "El parámetro $\\beta_0$ es significativo pero $\\beta_1$ no.",
+                "Los parámetros $\\beta_0$ y $\\beta_1$ son ambos significativos.",
+                "Los parámetros $\\beta_0$ y $\\beta_1$ no son significativos."
+            ],
+            c: 0,
+            explanation: "<strong>Paso a paso:</strong><br>1. $\\hat{\\beta}_1 = 0.4523$, $\\hat{\\beta}_0 = 37.97$, $n=15$, $gl = 13$, MSE = 253.63<br>2. $t(\\hat{\\beta}_1) = 0.4523/\\sqrt{253.63/24448.93} = 0.4523/0.10185 = 4.44$ → p-valor $< 0.001 < 0.05$ → <strong>significativo</strong>.<br>3. $t(\\hat{\\beta}_0) = 37.97/\\sqrt{253.63 \\times (1/15 + 600.27^2/24448.93)} = 37.97/61.27 = 0.62$ → p-valor $\\approx 0.55 > 0.05$ → <strong>NO significativo</strong>.<br>4. $\\beta_0$ no significativo no invalida el modelo; es común en regresión que el intercepto no tenga interpretación física relevante.<br><strong>Código R:</strong> <code>summary(lm(gpa ~ lsat))$coefficients</code>"
+        },
+        {
+            q: `La información del puntaje LSAT y GPA de 15 estudiantes:
+            <div class="r-output">LSAT: 576, 635, 558, 578, 666, 580, 555, 661, 651, 605, 653, 575, 545, 572, 594
+GPA:  339, 330, 281, 303, 344, 307, 300, 343, 336, 313, 312, 274, 276, 288, 296</div>
+            Con LSAT como variable independiente y GPA como respuesta, $\\alpha = 0.05$, respecto a la significancia del modelo:`,
+            a: [
+                "El modelo es significativo porque $\\beta_1$ es diferente de cero.",
+                "El modelo es significativo porque $\\beta_0$ es diferente de cero.",
+                "El modelo no es significativo porque $\\beta_1$ es igual a cero.",
+                "El modelo no es significativo porque $\\beta_0$ es igual a cero."
+            ],
+            c: 0,
+            explanation: "<strong>Paso a paso:</strong><br>1. $t(\\hat{\\beta}_1) = 4.44$, p-valor $\\approx 0.0007 < 0.05$ → se rechaza $H_0: \\beta_1 = 0$.<br>2. $\\beta_1 \\neq 0$ implica que el LSAT tiene un efecto significativo sobre el GPA → el modelo lineal es significativo.<br>3. Aunque $\\beta_0$ no sea significativo, eso no afecta la significancia del modelo; lo que importa para la utilidad del modelo es $\\beta_1$.<br><strong>Código R:</strong> <code>anova(lm(gpa ~ lsat)) # F-test: p-valor = 0.0007</code>"
+        },
+        {
+            q: `Datos de ocho automóviles: $x$ = volumen de cilindros (L), $y$ = caballos de potencia.
+            <div class="r-output">x = c(1.8, 1.5, 2.0, 2.5, 1.8, 2.5, 1.6, 1.5)
+y = c(51, 51, 115, 150, 126, 150, 118, 106)</div>
+            Con $x$ como variable independiente, $y$ como respuesta y $\\alpha = 0.10$, se concluye:`,
+            a: [
+                "El parámetro $\\beta_1$ es significativo pero $\\beta_0$ no.",
+                "El parámetro $\\beta_0$ es significativo pero $\\beta_1$ no.",
+                "Los parámetros $\\beta_0$ y $\\beta_1$ son ambos significativos.",
+                "Los parámetros $\\beta_0$ y $\\beta_1$ no son significativos."
+            ],
+            c: 0,
+            explanation: "<strong>Paso a paso:</strong><br>1. $n=8$, $gl=6$. $\\hat{\\beta}_1 = 65.18$, $\\hat{\\beta}_0 = -15.47$, MSE = 929.08.<br>2. $S_{xx} = 1.16$; $t(\\hat{\\beta}_1) = 65.18/\\sqrt{929.08/1.16} = 65.18/28.30 = 2.303$.<br>3. Valor crítico $t_{0.05, 6} = 1.943$ (una cola; bilateral: $t_{0.025,6} = 2.447$). Para prueba bilateral $|t| = 2.303 > 1.943$ (usando $t_{0.05, gl=6}$ como crítico bilateral al 10%) → $\\beta_1$ <strong>significativo al 10%</strong>.<br>4. $t(\\hat{\\beta}_0) = -15.47/54.86 = -0.282$ → p-valor $\\gg 0.10$ → <strong>NO significativo</strong>.<br><strong>Código R:</strong> <code>summary(lm(y ~ x))$coefficients</code>"
+        },
+        {
+            q: `Datos de ocho automóviles: $x$ = volumen de cilindros (L), $y$ = caballos de potencia.
+            <div class="r-output">x = c(1.8, 1.5, 2.0, 2.5, 1.8, 2.5, 1.6, 1.5)
+y = c(51, 51, 115, 150, 126, 150, 118, 106)</div>
+            Con $x$ como variable independiente, $y$ como respuesta y $\\alpha = 0.10$, respecto a la significancia del modelo:`,
+            a: [
+                "El modelo es significativo porque $\\beta_1$ es diferente de cero.",
+                "El modelo es significativo porque $\\beta_0$ es diferente de cero.",
+                "El modelo no es significativo porque $\\beta_1$ es igual a cero.",
+                "El modelo no es significativo porque $\\beta_0$ es igual a cero."
+            ],
+            c: 0,
+            explanation: "<strong>Paso a paso:</strong><br>1. $t(\\hat{\\beta}_1) = 2.303$, p-valor $\\approx 0.06 < 0.10 = \\alpha$ → se rechaza $H_0: \\beta_1 = 0$ al nivel del 10%.<br>2. El modelo es significativo: el volumen del motor sí tiene un efecto lineal significativo sobre los caballos de potencia (al nivel del 10%).<br>3. Nótese que al nivel del 5% el modelo no sería significativo ($|t| = 2.303 < t_{0.025,6} = 2.447$). El nivel de significancia elegido importa.<br><strong>Código R:</strong> <code>summary(lm(y ~ x)) # F-statistic p-value ≈ 0.06</code>"
+        },
+        {
+            q: "Muestra: $X = [5,2,0,6,5,0,2,5,0,1,0]$, $Y = [-4,2,6,-7,-5,6,2,-5,6,4,6]$. Para el modelo lineal $\\hat{Y} = b + mX$, un intervalo de confianza del 95% para el <strong>intercepto</strong> $b$ es:",
+            a: ["$(5.8,\\; 6.4)$", "$(5.7,\\; 6.5)$", "$(5.6,\\; 6.6)$", "$(5.5,\\; 6.7)$"],
+            c: 0,
+            explanation: "<strong>Paso a paso:</strong><br>1. Con los datos: $n=11$, $\\sum x = 26$, $\\sum y = 11$, $\\sum x^2 = 120$, $\\sum xy = -100$.<br>2. $S_{xx} = 120 - 26^2/11 = 644/11 = 58.545$<br>3. $\\hat{m} = (\\sum xy - \\bar{x}\\sum y)/S_{xx} = -1386/644 \\approx -2.152$<br>4. $\\hat{b} = \\bar{y} - \\hat{m}\\bar{x} = 1 - (-2.152)(26/11) \\approx 6.087$<br>5. $SSE = S_{yy} - \\hat{m}^2 S_{xx} \\approx 0.826$; $MSE = 0.826/9 = 0.0918$<br>6. $SE(\\hat{b}) = \\sqrt{MSE(1/n + \\bar{x}^2/S_{xx})} = \\sqrt{0.0918 \\times 0.186} = 0.1306$<br>7. $t_{0.025, 9} = 2.262$; IC $= 6.087 \\pm 2.262(0.1306) = (5.792,\\; 6.382) \\approx (5.8,\\; 6.4)$<br><strong>Código R:</strong> <code>confint(lm(y ~ x), level = 0.95)[1,]</code>"
+        },
+        {
+            q: "Muestra: $X = [5,2,0,6,5,0,2,5,0,1,0]$, $Y = [-4,2,6,-7,-5,6,2,-5,6,4,6]$. Para el modelo lineal $\\hat{Y} = b + mX$, un intervalo de confianza del 95% para la <strong>pendiente</strong> $m$ es:",
+            a: ["$(-2.3,\\; -2.0)$", "$(-2.4,\\; -1.9)$", "$(-2.5,\\; -1.8)$", "$(-2.2,\\; -2.1)$"],
+            c: 0,
+            explanation: "<strong>Paso a paso:</strong><br>1. Continuando con los mismos datos: $\\hat{m} = -1386/644 \\approx -2.152$.<br>2. $SE(\\hat{m}) = \\sqrt{MSE/S_{xx}} = \\sqrt{0.0918/58.545} = 0.0396$<br>3. $t_{0.025, 9} = 2.262$; IC $= -2.152 \\pm 2.262(0.0396) = -2.152 \\pm 0.0896$<br>4. IC $= (-2.242,\\; -2.063) \\approx (-2.3,\\; -2.0)$ (redondeando al decimal más conservador que contenga el intervalo).<br>5. <strong>Interpretación:</strong> Con 95% de confianza, por cada unidad adicional en $X$, $Y$ cambia entre $-2.3$ y $-2.0$ unidades en promedio.<br><strong>Código R:</strong> <code>confint(lm(y ~ x), level = 0.95)[2,]</code>"
+        }
+    ],
+
+    // ── TEMA 8: Error estándar de estimación ─────────────────
+    error_estandar: [
+        {
+            // Q1 – varianza del error (datos XY genéricos, n=14)
+            q: `Se tienen los siguientes datos ($n=14$):
+            ${tablaXY_ee}
+            Una estimación puntual para la varianza del componente de error aleatorio es:`,
+            a: [
+                "$s^2 = 0.0363$",
+                "$s^2 = 0.1906$",
+                "$s^2 = 0.2667$",
+                "$s^2 = 1.0878$"
+            ],
+            c: 0,
+            explanation: "<strong>Paso a paso:</strong><br>Con $n=14$, $S_{xx}=0.0307$, $S_{yy}=0.5459$, $S_{xy}=0.0581$:<br>$\\hat{\\beta}_1 = S_{xy}/S_{xx} = 0.0581/0.0307 = 1.8941$<br>$SSE = S_{yy} - \\hat{\\beta}_1 S_{xy} = 0.5459 - 1.8941 \\times 0.0581 = 0.4358$<br>$s^2 = SSE/(n-2) = 0.4358/12 \\approx \\mathbf{0.0363}$"
+        },
+        {
+            // Q2 – R² (mismos datos XY, n=14)
+            q: `Se tienen los siguientes datos ($n=14$):
+            ${tablaXY_ee}
+            La proporción de variación de la variable de respuesta explicada por la relación lineal con la variable independiente es:`,
+            a: [
+                "$R^2 = 0.1906$",
+                "$R^2 = 0.2017$",
+                "$R^2 = 1.8941$",
+                "$R^2 = 0.1005$"
+            ],
+            c: 1,
+            explanation: "<strong>Paso a paso:</strong><br>$R^2 = 1 - SSE/SST = 1 - 0.4358/0.5459 \\approx \\mathbf{0.2017}$<br>O equivalentemente: $R^2 = S_{xy}^2/(S_{xx}\\cdot S_{yy}) = (0.0581)^2/(0.0307 \\times 0.5459) \\approx 0.2017$<br>Esto significa que el modelo lineal explica solo el 20.17% de la variación de $Y$."
+        },
+        {
+            // Q3 – varianza del error (lluvia)
+            q: `Un estudio sobre la cantidad de lluvia y la contaminación del aire eliminada produjo los siguientes datos:
+            ${tablaLluvia}
+            Una estimación puntual para la varianza del componente de error aleatorio es:`,
+            a: [
+                "$s^2 = 4.8532$",
+                "$s^2 = 2.2030$",
+                "$s^2 = 0.8671$",
+                "$s^2 = 0.9312$"
+            ],
+            c: 0,
+            explanation: "<strong>Paso a paso:</strong><br>Con $n=9$, $\\bar{x}=5$, $\\bar{y}=121.56$:<br>$S_{xx}=19.26$, $S_{xy}=-121.8$, $S_{yy}=804.22$<br>$\\hat{\\beta}_1 = -121.8/19.26 = -6.323$<br>$SSE = S_{yy} - \\hat{\\beta}_1 S_{xy} = 804.22 - (-6.323)(-121.8) = 33.96$<br>$s^2 = SSE/(n-2) = 33.96/7 \\approx \\mathbf{4.8532}$"
+        },
+        {
+            // Q4 – interpretación R² (lluvia)
+            q: `Un estudio sobre la cantidad de lluvia y la contaminación del aire eliminada produjo los siguientes datos:
+            ${tablaLluvia}
+            Si se asume un modelo de regresión lineal, es coherente concluir que:`,
+            a: [
+                "Como el coeficiente de determinación es de 0.9578, por lo tanto, el modelo es adecuado para representar los datos.",
+                "Como el coeficiente de determinación es de 0.9578, por lo tanto, el modelo no es adecuado para representar los datos.",
+                "Como el coeficiente de determinación es de 0.4221, por lo tanto, el modelo es adecuado para representar los datos.",
+                "Como el coeficiente de determinación es de 0.4221, por lo tanto, el modelo no es adecuado para representar los datos."
+            ],
+            c: 0,
+            explanation: "<strong>Paso a paso:</strong><br>$R^2 = S_{xy}^2 / (S_{xx} \\cdot S_{yy}) = (-121.8)^2/(19.26 \\times 804.22) = 0.9578$<br>Un $R^2 = 0.9578$ indica que el 95.78% de la variación de la contaminación es explicada por la lluvia → el modelo es <strong>muy adecuado</strong>.<br>Las opciones con $R^2=0.4221$ son incorrectas."
+        },
+        {
+            // Q5 – varianza del error (LSAT/GPA)
+            q: `La información del puntaje en el LSAT y del GPA de 15 estudiantes estadounidenses es la siguiente:
+            ${tablaLSAT}
+            Si se considera el puntaje en el LSAT como la variable independiente y el GPA como la variable respuesta, una estimación puntual para la varianza del componente de error aleatorio es:`,
+            a: [
+                "$s^2 = 253.7649$",
+                "$s^2 = 15.9300$",
+                "$s^2 = 121.8834$",
+                "$s^2 = 11.0400$"
+            ],
+            c: 0,
+            explanation: "<strong>Paso a paso:</strong><br>Con $n=15$, $\\bar{x}=600.27$, $\\bar{y}=309.47$:<br>$S_{xx}=24454.94$, $S_{xy}=11062.14$, $S_{yy}=8301.74$<br>$\\hat{\\beta}_1 = 11062.14/24454.94 = 0.4524$<br>$SSE = 8301.74 - 0.4524 \\times 11062.14 = 3297.24$<br>$s^2 = SSE/(n-2) = 3297.24/13 \\approx \\mathbf{253.7649}$"
+        },
+        {
+            // Q6 – R² (LSAT/GPA)
+            q: `La información del puntaje en el LSAT y del GPA de 15 estudiantes estadounidenses es la siguiente:
+            ${tablaLSAT}
+            Asumiendo un modelo de regresión lineal con el LSAT como variable independiente y el GPA como variable respuesta, la proporción de variación de la variable respuesta explicada por la relación lineal con la variable independiente es:`,
+            a: [
+                "$R^2 = 0.6028$",
+                "$R^2 = 0.3972$",
+                "$R^2 = 0.9102$",
+                "$R^2 = 0.0898$"
+            ],
+            c: 0,
+            explanation: "<strong>Paso a paso:</strong><br>$R^2 = S_{xy}^2/(S_{xx} \\cdot S_{yy}) = (11062.14)^2/(24454.94 \\times 8301.74) \\approx \\mathbf{0.6028}$<br>El 60.28% de la variación del GPA es explicada por el puntaje LSAT. El 39.72% restante se debe a otros factores."
+        },
+        {
+            // Q7 – varianza del error (carros)
+            q: `En la siguiente tabla aparece información de ocho automóviles de cuatro cilindros. Variables: $x$ = volumen del motor (litros), $Y$ = caballos de potencia.
+            <table style="margin:10px auto;border-collapse:collapse;font-size:0.9rem;text-align:center;">
+              <thead><tr style="background:#ecf0f1;">
+                <th style="border:1px solid #bbb;padding:6px 12px;">Automóvil</th>
+                <th style="border:1px solid #bbb;padding:6px 12px;">$x$ (L)</th>
+                <th style="border:1px solid #bbb;padding:6px 12px;">$Y$ (hp)</th>
+              </tr></thead>
+              <tbody>
+                <tr><td style="border:1px solid #bbb;padding:4px 12px;">Honda Civic</td><td style="border:1px solid #bbb;padding:4px 12px;">1.8</td><td style="border:1px solid #bbb;padding:4px 12px;">51</td></tr>
+                <tr><td style="border:1px solid #bbb;padding:4px 12px;">Toyota Prius</td><td style="border:1px solid #bbb;padding:4px 12px;">1.5</td><td style="border:1px solid #bbb;padding:4px 12px;">51</td></tr>
+                <tr><td style="border:1px solid #bbb;padding:4px 12px;">VW Golf</td><td style="border:1px solid #bbb;padding:4px 12px;">2.0</td><td style="border:1px solid #bbb;padding:4px 12px;">115</td></tr>
+                <tr><td style="border:1px solid #bbb;padding:4px 12px;">VW Beetle</td><td style="border:1px solid #bbb;padding:4px 12px;">2.5</td><td style="border:1px solid #bbb;padding:4px 12px;">150</td></tr>
+                <tr><td style="border:1px solid #bbb;padding:4px 12px;">Toyota Corolla</td><td style="border:1px solid #bbb;padding:4px 12px;">1.8</td><td style="border:1px solid #bbb;padding:4px 12px;">126</td></tr>
+                <tr><td style="border:1px solid #bbb;padding:4px 12px;">VW Jetta</td><td style="border:1px solid #bbb;padding:4px 12px;">2.5</td><td style="border:1px solid #bbb;padding:4px 12px;">150</td></tr>
+                <tr><td style="border:1px solid #bbb;padding:4px 12px;">Mini Cooper</td><td style="border:1px solid #bbb;padding:4px 12px;">1.6</td><td style="border:1px solid #bbb;padding:4px 12px;">118</td></tr>
+                <tr><td style="border:1px solid #bbb;padding:4px 12px;">Toyota Yaris</td><td style="border:1px solid #bbb;padding:4px 12px;">1.5</td><td style="border:1px solid #bbb;padding:4px 12px;">106</td></tr>
+              </tbody>
+            </table>
+            Una estimación puntual para la varianza del componente de error aleatorio es:`,
+            a: [
+                "$s^2 = 929.0304$",
+                "$s^2 = 30.4800$",
+                "$s^2 = 121.8834$",
+                "$s^2 = 11.0400$"
+            ],
+            c: 0,
+            explanation: "<strong>Paso a paso:</strong><br>Con $n=8$, $\\bar{x}=1.9$, $\\bar{y}=108.375$:<br>$S_{xx}=1.16$, $S_{xy}=75.6$, $S_{yy}=10502$<br>$\\hat{\\beta}_1 = 75.6/1.16 = 65.172$<br>$SSE = 10502 - (75.6)^2/1.16 = 10502 - 4927 = 5575$<br>$s^2 = SSE/(n-2) = 5575/6 \\approx \\mathbf{929.0304}$<br>Note: aunque $s^2$ es grande, esto no invalida el modelo per se; hay que evaluarlo con $R^2$ y pruebas de hipótesis."
+        },
+        {
+            // Q8 – naturaleza del error e
+            q: "Con respecto al modelo lineal $Y = \\beta_0 + \\beta_1 X + \\varepsilon$, ¿qué se puede decir del componente $\\varepsilon$?",
+            a: [
+                "Es una constante que depende de la calidad del ajuste.",
+                "Es una variable aleatoria con una distribución de probabilidad desconocida.",
+                "Es el valor esperado de la variable aleatoria $X$.",
+                "Es una variable aleatoria que se supone normalmente distribuida."
+            ],
+            c: 3,
+            explanation: "<strong>En el modelo de regresión lineal simple</strong>, el término de error $\\varepsilon$ cumple los supuestos LINE:<br>• <strong>L</strong>inealidad de la media<br>• <strong>I</strong>ndependencia de los errores<br>• <strong>N</strong>ormalidad: $\\varepsilon \\sim N(0, \\sigma^2)$<br>• <strong>E</strong>quivarianza (homocedasticidad)<br>En particular, <strong>$\\varepsilon$ se supone normalmente distribuida</strong> con media 0 y varianza constante $\\sigma^2$. Las opciones a, b y c son incorrectas: no es constante, sí tiene distribución conocida (normal) y no tiene relación con $E[X]$."
+        },
+        {
+            // Q9 – E[e] = 0
+            q: "Sea una muestra compuesta por los vectores $X=[2,6,4,8,1,4,6,2,4,6,4]$ y $Y=[6,17,13,16,3,8,15,7,13,17,11]$. Si se construye un modelo lineal de la forma $Y = \\beta_0 + \\beta_1 X + \\varepsilon$, el valor esperado del error es:",
+            a: [
+                "$E[\\varepsilon] = 1.1$",
+                "$E[\\varepsilon] = 4.3$",
+                "$E[\\varepsilon] = 0$",
+                "$E[\\varepsilon] = 4.4$"
+            ],
+            c: 2,
+            explanation: "<strong>Por construcción del estimador OLS:</strong><br>El método de mínimos cuadrados ordinarios minimiza $\\sum e_i^2$. Una consecuencia directa es que $\\sum e_i = 0$, lo que implica $\\bar{e} = 0$.<br>Bajo los supuestos del modelo de regresión lineal, $E[\\varepsilon] = 0$ siempre, independientemente de los datos específicos.<br>Esto es una propiedad teórica del modelo, no un resultado que haya que calcular para cada conjunto de datos."
+        },
+        {
+            // Q10 – interpretación R² = 0.05
+            q: "Sea $0.05$ el coeficiente de determinación calculado a partir de una muestra de tamaño 35 de pares $(X, Y)$. ¿Cuál de las siguientes afirmaciones es verdadera?",
+            a: [
+                "La dependencia entre ambas variables es del 50%.",
+                "El modelo de regresión lineal explica un bajo porcentaje de la varianza de $Y$.",
+                "Es un valor alto que justifica el modelo de regresión simple.",
+                "Es una muestra insuficiente para concluir."
+            ],
+            c: 1,
+            explanation: "<strong>Interpretación de $R^2 = 0.05$:</strong><br>El coeficiente de determinación indica qué proporción de la variación de $Y$ es explicada por el modelo lineal con $X$.<br>$R^2 = 0.05$ significa que solo el <strong>5% de la variación de $Y$</strong> es explicada por la relación lineal con $X$. Es un valor muy bajo.<br>• Opción a: Incorrecto. $R^2 \\neq$ dependencia del 50%.<br>• Opción b: <strong>Correcto.</strong> El modelo explica muy poco (5%).<br>• Opción c: Incorrecto. 0.05 es un valor muy bajo, no alto.<br>• Opción d: Incorrecto. El tamaño de muestra no invalida la interpretación de $R^2$."
+        }
+    ]
+};
+
+// ============================================================
+// LISTA DE TEMAS
+// ============================================================
+
+const topics = [
+    { id: "interpretacion_representacion", nombre: "Interpretación y representación" },
+    { id: "formulacion_ejecucion",         nombre: "Formulación y ejecución" },
+    { id: "argumentacion",                 nombre: "Argumentación" },
+    { id: "coef_correlacion",              nombre: "Coeficiente de correlación" },
+    { id: "coef_determinacion",            nombre: "Coeficiente de determinación" },
+    { id: "regresion_lineal",              nombre: "Regresión Lineal" },
+    { id: "prueba_hipotesis",              nombre: "Prueba de hipótesis" },
+    { id: "error_estandar",               nombre: "Error estándar de estimación" }
+];
+
+const TOTAL = 8;
+let currentExam = [], userAnswers = {}, examFinished = false;
+
+function shuffle(arr) { return arr.sort(() => Math.random() - 0.5); }
+
+function generateExam() {
+    currentExam = []; userAnswers = {}; examFinished = false;
+    document.getElementById('results-container').style.display = 'none';
+    document.querySelectorAll('.explanation').forEach(el => el.remove());
+
+    topics.forEach(topic => {
+        const pool = questionBank4[topic.id];
+        if (!pool || pool.length === 0) return;
+        const idx = Math.floor(Math.random() * pool.length);
+        const orig = pool[idx];
+        const qData = JSON.parse(JSON.stringify(orig));
+        const correctText = qData.a[qData.c];
+
+        // No barajar si las opciones contienen SVG o si la pregunta lo pide
+        const hasSVG = qData.a.some(o => o.includes('<svg'));
+        if (!hasSVG && !orig.noShuffle) {
+            const shuffled = shuffle([...qData.a]);
+            qData.c = shuffled.indexOf(correctText);
+            qData.a = shuffled;
+        }
+        qData.topicId   = topic.id;
+        qData.topicName = topic.nombre;
+        qData.explanation = orig.explanation;
+        currentExam.push(qData);
+    });
+
+    renderExam();
+    updateProgress();
+    setTimeout(() => { if (window.MathJax) MathJax.typesetPromise(); }, 150);
+}
+
+function renderExam() {
+    const container = document.getElementById('questions-container');
+    const navList   = document.getElementById('topics-list');
+    container.innerHTML = '';
+    navList.innerHTML   = '';
+
+    currentExam.forEach((item, idx) => {
+        // Tarjeta de pregunta
+        const card = document.createElement('div');
+        card.className = 'question-card';
+        card.id = `q-${idx}`;
+        card.innerHTML = `
+            <div class="question-header">
+                <div class="question-number">${idx + 1}</div>
+                <span style="color:#7f8c8d;font-weight:600;">${item.topicName}</span>
+            </div>
+            <div class="question-text">${item.q}</div>
+            <div class="options-container" id="opts-${idx}">
+                ${item.a.map((opt, i) => `
+                    <div class="option" onclick="selectOption(${idx},${i},this)">
+                        <span class="opt-label">${String.fromCharCode(97+i)})</span>
+                        <div>${opt}</div>
+                    </div>`).join('')}
+            </div>`;
+        container.appendChild(card);
+
+        // Navegación lateral
+        const nav = document.createElement('div');
+        nav.className = 'topic-item';
+        nav.id = `nav-${idx}`;
+        nav.onclick = () => document.getElementById(`q-${idx}`).scrollIntoView({ behavior: 'smooth', block: 'center' });
+        nav.innerHTML = `<span class="topic-name">${idx + 1}. ${item.topicName}</span><div class="topic-status unanswered" id="dot-${idx}"></div>`;
+        navList.appendChild(nav);
+    });
+}
+
+window.selectOption = function(qIdx, optIdx, el) {
+    if (examFinished) return;
+    userAnswers[qIdx] = optIdx;
+    const parent = document.getElementById(`opts-${qIdx}`);
+    Array.from(parent.children).forEach(c => c.classList.remove('selected'));
+    el.classList.add('selected');
+    document.getElementById(`dot-${qIdx}`).className = 'topic-status answered';
+    updateProgress();
+};
+
+function updateProgress() {
+    document.getElementById('answered-count').innerText = Object.keys(userAnswers).length;
+}
+
+function submitExam() {
+    if (examFinished) return;
+    if (Object.keys(userAnswers).length < TOTAL) {
+        if (!confirm('Aún faltan preguntas por responder. ¿Deseas finalizar de todas formas?')) return;
+    }
+    examFinished = true;
+    let correct = 0;
+
+    currentExam.forEach((item, i) => {
+        const ua  = userAnswers[i];
+        const opts = document.getElementById(`opts-${i}`).children;
+        const dot  = document.getElementById(`dot-${i}`);
+
+        if (ua !== undefined) opts[ua].classList.remove('selected');
+
+        if (ua === item.c) {
+            correct++;
+            if (ua !== undefined) opts[ua].classList.add('correct');
+            dot.className = 'topic-status correct';
+        } else {
+            if (ua !== undefined) opts[ua].classList.add('incorrect');
+            opts[item.c].classList.add('correct');
+            dot.className = 'topic-status incorrect';
+        }
+
+        const expDiv = document.createElement('div');
+        expDiv.className = 'explanation';
+        expDiv.innerHTML = `<strong>Explicación:</strong> ${item.explanation}`;
+        document.getElementById(`opts-${i}`).parentNode.appendChild(expDiv);
+    });
+
+    if (window.MathJax) MathJax.typesetPromise();
+
+    const score = (correct / TOTAL) * 5;
+    const pct   = (correct / TOTAL) * 100;
+    const circle = document.getElementById('final-score');
+    circle.innerText  = score.toFixed(1);
+    circle.className  = `score-circle ${score >= 4 ? 'high' : score >= 3 ? 'medium' : 'low'}`;
+
+    document.getElementById('correct-count').innerText   = correct;
+    document.getElementById('incorrect-count').innerText = TOTAL - correct;
+    document.getElementById('percentage-score').innerText = `${pct.toFixed(1)}%`;
+
+    const resultBox = document.getElementById('results-container');
+    resultBox.style.display = 'block';
+    resultBox.scrollIntoView({ behavior: 'smooth' });
+}
+
+document.getElementById('submit-btn').addEventListener('click', submitExam);
+document.getElementById('new-exam-btn').addEventListener('click', generateExam);
+document.getElementById('restart-btn').addEventListener('click', generateExam);
+document.getElementById('review-btn').addEventListener('click', () => {
+    document.querySelector('.questions-section').scrollIntoView({ behavior: 'smooth' });
+});
+
+document.addEventListener('DOMContentLoaded', generateExam);
+</script>
+</body>
+</html>
