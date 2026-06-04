@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="../assets/icon.svg" type="image/svg+xml">
+    <title>Estadística General — Andrés F. Puerta</title>
+    <style>
+        /* Base */
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f5f7fa;
+            color: #333;
+        }
+
+        /* Header */
+        header {
+            display: flex;
+            justify-content: flex-start;
+            align-items: center;
+            background-color: #1553AD;
+            padding: 1rem 2rem;
+            color: white;
+            gap: 20px;
+        }
+        .logo-text {
+            font-size: 1.5rem;
+            color: white;
+            text-decoration: none;
+            font-weight: bold;
+            position: relative;
+            transition: all 0.3s ease;
+        }
+        .logo-text::after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 2px;
+            background-color: white;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            transition: width 0.3s ease;
+        }
+        .logo-text:hover::after { width: 100%; }
+
+        nav ul {
+            display: flex;
+            list-style: none;
+            gap: 30px;
+        }
+        nav a {
+            color: white;
+            text-decoration: none;
+            font-size: 1.1rem;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+        nav a::after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 2px;
+            background-color: white;
+            bottom: -15px;
+            left: 50%;
+            transform: translateX(-50%);
+            transition: width 0.3s ease;
+        }
+        nav a:hover::after { width: 100%; }
+
+        /* Hero */
+        .hero {
+            background: linear-gradient(135deg, #1553AD 0%, #2471d4 100%);
+            color: white;
+            text-align: center;
+            padding: 3rem 2rem 2.5rem;
+        }
+        .hero h1 {
+            font-size: 2.2rem;
+            margin-bottom: 0.5rem;
+        }
+        .hero p {
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+
+        /* Main content */
+        .content {
+            max-width: 1000px;
+            margin: 2.5rem auto;
+            padding: 0 2rem;
+        }
+
+        .section-title {
+            font-size: 1.6rem;
+            color: #1553AD;
+            margin-bottom: 1.5rem;
+            padding-bottom: 0.4rem;
+            border-bottom: 2px solid #1553AD;
+        }
+
+        /* Parciales grid */
+        .parciales-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 3rem;
+        }
+
+        .parcial-card {
+            background: white;
+            border-radius: 10px;
+            padding: 1.5rem;
+            text-align: center;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            border-top: 4px solid #1553AD;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            text-decoration: none;
+            color: inherit;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.75rem;
+        }
+        .parcial-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 16px rgba(21,83,173,0.2);
+        }
+        .parcial-card .num {
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: #1553AD;
+        }
+        .parcial-card h3 {
+            font-size: 1.1rem;
+            color: #333;
+        }
+        .parcial-card p {
+            font-size: 0.9rem;
+            color: #666;
+        }
+        .btn-simulador {
+            margin-top: 0.5rem;
+            background-color: #1553AD;
+            color: white;
+            border: none;
+            padding: 0.45rem 1.2rem;
+            border-radius: 5px;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: background-color 0.2s ease;
+        }
+        .parcial-card:hover .btn-simulador {
+            background-color: #0e3d8a;
+        }
+
+        /* Archivos del curso */
+        .archivos-section { margin-bottom: 3rem; }
+
+        .archivos-list {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+
+        .archivo-item {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            background: white;
+            border-radius: 8px;
+            padding: 0.9rem 1.2rem;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+            text-decoration: none;
+            color: #333;
+            transition: box-shadow 0.2s ease, transform 0.2s ease;
+        }
+        .archivo-item:hover {
+            box-shadow: 0 4px 12px rgba(21,83,173,0.15);
+            transform: translateX(3px);
+        }
+        .archivo-icon {
+            width: 36px;
+            height: 36px;
+            background-color: #e8eef9;
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+        .archivo-icon svg {
+            width: 20px;
+            height: 20px;
+            fill: #1553AD;
+        }
+        .archivo-info { flex: 1; }
+        .archivo-info span {
+            font-size: 0.95rem;
+            font-weight: 500;
+        }
+        .archivo-info small {
+            display: block;
+            font-size: 0.8rem;
+            color: #888;
+            margin-top: 2px;
+        }
+
+        /* Placeholder cuando no hay archivos */
+        .archivos-empty {
+            background: white;
+            border-radius: 8px;
+            padding: 2rem;
+            text-align: center;
+            color: #888;
+            font-size: 0.95rem;
+            border: 2px dashed #d0d8e8;
+        }
+
+        footer {
+            background-color: #333;
+            color: white;
+            text-align: center;
+            padding: 1rem;
+            margin-top: 2rem;
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <div class="logo">
+        <a href="../index.html" class="logo-text"><strong>Andrés F. Puerta</strong></a>
+    </div>
+    <nav>
+        <ul>
+            <li><a href="../cv.html">Curriculum vitae</a></li>
+            <li><a href="../publications.html">Publications</a></li>
+            <li><a href="../blog.html">Blog</a></li>
+            <li><a href="../gallery.html">Gallery</a></li>
+        </ul>
+    </nav>
+</header>
+
+<div class="hero">
+    <h1>Estadística General</h1>
+    <p>Simuladores de parcial y archivos del curso</p>
+</div>
+
+<div class="content">
+
+    <!-- Simuladores -->
+    <section>
+        <h2 class="section-title">Simuladores de parcial</h2>
+        <div class="parciales-grid">
+
+            <a href="primerParcial.html" class="parcial-card">
+                <div class="num">1°</div>
+                <h3>Primer Parcial</h3>
+                <p>Estadística descriptiva, tablas de frecuencia y medidas de tendencia central</p>
+                <div class="btn-simulador">Abrir simulador</div>
+            </a>
+
+            <a href="segundoParcial.html" class="parcial-card">
+                <div class="num">2°</div>
+                <h3>Segundo Parcial</h3>
+                <p>Probabilidad, combinatoria y distribuciones discretas</p>
+                <div class="btn-simulador">Abrir simulador</div>
+            </a>
+
+            <a href="tercerParcial.html" class="parcial-card">
+                <div class="num">3°</div>
+                <h3>Tercer Parcial</h3>
+                <p>Distribuciones continuas, normal y teorema del límite central</p>
+                <div class="btn-simulador">Abrir simulador</div>
+            </a>
+
+            <a href="cuartoParcial.html" class="parcial-card">
+                <div class="num">4°</div>
+                <h3>Cuarto Parcial</h3>
+                <p>Inferencia estadística, pruebas de hipótesis y regresión</p>
+                <div class="btn-simulador">Abrir simulador</div>
+            </a>
+
+        </div>
+    </section>
+
+    <!-- Archivos del curso -->
+    <section class="archivos-section">
+        <h2 class="section-title">Archivos del curso</h2>
+
+        <div class="archivos-list" id="archivos-list">
+            <a href="Archivos/Clase Semana 1.pdf" class="archivo-item" target="_blank">
+                <div class="archivo-icon"><svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8l-6-6zm-1 1.5L18.5 9H13V3.5zM6 20V4h5v7h7v9H6z"/></svg></div>
+                <div class="archivo-info"><span>Clase Semana 1</span><small>PDF</small></div>
+            </a>
+            <a href="Archivos/Clase Semana 2.pdf" class="archivo-item" target="_blank">
+                <div class="archivo-icon"><svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8l-6-6zm-1 1.5L18.5 9H13V3.5zM6 20V4h5v7h7v9H6z"/></svg></div>
+                <div class="archivo-info"><span>Clase Semana 2</span><small>PDF</small></div>
+            </a>
+            <a href="Archivos/Clase Semana 3.pdf" class="archivo-item" target="_blank">
+                <div class="archivo-icon"><svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8l-6-6zm-1 1.5L18.5 9H13V3.5zM6 20V4h5v7h7v9H6z"/></svg></div>
+                <div class="archivo-info"><span>Clase Semana 3</span><small>PDF</small></div>
+            </a>
+            <a href="Archivos/Clase Semana 4.pdf" class="archivo-item" target="_blank">
+                <div class="archivo-icon"><svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8l-6-6zm-1 1.5L18.5 9H13V3.5zM6 20V4h5v7h7v9H6z"/></svg></div>
+                <div class="archivo-info"><span>Clase Semana 4</span><small>PDF</small></div>
+            </a>
+            <a href="Archivos/Clase Semana 5.pdf" class="archivo-item" target="_blank">
+                <div class="archivo-icon"><svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8l-6-6zm-1 1.5L18.5 9H13V3.5zM6 20V4h5v7h7v9H6z"/></svg></div>
+                <div class="archivo-info"><span>Clase Semana 5</span><small>PDF</small></div>
+            </a>
+            <a href="Archivos/Clase Semana 6.pdf" class="archivo-item" target="_blank">
+                <div class="archivo-icon"><svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8l-6-6zm-1 1.5L18.5 9H13V3.5zM6 20V4h5v7h7v9H6z"/></svg></div>
+                <div class="archivo-info"><span>Clase Semana 6</span><small>PDF</small></div>
+            </a>
+            <a href="Archivos/Clase Semana 7.pdf" class="archivo-item" target="_blank">
+                <div class="archivo-icon"><svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8l-6-6zm-1 1.5L18.5 9H13V3.5zM6 20V4h5v7h7v9H6z"/></svg></div>
+                <div class="archivo-info"><span>Clase Semana 7</span><small>PDF</small></div>
+            </a>
+            <a href="Archivos/Clase Semana 8.pdf" class="archivo-item" target="_blank">
+                <div class="archivo-icon"><svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8l-6-6zm-1 1.5L18.5 9H13V3.5zM6 20V4h5v7h7v9H6z"/></svg></div>
+                <div class="archivo-info"><span>Clase Semana 8</span><small>PDF</small></div>
+            </a>
+            <a href="Archivos/Clase Semana 9.pdf" class="archivo-item" target="_blank">
+                <div class="archivo-icon"><svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8l-6-6zm-1 1.5L18.5 9H13V3.5zM6 20V4h5v7h7v9H6z"/></svg></div>
+                <div class="archivo-info"><span>Clase Semana 9</span><small>PDF</small></div>
+            </a>
+            <a href="Archivos/Clase Semana 10.pdf" class="archivo-item" target="_blank">
+                <div class="archivo-icon"><svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8l-6-6zm-1 1.5L18.5 9H13V3.5zM6 20V4h5v7h7v9H6z"/></svg></div>
+                <div class="archivo-info"><span>Clase Semana 10</span><small>PDF</small></div>
+            </a>
+            <a href="Archivos/Clase Semana 11.pdf" class="archivo-item" target="_blank">
+                <div class="archivo-icon"><svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8l-6-6zm-1 1.5L18.5 9H13V3.5zM6 20V4h5v7h7v9H6z"/></svg></div>
+                <div class="archivo-info"><span>Clase Semana 11</span><small>PDF</small></div>
+            </a>
+            <a href="Archivos/Clase Semana 12.pdf" class="archivo-item" target="_blank">
+                <div class="archivo-icon"><svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8l-6-6zm-1 1.5L18.5 9H13V3.5zM6 20V4h5v7h7v9H6z"/></svg></div>
+                <div class="archivo-info"><span>Clase Semana 12</span><small>PDF</small></div>
+            </a>
+            <a href="Archivos/Clase Semana 13.pdf" class="archivo-item" target="_blank">
+                <div class="archivo-icon"><svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8l-6-6zm-1 1.5L18.5 9H13V3.5zM6 20V4h5v7h7v9H6z"/></svg></div>
+                <div class="archivo-info"><span>Clase Semana 13</span><small>PDF</small></div>
+            </a>
+            <a href="Archivos/Clase Semana 14.pdf" class="archivo-item" target="_blank">
+                <div class="archivo-icon"><svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8l-6-6zm-1 1.5L18.5 9H13V3.5zM6 20V4h5v7h7v9H6z"/></svg></div>
+                <div class="archivo-info"><span>Clase Semana 14</span><small>PDF</small></div>
+            </a>
+            <a href="Archivos/Clase Semana 15.pdf" class="archivo-item" target="_blank">
+                <div class="archivo-icon"><svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8l-6-6zm-1 1.5L18.5 9H13V3.5zM6 20V4h5v7h7v9H6z"/></svg></div>
+                <div class="archivo-info"><span>Clase Semana 15</span><small>PDF</small></div>
+            </a>
+            <a href="Archivos/Clase Semana 16.pdf" class="archivo-item" target="_blank">
+                <div class="archivo-icon"><svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8l-6-6zm-1 1.5L18.5 9H13V3.5zM6 20V4h5v7h7v9H6z"/></svg></div>
+                <div class="archivo-info"><span>Clase Semana 16</span><small>PDF</small></div>
+            </a>
+        </div>
+
+        <div class="archivos-empty" id="archivos-empty" style="display:none;">
+            📂 Los archivos del curso se publicarán próximamente.
+        </div>
+    </section>
+
+</div>
+
+<footer>
+    &copy; 2024 Andrés Felipe Puerta Vélez's page
+</footer>
+
+<script>
+    // Oculta el placeholder si hay archivos en la lista
+    const list = document.getElementById('archivos-list');
+    const empty = document.getElementById('archivos-empty');
+    if (list.children.length > 0) {
+        empty.style.display = 'none';
+    }
+</script>
+
+</body>
+</html>
