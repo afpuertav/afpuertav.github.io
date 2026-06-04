@@ -6,15 +6,26 @@
     <link rel="icon" href="../assets/icon.svg" type="image/svg+xml">
     <title>Estadística General — Andrés F. Puerta</title>
     <style>
-        /* Base */
-        * { box-sizing: border-box; margin: 0; padding: 0; }
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #f5f7fa;
-            color: #333;
+        :root {
+            --primary-color: #2c3e50;
+            --secondary-color: #1553AD ;
+            --accent-color: #e74c3c;
+            --light-color: #ecf0f1;
+            --success-color: #27ae60;
+            --warning-color: #f39c12;
+            --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
         }
 
-        /* Header */
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f5f7fa;
+            color: #333;
+            line-height: 1.6;
+        }
+
+        /* ── Navbar (igual al index principal) ── */
         header {
             display: flex;
             justify-content: flex-start;
@@ -24,207 +35,199 @@
             color: white;
             gap: 20px;
         }
+        .logo { display: flex; align-items: center; }
         .logo-text {
             font-size: 1.5rem;
             color: white;
             text-decoration: none;
-            font-weight: bold;
             position: relative;
             transition: all 0.3s ease;
         }
         .logo-text::after {
             content: '';
             position: absolute;
-            width: 0;
-            height: 2px;
+            width: 0; height: 2px;
             background-color: white;
-            bottom: -10px;
-            left: 50%;
+            bottom: -10px; left: 50%;
             transform: translateX(-50%);
             transition: width 0.3s ease;
         }
         .logo-text:hover::after { width: 100%; }
-
-        nav ul {
+        .menu {
             display: flex;
             list-style: none;
+            margin: 0; padding: 0;
             gap: 30px;
         }
-        nav a {
+        .menu a {
             color: white;
             text-decoration: none;
             font-size: 1.1rem;
             transition: all 0.3s ease;
             position: relative;
         }
-        nav a::after {
+        .menu a::after {
             content: '';
             position: absolute;
-            width: 0;
-            height: 2px;
+            width: 0; height: 2px;
             background-color: white;
-            bottom: -15px;
-            left: 50%;
+            bottom: -15px; left: 50%;
             transform: translateX(-50%);
             transition: width 0.3s ease;
         }
-        nav a:hover::after { width: 100%; }
+        .menu a:hover::after { width: 100%; }
 
-        /* Hero */
-        .hero {
-            background: linear-gradient(135deg, #1553AD 0%, #2471d4 100%);
-            color: white;
+        /* ── Page body ── */
+        .page-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        /* Page header card */
+        .page-header {
             text-align: center;
-            padding: 3rem 2rem 2.5rem;
+            margin-bottom: 30px;
+            padding: 25px 20px;
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: var(--shadow);
         }
-        .hero h1 {
+        .page-header h1 {
+            color: var(--primary-color);
             font-size: 2.2rem;
-            margin-bottom: 0.5rem;
+            margin-bottom: 8px;
         }
-        .hero p {
+        .page-header .subtitle {
+            color: var(--secondary-color);
             font-size: 1.1rem;
-            opacity: 0.9;
         }
 
-        /* Main content */
-        .content {
-            max-width: 1000px;
-            margin: 2.5rem auto;
-            padding: 0 2rem;
-        }
-
+        /* Section titles */
         .section-title {
-            font-size: 1.6rem;
-            color: #1553AD;
-            margin-bottom: 1.5rem;
-            padding-bottom: 0.4rem;
-            border-bottom: 2px solid #1553AD;
+            font-size: 1.4rem;
+            color: var(--primary-color);
+            margin-bottom: 20px;
+            padding-bottom: 8px;
+            border-bottom: 3px solid var(--secondary-color);
         }
 
-        /* Parciales grid */
+        /* ── Parciales grid ── */
         .parciales-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
-            gap: 1.5rem;
-            margin-bottom: 3rem;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 20px;
+            margin-bottom: 35px;
         }
 
         .parcial-card {
             background: white;
             border-radius: 10px;
-            padding: 1.5rem;
+            padding: 25px 20px;
             text-align: center;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-            border-top: 4px solid #1553AD;
-            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            box-shadow: var(--shadow);
+            border-top: 4px solid var(--secondary-color);
             text-decoration: none;
             color: inherit;
             display: flex;
             flex-direction: column;
             align-items: center;
-            gap: 0.75rem;
+            gap: 10px;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
         }
         .parcial-card:hover {
             transform: translateY(-4px);
-            box-shadow: 0 8px 16px rgba(21,83,173,0.2);
+            box-shadow: 0 8px 16px rgba(52, 152, 219, 0.25);
         }
         .parcial-card .num {
-            font-size: 2.5rem;
+            font-size: 2.8rem;
             font-weight: bold;
-            color: #1553AD;
+            color: var(--secondary-color);
         }
         .parcial-card h3 {
             font-size: 1.1rem;
-            color: #333;
+            color: var(--primary-color);
         }
         .parcial-card p {
-            font-size: 0.9rem;
+            font-size: 0.88rem;
             color: #666;
         }
         .btn-simulador {
-            margin-top: 0.5rem;
-            background-color: #1553AD;
+            margin-top: 8px;
+            background-color: var(--secondary-color);
             color: white;
             border: none;
-            padding: 0.45rem 1.2rem;
+            padding: 0.45rem 1.3rem;
             border-radius: 5px;
             font-size: 0.9rem;
             cursor: pointer;
             transition: background-color 0.2s ease;
+            font-family: inherit;
         }
         .parcial-card:hover .btn-simulador {
-            background-color: #0e3d8a;
+            background-color: #2176ae;
         }
 
-        /* Archivos del curso */
-        .archivos-section { margin-bottom: 3rem; }
+        /* ── Archivos del curso ── */
+        .archivos-section {
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: var(--shadow);
+            padding: 25px;
+            margin-bottom: 30px;
+        }
 
         .archivos-list {
             display: flex;
             flex-direction: column;
-            gap: 0.75rem;
+            gap: 8px;
         }
 
         .archivo-item {
             display: flex;
             align-items: center;
-            gap: 1rem;
-            background: white;
+            gap: 14px;
+            padding: 10px 14px;
             border-radius: 8px;
-            padding: 0.9rem 1.2rem;
-            box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+            background-color: var(--light-color);
             text-decoration: none;
-            color: #333;
-            transition: box-shadow 0.2s ease, transform 0.2s ease;
+            color: var(--primary-color);
+            transition: background-color 0.2s ease, transform 0.15s ease;
+            border-left: 4px solid var(--secondary-color);
         }
         .archivo-item:hover {
-            box-shadow: 0 4px 12px rgba(21,83,173,0.15);
+            background-color: #dce8f5;
             transform: translateX(3px);
         }
         .archivo-icon {
-            width: 36px;
-            height: 36px;
-            background-color: #e8eef9;
+            width: 34px; height: 34px;
+            background-color: white;
             border-radius: 6px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
+            display: flex; align-items: center; justify-content: center;
             flex-shrink: 0;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
         }
-        .archivo-icon svg {
-            width: 20px;
-            height: 20px;
-            fill: #1553AD;
-        }
+        .archivo-icon svg { width: 18px; height: 18px; fill: var(--secondary-color); }
         .archivo-info { flex: 1; }
-        .archivo-info span {
-            font-size: 0.95rem;
-            font-weight: 500;
-        }
-        .archivo-info small {
-            display: block;
-            font-size: 0.8rem;
-            color: #888;
-            margin-top: 2px;
-        }
+        .archivo-info span { font-size: 0.95rem; font-weight: 500; }
+        .archivo-info small { display: block; font-size: 0.78rem; color: #888; margin-top: 1px; }
 
-        /* Placeholder cuando no hay archivos */
         .archivos-empty {
-            background: white;
-            border-radius: 8px;
             padding: 2rem;
             text-align: center;
             color: #888;
             font-size: 0.95rem;
-            border: 2px dashed #d0d8e8;
+            border: 2px dashed #ccc;
+            border-radius: 8px;
         }
 
         footer {
-            background-color: #333;
-            color: white;
+            background-color: var(--primary-color);
+            color: #ecf0f1;
             text-align: center;
             padding: 1rem;
-            margin-top: 2rem;
+            margin-top: 10px;
+            font-size: 0.9rem;
         }
     </style>
 </head>
@@ -235,7 +238,7 @@
         <a href="../index.html" class="logo-text"><strong>Andrés F. Puerta</strong></a>
     </div>
     <nav>
-        <ul>
+        <ul class="menu">
             <li><a href="../cv.html">Curriculum vitae</a></li>
             <li><a href="../publications.html">Publications</a></li>
             <li><a href="../blog.html">Blog</a></li>
@@ -244,15 +247,16 @@
     </nav>
 </header>
 
-<div class="hero">
-    <h1>Estadística General</h1>
-    <p>Simuladores de parcial y archivos del curso</p>
-</div>
+<!-- Page content -->
+<div class="page-content">
 
-<div class="content">
+    <div class="page-header">
+        <h1>Estadística General</h1>
+        <div class="subtitle">Simuladores de parcial y archivos del curso</div>
+    </div>
 
     <!-- Simuladores -->
-    <section>
+    <section style="margin-bottom: 35px;">
         <h2 class="section-title">Simuladores de parcial</h2>
         <div class="parciales-grid">
 
@@ -288,7 +292,7 @@
     </section>
 
     <!-- Archivos del curso -->
-    <section class="archivos-section">
+    <div class="archivos-section">
         <h2 class="section-title">Archivos del curso</h2>
 
         <div class="archivos-list" id="archivos-list">
@@ -361,22 +365,13 @@
         <div class="archivos-empty" id="archivos-empty" style="display:none;">
             📂 Los archivos del curso se publicarán próximamente.
         </div>
-    </section>
+    </div>
 
 </div>
 
 <footer>
     &copy; 2024 Andrés Felipe Puerta Vélez's page
 </footer>
-
-<script>
-    // Oculta el placeholder si hay archivos en la lista
-    const list = document.getElementById('archivos-list');
-    const empty = document.getElementById('archivos-empty');
-    if (list.children.length > 0) {
-        empty.style.display = 'none';
-    }
-</script>
 
 </body>
 </html>
