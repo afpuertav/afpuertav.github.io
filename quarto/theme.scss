@@ -1,0 +1,126 @@
+/*-- scss:defaults --*/
+// ===== Paleta PyCon Colombia 2026 =====
+$violet:        #6155F5;
+$violet-deep:   #3A2FB8;
+$violet-deeper: #241C7A;
+$violet-soft:   #7C6AED;
+$lavender:      #D3D4F6;
+$lavender-bg:   #F1F2FC;
+$ink:           #141428;
+$gray:          #6B6B7B;
+$gold:          #FFC24B;
+$pink:          #FF5C8A;
+
+// ===== Tipografía / base reveal =====
+$font-family-sans-serif: "Segoe UI", "Calibri", system-ui, "Helvetica Neue", Arial, sans-serif;
+$presentation-font-size-root: 26px;
+$presentation-heading-font: $font-family-sans-serif;
+$presentation-heading-color: $ink;
+$presentation-heading-font-weight: 800;
+$presentation-h2-font-size: 1.55em;
+$presentation-slide-text-align: left;
+$presentation-title-slide-text-align: left;
+
+$body-bg: $lavender-bg;
+$body-color: $ink;
+$link-color: $violet;
+
+/*-- scss:rules --*/
+:root{
+  --violet:#{$violet}; --violet-deep:#{$violet-deep}; --violet-deeper:#{$violet-deeper};
+  --violet-soft:#{$violet-soft}; --lav:#{$lavender}; --lav-bg:#{$lavender-bg};
+  --ink:#{$ink}; --gray:#{$gray}; --gold:#{$gold}; --pink:#{$pink};
+}
+
+.reveal{ color:var(--ink); }
+.reveal .slides{ text-align:left; }
+.reveal .slides > section,
+.reveal .slides > section > section{
+  box-sizing:border-box; padding:40px 58px 56px 58px;
+}
+
+.reveal h1,.reveal h2,.reveal h3{ color:var(--ink); font-weight:800; letter-spacing:-.01em;
+  text-transform:none; margin:0; line-height:1.08; }
+.reveal h2{ font-size:40px; margin-bottom:.28em; }
+.reveal .smaller{ font-size:22px; }
+.reveal .smaller h2{ font-size:34px; }
+.reveal p{ margin:.35em 0; line-height:1.35; }
+.reveal ul{ margin:.2em 0 .2em 1em; line-height:1.4; }
+.reveal ul li{ margin:.28em 0; }
+.reveal img{ border-radius:12px; box-shadow:0 8px 22px rgba(50,40,110,.16); margin:0; }
+.reveal figure{ margin:0; } .reveal figure > figcaption{ display:none; }
+.reveal .progress{ color:var(--violet); height:5px; }
+.reveal .controls{ color:var(--violet); }
+.reveal .slide-number{ background:transparent; color:var(--gray); font-size:16px; }
+
+/* footer de marca en cada slide de contenido */
+.reveal .slides > section:not(.divider):not(#title-slide)::after{
+  content:"Más allá del string · PyCon Colombia 2026";
+  position:absolute; left:58px; bottom:16px; font-size:15px; color:var(--gray);
+}
+
+/* kicker / pill */
+.kicker{ display:block; color:var(--violet); font-weight:800; font-size:15px;
+  letter-spacing:.16em; text-transform:uppercase; margin-bottom:.3em; }
+.pill{ display:inline-block; background:var(--gold); color:var(--ink); font-weight:800;
+  font-size:15px; letter-spacing:.09em; text-transform:uppercase; padding:.34em .95em; border-radius:999px; }
+
+/* columnas */
+.columns{ display:flex; gap:26px; align-items:stretch; }
+.column{ display:flex; flex-direction:column; }
+.column > .card, .column > .card-violet, .column > .card-deep{ flex:1; }
+
+/* tarjetas */
+.card,.card-violet,.card-deep{ border-radius:16px; padding:22px 24px;
+  box-shadow:0 8px 22px rgba(50,40,110,.13); }
+.card{ background:#fff; }
+.card-violet{ background:var(--violet); color:#fff; }
+.card-deep{ background:var(--violet-deep); color:#fff; }
+.card h3{ color:var(--violet); font-size:23px; margin-bottom:.25em; }
+.card-violet h3,.card-deep h3{ color:var(--gold); }
+.card-violet strong,.card-deep strong{ color:#fff; }
+.card + .card, .card + .card-violet{ margin-top:14px; }
+
+.muted{ color:var(--gray); font-size:.82em; font-style:italic; }
+.accent{ color:var(--pink); font-weight:800; }
+.gold{ color:var(--gold); }
+
+/* chips de tokens */
+.tok{ display:inline-block; background:var(--lav); color:var(--violet-deep);
+  font-family:"Consolas","Courier New",monospace; padding:.14em .55em; border-radius:9px;
+  margin:.12em; font-weight:700; }
+.tok-pink{ background:var(--pink); color:#fff; }
+
+/* placeholder */
+.ph{ border:2px dashed var(--violet-soft); border-radius:16px; background:#fff; padding:28px 14px;
+  text-align:center; color:var(--violet-deep); font-weight:800; font-size:20px;
+  display:flex; flex-direction:column; align-items:center; justify-content:center; min-height:300px; }
+.ph small{ display:block; color:var(--gray); font-weight:400; font-style:italic; margin-top:.5em; font-size:.7em; }
+
+/* QR */
+.qr{ width:220px; height:220px; margin:0 auto; border:2px dashed var(--violet-soft);
+  border-radius:10px; background:var(--lav-bg); color:var(--violet);
+  display:flex; align-items:center; justify-content:center; font-weight:700; text-align:center; }
+
+/* código */
+.reveal pre{ box-shadow:none; width:100%; margin:0; }
+.reveal pre > code{ background:var(--violet-deeper); color:#E8E6FF; border-radius:14px;
+  padding:22px 26px; font-family:"Consolas","Courier New",monospace; font-size:20px;
+  line-height:1.5; max-height:none; }
+.reveal code{ font-family:"Consolas","Courier New",monospace; }
+.card code{ background:rgba(0,0,0,.06); padding:.05em .3em; border-radius:6px; }
+.card-violet code,.card-deep code{ background:rgba(255,255,255,.14); color:#fff; }
+
+/* ===== DIVIDERS (fondo violeta por atributo background-color en el .qmd) ===== */
+.reveal .slides section.divider{ color:#fff; }
+.reveal section.divider h1,.reveal section.divider h2,.reveal section.divider h3,
+.reveal section.divider p{ color:#fff; }
+.reveal section.divider h3{ font-size:44px; margin:.1em 0 .35em; }
+.divnum{ display:block; font-size:150px; font-weight:900; color:var(--gold); line-height:.9; margin-bottom:.02em; }
+
+/* ===== TITLE SLIDE (Quarto genera #title-slide) ===== */
+#title-slide{ text-align:left; }
+#title-slide .title{ font-size:78px; font-weight:900; color:#fff; line-height:1; margin-bottom:.06em; }
+#title-slide .subtitle{ font-size:30px; color:var(--gold); }
+#title-slide .quarto-title-author, #title-slide .author,
+#title-slide .date, #title-slide p{ color:var(--lavender); }
