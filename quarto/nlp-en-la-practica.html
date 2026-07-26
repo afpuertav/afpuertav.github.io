@@ -31,7 +31,7 @@
       vertical-align: middle;
     }
   </style>
-  <link rel="stylesheet" href="nlp-en-la-practica_files/libs/revealjs/dist/theme/quarto-c4788034582cdd2e10ddf1234c270a06.css">
+  <link rel="stylesheet" href="nlp-en-la-practica_files/libs/revealjs/dist/theme/quarto-796a0f17c2f7bd9047487e6f22f300e1.css">
   <link href="nlp-en-la-practica_files/libs/revealjs/plugin/quarto-line-highlight/line-highlight.css" rel="stylesheet">
   <link href="nlp-en-la-practica_files/libs/revealjs/plugin/reveal-menu/menu.css" rel="stylesheet">
   <link href="nlp-en-la-practica_files/libs/revealjs/plugin/reveal-menu/quarto-menu.css" rel="stylesheet">
@@ -184,7 +184,7 @@ Taller · Medellín, 26 julio 2026
 <div class="divnum">
 01
 </div>
-<div style="font-size:36px;font-weight:800;color:#fff;margin-top:70px;max-width:900px;">
+<div style="font-size:40.5px;font-weight:800;color:#fff;margin-top:70px;max-width:900px;">
 Introducción participativa
 </div>
 <div style="margin-top:20px;">
@@ -194,11 +194,11 @@ Introducción participativa
 <!-- ============ 3 · OBJETIVO ============ -->
 </section>
 <section id="objetivo-del-workshop" class="slide level2" data-kicker="Objetivo del workshop · Biviana">
-<h2>Objetivo del workshop</h2>
-<div class="columns" style="height:452px;">
+<h2>Objetivo del <em>workshop</em></h2>
+<div class="columns" style="height:505px;">
 <div class="column" style="flex:0 0 61%;">
-<div class="card fill">
-<p style="font-size:18px;">
+<div class="card fill vc">
+<p style="font-size:27.5px;">
 Convertir texto en datos analizables usando Python y mostrar cómo una metodología de NLP puede adaptarse a distintos dominios:
 </p>
 <div class="iconrow">
@@ -225,8 +225,8 @@ Aplicaciones en salud y análisis de publicaciones tipo Twitter/X.
 <h3>
 La idea central
 </h3>
-<p style="font-size:19px;">
-No venimos a mostrar un notebook: venimos a mostrar cómo se construye una metodología interdisciplinaria.
+<p style="font-size:27.5px;">
+No venimos a mostrar un <em>notebook</em>: venimos a mostrar cómo se construye una metodología interdisciplinaria.
 </p>
 </div>
 </div></div>
@@ -236,22 +236,22 @@ No venimos a mostrar un notebook: venimos a mostrar cómo se construye una metod
 <h2>Ruta de dos horas</h2>
 <div class="stack" style="gap:10px;margin-top:2px;">
 <div class="card" style="display:flex;align-items:center;justify-content:space-between;padding:15px 22px;">
-<b style="font-size:16px;">Introducción participativa</b><span class="who">Biviana</span>
+<b style="font-size:23.5px;">Introducción participativa</b><span class="who">Biviana</span>
 </div>
 <div class="card" style="display:flex;align-items:center;justify-content:space-between;padding:15px 22px;">
-<b style="font-size:16px;">¿Qué debe saber un científico de datos sobre lenguaje?</b><span class="who">Dora</span>
+<b style="font-size:23.5px;">¿Qué debe saber un científico de datos sobre lenguaje?</b><span class="who">Dora</span>
 </div>
 <div class="card" style="display:flex;align-items:center;justify-content:space-between;padding:15px 22px;">
-<b style="font-size:16px;">Pipeline NLP: del lenguaje a los datos</b><span class="who">Karen</span>
+<b style="font-size:23.5px;">Pipeline NLP: del lenguaje a los datos</b><span class="who">Karen</span>
 </div>
 <div class="card" style="display:flex;align-items:center;justify-content:space-between;padding:15px 22px;">
-<b style="font-size:16px;">Caso de uso: tweets y aplicación en salud</b><span class="who">Andrés</span>
+<b style="font-size:23.5px;">Caso de uso: tweets y aplicación en salud</b><span class="who">Andrés</span>
 </div>
 <div class="card" style="display:flex;align-items:center;justify-content:space-between;padding:15px 22px;">
-<b style="font-size:16px;">Práctica guiada en Python</b><span class="who">Equipo</span>
+<b style="font-size:23.5px;">Práctica guiada en Python</b><span class="who">Equipo</span>
 </div>
 <div class="card" style="display:flex;align-items:center;justify-content:space-between;padding:15px 22px;">
-<b style="font-size:16px;">Cierre y conversación final</b><span class="who">Biviana</span>
+<b style="font-size:23.5px;">Cierre y conversación final</b><span class="who">Biviana</span>
 </div>
 </div>
 <!-- ============ 5 · ANTES DE PROGRAMAR ============ -->
@@ -259,13 +259,13 @@ No venimos a mostrar un notebook: venimos a mostrar cómo se construye una metod
 <section id="antes-de-programar-leer-el-problema" class="slide level2 t28" data-kicker="Introducción participativa · Biviana">
 <h2>Antes de programar: leer el problema</h2>
 <div class="card-deep" style="margin-bottom:16px;">
-<p style="font-size:20px;font-weight:800;color:#fff;">
+<p style="font-size:28.5px;font-weight:800;color:#fff;">
 Si les entregáramos 100.000 textos sobre política, ciencia, salud o cultura, ¿qué preguntas podrían responder con Python?
 </p>
 </div>
-<div class="columns" style="height:300px;">
+<div class="columns" style="height:370px;">
 <div class="column" style="flex:0 0 61%;">
-<div class="card fill">
+<div class="card fill vc">
 <h3>
 Preguntas posibles
 </h3>
@@ -298,34 +298,34 @@ El lenguaje humano es información no estructurada. Python nos ayuda a convertir
 </section>
 <section id="tres-textos-un-mismo-tema" class="slide level2" data-kicker="Rompehielos · Biviana">
 <h2>Tres textos, un mismo tema</h2>
-<div class="grid3" style="height:322px;">
+<div class="grid3" style="height:345px;">
 <div class="card">
 <div style="display:flex;gap:10px;align-items:center;">
-<span class="cico" style="background:#614AD3;">📱</span><b style="color:#614AD3;font-size:14px;">Tuit político ficticio</b>
+<span class="cico" style="background:#614AD3;">📱</span><b style="color:#614AD3;font-size:24px;">Tuit político ficticio</b>
 </div>
-<p style="font-style:italic;font-size:13px;margin-top:12px;">
+<p style="font-style:italic;font-size:23px;margin-top:14px;">
 “Necesitamos una reforma tributaria justa que reduzca la desigualdad y fortalezca la inversión social. El país no puede seguir cargando el peso sobre las mismas familias. #Colombia”
 </p>
 </div>
 <div class="card">
 <div style="display:flex;gap:10px;align-items:center;">
-<span class="cico" style="background:#8E7EE6;">📰</span><b style="color:#8E7EE6;font-size:14px;">Titular periodístico ficticio</b>
+<span class="cico" style="background:#8E7EE6;">📰</span><b style="color:#8E7EE6;font-size:24px;">Titular periodístico ficticio</b>
 </div>
-<p style="font-style:italic;font-size:13px;margin-top:12px;">
+<p style="font-style:italic;font-size:23px;margin-top:14px;">
 “Gobierno presenta nuevo proyecto de reforma tributaria ante el Congreso.”
 </p>
 </div>
 <div class="card">
 <div style="display:flex;gap:10px;align-items:center;">
-<span class="cico" style="background:#FF5C8A;">💬</span><b style="color:#FF5C8A;font-size:14px;">Comentario ciudadano ficticio</b>
+<span class="cico" style="background:#FF5C8A;">💬</span><b style="color:#FF5C8A;font-size:24px;">Comentario ciudadano ficticio</b>
 </div>
-<p style="font-style:italic;font-size:13px;margin-top:12px;">
+<p style="font-style:italic;font-size:23px;margin-top:14px;">
 “Otra reforma más. Siempre prometen cambios y al final nada mejora.”
 </p>
 </div>
 </div>
 <div class="card-deep" style="margin-top:16px;">
-<p style="font-size:14px;">
+<p style="font-size:21px;">
 <b class="gold">Como humanos notamos:</b> tema común, actores políticos, tono emocional, posición o valoración, palabras clave. Para un computador solo hay cadenas de texto: el reto es construir una representación útil.
 </p>
 </div>
@@ -336,12 +336,12 @@ El lenguaje humano es información no estructurada. Python nos ayuda a convertir
 <div class="circle" style="width:520px;height:520px;background:#8E7EE6;top:-170px;right:-130px;">
 
 </div>
-<div class="z">
-<span class="pill">Idea fuerza · Biviana</span>
-<p class="lead" style="font-size:32px;color:#fff;margin-top:30px;max-width:1050px;">
+<div class="z" style="height:100%;display:flex;flex-direction:column;justify-content:center;">
+<span class="pill" style="align-self:flex-start;">Idea fuerza · Biviana</span>
+<p class="lead" style="font-size:40px;color:#fff;margin-top:30px;max-width:1050px;">
 Python no solo permite analizar números.
 </p>
-<p style="font-size:25px;color:#FFC24B;max-width:1080px;">
+<p style="font-size:31px;color:#FFC24B;max-width:1080px;">
 También permite estudiar cómo una sociedad argumenta, discute, nombra problemas y construye sentido a través del lenguaje.
 </p>
 </div>
@@ -359,7 +359,7 @@ También permite estudiar cómo una sociedad argumenta, discute, nombra problema
 <div class="divnum">
 02
 </div>
-<div style="font-size:34px;font-weight:800;color:#fff;margin-top:64px;max-width:1050px;">
+<div style="font-size:38px;font-weight:800;color:#fff;margin-top:64px;max-width:1050px;">
 ¿Qué debe saber un científico de datos sobre lenguaje?
 </div>
 <div style="margin-top:20px;">
@@ -370,15 +370,15 @@ También permite estudiar cómo una sociedad argumenta, discute, nombra problema
 </section>
 <section id="el-origen-del-procesamiento-del-lenguaje-natural-pnl" class="slide level2 t26" data-kicker="Contexto histórico · Dora">
 <h2>El origen del procesamiento del lenguaje natural (PNL)</h2>
-<div class="columns" style="height:430px;">
+<div class="columns" style="height:505px;">
 <div class="column" style="flex:0 0 41%;">
 <div class="card fill imgcard">
-<img src="img_nlp/slide09_img0.jpg" style="max-height:376px;max-width:100%;">
+<img src="img_nlp/slide09_img0.jpg" style="max-height:430px;max-width:100%;">
 </div>
 </div><div class="column" style="flex:1;">
 <div class="card-violet fill" style="display:flex;align-items:center;">
-<p style="font-size:22px;">
-El PNL no nació propiamente del amor por la lingüística, sino como respuesta a desafíos tecnológicos y de inteligencia durante la Guerra Fría.
+<p style="font-size:32.5px;">
+¿Por qué existe el procesamiento del lenguaje natural?
 </p>
 </div>
 </div></div>
@@ -386,52 +386,19 @@ El PNL no nació propiamente del amor por la lingüística, sino como respuesta 
 </section>
 <section id="el-origen-del-pnl" class="slide level2" data-kicker="Contexto histórico · Dora">
 <h2>El origen del PNL</h2>
-<div class="flow2" style="margin-top:16px;">
+<div class="flow2 six" style="margin-top:14px;">
 <div class="frow">
 <div class="tlcard">
 <div class="dt">
-1949–1965
+1941–1946
 </div>
 <div class="tt">
 Los inicios
 </div>
 <div class="ds">
-Traducción automática y primeros experimentos.
+• 1941: Z3<br>• 1944: Colossus Mark I<br>• 1946: ENIAC
 </div>
 </div>
-<div>
-
-</div>
-<div class="tlcard v">
-<div class="dt">
-1966
-</div>
-<div class="tt">
-ELIZA
-</div>
-<div class="ds">
-Primer sistema conversacional (Weizenbaum).
-</div>
-</div>
-<div>
-
-</div>
-<div class="tlcard">
-<div class="dt">
-1990s
-</div>
-<div class="tt">
-Sociedad de la información
-</div>
-<div class="ds">
-World Wide Web (WWW).
-</div>
-</div>
-</div>
-<div class="fline" style="margin:20px 3%;">
-<span class="d" style="left:10%"></span><span class="d" style="left:30%"></span><span class="d" style="left:50%"></span><span class="d" style="left:70%"></span><span class="d" style="left:90%"></span>
-</div>
-<div class="frow">
 <div>
 
 </div>
@@ -443,7 +410,7 @@ World Wide Web (WWW).
 La teoría lingüística y PLN
 </div>
 <div class="ds">
-Chomsky y los formalistas.
+• Chomsky y los formalistas
 </div>
 </div>
 <div>
@@ -457,11 +424,52 @@ Chomsky y los formalistas.
 Modelos lingüísticos
 </div>
 <div class="ds">
-Teorías lingüísticas para el PLN. Computadores personales (IBM).
+• 1980: teorías lingüísticas para el PLN<br>• Computadores personales (IBM)
 </div>
 </div>
 <div>
 
+</div>
+</div>
+<div class="fline" style="margin:18px 3%;">
+<span class="d" style="left:8.33%"></span><span class="d" style="left:25%"></span><span class="d" style="left:41.67%"></span><span class="d" style="left:58.33%"></span><span class="d" style="left:75%"></span><span class="d" style="left:91.67%"></span>
+</div>
+<div class="frow">
+<div>
+
+</div>
+<div class="tlcard">
+<div class="dt">
+1949–1950
+</div>
+<div class="tt">
+La década de 1950 y la TA
+</div>
+<div class="ds">
+• 1949: Busa – <em>Index Thomisticus</em><br>• Traducción automática
+</div>
+</div>
+<div>
+
+</div>
+<div class="tlcard v">
+<div class="dt">
+1966
+</div>
+<div class="tt">
+ELIZA
+</div>
+</div>
+<div>
+
+</div>
+<div class="tlcard">
+<div class="dt">
+1990s · WWW
+</div>
+<div class="tt">
+Sociedad de la información
+</div>
 </div>
 </div>
 </div>
@@ -469,8 +477,8 @@ Teorías lingüísticas para el PLN. Computadores personales (IBM).
 </section>
 <section id="la-era-de-los-datos-masivos" class="slide level2" data-kicker="Contexto histórico · Dora">
 <h2>La Era de los datos masivos</h2>
-<div class="card-violet" style="height:360px;display:flex;align-items:center;justify-content:center;">
-<p style="font-size:27px;color:#fff;text-align:center;max-width:1000px;">
+<div class="card-violet" style="height:505px;display:flex;align-items:center;justify-content:center;">
+<p style="font-size:36px;color:#fff;text-align:center;max-width:1050px;">
 En los años 2000, la potencia de la computación, la cantidad de datos masivos y el aprendizaje profundo cambiaron las reglas de juego.
 </p>
 </div>
@@ -478,7 +486,7 @@ En los años 2000, la potencia de la computación, la cantidad de datos masivos 
 </section>
 <section id="qué-es-una-palabra" class="slide level2" data-kicker="Actividad participativa · Dora">
 <h2>¿Qué es una palabra?</h2>
-<div class="wordrow" style="margin-top:6px;">
+<div class="wordrow" style="margin-top:52px;">
 <div class="wordchip">
 Banco
 </div>
@@ -495,8 +503,8 @@ Corrí
 Corriendo
 </div>
 </div>
-<div class="card center" style="margin-top:26px;height:150px;display:flex;align-items:center;justify-content:center;">
-<p style="font-size:26px;font-weight:800;color:#614AD3;">
+<div class="card center" style="margin-top:52px;height:210px;display:flex;align-items:center;justify-content:center;">
+<p style="font-size:38px;font-weight:800;color:#614AD3;">
 ¿Cuántas palabras diferentes ven aquí?
 </p>
 </div>
@@ -504,40 +512,29 @@ Corriendo
 </section>
 <section id="qué-es-una-palabra-1" class="slide level2" data-kicker="Actividad participativa · Dora">
 <h2>¿Qué es una palabra?</h2>
-<div class="grid2" style="height:440px;">
-<div class="card fill imgcard" style="justify-content:flex-start;">
-<span class="h" style="align-self:flex-start;">La perspectiva del algoritmo</span><img src="img_nlp/slide13_img0.jpg" style="max-height:320px;max-width:100%;margin-top:8px;">
+<div class="grid2" style="height:505px;align-content:stretch;">
+<div class="card fill imgcard">
+<p><span class="h" style="font-size:26px;">La perspectiva del algoritmo</span> <img src="img_nlp/slide13_img0.jpg" style="max-width:100%;max-height:360px;border-radius:8px;margin-top:22px;"></p>
 </div>
-<div class="card fill imgcard" style="justify-content:flex-start;">
-<span class="h" style="align-self:flex-start;color:#FF5C8A;">La perspectiva de la lingüística</span><img src="img_nlp/slide13_img1.png" style="max-height:290px;max-width:100%;margin-top:20px;">
+<div class="card fill imgcard">
+<p><span class="h" style="font-size:26px;color:#FF5C8A;">La perspectiva de la lingüística</span> <img src="img_nlp/slide13_img1.png" style="max-width:100%;max-height:320px;border-radius:8px;margin-top:22px;"></p>
 </div>
 </div>
 <!-- ============ 14 · TOKENS VS LEMAS ============ -->
 </section>
 <section id="tokens-vs.-lemas" class="slide level2" data-kicker="¿Por qué el español puede ser difícil? · Dora">
-<h2>Tokens vs.&nbsp;lemas</h2>
-<div class="grid2" style="height:440px;">
-<div class="card fill">
-<p style="font-size:16px;">
-<b class="vio">Un token:</b> forma de cada palabra o carácter como aparecen en el texto plano.
+<h2><em>Tokens</em> vs.&nbsp;lemas</h2>
+<div class="grid2" style="height:505px;align-content:stretch;">
+<div class="card fill vc">
+<p style="font-size:26px;">
+<b class="vio">Un <em>token</em>:</b> forma de cada palabra o carácter como aparecen en el texto plano.
 </p>
-<p style="font-size:16px;">
-<b class="accent">Un lema:</b> unidad léxica de referencia (forma de diccionario).
+</div>
+<div class="card fill imgcard">
+<p style="font-size:26px;margin:0;">
+<b class="accent">Un lema:</b>
 </p>
-<div style="display:flex;align-items:center;gap:18px;margin-top:18px;">
-<div class="stack" style="gap:9px;">
-<p><span class="tok" style="font-size:15px;">correr</span> <span class="tok" style="font-size:15px;">corrí</span> <span class="tok" style="font-size:15px;">corriendo</span></p>
-</div>
-<div class="arrow" style="font-size:22px;">
-→
-</div>
-<div class="pinkbox" style="min-width:150px;">
-correr
-</div>
-</div>
-</div>
-<div class="card fill imgcard" style="justify-content:flex-start;">
-<span class="h" style="align-self:flex-start;font-size:22px;">correr</span><img src="img_nlp/slide14_img0.png" style="max-height:250px;max-width:100%;margin-top:26px;">
+<p><span class="h" style="font-size:30px;margin-top:10px;">correr</span> <img src="img_nlp/slide14_img0.png" style="max-height:270px;max-width:100%;margin-top:14px;"></p>
 </div>
 </div>
 <!-- ============ 15 · AMBIGÜEDAD ============ -->
@@ -557,7 +554,7 @@ Gato
 </div>
 </div>
 <div class="card-deep center" style="margin-top:16px;">
-<p style="font-size:20px;font-weight:800;color:#fff;">
+<p style="font-size:28.5px;font-weight:800;color:#fff;">
 Sin contexto lingüístico la ambigüedad es total.
 </p>
 </div>
@@ -565,16 +562,16 @@ Sin contexto lingüístico la ambigüedad es total.
 </section>
 <section id="stopwords-y-entidades-nombradas" class="slide level2" data-kicker="¿Por qué el español suele ser difícil? · Dora">
 <h2>Stopwords y entidades nombradas</h2>
-<div class="grid2" style="height:400px;">
-<div class="card fill">
-<span class="h" style="font-size:22px;">Stopwords</span>
-<p style="font-size:17px;margin-top:14px;">
-Términos de alta frecuencia como <b>“de”</b>, <b>“que”</b>, <b>“la”</b>, <b>“en”</b>, <b>“por”</b>, etc.
+<div class="grid2" style="height:505px;align-content:stretch;">
+<div class="card fill vc">
+<span class="h" style="font-size:30px;"><em>Stopwords</em></span>
+<p style="font-size:26px;margin-top:16px;">
+Términos de alta frecuencia como “de”, “que”, “la”, “en”, “por”, etc.
 </p>
 </div>
-<div class="card fill">
-<span class="h" style="font-size:22px;color:#FF5C8A;">Entidades nombradas (NER)</span>
-<p style="font-size:17px;margin-top:14px;">
+<div class="card fill vc">
+<span class="h" style="font-size:30px;color:#FF5C8A;">Entidades nombradas (NER)</span>
+<p style="font-size:26px;margin-top:16px;">
 Personas, lugares, organizaciones, fechas, cantidades.
 </p>
 </div>
@@ -583,32 +580,20 @@ Personas, lugares, organizaciones, fechas, cantidades.
 </section>
 <section id="variación-dialectal" class="slide level2" data-kicker="¿Por qué el español suele ser difícil? · Dora">
 <h2>Variación dialectal</h2>
-<div class="columns" style="height:430px;">
-<div class="column" style="flex:0 0 52%;">
-<div class="card fill imgcard">
-<img src="img_nlp/slide17_img0.jpg" style="max-height:380px;max-width:100%;">
+<div class="imgcard" style="height:505px;justify-content:center;">
+<p><img src="img_nlp/slide17_img0.jpg" style="max-height:475px;max-width:92%;border-radius:12px;"></p>
 </div>
-</div><div class="column" style="flex:1;">
-<div class="card-violet fill" style="display:flex;flex-direction:column;justify-content:center;">
-<h3 style="font-size:22px;">
-Variación dialectal
-</h3>
-<p style="font-size:17px;">
-El mismo idioma cambia entre países y regiones: un modelo entrenado con un solo español tropieza con el resto.
-</p>
-</div>
-</div></div>
 <!-- ============ 18 · RUTA METODOLÓGICA ============ -->
 </section>
 <section id="qué-hacemos-para-analizar-lenguaje-desde-la-ciencia-de-datos" class="slide level2 t24" data-kicker="Ruta metodológica · Dora">
 <h2>¿Qué hacemos para analizar lenguaje desde la ciencia de datos?</h2>
-<div class="flow2" style="margin-top:34px;">
+<div class="flow2 six" style="margin-top:56px;">
 <div class="frow">
 <div class="pnode">
 <div class="pcirc">
 1
 </div>
-<div class="pt">
+<div class="pt" style="font-size:22px;">
 Pregunta
 </div>
 </div>
@@ -619,7 +604,7 @@ Pregunta
 <div class="pcirc">
 3
 </div>
-<div class="pt">
+<div class="pt" style="font-size:22px;">
 Preprocesado
 </div>
 </div>
@@ -630,13 +615,16 @@ Preprocesado
 <div class="pcirc">
 5
 </div>
-<div class="pt">
+<div class="pt" style="font-size:22px;">
 Estadística descriptiva
 </div>
 </div>
+<div>
+
 </div>
-<div class="fline" style="margin:26px 3%;">
-<span class="d" style="left:10%"></span><span class="d" style="left:30%"></span><span class="d" style="left:50%"></span><span class="d" style="left:70%"></span><span class="d" style="left:90%"></span>
+</div>
+<div class="fline" style="margin:38px 3%;">
+<span class="d" style="left:8.33%"></span><span class="d" style="left:25%"></span><span class="d" style="left:41.67%"></span><span class="d" style="left:58.33%"></span><span class="d" style="left:75%"></span><span class="d" style="left:91.67%"></span>
 </div>
 <div class="frow">
 <div>
@@ -646,7 +634,7 @@ Estadística descriptiva
 <div class="pcirc">
 2
 </div>
-<div class="pt">
+<div class="pt" style="font-size:22px;">
 Recolección
 </div>
 </div>
@@ -657,12 +645,20 @@ Recolección
 <div class="pcirc">
 4
 </div>
-<div class="pt">
+<div class="pt" style="font-size:22px;">
 Anotación
 </div>
 </div>
 <div>
 
+</div>
+<div class="pnode">
+<div class="pcirc">
+6
+</div>
+<div class="pt" style="font-size:22px;">
+Validación y análisis
+</div>
 </div>
 </div>
 </div>
@@ -673,9 +669,9 @@ Anotación
 <div class="circle" style="width:520px;height:520px;background:#8E7EE6;top:-170px;right:-130px;">
 
 </div>
-<div class="z">
-<span class="pill">Dora</span>
-<p class="lead" style="font-size:38px;color:#fff;margin-top:40px;max-width:1050px;">
+<div class="z" style="height:100%;display:flex;flex-direction:column;justify-content:center;">
+<span class="pill" style="align-self:flex-start;">Dora</span>
+<p class="lead" style="font-size:44px;color:#fff;margin-top:34px;max-width:1050px;">
 Las decisiones críticas de PLN ocurren siempre antes del entrenamiento del modelo.
 </p>
 </div>
@@ -693,7 +689,7 @@ Las decisiones críticas de PLN ocurren siempre antes del entrenamiento del mode
 <div class="divnum">
 03
 </div>
-<div style="font-size:36px;font-weight:800;color:#fff;margin-top:64px;max-width:1050px;">
+<div style="font-size:40.5px;font-weight:800;color:#fff;margin-top:64px;max-width:1050px;">
 Pipeline NLP: del lenguaje a los datos
 </div>
 <div style="margin-top:20px;">
@@ -704,7 +700,7 @@ Pipeline NLP: del lenguaje a los datos
 </section>
 <section id="section-6" class="slide level2" data-menu-title="Pipeline · Texto de entrada">
 <h2></h2>
-<div class="columns" style="height:470px;">
+<div class="columns" style="height:560px;">
 <div class="column" style="flex:0 0 24%;">
 <div class="side fill">
 <h4>
@@ -714,7 +710,7 @@ Herramientas NLP
 Tokenizar
 </div>
 <div class="side-item">
-Filtrar Stopwords
+Filtrar <em>Stopwords</em>
 </div>
 <div class="side-item">
 Lematizar
@@ -724,9 +720,9 @@ Representación vectorial
 </div>
 </div>
 </div><div class="column" style="flex:1;">
-<div class="card fill">
-<span class="h" style="font-size:18px;">Texto de entrada</span>
-<p style="font-style:italic;font-size:17px;margin-top:12px;line-height:1.5;">
+<div class="card fill vc">
+<span class="h" style="font-size:27.5px;">Texto de entrada</span>
+<p style="font-style:italic;font-size:28.5px;margin-top:12px;line-height:1.55;">
 “La pandemia y la pospandemia hacen visible la necesidad del conocimiento. De su gestión dependen las estrategias de detección, atención y contención del coronavirus, el desarrollo del talento humano calificado y de los insumos tecnológicos para la prevención de la enfermedad y su tratamiento; sin duda, la calidad de los sistemas de salud se encuentra relacionada con los niveles de desarrollo científico y tecnológico de los países.”
 </p>
 </div>
@@ -735,7 +731,7 @@ Representación vectorial
 </section>
 <section id="section-7" class="slide level2" data-menu-title="Pipeline · Tokenizar">
 <h2></h2>
-<div class="columns" style="height:470px;">
+<div class="columns" style="height:560px;">
 <div class="column" style="flex:0 0 24%;">
 <div class="side fill">
 <h4>
@@ -745,7 +741,7 @@ Herramientas NLP
 Tokenizar
 </div>
 <div class="side-item">
-Filtrar Stopwords
+Filtrar <em>Stopwords</em>
 </div>
 <div class="side-item">
 Lematizar
@@ -755,22 +751,22 @@ Representación vectorial
 </div>
 </div>
 </div><div class="column" style="flex:1;">
-<div class="stack" style="gap:12px;">
+<div class="stack" style="gap:18px;margin:auto 0;">
 <div class="card-violet">
 <span class="h">Nivel palabra</span>
-<p style="font-size:15px;">
+<p style="font-size:23.5px;">
 [La] [pandemia] [y] [la] [pospandemia] [hacen] [visible] [la]
 </p>
 </div>
 <div class="card">
 <span class="h">Nivel bigrama</span>
-<p style="font-size:15px;">
+<p style="font-size:23.5px;">
 [La pandemia] [pandemia y] [y la] [la pospandemia] [pospandemia hacen] [hacen visible] [visible la] [la necesidad]
 </p>
 </div>
 <div class="card">
 <span class="h">Nivel subpalabra</span>
-<p style="font-size:15px;">
+<p style="font-size:23.5px;">
 [pos] [##pan] [##demia] [hacen] [vis] [##ible] [necesi] [##dad]
 </p>
 </div>
@@ -780,7 +776,7 @@ Representación vectorial
 </section>
 <section id="section-8" class="slide level2" data-menu-title="Pipeline · Filtrar stopwords">
 <h2></h2>
-<div class="columns" style="height:470px;">
+<div class="columns" style="height:560px;">
 <div class="column" style="flex:0 0 24%;">
 <div class="side fill">
 <h4>
@@ -790,7 +786,7 @@ Herramientas NLP
 Tokenizar
 </div>
 <div class="side-item active">
-Filtrar Stopwords
+Filtrar <em>Stopwords</em>
 </div>
 <div class="side-item">
 Lematizar
@@ -800,13 +796,13 @@ Representación vectorial
 </div>
 </div>
 </div><div class="column" style="flex:1;">
-<div class="card fill">
-<span class="h" style="font-size:18px;">Filtrar stopwords</span>
-<p style="font-size:16px;margin-top:12px;line-height:1.55;">
-<span class="muted">La</span> pandemia <span class="muted">y la</span> pospandemia hacen visible <span class="muted">la</span> necesidad <span class="muted">del</span> conocimiento. <span class="muted">De su</span> gestión dependen <span class="muted">las</span> estrategias <span class="muted">de</span> detección, atención <span class="muted">y</span> contención <span class="muted">del</span> coronavirus, <span class="muted">el</span> desarrollo <span class="muted">del</span> talento humano calificado <span class="muted">y de los</span> insumos tecnológicos <span class="muted">para la</span> prevención <span class="muted">de la</span> enfermedad <span class="muted">y su</span> tratamiento; <span class="muted">sin duda, la</span> calidad <span class="muted">de los</span> sistemas <span class="muted">de</span> salud <span class="muted">se</span> encuentra relacionada <span class="muted">con los</span> niveles <span class="muted">de</span> desarrollo científico <span class="muted">y</span> tecnológico <span class="muted">de los</span> países.
+<div class="card fill vc">
+<span class="h" style="font-size:27.5px;">Filtrar <em>stopwords</em></span>
+<p style="font-size:27.5px;margin-top:14px;line-height:1.6;">
+<span class="rem">La</span> pandemia <span class="rem">y la</span> pospandemia hacen visible <span class="rem">la</span> necesidad <span class="rem">del</span> conocimiento. <span class="rem">De su</span> gestión dependen <span class="rem">las</span> estrategias <span class="rem">de</span> detección, atención <span class="rem">y</span> contención <span class="rem">del</span> coronavirus, <span class="rem">el</span> desarrollo <span class="rem">del</span> talento humano calificado <span class="rem">y de los</span> insumos tecnológicos <span class="rem">para la</span> prevención <span class="rem">de la</span> enfermedad <span class="rem">y su</span> tratamiento; <span class="rem">sin duda, la</span> calidad <span class="rem">de los</span> sistemas <span class="rem">de</span> salud <span class="rem">se</span> encuentra relacionada <span class="rem">con los</span> niveles <span class="rem">de</span> desarrollo científico <span class="rem">y</span> tecnológico <span class="rem">de los</span> países.
 </p>
 <p class="cap" style="text-align:left;margin-top:16px;">
-Las palabras en gris se eliminan por ser muy frecuentes y aportar poca información.
+Las palabras en rojo se eliminan por ser muy frecuentes y aportar poca información.
 </p>
 </div>
 </div></div>
@@ -814,7 +810,7 @@ Las palabras en gris se eliminan por ser muy frecuentes y aportar poca informaci
 </section>
 <section id="section-9" class="slide level2" data-menu-title="Pipeline · Lematizar">
 <h2></h2>
-<div class="columns" style="height:470px;">
+<div class="columns" style="height:560px;">
 <div class="column" style="flex:0 0 24%;">
 <div class="side fill">
 <h4>
@@ -824,7 +820,7 @@ Herramientas NLP
 Tokenizar
 </div>
 <div class="side-item">
-Filtrar Stopwords
+Filtrar <em>Stopwords</em>
 </div>
 <div class="side-item active">
 Lematizar
@@ -834,9 +830,9 @@ Representación vectorial
 </div>
 </div>
 </div><div class="column" style="flex:1;">
-<div class="card fill">
-<span class="h" style="font-size:18px;">Lematizar</span>
-<p style="font-size:16px;margin-top:12px;line-height:1.55;">
+<div class="card fill vc">
+<span class="h" style="font-size:27.5px;">Lematizar</span>
+<p style="font-size:27.5px;margin-top:14px;line-height:1.6;">
 el pandemia y el pospandemia hacer visible el necesidad de el conocimiento. de su gestión depender el estrategia de detección, atención y contención de el coronavirus, el desarrollo de el talento humano calificado y de el insumo tecnológico para el prevención de el enfermedad y su tratamiento; sin duda, la calidad de el sistema de salud se encontrar relacionado con el nivel de desarrollo científico y tecnológico de el país.
 </p>
 </div>
@@ -845,7 +841,7 @@ el pandemia y el pospandemia hacer visible el necesidad de el conocimiento. de s
 </section>
 <section id="section-10" class="slide level2" data-menu-title="Pipeline · Representación vectorial">
 <h2></h2>
-<div class="columns" style="height:470px;">
+<div class="columns" style="height:560px;">
 <div class="column" style="flex:0 0 24%;">
 <div class="side fill">
 <h4>
@@ -855,7 +851,7 @@ Herramientas NLP
 Tokenizar
 </div>
 <div class="side-item">
-Filtrar Stopwords
+Filtrar <em>Stopwords</em>
 </div>
 <div class="side-item">
 Lematizar
@@ -866,23 +862,23 @@ Representación vectorial
 </div>
 </div><div class="column" style="flex:1;">
 <div class="card fill" style="justify-content:center;display:flex;flex-direction:column;">
-<span class="h" style="font-size:18px;">Representación vectorial</span>
+<span class="h" style="font-size:26px;">Representación vectorial</span>
 <div style="display:flex;gap:16px;align-items:center;margin:18px 0;">
-<p><span style="background:#EEF0FB;color:#3F2F9E;font-weight:800;border-radius:9px;padding:12px 16px;min-width:220px;text-align:center;">conocimiento</span> <code style="font-size:15px;">[ 0.18, -0.42, 0.07, 0.55, -0.31, 0.12, …, 0.09 ]</code></p>
+<p><span style="background:#EEF0FB;color:#3F2F9E;font-weight:800;border-radius:9px;padding:12px 16px;min-width:220px;text-align:center;">conocimiento</span> <code style="font-size:22px;">[ 0.18, -0.42, 0.07, 0.55, -0.31, 0.12, …, 0.09 ]</code></p>
 </div>
 <div style="display:flex;gap:16px;align-items:center;margin:6px 0;">
-<p><span style="background:#EEF0FB;color:#3F2F9E;font-weight:800;border-radius:9px;padding:12px 16px;min-width:220px;text-align:center;">la calidad de los sistemas de salud</span> <code style="font-size:15px;">[ -0.05, 0.33, 0.61, -0.14, 0.27, -0.48, …, 0.22 ]</code></p>
+<p><span style="background:#EEF0FB;color:#3F2F9E;font-weight:800;border-radius:9px;padding:12px 16px;min-width:220px;text-align:center;">la calidad de los sistemas de salud</span> <code style="font-size:22px;">[ -0.05, 0.33, 0.61, -0.14, 0.27, -0.48, …, 0.22 ]</code></p>
 </div>
 </div>
 </div></div>
 <!-- ============ 26 · EMBEDDINGS ============ -->
 </section>
 <section id="embeddings" class="slide level2" data-kicker="Karen">
-<h2>Embeddings</h2>
+<h2><em>Embeddings</em></h2>
 <div class="columns" style="height:452px;">
 <div class="column" style="flex:0 0 44%;">
 <div class="card fill">
-<span class="h" style="font-size:16px;">Matriz término-documento</span>
+<span class="h" style="font-size:23.5px;">Matriz término-documento</span>
 <table class="tdm" style="margin-top:12px;width:100%;">
 <tbody><tr>
 <th style="background:transparent;">
@@ -971,22 +967,22 @@ palabra n
 </div>
 </div><div class="column" style="flex:1;">
 <div class="card fill">
-<span class="h">Embeddings estáticos</span>
-<p style="font-size:14px;">
-Cada palabra tiene un solo embedding. Ejm: Word2Vec <code>[ 0.21, -0.35, 0.88, -0.04, …, 0.16 ]</code>
+<span class="h"><em>Embeddings</em> estáticos</span>
+<p style="font-size:21px;">
+Cada palabra tiene un solo <em>embedding</em>. Ejm: Word2Vec <code>[ 0.21, -0.35, 0.88, -0.04, …, 0.16 ]</code>
 </p>
-<span class="h">Embeddings contextuales</span>
-<p style="font-size:14px;">
+<span class="h"><em>Embeddings</em> contextuales</span>
+<p style="font-size:21px;">
 La representación de una palabra puede variar según el contexto. Ejm: BERT
 </p>
-<p style="font-size:13px;margin:.2em 0;">
+<p style="font-size:19.5px;margin:.2em 0;">
 El banco aprobó el crédito para la vivienda. <code>[ 0.42, -0.11, 0.63, …, 0.08 ]</code>
 </p>
-<p style="font-size:13px;margin:.2em 0;">
+<p style="font-size:19.5px;margin:.2em 0;">
 Nos sentamos en el banco del parque. <code>[ -0.19, 0.55, -0.07, …, 0.31 ]</code>
 </p>
 <span class="h">Sentence Transformers</span>
-<p style="font-size:14px;">
+<p style="font-size:21px;">
 Codificación de fragmentos enteros. “El banco aprobó el crédito para la vivienda.” <code>[ 0.27, -0.14, 0.36, …, 0.19 ]</code>
 </p>
 </div>
@@ -994,7 +990,7 @@ Codificación de fragmentos enteros. “El banco aprobó el crédito para la viv
 <!-- ============ 27 · PROPIEDADES EMBEDDINGS ============ -->
 </section>
 <section id="propiedades-de-los-embeddings" class="slide level2" data-kicker="Karen">
-<h2>Propiedades de los embeddings</h2>
+<h2>Propiedades de los <em>embeddings</em></h2>
 <div class="grid2" style="height:452px;">
 <div class="card fill imgcard" style="justify-content:flex-start;">
 <span class="h" style="align-self:flex-start;">Cercanía semántica</span><img src="img_nlp/slide27_img0.png" style="max-height:350px;max-width:100%;margin-top:8px;">
@@ -1002,16 +998,16 @@ Codificación de fragmentos enteros. “El banco aprobó el crédito para la viv
 <div class="card fill">
 <span class="h">Elementos importantes</span>
 <p style="margin:.6em 0 0;">
-<b style="font-size:15px;">Tamaño ventana de contexto</b><br><span class="muted" style="font-size:13px;">¿Cuántos tokens máximo recibe el modelo?</span>
+<b style="font-size:22px;">Tamaño ventana de contexto</b><br><span class="muted" style="font-size:19.5px;">¿Cuántos tokens máximo recibe el modelo?</span>
 </p>
 <p style="margin:.7em 0 0;">
-<b style="font-size:15px;">Tamaño del vector</b><br><span class="muted" style="font-size:13px;">¿De qué tamaño queda el embedding? Ej: 1024, 2048, etc.</span>
+<b style="font-size:22px;">Tamaño del vector</b><br><span class="muted" style="font-size:19.5px;">¿De qué tamaño queda el embedding? Ej: 1024, 2048, etc.</span>
 </p>
 <p style="margin:.7em 0 0;">
-<b style="font-size:15px;">Idioma de entrenamiento</b><br><span class="muted" style="font-size:13px;">¿En qué idioma o idiomas fue entrenado el modelo?</span>
+<b style="font-size:22px;">Idioma de entrenamiento</b><br><span class="muted" style="font-size:19.5px;">¿En qué idioma o idiomas fue entrenado el modelo?</span>
 </p>
 <p style="margin:.7em 0 0;">
-<b style="font-size:15px;">Tipo de tarea</b><br><span class="muted" style="font-size:13px;">¿Para qué tarea fue optimizado el modelo? Ej: STS, Retrieval, Clustering.</span>
+<b style="font-size:22px;">Tipo de tarea</b><br><span class="muted" style="font-size:19.5px;">¿Para qué tarea fue optimizado el modelo? Ej: STS, <em>Retrieval</em>, <em>Clustering</em>.</span>
 </p>
 </div>
 </div>
@@ -1019,7 +1015,7 @@ Codificación de fragmentos enteros. “El banco aprobó el crédito para la viv
 </section>
 <section id="bertopic" class="slide level2" data-kicker="Aplicación de embeddings · Karen">
 <h2>BERTopic</h2>
-<p class="muted" style="font-size:12.5px;font-style:italic;margin:0 0 12px;">
+<p class="muted" style="font-size:19px;font-style:italic;margin:0 0 12px;">
 “BERTopic is a topic modeling technique that leverages transformers and c-TF-IDF to create dense clusters allowing for easily interpretable topics whilst keeping important words in the topic descriptions.” — (Grootendorst, 2022)
 </p>
 <div class="columns" style="height:390px;">
@@ -1033,7 +1029,7 @@ Codificación de fragmentos enteros. “El banco aprobó el crédito para la viv
 <div>
 <b>Representación vectorial</b>
 <div class="d">
-Representación vectorial de los textos con embeddings (tipo transformers).
+Representación vectorial de los textos con <em>embeddings</em> (tipo <em>transformers</em>).
 </div>
 </div>
 </div>
@@ -1057,7 +1053,7 @@ Ejm: 1024 a 5 componentes por vector. Algoritmo: UMAP.
 3
 </div>
 <div>
-<b>Clustering</b>
+<b><em>Clustering</em></b>
 <div class="d">
 Agrupar los textos por distancia. Algoritmo: HDBSCAN.
 </div>
@@ -1086,116 +1082,205 @@ Selección de palabras para representar el tópico, comunes que diferencian entr
 <!-- ============ 29 · LLMs ============ -->
 </section>
 <section id="llms-large-language-models" class="slide level2" data-kicker="Karen">
-<h2>LLMs · Large Language Models</h2>
+<h2>LLMs · <em>Large Language Models</em></h2>
 <div class="grid2" style="height:452px;">
 <div class="card fill">
 <span class="h">¿Qué es un modelo del lenguaje?</span>
-<p style="font-size:13.5px;">
+<p style="font-size:20px;">
 Un sistema que, dado un contexto de palabras previas, asigna una distribución de probabilidad sobre la siguiente palabra.
 </p>
 <div style="background:#EEF0FB;border-radius:9px;padding:9px 13px;margin:.3em 0;">
-<code style="font-size:13px;">“El agua del lago Walden es tan hermosamente ___“</code>
+<code style="font-size:19.5px;">“El agua del lago Walden es tan hermosamente ___“</code>
 </div>
-<p style="font-size:13px;">
+<p style="font-size:19.5px;">
 <b class="vio">Probable:</b> azul, verde, transparente &nbsp;&nbsp; <b class="vio">Improbable:</b> refrigerador, esto
 </p>
 <span class="h">¿Qué pueden hacer los LLMs?</span>
-<p style="font-size:13.5px;">
+<p style="font-size:20px;">
 Resumir, traducir, responder preguntas, generar código, analizar argumentos.
 </p>
 </div>
 <div class="card fill">
-<span class="h">Prompting · uso de un LLM</span>
-<p style="font-size:13.5px;">
-Un prompt es el texto que el usuario entrega al modelo para obtener una respuesta útil. El modelo genera tokens de forma iterativa condicionado en ese texto.
+<span class="h"><em>Prompting</em> · uso de un LLM</span>
+<p style="font-size:20px;">
+Un <em>prompt</em> es el texto que el usuario entrega al modelo para obtener una respuesta útil. El modelo genera tokens de forma iterativa condicionado en ese texto.
 </p>
-<p style="font-size:12.5px;">
+<p style="font-size:19px;">
 <code>“P: ¿Quién escribió El origen de las especies? R:”</code> → “Charles Darwin”
 </p>
 <span class="h">Control de aleatoriedad</span>
-<p style="font-size:13px;">
-<b>Temperatura:</b> reescala las probabilidades (baja = más probable; alta = más diversidad). <b>Top-k:</b> conserva las k más probables. <b>Top-p:</b> conjunto mínimo cuya probabilidad acumulada supera p.
+<p style="font-size:19.5px;">
+<b>Temperatura:</b> reescala las probabilidades (baja = más probable; alta = más diversidad). <b><em>Top-k</em>:</b> conserva las k más probables. <b><em>Top-p</em>:</b> conjunto mínimo cuya probabilidad acumulada supera p.
 </p>
-<p style="font-size:13px;color:#FF5C8A;font-weight:700;">
+<p style="font-size:19.5px;color:#FF5C8A;font-weight:700;">
 <b>Alucinación:</b> el modelo puede sonar coherente y seguro, pero no corresponder con los hechos reales.
 </p>
 </div>
 </div>
+<!-- ============ 29b · RAG · RESUMEN GRÁFICO (Karen 10) ============ -->
+</section>
+<section id="rag-retrieval-augmented-generation" class="slide level2" data-kicker="Karen">
+<h2>RAG · <em>Retrieval Augmented Generation</em></h2>
+<div class="imgcard" style="margin-top:2px;">
+<p><img src="img_nlp/karen_rag_diagram.png" style="max-width:100%;max-height:512px;border-radius:8px;"></p>
+</div>
+<p class="cap" style="text-align:right;margin-top:6px;">
+Imagen generada con ChatGPT
+</p>
 <!-- ============ 30 · RAG ============ -->
 </section>
-<section id="rag-retrieval-augmented-generation" class="slide level2 t28" data-kicker="Karen">
-<h2>RAG · Retrieval Augmented Generation</h2>
-<div class="grid2" style="height:452px;">
-<div class="card fill">
-<div class="numrow">
+<section id="rag-retrieval-augmented-generation-1" class="slide level2 t28" data-kicker="Karen">
+<h2>RAG · <em>Retrieval Augmented Generation</em></h2>
+<div class="card fill vc" style="height:560px;padding:24px 40px;">
+<div class="numrow" style="margin:7px 0;">
 <div class="num">
 1
 </div>
 <div>
-<b>Preparar corpus o documentos</b>
+<b style="font-size:21px;">Preparar corpus o documentos</b>
+<div style="font-size:17.5px;margin-top:2px;">
+<b class="vio"><em>Chunking</em> o fragmentación:</b> división del corpus en fragmentos de tamaño manejable; cada fragmento se convierte en un <em>embedding</em>.
 </div>
 </div>
-<div class="numrow">
+</div>
+<div class="numrow" style="margin:7px 0;">
 <div class="num">
 2
 </div>
 <div>
-<b>Representación vectorial: embeddings</b>
+<b style="font-size:21px;">Representación vectorial: <em>embeddings</em></b>
 </div>
 </div>
-<div class="numrow">
+<div class="numrow" style="margin:7px 0;">
 <div class="num">
 3
 </div>
 <div>
-<b>Vector Store</b>
-<div class="d">
-Índice semántico para recuperar fragmentos. Ejm: FAISS.
+<b style="font-size:21px;"><em>Vector Store</em>:</b> <span style="font-size:18px;">índice para recuperar fragmentos rápidamente. Ejm: FAISS.</span>
 </div>
 </div>
-</div>
-<div class="numrow">
+<div class="numrow" style="margin:7px 0;">
 <div class="num">
 4
 </div>
 <div>
-<b>Recuperación de fragmentos relevantes</b>
-<div class="d">
-Dado un query o pregunta.
+<b style="font-size:21px;">Recuperación de fragmentos relevantes</b> <span style="font-size:18px;">dado un <em>query</em> o pregunta.</span>
+<div style="font-size:17.5px;margin-top:2px;">
+<b class="vio">Similitud semántica:</b> la pregunta del usuario se convierte en <em>embedding</em>; se recuperan los fragmentos más cercanos.
 </div>
 </div>
 </div>
-<div class="numrow">
+<div class="numrow" style="margin:7px 0;">
 <div class="num">
 5
 </div>
 <div>
-<b>LLM</b>
-<div class="d">
-Uso de los fragmentos como contexto para responder.
+<b style="font-size:21px;">LLM</b>
+<div style="font-size:17.5px;margin-top:2px;">
+<b class="vio">Generación aumentada:</b> el LLM recibe la pregunta junto con los fragmentos recuperados y genera una respuesta fundamentada en ellos.
+</div>
+<div style="font-size:17.5px;margin-top:2px;">
+<b class="vio"><em>Prompt</em> LLM:</b> instrucciones para el modelo; incluyen la pregunta y los fragmentos recuperados, indicando que responda con base en ese contexto.
 </div>
 </div>
 </div>
 </div>
-<div class="card-violet fill">
-<span class="h">Chunking o fragmentación</span>
-<p style="font-size:13px;">
-División del corpus en fragmentos de tamaño manejable. Cada fragmento se convierte en un embedding.
+<!-- ============ 30b · RECUPERACIÓN SEMÁNTICA (Karen 12) ============ -->
+</section>
+<section id="recuperación-semántica-de-información-para-análisis-de-texto" class="slide level2 t26" data-kicker="Karen">
+<h2>Recuperación semántica de información para análisis de texto</h2>
+<div class="mflow" style="margin:10px auto 0;">
+<div class="mbox">
+Recolección de datos
+</div>
+<span class="marrow">→</span>
+<div class="mbox">
+<div class="mhead">
+Preprocesamiento
+</div>
+<div class="mitem">
+Tokenización
+</div>
+<div class="mitem">
+Eliminación de <em>stopwords</em>
+</div>
+<div class="mitem">
+Lematización
+</div>
+</div>
+<span class="marrow">→</span>
+<div class="mbox red">
+<div class="mhead">
+Identificación de referencias a la ciencia
+</div>
+<div class="mitem">
+Representación con <em>embeddings</em>
+</div>
+<div class="mitem">
+Matriz de similitud
+</div>
+<div class="mitem">
+Selección de umbral
+</div>
+</div>
+<span class="marrow">→</span>
+<div class="mbox">
+Corpus y subcorpus de ciencia
+</div>
+<span class="marrow">→</span>
+<div class="mbox">
+<div class="mhead">
+Análisis comparativo
+</div>
+<div class="mitem">
+Descriptivo y exploratorio
+</div>
+<div class="mitem">
+Reconocimiento de entidades
+</div>
+<div class="mitem">
+Modelado de tópicos
+</div>
+<div class="mitem">
+Vocabulario · <em>POS-tagging</em>
+</div>
+</div>
+<span class="marrow">→</span>
+<div class="mbox">
+Interpretación y discusión
+</div>
+</div>
+<div class="columns" style="height:210px;margin-top:40px;align-items:flex-start;">
+<div class="column" style="flex:0 0 27%;">
+<p style="font-size:21px;">
+La parte de recuperación de la arquitectura RAG inspiró una metodología para identificar <b>menciones a las ciencias naturales</b> de manera no literal en columnas de opinión.
 </p>
-<span class="h">Similitud semántica</span>
-<p style="font-size:13px;">
-La pregunta del usuario se convierte en embedding. Se recuperan los fragmentos más cercanos.
-</p>
-<span class="h">Prompt LLM</span>
-<p style="font-size:13px;">
-Instrucciones para el modelo: incluyen la pregunta y los fragmentos recuperados, indicando que responda con base en ese contexto.
-</p>
-<span class="h">Generación aumentada</span>
-<p style="font-size:13px;">
-El LLM recibe la pregunta junto con los fragmentos recuperados y genera una respuesta fundamentada en ellos.
-</p>
+</div><div class="column" style="flex:0 0 43%;">
+<div style="display:flex;flex-direction:column;gap:18px;">
+<div style="display:flex;align-items:center;gap:8px;">
+<div style="border:1.5px solid #000;border-radius:4px;padding:9px 16px;font-weight:800;font-size:19.5px;min-width:158px;text-align:center;white-space:nowrap;">
+documentos
+</div>
+<span style="font-size:26px;">→</span>
+<div style="border:1.5px solid #000;border-radius:4px;padding:9px 11px;font-size:19px;">
+13 mil columnas de opinión convertidas en 62 mil fragmentos
 </div>
 </div>
+<div style="display:flex;align-items:center;gap:8px;">
+<div style="border:1.5px solid #000;border-radius:4px;padding:9px 16px;font-weight:800;font-size:19.5px;min-width:158px;text-align:center;white-space:nowrap;">
+<em>query</em>
+</div>
+<span style="font-size:26px;">→</span>
+<div style="border:1.5px solid #000;border-radius:4px;padding:9px 11px;font-size:19px;">
+Palabras para representar a las ciencias naturales: Tesauro de la UNESCO — Ciencia
+</div>
+</div>
+</div>
+</div><div class="column" style="flex:1;">
+<div style="display:flex;gap:8px;justify-content:center;">
+<p><img src="img_nlp/k12_tesauro1.png" style="width:47%;max-height:170px;object-fit:contain;border:1px solid #ddd;border-radius:4px;"> <img src="img_nlp/k12_tesauro2.png" style="width:47%;max-height:170px;object-fit:contain;border:1px solid #ddd;border-radius:4px;"></p>
+</div>
+</div></div>
 <!-- ============ 31 · DIVIDER 04 ============ -->
 </section>
 <section id="section-11" class="slide level2 dark" data-state="dark" data-menu-title="04 · Caso de uso en salud" data-background-color="#3F2F9E">
@@ -1210,7 +1295,7 @@ El LLM recibe la pregunta junto con los fragmentos recuperados y genera una resp
 <div class="divnum">
 04
 </div>
-<div style="font-size:36px;font-weight:800;color:#fff;margin-top:64px;max-width:1050px;">
+<div style="font-size:40.5px;font-weight:800;color:#fff;margin-top:64px;max-width:1050px;">
 Caso de uso: tweets y aplicación en salud
 </div>
 <div style="margin-top:20px;">
@@ -1223,7 +1308,7 @@ Caso de uso: tweets y aplicación en salud
 <h2>La misma metodología, otro dominio</h2>
 <div class="grid2" style="height:452px;">
 <div class="card fill">
-<span class="h" style="font-size:18px;">Objetivo</span>
+<span class="h" style="font-size:26px;">Objetivo</span>
 <ul class="golddot" style="margin-top:8px;">
 <li>
 Caracterizar cómo se habla de salud en un corpus de tuits en español.
@@ -1237,12 +1322,12 @@ Describir la evolución temporal y temática del subcorpus.
 </ul>
 </div>
 <div class="card-violet fill">
-<span class="h" style="font-size:18px;">Pipeline aplicado</span>
+<span class="h" style="font-size:26px;">Pipeline aplicado</span>
 <div class="numrow">
 <div class="num">
 1
 </div>
-<div style="font-size:14px;">
+<div style="font-size:21px;">
 Selección del subcorpus de salud (similitud semántica).
 </div>
 </div>
@@ -1250,7 +1335,7 @@ Selección del subcorpus de salud (similitud semántica).
 <div class="num">
 2
 </div>
-<div style="font-size:14px;">
+<div style="font-size:21px;">
 Descriptivos: autores, tipo de cuenta, evolución mensual.
 </div>
 </div>
@@ -1258,7 +1343,7 @@ Descriptivos: autores, tipo de cuenta, evolución mensual.
 <div class="num">
 3
 </div>
-<div style="font-size:14px;">
+<div style="font-size:21px;">
 13 subcategorías temáticas de salud.
 </div>
 </div>
@@ -1266,7 +1351,7 @@ Descriptivos: autores, tipo de cuenta, evolución mensual.
 <div class="num">
 4
 </div>
-<div style="font-size:14px;">
+<div style="font-size:21px;">
 NER, POS (Stanza) y BERTopic.
 </div>
 </div>
@@ -1274,26 +1359,32 @@ NER, POS (Stanza) y BERTopic.
 <div class="num">
 5
 </div>
-<div style="font-size:14px;">
+<div style="font-size:21px;">
 Búsqueda dirigida: lugares, instituciones, enfermedades, medicamentos.
 </div>
 </div>
 </div>
 </div>
-<!-- ============ 33 · DESCRIPTIVOS ============ -->
+<!-- ============ 33 · DESCRIPTIVOS · AUTORES ============ -->
 </section>
-<section id="descriptivos-generales" class="slide level2" data-kicker="Salud · Andrés · Resultados">
-<h2>Descriptivos generales</h2>
-<div class="grid2" style="height:452px;">
-<div class="card fill imgcard">
-<img src="img_nlp/slide33_img0.png" style="max-height:330px;max-width:100%;">
-<div class="cap">
+<section id="distribución-de-autores" class="slide level2" data-kicker="Salud · Andrés · Resultados">
+<h2>Distribución de autores</h2>
+<div class="imgcard" style="height:505px;justify-content:center;">
+<div class="card imgcard" style="padding:20px 28px;">
+<img src="img_nlp/slide33_img0.png" style="max-height:450px;max-width:1050px;">
+<div class="cap" style="font-size:21px;">
 Distribución de autores según nº de tuits sobre salud
 </div>
 </div>
-<div class="card fill imgcard">
-<img src="img_nlp/slide33_img1.png" style="max-height:330px;max-width:100%;">
-<div class="cap">
+</div>
+<!-- ============ 33b · DESCRIPTIVOS · EVOLUCIÓN ============ -->
+</section>
+<section id="evolución-mensual" class="slide level2" data-kicker="Salud · Andrés · Resultados">
+<h2>Evolución mensual</h2>
+<div class="imgcard" style="height:505px;justify-content:center;">
+<div class="card imgcard" style="padding:20px 28px;">
+<img src="img_nlp/slide33_img1.png" style="max-height:450px;max-width:1050px;">
+<div class="cap" style="font-size:21px;">
 Porcentaje mensual de tuits que mencionan salud
 </div>
 </div>
@@ -1302,16 +1393,22 @@ Porcentaje mensual de tuits que mencionan salud
 </section>
 <section id="quién-habla-de-salud" class="slide level2" data-kicker="Salud · Andrés · Resultados">
 <h2>Quién habla de salud</h2>
-<div class="grid2" style="height:452px;">
-<div class="card fill imgcard">
-<img src="img_nlp/slide34_img0.png" style="max-height:340px;max-width:100%;">
-<div class="cap">
+<div class="imgcard" style="height:505px;justify-content:center;">
+<div class="card imgcard" style="padding:20px 28px;">
+<img src="img_nlp/slide34_img0.png" style="max-height:450px;max-width:1050px;">
+<div class="cap" style="font-size:21px;">
 Top autores con más tuits de salud
 </div>
 </div>
-<div class="card fill imgcard">
-<img src="img_nlp/slide34_img1.png" style="max-height:350px;max-width:100%;">
-<div class="cap">
+</div>
+<!-- ============ 34b · INSTITUCIONES ============ -->
+</section>
+<section id="instituciones-más-mencionadas" class="slide level2" data-kicker="Salud · Andrés · Resultados">
+<h2>Instituciones más mencionadas</h2>
+<div class="imgcard" style="height:505px;justify-content:center;">
+<div class="card imgcard" style="padding:20px 28px;">
+<img src="img_nlp/slide34_img1.png" style="max-height:450px;max-width:1050px;">
+<div class="cap" style="font-size:21px;">
 Instituciones de salud más mencionadas
 </div>
 </div>
@@ -1320,34 +1417,40 @@ Instituciones de salud más mencionadas
 </section>
 <section id="palabras-y-categorías-gramaticales" class="slide level2" data-kicker="Salud · Andrés · Resultados">
 <h2>Palabras y categorías gramaticales</h2>
-<div class="grid2" style="height:452px;">
-<div class="card fill imgcard">
-<img src="img_nlp/slide35_img0.png" style="max-height:340px;max-width:100%;">
-<div class="cap">
+<div class="imgcard" style="height:500px;justify-content:center;">
+<div class="card imgcard" style="padding:22px 26px;">
+<img src="img_nlp/slide35_img0.png" style="max-height:430px;max-width:1000px;width:100%;">
+<div class="cap" style="font-size:21px;">
 Nube de palabras (lematizadas, sin stopwords)
 </div>
 </div>
-<div class="card fill imgcard">
-<img src="img_nlp/slide35_img1.png" style="max-height:250px;max-width:100%;">
-<div class="cap">
-Top verbos, sustantivos y adjetivos (POS · Stanza)
 </div>
-</div>
-</div>
-<!-- ============ 36 · ENFERMEDADES ============ -->
+<!-- ============ 36 · ENFERMEDADES (con y sin COVID) ============ -->
 </section>
-<section id="enfermedades-y-medicamentos" class="slide level2" data-kicker="Salud · Andrés · Resultados">
-<h2>Enfermedades y medicamentos</h2>
-<div class="grid2" style="height:452px;">
+<section id="enfermedades-más-mencionadas" class="slide level2" data-kicker="Salud · Andrés · Resultados">
+<h2>Enfermedades más mencionadas</h2>
+<div class="grid2" style="height:505px;align-content:stretch;">
 <div class="card fill imgcard">
-<img src="img_nlp/slide36_img0.png" style="max-height:350px;max-width:100%;">
-<div class="cap">
-Enfermedades más mencionadas
+<img src="img_nlp/slide36_img0.png" style="max-height:430px;max-width:100%;">
+<div class="cap" style="font-size:20px;">
+Con COVID-19 — domina el conteo
 </div>
 </div>
 <div class="card fill imgcard">
-<img src="img_nlp/slide36_img1.png" style="max-height:350px;max-width:100%;">
-<div class="cap">
+<img src="img_nlp/enfermedades_sin_covid.png" style="max-height:430px;max-width:100%;">
+<div class="cap" style="font-size:20px;">
+Sin COVID-19 — se ven las demás
+</div>
+</div>
+</div>
+<!-- ============ 36b · MEDICAMENTOS ============ -->
+</section>
+<section id="medicamentos-más-mencionados" class="slide level2" data-kicker="Salud · Andrés · Resultados">
+<h2>Medicamentos más mencionados</h2>
+<div class="imgcard" style="height:505px;justify-content:center;">
+<div class="card imgcard" style="padding:20px 28px;">
+<img src="img_nlp/slide36_img1.png" style="max-height:450px;max-width:1050px;">
+<div class="cap" style="font-size:21px;">
 Medicamentos más mencionados
 </div>
 </div>
@@ -1388,27 +1491,27 @@ Tamaño y grosor = frecuencia de co-ocurrencia.
 <h2>Hallazgos del caso</h2>
 <div class="grid3" style="height:250px;">
 <div class="card">
-<span class="cico" style="background:#614AD3;width:44px;height:44px;font-size:20px;">🎯</span><span class="h" style="font-size:17px;margin-top:12px;">Concentración</span>
-<p style="font-size:14px;">
+<span class="cico" style="background:#614AD3;width:44px;height:44px;font-size:28.5px;">🎯</span><span class="h" style="font-size:24.5px;margin-top:12px;">Concentración</span>
+<p style="font-size:21px;">
 La conversación sobre salud se concentra en pocos autores e instituciones.
 </p>
 </div>
 <div class="card">
-<span class="cico" style="background:#614AD3;width:44px;height:44px;font-size:20px;">📈</span><span class="h" style="font-size:17px;margin-top:12px;">Estacionalidad</span>
-<p style="font-size:14px;">
+<span class="cico" style="background:#614AD3;width:44px;height:44px;font-size:28.5px;">📈</span><span class="h" style="font-size:24.5px;margin-top:12px;">Estacionalidad</span>
+<p style="font-size:21px;">
 La actividad varía en el tiempo, con picos ligados a coyunturas de salud pública.
 </p>
 </div>
 <div class="card">
-<span class="cico" style="background:#614AD3;width:44px;height:44px;font-size:20px;">🧬</span><span class="h" style="font-size:17px;margin-top:12px;">Diversidad temática</span>
-<p style="font-size:14px;">
+<span class="cico" style="background:#614AD3;width:44px;height:44px;font-size:28.5px;">🧬</span><span class="h" style="font-size:24.5px;margin-top:12px;">Diversidad temática</span>
+<p style="font-size:21px;">
 Cubre muchas subcategorías, enfermedades y medicamentos específicos.
 </p>
 </div>
 </div>
 <div class="card-deep" style="margin-top:16px;">
 <span class="h">Próximos pasos</span>
-<p style="font-size:14px;">
+<p style="font-size:21px;">
 Profundizar tópicos (BERTopic) por subcategoría · comparar salud con comportamientos protectores · explorar la relación entre cobertura mediática y comportamiento.
 </p>
 </div>
@@ -1426,7 +1529,7 @@ Profundizar tópicos (BERTopic) por subcategoría · comparar salud con comporta
 <div class="divnum">
 05
 </div>
-<div style="font-size:36px;font-weight:800;color:#fff;margin-top:70px;max-width:1050px;">
+<div style="font-size:40.5px;font-weight:800;color:#fff;margin-top:70px;max-width:1050px;">
 Práctica guiada en Python
 </div>
 <div style="margin-top:20px;">
@@ -1437,47 +1540,33 @@ Práctica guiada en Python
 </section>
 <section id="manos-a-la-obra-todo-listo-en-google-colab" class="slide level2 t28" data-kicker="Práctica · Equipo">
 <h2>Manos a la obra: todo listo en Google Colab</h2>
-<div class="columns" style="height:452px;">
-<div class="column" style="flex:0 0 55%;">
-<div class="card fill">
-<span class="h" style="font-size:18px;">Sin instalar nada</span>
-<div class="iconrow">
-<span class="isq">✅</span>
-<p>
-Google Colab con todo preinstalado (sin errores de librerías).
-</p>
+<div style="display:flex;justify-content:center;align-items:center;height:470px;">
+<p><img src="img_nlp/slide40_img0.png" style="width:310px;height:310px;object-fit:contain;border-radius:14px;background:#fff;padding:10px;box-shadow:0 8px 22px rgba(40,28,102,.14);"></p>
 </div>
-<div class="iconrow">
-<span class="isq">📦</span>
-<p>
-Un corpus pequeño: 200 tuits o 200 titulares de prensa.
-</p>
+<!-- ============ 41 · PARA LLEVAR (lista) ============ -->
+</section>
+<section id="para-llevar" class="slide level2" data-kicker="Cierre · Equipo">
+<h2>Para llevar</h2>
+<div class="vc" style="height:520px;">
+<ul class="golddot">
+<li style="font-size:28px;margin:.55em 0;">
+El texto puede convertirse en datos, pero sin decisiones.
+</li>
+<li style="font-size:28px;margin:.55em 0;">
+La lingüística ayuda a evitar interpretaciones pobres o erradas.
+</li>
+<li style="font-size:28px;margin:.55em 0;">
+Python permite escalar preguntas humanísticas y sociales.
+</li>
+<li style="font-size:28px;margin:.55em 0;">
+Una metodología de NLP puede adaptarse a columnas, <em>tweets</em> y salud.
+</li>
+<li style="font-size:28px;margin:.55em 0;">
+La interdisciplinariedad no es un adorno: es parte del método.
+</li>
+</ul>
 </div>
-<div class="iconrow">
-<span class="isq">⏱️</span>
-<p>
-No reproducimos todo el pipeline: hacemos una misión guiada.
-</p>
-</div>
-<div class="iconrow">
-<span class="isq">🤝</span>
-<p>
-Trabajamos juntos, paso a paso.
-</p>
-</div>
-</div>
-</div><div class="column" style="flex:1;">
-<div class="card-violet fill" style="display:flex;flex-direction:column;align-items:center;justify-content:center;">
-<h3 style="text-align:center;">
-Escanea para abrir el notebook
-</h3>
-<img src="img_nlp/slide40_img0.png" style="width:210px;height:210px;border-radius:12px;background:#fff;padding:8px;margin:12px auto;">
-<p class="soft" style="font-size:12px;text-align:center;">
-Taller de NLP · PyCon Colombia 2026
-</p>
-</div>
-</div></div>
-<!-- ============ 41 · CIERRE ============ -->
+<!-- ============ 42 · CIERRE ============ -->
 </section>
 <section id="section-13" class="slide level2 dark" data-state="dark" data-menu-title="Cierre y conversación final" data-background-color="#3F2F9E">
 <h2></h2>
@@ -1487,13 +1576,13 @@ Taller de NLP · PyCon Colombia 2026
 <div class="z" style="display:flex;gap:34px;align-items:center;height:600px;">
 <div style="flex:1;">
 <span class="pill">Cierre y conversación final · Biviana</span>
-<p class="lead" style="font-size:33px;color:#fff;margin-top:24px;max-width:640px;">
-El lenguaje no es solo una columna de strings.
+<p class="lead" style="font-size:39px;color:#fff;margin-top:24px;max-width:640px;">
+El lenguaje no es solo una columna de <em>strings</em>.
 </p>
-<p style="font-size:17px;color:#B6BDF0;font-style:italic;max-width:640px;">
+<p style="font-size:24.5px;color:#B6BDF0;font-style:italic;max-width:640px;">
 También es cómo una sociedad argumenta, nombra problemas y construye sentido. Gracias por acompañarnos.
 </p>
-<p style="font-size:30px;color:#FFC24B;font-weight:800;margin-top:16px;">
+<p style="font-size:36px;color:#FFC24B;font-weight:800;margin-top:16px;">
 ¡Gracias!
 </p>
 <div style="display:flex;gap:12px;margin-top:12px;">
@@ -1504,7 +1593,7 @@ También es cómo una sociedad argumenta, nombra problemas y construye sentido. 
 <div class="card center">
 <span class="h" style="text-align:center;display:block;">Califica el taller</span> <img src="img_nlp/slide41_img0.png" style="width:200px;height:200px;margin:12px auto;display:block;">
 <p class="cap">
-Escanea y déjanos tu feedback: nos ayuda a mejorar PyCon Colombia.
+Escanea y déjanos tu <em>feedback</em>: nos ayuda a mejorar PyCon Colombia.
 </p>
 </div>
 </div>
