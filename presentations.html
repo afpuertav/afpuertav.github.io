@@ -4,14 +4,14 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="author" content="Andrés Felipe Puerta Vélez">
-    <meta name="description" data-i18n-attr="content:page.blog.description" content="Notes and articles on robotics, data and applied mathematics.">
-    <link rel="canonical" href="https://afpuertav.github.io/blog.html">
+    <meta name="description" data-i18n-attr="content:page.presentations.description" content="Talks, workshops and event presentations by Andrés Felipe Puerta Vélez.">
+    <link rel="canonical" href="https://afpuertav.github.io/presentations.html">
     <meta property="og:type" content="website">
-    <meta property="og:title" content="Blog — Andrés F. Puerta">
-    <meta property="og:url" content="https://afpuertav.github.io/blog.html">
+    <meta property="og:title" content="Presentations — Andrés F. Puerta">
+    <meta property="og:url" content="https://afpuertav.github.io/presentations.html">
     <link rel="icon" href="assets/icon.svg" type="image/svg+xml">
     <link rel="stylesheet" href="styles.css">
-    <title data-i18n="page.blog.title">Blog — Andrés F. Puerta</title>
+    <title data-i18n="page.presentations.title">Presentations — Andrés F. Puerta</title>
     <script src="js/i18n.js"></script>
 </head>
 <body>
@@ -33,8 +33,8 @@
                     <li><a href="cv.html" data-i18n="nav.cv">Curriculum vitae</a></li>
                     <li><a href="courses.html" data-i18n="nav.courses">Courses</a></li>
                     <li><a href="publications.html" data-i18n="nav.publications">Publications</a></li>
-                    <li><a href="presentations.html" data-i18n="nav.presentations">Presentations</a></li>
-                    <li><a href="blog.html" aria-current="page" data-i18n="nav.blog">Blog</a></li>
+                    <li><a href="presentations.html" aria-current="page" data-i18n="nav.presentations">Presentations</a></li>
+                    <li><a href="blog.html" data-i18n="nav.blog">Blog</a></li>
                     <li><a href="gallery.html" data-i18n="nav.gallery">Gallery</a></li>
                 </ul>
                 <div class="lang-switch" role="group" data-i18n-attr="aria-label:nav.language">
@@ -47,12 +47,12 @@
 
     <main class="page" id="main">
         <section class="collection">
-            <h1 class="page-title" data-i18n="blog.heading">Blog</h1>
-            <p class="page-intro" data-i18n="blog.intro">Notes on projects, robotics, data and applied mathematics.</p>
+            <h1 class="page-title" data-i18n="presentations.heading">Presentations</h1>
+            <p class="page-intro" data-i18n="presentations.intro">Talks and workshops given at events and communities.</p>
 
             <div class="collection-controls">
-                <label class="visually-hidden" for="search-input" data-i18n="blog.search">Search post…</label>
-                <input type="search" id="search-input" data-i18n-attr="placeholder:blog.search" placeholder="Search post…">
+                <label class="visually-hidden" for="search-input" data-i18n="presentations.search">Search presentation…</label>
+                <input type="search" id="search-input" data-i18n-attr="placeholder:presentations.search" placeholder="Search presentation…">
 
                 <label class="visually-hidden" for="sort-select" data-i18n="sort.dateDesc">Date (newest)</label>
                 <select id="sort-select">
@@ -73,13 +73,13 @@
 
     <script src="js/site.js"></script>
     <script src="js/collection.js"></script>
-    <script src="js/data/posts.js"></script>
+    <script src="js/data/presentations.js"></script>
     <script>
         Collection.mount({
             container: "#posts-container",
             search: "#search-input",
             sort: "#sort-select",
-            items: window.AFP_DATA.posts
+            items: window.AFP_DATA.presentations
         });
     </script>
 </body>

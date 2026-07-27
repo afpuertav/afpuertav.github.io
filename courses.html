@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="author" content="Andrés Felipe Puerta Vélez">
+    <meta name="description" data-i18n-attr="content:page.courses.description" content="Material, practice simulators and resources for the courses I support.">
+    <link rel="canonical" href="https://afpuertav.github.io/courses.html">
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="Courses — Andrés F. Puerta">
+    <meta property="og:url" content="https://afpuertav.github.io/courses.html">
+    <link rel="icon" href="assets/icon.svg" type="image/svg+xml">
+    <link rel="stylesheet" href="styles.css">
+    <title data-i18n="page.courses.title">Courses — Andrés F. Puerta</title>
+    <script src="js/i18n.js"></script>
+</head>
+<body>
+    <a class="skip-link" href="#main" data-i18n="nav.skip">Skip to content</a>
+
+    <header class="site-header">
+        <div class="header-inner">
+            <a href="index.html" class="logo-text"><strong>Andrés F. Puerta</strong></a>
+
+            <button type="button" class="nav-toggle" aria-expanded="false" aria-controls="site-nav" data-i18n-attr="aria-label:nav.toggle">
+                <span class="nav-toggle-bar"></span>
+                <span class="nav-toggle-bar"></span>
+                <span class="nav-toggle-bar"></span>
+            </button>
+
+            <nav class="site-nav" id="site-nav" data-i18n-attr="aria-label:nav.main">
+                <ul class="menu">
+                    <li><a href="index.html" data-i18n="nav.home">Home</a></li>
+                    <li><a href="cv.html" data-i18n="nav.cv">Curriculum vitae</a></li>
+                    <li><a href="courses.html" aria-current="page" data-i18n="nav.courses">Courses</a></li>
+                    <li><a href="publications.html" data-i18n="nav.publications">Publications</a></li>
+                    <li><a href="presentations.html" data-i18n="nav.presentations">Presentations</a></li>
+                    <li><a href="blog.html" data-i18n="nav.blog">Blog</a></li>
+                    <li><a href="gallery.html" data-i18n="nav.gallery">Gallery</a></li>
+                </ul>
+                <div class="lang-switch" role="group" data-i18n-attr="aria-label:nav.language">
+                    <button type="button" class="lang-btn" data-lang="es" aria-pressed="false">ES</button>
+                    <button type="button" class="lang-btn" data-lang="en" aria-pressed="false">EN</button>
+                </div>
+            </nav>
+        </div>
+    </header>
+
+    <main class="page" id="main">
+        <h1 class="page-title" data-i18n="courses.heading">Courses</h1>
+        <p class="page-intro" data-i18n="courses.intro">Resources, class material and practice simulators for the courses I teach or assist.</p>
+
+        <div class="card-grid">
+            <a class="card" href="courses/estadistica_general/index.html">
+                <span class="card-code">CM0244 · <span data-i18n="courses.institution.eafit">Universidad EAFIT</span></span>
+                <h2 data-i18n="courses.stats.name">General Statistics</h2>
+                <p data-i18n="courses.stats.desc">Practice simulators for the four midterms plus the sixteen weeks of class material.</p>
+                <span class="card-cta" data-i18n="courses.enter">Enter course</span>
+            </a>
+
+            <a class="card" href="courses/pensamiento_computacional/index.html">
+                <span class="card-code">FH1002 · <span data-i18n="courses.institution.eafit">Universidad EAFIT</span></span>
+                <h2 data-i18n="courses.compthinking.name">Computational Thinking</h2>
+                <p data-i18n="courses.compthinking.desc">Foundations of algorithmic thinking and problem solving through programming.</p>
+                <span class="card-cta" data-i18n="courses.enter">Enter course</span>
+            </a>
+
+            <a class="card" href="courses/machine_learning_regresion/index.html">
+                <span class="card-code" data-i18n="courses.selfpaced">Independent course</span>
+                <h2 data-i18n="courses.ml.name">Machine learning: supervised regression learning in Python</h2>
+                <p data-i18n="courses.ml.desc">Regression models, evaluation and deployment of supervised learning solutions with Python.</p>
+                <span class="badge badge--soon" data-i18n="common.soon">Coming soon</span>
+                <span class="card-cta" data-i18n="courses.enter">Enter course</span>
+            </a>
+        </div>
+    </main>
+
+    <footer class="site-footer">
+        <p>&copy; <span data-current-year>2026</span> Andrés Felipe Puerta Vélez</p>
+    </footer>
+
+    <script src="js/site.js"></script>
+</body>
+</html>

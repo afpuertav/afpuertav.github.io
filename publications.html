@@ -3,44 +3,84 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="styles.css">
+    <meta name="author" content="Andrés Felipe Puerta Vélez">
+    <meta name="description" data-i18n-attr="content:page.publications.description" content="Research articles and papers by Andrés Felipe Puerta Vélez.">
+    <link rel="canonical" href="https://afpuertav.github.io/publications.html">
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="Publications — Andrés F. Puerta">
+    <meta property="og:url" content="https://afpuertav.github.io/publications.html">
     <link rel="icon" href="assets/icon.svg" type="image/svg+xml">
-    <title>Blog - Andrés F. Puerta</title>
+    <link rel="stylesheet" href="styles.css">
+    <title data-i18n="page.publications.title">Publications — Andrés F. Puerta</title>
+    <script src="js/i18n.js"></script>
 </head>
 <body>
-    <header>
-        <div class="logo">
+    <a class="skip-link" href="#main" data-i18n="nav.skip">Skip to content</a>
+
+    <header class="site-header">
+        <div class="header-inner">
             <a href="index.html" class="logo-text"><strong>Andrés F. Puerta</strong></a>
+
+            <button type="button" class="nav-toggle" aria-expanded="false" aria-controls="site-nav" data-i18n-attr="aria-label:nav.toggle">
+                <span class="nav-toggle-bar"></span>
+                <span class="nav-toggle-bar"></span>
+                <span class="nav-toggle-bar"></span>
+            </button>
+
+            <nav class="site-nav" id="site-nav" data-i18n-attr="aria-label:nav.main">
+                <ul class="menu">
+                    <li><a href="index.html" data-i18n="nav.home">Home</a></li>
+                    <li><a href="cv.html" data-i18n="nav.cv">Curriculum vitae</a></li>
+                    <li><a href="courses.html" data-i18n="nav.courses">Courses</a></li>
+                    <li><a href="publications.html" aria-current="page" data-i18n="nav.publications">Publications</a></li>
+                    <li><a href="presentations.html" data-i18n="nav.presentations">Presentations</a></li>
+                    <li><a href="blog.html" data-i18n="nav.blog">Blog</a></li>
+                    <li><a href="gallery.html" data-i18n="nav.gallery">Gallery</a></li>
+                </ul>
+                <div class="lang-switch" role="group" data-i18n-attr="aria-label:nav.language">
+                    <button type="button" class="lang-btn" data-lang="es" aria-pressed="false">ES</button>
+                    <button type="button" class="lang-btn" data-lang="en" aria-pressed="false">EN</button>
+                </div>
+            </nav>
         </div>
-        <nav>
-            <ul class="menu">
-                <li><a href="cv.html">Curriculum vitae</a></li>
-                <li><a href="publications.html">Publications</a></li>
-                <li><a href="blog.html" class="active">Blog</a></li>
-                <li><a href="gallery.html">Gallery</a></li>
-            </ul>
-        </nav>
     </header>
-    <main>
-        <section class="blog">
-            <h1>Publications</h1>
-            <div class="blog-controls">
-                <input type="text" id="search-input" placeholder="Search publication...">
+
+    <main class="page" id="main">
+        <section class="collection">
+            <h1 class="page-title" data-i18n="publications.heading">Publications</h1>
+            <p class="page-intro" data-i18n="publications.intro">Research articles and papers, published or in progress.</p>
+
+            <div class="collection-controls">
+                <label class="visually-hidden" for="search-input" data-i18n="publications.search">Search publication…</label>
+                <input type="search" id="search-input" data-i18n-attr="placeholder:publications.search" placeholder="Search publication…">
+
+                <label class="visually-hidden" for="sort-select" data-i18n="sort.dateDesc">Date (newest)</label>
                 <select id="sort-select">
-                    <option value="date-desc">Date (Newest)</option>
-                    <option value="date-asc">Date (Oldest)</option>
-                    <option value="title-asc">Title (A-Z)</option>
-                    <option value="title-desc">Title (Z-A)</option>
+                    <option value="date-desc" data-i18n="sort.dateDesc">Date (newest)</option>
+                    <option value="date-asc" data-i18n="sort.dateAsc">Date (oldest)</option>
+                    <option value="title-asc" data-i18n="sort.titleAsc">Title (A-Z)</option>
+                    <option value="title-desc" data-i18n="sort.titleDesc">Title (Z-A)</option>
                 </select>
             </div>
-            <div id="posts-container" class="posts-container">
-                <!-- Las publicaciones se cargarán aquí dinámicamente -->
-            </div>
+
+            <div id="posts-container" class="posts-container"></div>
         </section>
     </main>
-    <footer>
-        &copy; 2024 Andrés Felipe Puerta Vélez's page
+
+    <footer class="site-footer">
+        <p>&copy; <span data-current-year>2026</span> Andrés Felipe Puerta Vélez</p>
     </footer>
-    <script src="publications.js"></script>
+
+    <script src="js/site.js"></script>
+    <script src="js/collection.js"></script>
+    <script src="js/data/publications.js"></script>
+    <script>
+        Collection.mount({
+            container: "#posts-container",
+            search: "#search-input",
+            sort: "#sort-select",
+            items: window.AFP_DATA.publications
+        });
+    </script>
 </body>
 </html>

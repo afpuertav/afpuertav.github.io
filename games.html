@@ -3,44 +3,62 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="styles.css">
+    <meta name="robots" content="noindex">
+    <meta name="description" content="Pequeños juegos hechos para practicar programación web.">
     <link rel="icon" href="assets/icon.svg" type="image/svg+xml">
-    <title>Blog - Andrés F. Puerta</title>
+    <link rel="stylesheet" href="styles.css">
+    <title>Juegos — Andrés F. Puerta</title>
+    <script src="js/i18n.js"></script>
 </head>
 <body>
-    <header>
-        <div class="logo">
+    <a class="skip-link" href="#main" data-i18n="nav.skip">Skip to content</a>
+
+    <header class="site-header">
+        <div class="header-inner">
             <a href="index.html" class="logo-text"><strong>Andrés F. Puerta</strong></a>
+
+            <button type="button" class="nav-toggle" aria-expanded="false" aria-controls="site-nav" data-i18n-attr="aria-label:nav.toggle">
+                <span class="nav-toggle-bar"></span>
+                <span class="nav-toggle-bar"></span>
+                <span class="nav-toggle-bar"></span>
+            </button>
+
+            <nav class="site-nav" id="site-nav" data-i18n-attr="aria-label:nav.main">
+                <ul class="menu">
+                    <li><a href="index.html" data-i18n="nav.home">Home</a></li>
+                    <li><a href="cv.html" data-i18n="nav.cv">Curriculum vitae</a></li>
+                    <li><a href="courses.html" data-i18n="nav.courses">Courses</a></li>
+                    <li><a href="publications.html" data-i18n="nav.publications">Publications</a></li>
+                    <li><a href="presentations.html" data-i18n="nav.presentations">Presentations</a></li>
+                    <li><a href="blog.html" data-i18n="nav.blog">Blog</a></li>
+                    <li><a href="gallery.html" data-i18n="nav.gallery">Gallery</a></li>
+                </ul>
+                <div class="lang-switch" role="group" data-i18n-attr="aria-label:nav.language">
+                    <button type="button" class="lang-btn" data-lang="es" aria-pressed="false">ES</button>
+                    <button type="button" class="lang-btn" data-lang="en" aria-pressed="false">EN</button>
+                </div>
+            </nav>
         </div>
-        <nav>
-            <ul class="menu">
-                <li><a href="cv.html">Curriculum vitae</a></li>
-                <li><a href="blog.html" class="active">Blog</a></li>
-                <li><a href="gallery.html">Gallery</a></li>
-                <li><a href="games.html">Games</a></li>
-            </ul>
-        </nav>
     </header>
-    <main>
-        <section class="blog">
-            <h1>Blog</h1>
-            <div class="blog-controls">
-                <input type="text" id="search-input" placeholder="Search publication...">
-                <select id="sort-select">
-                    <option value="date-desc">Date (Newest)</option>
-                    <option value="date-asc">Date (Oldest)</option>
-                    <option value="title-asc">Title (A-Z)</option>
-                    <option value="title-desc">Title (Z-A)</option>
-                </select>
-            </div>
-            <div id="posts-container" class="posts-container">
-                <!-- Las publicaciones se cargarán aquí dinámicamente -->
-            </div>
-        </section>
+
+    <main class="page" id="main">
+        <h1 class="page-title">Juegos</h1>
+        <p class="page-intro">Página oculta del menú: pequeños experimentos hechos para practicar programación web.</p>
+
+        <div class="card-grid">
+            <a class="card" href="games/tetris.html">
+                <span class="card-code">Canvas · JavaScript</span>
+                <h2>Tetris</h2>
+                <p>Implementación clásica del juego con puntuación local.</p>
+                <span class="card-cta" data-i18n="common.open">Open</span>
+            </a>
+        </div>
     </main>
-    <footer>
-        &copy; 2024 Andrés Felipe Puerta Vélez's page
+
+    <footer class="site-footer">
+        <p>&copy; <span data-current-year>2026</span> Andrés Felipe Puerta Vélez</p>
     </footer>
-    <script src="games.js"></script>
+
+    <script src="js/site.js"></script>
 </body>
 </html>

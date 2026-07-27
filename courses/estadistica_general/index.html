@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="author" content="Andrés Felipe Puerta Vélez">
+    <meta name="description" content="Estadística General (CM0244, Universidad EAFIT): simuladores de los cuatro parciales y material de clase semana a semana.">
+    <link rel="canonical" href="https://afpuertav.github.io/courses/estadistica_general/">
+    <link rel="icon" href="../../assets/icon.svg" type="image/svg+xml">
+    <link rel="stylesheet" href="../../styles.css">
+    <title data-i18n="page.stats.title">Estadística General — Andrés F. Puerta</title>
+    <script src="../../js/i18n.js"></script>
+</head>
+<body>
+    <a class="skip-link" href="#main" data-i18n="nav.skip">Skip to content</a>
+
+    <header class="site-header">
+        <div class="header-inner">
+            <a href="../../index.html" class="logo-text"><strong>Andrés F. Puerta</strong></a>
+
+            <button type="button" class="nav-toggle" aria-expanded="false" aria-controls="site-nav" data-i18n-attr="aria-label:nav.toggle">
+                <span class="nav-toggle-bar"></span>
+                <span class="nav-toggle-bar"></span>
+                <span class="nav-toggle-bar"></span>
+            </button>
+
+            <nav class="site-nav" id="site-nav" data-i18n-attr="aria-label:nav.main">
+                <ul class="menu">
+                    <li><a href="../../index.html" data-i18n="nav.home">Home</a></li>
+                    <li><a href="../../cv.html" data-i18n="nav.cv">Curriculum vitae</a></li>
+                    <li><a href="../../courses.html" aria-current="page" data-i18n="nav.courses">Courses</a></li>
+                    <li><a href="../../publications.html" data-i18n="nav.publications">Publications</a></li>
+                    <li><a href="../../presentations.html" data-i18n="nav.presentations">Presentations</a></li>
+                    <li><a href="../../blog.html" data-i18n="nav.blog">Blog</a></li>
+                    <li><a href="../../gallery.html" data-i18n="nav.gallery">Gallery</a></li>
+                </ul>
+                <div class="lang-switch" role="group" data-i18n-attr="aria-label:nav.language">
+                    <button type="button" class="lang-btn" data-lang="es" aria-pressed="false">ES</button>
+                    <button type="button" class="lang-btn" data-lang="en" aria-pressed="false">EN</button>
+                </div>
+            </nav>
+        </div>
+    </header>
+
+    <main class="page" id="main">
+        <p class="breadcrumb">
+            <a href="../../courses.html" data-i18n="nav.courses">Courses</a> ›
+            <span data-i18n="stats.heading">General Statistics</span>
+        </p>
+
+        <h1 class="page-title" data-i18n="stats.heading">General Statistics</h1>
+        <p class="page-intro">CM0244 · Universidad EAFIT — <span data-i18n="stats.subtitle">Midterm simulators and course files</span></p>
+
+        <section aria-labelledby="simulators-title">
+            <h2 class="section-heading" id="simulators-title" data-i18n="stats.simulators">Midterm simulators</h2>
+            <div class="card-grid">
+                <a class="card" href="primerParcial.html">
+                    <span class="card-code">1°</span>
+                    <h3 data-i18n="stats.p1">First midterm</h3>
+                    <p data-i18n="stats.p1.desc">Descriptive statistics, frequency tables and measures of central tendency.</p>
+                    <span class="card-cta" data-i18n="stats.openSimulator">Open simulator</span>
+                </a>
+                <a class="card" href="segundoParcial.html">
+                    <span class="card-code">2°</span>
+                    <h3 data-i18n="stats.p2">Second midterm</h3>
+                    <p data-i18n="stats.p2.desc">Probability, combinatorics and discrete distributions.</p>
+                    <span class="card-cta" data-i18n="stats.openSimulator">Open simulator</span>
+                </a>
+                <a class="card" href="tercerParcial.html">
+                    <span class="card-code">3°</span>
+                    <h3 data-i18n="stats.p3">Third midterm</h3>
+                    <p data-i18n="stats.p3.desc">Continuous distributions, the normal distribution and the central limit theorem.</p>
+                    <span class="card-cta" data-i18n="stats.openSimulator">Open simulator</span>
+                </a>
+                <a class="card" href="cuartoParcial.html">
+                    <span class="card-code">4°</span>
+                    <h3 data-i18n="stats.p4">Fourth midterm</h3>
+                    <p data-i18n="stats.p4.desc">Statistical inference, hypothesis testing and regression.</p>
+                    <span class="card-cta" data-i18n="stats.openSimulator">Open simulator</span>
+                </a>
+            </div>
+        </section>
+
+        <section aria-labelledby="files-title" style="margin-top:2rem">
+            <h2 class="section-heading" id="files-title" data-i18n="stats.files">Course files</h2>
+            <div class="file-list" id="course-files"></div>
+        </section>
+    </main>
+
+    <footer class="site-footer">
+        <p>&copy; <span data-current-year>2026</span> Andrés Felipe Puerta Vélez</p>
+    </footer>
+
+    <script src="../../js/site.js"></script>
+    <script>
+        /* Lista de PDFs semana a semana. Para añadir más, cambia TOTAL_WEEKS. */
+        (function () {
+            var TOTAL_WEEKS = 16;
+            var container = document.getElementById("course-files");
+
+            function render() {
+                var label = (window.I18N && window.I18N.t("stats.week")) || "Class week";
+                var html = "";
+                for (var week = 1; week <= TOTAL_WEEKS; week++) {
+                    html +=
+                        '<a class="file-row" href="Archivos/Clase%20Semana%20' + week + '.pdf" ' +
+                        'target="_blank" rel="noopener">' +
+                        '<span class="file-tag">PDF</span>' +
+                        "<span>" + label + " " + week + "</span></a>";
+                }
+                container.innerHTML = html;
+            }
+
+            document.addEventListener("DOMContentLoaded", render);
+            document.addEventListener("afp:languagechange", render);
+        })();
+    </script>
+</body>
+</html>

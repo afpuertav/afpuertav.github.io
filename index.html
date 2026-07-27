@@ -1,73 +1,124 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta name="google-site-verification" content="dqPNB8aCQc5Cg6MIhQ2Z3ihlBcPhridX1BIqRBIZO4E" />
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="google-site-verification" content="dqPNB8aCQc5Cg6MIhQ2Z3ihlBcPhridX1BIqRBIZO4E">
+    <meta name="author" content="Andrés Felipe Puerta Vélez">
+    <meta name="description" data-i18n-attr="content:page.home.description" content="Personal site of Andrés Felipe Puerta Vélez: CV, courses, publications, talks and project gallery.">
+    <link rel="canonical" href="https://afpuertav.github.io/">
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="Andrés F. Puerta">
+    <meta property="og:description" content="Applied mathematics, data science and NLP. CV, courses, publications, talks and gallery.">
+    <meta property="og:url" content="https://afpuertav.github.io/">
+    <meta property="og:image" content="https://afpuertav.github.io/assets/fotoperfil.jpg">
+    <meta name="twitter:card" content="summary">
+    <link rel="icon" href="assets/icon.svg" type="image/svg+xml">
     <link rel="stylesheet" href="styles.css">
-    <link rel="icon" href="assets/icon.svg" type="image/svg+xml"> <!-- Favicon -->
-    <title>Andrés F. Puerta</title>
+    <title data-i18n="page.home.title">Andrés F. Puerta</title>
+    <script src="js/i18n.js"></script>
 </head>
 <body>
-    <header>
-        <div class="logo">
+    <a class="skip-link" href="#main" data-i18n="nav.skip">Skip to content</a>
+
+    <header class="site-header">
+        <div class="header-inner">
             <a href="index.html" class="logo-text"><strong>Andrés F. Puerta</strong></a>
+
+            <button type="button" class="nav-toggle" aria-expanded="false" aria-controls="site-nav" data-i18n-attr="aria-label:nav.toggle">
+                <span class="nav-toggle-bar"></span>
+                <span class="nav-toggle-bar"></span>
+                <span class="nav-toggle-bar"></span>
+            </button>
+
+            <nav class="site-nav" id="site-nav" data-i18n-attr="aria-label:nav.main">
+                <ul class="menu">
+                    <li><a href="index.html" aria-current="page" data-i18n="nav.home">Home</a></li>
+                    <li><a href="cv.html" data-i18n="nav.cv">Curriculum vitae</a></li>
+                    <li><a href="courses.html" data-i18n="nav.courses">Courses</a></li>
+                    <li><a href="publications.html" data-i18n="nav.publications">Publications</a></li>
+                    <li><a href="presentations.html" data-i18n="nav.presentations">Presentations</a></li>
+                    <li><a href="blog.html" data-i18n="nav.blog">Blog</a></li>
+                    <li><a href="gallery.html" data-i18n="nav.gallery">Gallery</a></li>
+                </ul>
+                <div class="lang-switch" role="group" data-i18n-attr="aria-label:nav.language">
+                    <button type="button" class="lang-btn" data-lang="es" aria-pressed="false">ES</button>
+                    <button type="button" class="lang-btn" data-lang="en" aria-pressed="false">EN</button>
+                </div>
+            </nav>
         </div>
-        <nav>
-            <ul class="menu">
-                <li><a href="cv.html">Curriculum vitae</a></li>
-                <li><a href="publications.html">Publications</a></li>
-                <li><a href="blog.html">Blog</a></li>
-                <li><a href="gallery.html">Gallery</a></li>
-            </ul>
-        </nav>
     </header>
+
     <div class="container">
         <aside>
-            <img src="assets/fotoperfil.jpg" alt="Foto de perfil" class="profile-pic">
-            <p><strong>Andrés Felipe Puerta Vélez</strong></p>
+            <img src="assets/fotoperfil.jpg" alt="Andrés Felipe Puerta Vélez" class="profile-pic" width="200" height="200">
+            <p><strong data-i18n="profile.name">Andrés Felipe Puerta Vélez</strong></p>
             <p>
-                <img src="assets/location-icon.svg" alt="Ubicación" class="location-icon">
-                Medellín, COL
+                <img src="assets/location-icon.svg" alt="" class="location-icon" width="15" height="15">
+                <span data-i18n="profile.location">Medellín, Colombia</span>
             </p>
             <div class="social-links">
-                <a href="https://github.com/afpuertav" target="_blank">
-                    <img src="assets/github-icon.svg" alt="GitHub">
+                <a href="https://github.com/afpuertav" target="_blank" rel="noopener" aria-label="GitHub">
+                    <img src="assets/github-icon.svg" alt="" width="25" height="25">
                 </a>
-                <a href="https://www.linkedin.com/in/afpuertav/" target="_blank">
-                    <img src="assets/linkedin-icon.svg" alt="LinkedIn">
+                <a href="https://www.linkedin.com/in/afpuertav/" target="_blank" rel="noopener" aria-label="LinkedIn">
+                    <img src="assets/linkedin-icon.svg" alt="" width="25" height="25">
                 </a>
-                <a href="https://scholar.google.com/citations?user=z9xhJ5wAAAAJ" target="_blank">
-                    <img src="assets/scholar-icon.svg" alt="Google Scholar">
+                <a href="https://scholar.google.com/citations?user=z9xhJ5wAAAAJ" target="_blank" rel="noopener" aria-label="Google Scholar">
+                    <img src="assets/scholar-icon.svg" alt="" width="25" height="25">
                 </a>
-                <a href="https://www.youtube.com/@afpuertav" target="_blank">
-                    <img src="assets/youtube-icon.svg" alt="YouTube">
+                <a href="https://www.youtube.com/@afpuertav" target="_blank" rel="noopener" aria-label="YouTube">
+                    <img src="assets/youtube-icon.svg" alt="" width="25" height="25">
                 </a>
             </div>
-        </aside>
-        <main>
-            <section class="about">
-                <h2>About me</h2>
-                <p>Master’s student in Applied Mathematics with a bachelor’s degree in Mechanical Engineering (specializing in integrated design of technical systems) and an associate degree in Software Development. Skilled in computational mechanics, 3D modeling and printing, robotics, automation, and workshop machinery. Complemented by training in programming, artificial intelligence, and project management. Experienced in roles such as research, academic, and logistics assistant, project engineer, AI quality analyst, and independent tutor. Currently working on projects involving natural language processing, statistics, and data science within the context of applied research.
+
+            <!-- ============================================================
+                 MAPA DE VISITANTES  ·  MapMyVisitors
+                 Panel de estadísticas: https://mapmyvisitors.com/web/1c6ww
+                 El script debe ir dentro del <body>, nunca en el <head>.
+                 Si algún día cambias de proveedor, basta con reemplazar el
+                 <script> de abajo; el resto de la sección sigue sirviendo.
+                 ============================================================ -->
+            <section class="visitor-map" aria-labelledby="visitor-map-title">
+                <h2 id="visitor-map-title" data-i18n="home.map.heading">Visitors by country</h2>
+                <div class="visitor-map-embed" id="visitor-map-embed">
+                    <script type="text/javascript" id="mapmyvisitors" src="https://mapmyvisitors.com/map.js?d=PHo4Qkp15OGZwkE7QINbjMDK9oujVVprXLcQ7_jAGGw&cl=ffffff&w=a"></script>
+                </div>
+                <p class="visitor-map-fallback" id="visitor-map-fallback" data-i18n="home.map.fallback">
+                    The visitor map will appear once the widget is configured.
                 </p>
             </section>
-            <section class="image-carousel">
+        </aside>
+
+        <main id="main">
+            <section class="about">
+                <h1 class="section-heading" data-i18n="home.about.heading">About me</h1>
+                <p data-i18n="home.about.text">Master’s student in Applied Mathematics with a bachelor’s degree in Mechanical Engineering (specializing in integrated design of technical systems) and an associate degree in Software Development. Skilled in computational mechanics, 3D modeling and printing, robotics, automation, and workshop machinery. Complemented by training in programming, artificial intelligence, and project management. Experienced in roles such as research, academic, and logistics assistant, project engineer, AI quality analyst, and independent tutor. Currently working on projects involving natural language processing, statistics, and data science within the context of applied research.</p>
+            </section>
+
+            <section class="image-carousel" aria-labelledby="carousel-title">
+                <h2 class="visually-hidden" id="carousel-title" data-i18n="home.carousel.heading">Projects in pictures</h2>
                 <div id="carousel">
-                    <!-- Sección para imágenes y videos -->
-                    <img id="carousel-image" src="" alt="Image description" style="display: none;">
-                    <video id="carousel-video" controls style="display: none;">
-                        <source src="" type="video/mp4">
-                        Your browser does not support the video tag.
-                    </video>    
-                    <p id="carousel-caption">Description of Image/Video</p>
+                    <img id="carousel-image" src="" alt="" style="display: none;">
+                    <video id="carousel-video" muted playsinline controls style="display: none;"></video>
+                    <p id="carousel-caption"></p>
                 </div>
             </section>
-                                   
         </main>
     </div>
-    <footer>
-        &copy; 2024 Andrés Felipe Puerta Vélez's page
+
+    <footer class="site-footer">
+        <ul class="footer-links">
+            <li><a href="cv.html" data-i18n="nav.cv">Curriculum vitae</a></li>
+            <li><a href="courses.html" data-i18n="nav.courses">Courses</a></li>
+            <li><a href="publications.html" data-i18n="nav.publications">Publications</a></li>
+            <li><a href="presentations.html" data-i18n="nav.presentations">Presentations</a></li>
+            <li><a href="gallery.html" data-i18n="nav.gallery">Gallery</a></li>
+        </ul>
+        <p>&copy; <span data-current-year>2026</span> Andrés Felipe Puerta Vélez</p>
     </footer>
-    <script src="index.js"></script>
+
+    <script src="js/site.js"></script>
+    <script src="js/home.js"></script>
 </body>
 </html>

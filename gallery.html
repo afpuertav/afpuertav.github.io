@@ -3,70 +3,100 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="styles.css">
+    <meta name="author" content="Andrés Felipe Puerta Vélez">
+    <meta name="description" data-i18n-attr="content:page.gallery.description" content="Photos and videos of robotics, automation and manufacturing projects.">
+    <link rel="canonical" href="https://afpuertav.github.io/gallery.html">
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="Gallery — Andrés F. Puerta">
+    <meta property="og:url" content="https://afpuertav.github.io/gallery.html">
     <link rel="icon" href="assets/icon.svg" type="image/svg+xml">
-    <title>Gallery</title>
+    <link rel="stylesheet" href="styles.css">
+    <title data-i18n="page.gallery.title">Gallery — Andrés F. Puerta</title>
+    <script src="js/i18n.js"></script>
 </head>
 <body>
-    <header>
-        <div class="logo">
+    <a class="skip-link" href="#main" data-i18n="nav.skip">Skip to content</a>
+
+    <header class="site-header">
+        <div class="header-inner">
             <a href="index.html" class="logo-text"><strong>Andrés F. Puerta</strong></a>
+
+            <button type="button" class="nav-toggle" aria-expanded="false" aria-controls="site-nav" data-i18n-attr="aria-label:nav.toggle">
+                <span class="nav-toggle-bar"></span>
+                <span class="nav-toggle-bar"></span>
+                <span class="nav-toggle-bar"></span>
+            </button>
+
+            <nav class="site-nav" id="site-nav" data-i18n-attr="aria-label:nav.main">
+                <ul class="menu">
+                    <li><a href="index.html" data-i18n="nav.home">Home</a></li>
+                    <li><a href="cv.html" data-i18n="nav.cv">Curriculum vitae</a></li>
+                    <li><a href="courses.html" data-i18n="nav.courses">Courses</a></li>
+                    <li><a href="publications.html" data-i18n="nav.publications">Publications</a></li>
+                    <li><a href="presentations.html" data-i18n="nav.presentations">Presentations</a></li>
+                    <li><a href="blog.html" data-i18n="nav.blog">Blog</a></li>
+                    <li><a href="gallery.html" aria-current="page" data-i18n="nav.gallery">Gallery</a></li>
+                </ul>
+                <div class="lang-switch" role="group" data-i18n-attr="aria-label:nav.language">
+                    <button type="button" class="lang-btn" data-lang="es" aria-pressed="false">ES</button>
+                    <button type="button" class="lang-btn" data-lang="en" aria-pressed="false">EN</button>
+                </div>
+            </nav>
         </div>
-        <nav>
-            <ul class="menu">
-                <li><a href="cv.html">Curriculum vitae</a></li>
-                <li><a href="publications.html">Publications</a></li>
-                <li><a href="blog.html">Blog</a></li>
-                <li><a href="gallery.html" class="active">Gallery</a></li>
-            </ul>
-        </nav>
     </header>
-    <main>
+
+    <main class="page" id="main">
         <section class="gallery">
-            <h1>Gallery</h1>
+            <h1 class="page-title" data-i18n="gallery.heading">Gallery</h1>
+            <p class="page-intro" data-i18n="gallery.intro">Robotics, automation and manufacturing projects in pictures and video.</p>
+
             <div class="gallery-container">
-                <div class="gallery-item">
-                    <img src="gallery/image1.jpg" alt="Image 1">
-                    <p>A CNC routing machine with 2 coupled degrees of freedom. It is a 7-bar mechanism with 2 parallel prismatic pair</p>
-                </div>
-                <div class="gallery-item">
-                    <img src="gallery/image2.jpg" alt="Image 2">
-                    <p>Participation in 'IEEE Education Society Initiative #26 : Robotics For The Streets: Open-Source Robotics for Academics and The Community'</p>
-                </div>
-                <div class="gallery-item">
-                    <video autoplay muted loop>
+                <figure class="gallery-item" style="margin:0">
+                    <img src="gallery/image1.jpg" alt="" loading="lazy">
+                    <figcaption><p data-i18n="gallery.item1">A CNC routing machine with 2 coupled degrees of freedom.</p></figcaption>
+                </figure>
+
+                <figure class="gallery-item" style="margin:0">
+                    <img src="gallery/image2.jpg" alt="" loading="lazy">
+                    <figcaption><p data-i18n="gallery.item2">Participation in the IEEE Education Society Initiative #26.</p></figcaption>
+                </figure>
+
+                <figure class="gallery-item" style="margin:0">
+                    <video autoplay muted loop playsinline preload="metadata">
                         <source src="gallery/video1.mp4" type="video/mp4">
-                        Your browser does not support the video tag.
                     </video>
-                    <p>An HMI with touch screen and PLC. In this case, simulating a single-seat parking lot</p>
-                </div>
-                <div class="gallery-item">
-                    <video autoplay muted loop>
+                    <figcaption><p data-i18n="gallery.item3">An HMI with touch screen and PLC.</p></figcaption>
+                </figure>
+
+                <figure class="gallery-item" style="margin:0">
+                    <video autoplay muted loop playsinline preload="metadata">
                         <source src="gallery/video2.mp4" type="video/mp4">
-                        Your browser does not support the video tag.
                     </video>
-                    <p>My first time programming a URe Universal Robots</p>
-                </div>
-                <div class="gallery-item">
-                    <video autoplay muted loop>
+                    <figcaption><p data-i18n="gallery.item4">My first time programming a UR robot.</p></figcaption>
+                </figure>
+
+                <figure class="gallery-item" style="margin:0">
+                    <video autoplay muted loop playsinline preload="metadata">
                         <source src="gallery/video3.mp4" type="video/mp4">
-                        Your browser does not support the video tag.
                     </video>
-                    <p>H-bridge for motor direction control</p>
-                </div>
-                <div class="gallery-item">
-                    <video autoplay muted loop>
+                    <figcaption><p data-i18n="gallery.item5">H-bridge for motor direction control.</p></figcaption>
+                </figure>
+
+                <figure class="gallery-item" style="margin:0">
+                    <video autoplay muted loop playsinline preload="metadata">
                         <source src="gallery/video4.mp4" type="video/mp4">
-                        Your browser does not support the video tag.
                     </video>
-                    <p>URe of Universal Robots connecting the circuit of a light bulb and turning it on</p>
-                </div>
+                    <figcaption><p data-i18n="gallery.item6">A UR robot connecting a light bulb circuit.</p></figcaption>
+                </figure>
             </div>
         </section>
     </main>
-    <footer>
-        &copy; 2024 Andrés Felipe Puerta Vélez's page
+
+    <footer class="site-footer">
+        <p>&copy; <span data-current-year>2026</span> Andrés Felipe Puerta Vélez</p>
     </footer>
+
+    <script src="js/site.js"></script>
+    <script src="js/gallery.js"></script>
 </body>
 </html>
-<script src="gallery.js"></script>

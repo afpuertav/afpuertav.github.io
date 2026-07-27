@@ -3,34 +3,58 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="../styles.css">
+    <meta name="author" content="Andrés Felipe Puerta Vélez">
+    <meta name="description" content="Segunda entrada del blog: experiencia en robótica y proyectos en curso.">
+    <link rel="canonical" href="https://afpuertav.github.io/blog/post2.html">
     <link rel="icon" href="../assets/icon.svg" type="image/svg+xml">
-    <title>Mi segunda publicación - Andrés F. Puerta</title>
+    <link rel="stylesheet" href="../styles.css">
+    <title>Mi segunda publicación — Andrés F. Puerta</title>
+    <script src="../js/i18n.js"></script>
 </head>
 <body>
-    <header>
-        <div class="logo">
+    <a class="skip-link" href="#main" data-i18n="nav.skip">Skip to content</a>
+
+    <header class="site-header">
+        <div class="header-inner">
             <a href="../index.html" class="logo-text"><strong>Andrés F. Puerta</strong></a>
+
+            <button type="button" class="nav-toggle" aria-expanded="false" aria-controls="site-nav" data-i18n-attr="aria-label:nav.toggle">
+                <span class="nav-toggle-bar"></span>
+                <span class="nav-toggle-bar"></span>
+                <span class="nav-toggle-bar"></span>
+            </button>
+
+            <nav class="site-nav" id="site-nav" data-i18n-attr="aria-label:nav.main">
+                <ul class="menu">
+                    <li><a href="../index.html" data-i18n="nav.home">Home</a></li>
+                    <li><a href="../cv.html" data-i18n="nav.cv">Curriculum vitae</a></li>
+                    <li><a href="../courses.html" data-i18n="nav.courses">Courses</a></li>
+                    <li><a href="../publications.html" data-i18n="nav.publications">Publications</a></li>
+                    <li><a href="../presentations.html" data-i18n="nav.presentations">Presentations</a></li>
+                    <li><a href="../blog.html" aria-current="page" data-i18n="nav.blog">Blog</a></li>
+                    <li><a href="../gallery.html" data-i18n="nav.gallery">Gallery</a></li>
+                </ul>
+                <div class="lang-switch" role="group" data-i18n-attr="aria-label:nav.language">
+                    <button type="button" class="lang-btn" data-lang="es" aria-pressed="false">ES</button>
+                    <button type="button" class="lang-btn" data-lang="en" aria-pressed="false">EN</button>
+                </div>
+            </nav>
         </div>
-        <nav>
-            <ul class="menu">
-                <li><a href="../cv.html">Curriculum vitae</a></li>
-                <li><a href="../publications.html">Publications</a></li>
-                <li><a href="../blog.html">Blog</a></li>
-                <li><a href="../gallery.html">Gallery</a></li>
-            </ul>
-        </nav>
     </header>
-    <main>
-        <section class="post-content">
-            <h1>Mi primera publicación</h1>
-            <p class="post-date">Publicado el: 15 de enero de 2024</p>
-            <p>Esta es mi primera publicación en el blog. Hablo sobre mi experiencia en robótica y cómo he estado trabajando en proyectos interesantes.</p>
-            <!-- Aquí puedes agregar más contenido -->
-        </section>
+
+    <main class="page" id="main">
+        <article class="post-content">
+            <p class="breadcrumb"><a href="../blog.html" data-i18n="nav.blog">Blog</a></p>
+            <h1>Mi segunda publicación</h1>
+            <p class="post-date"><time datetime="2024-01-16">16 de enero de 2024</time></p>
+            <p>Esta es mi segunda publicación en el blog. Hablo sobre mi experiencia en robótica y los proyectos en los que he estado trabajando.</p>
+        </article>
     </main>
-    <footer>
-        &copy; 2024 Andrés Felipe Puerta Vélez's page
+
+    <footer class="site-footer">
+        <p>&copy; <span data-current-year>2026</span> Andrés Felipe Puerta Vélez</p>
     </footer>
+
+    <script src="../js/site.js"></script>
 </body>
 </html>
