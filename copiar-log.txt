@@ -1,23 +1,5 @@
-=== copiar-material.bat  Mon 07/27/2026 18:20:47.98 === 
+=== copiar-herramientas.bat  Tue 07/28/2026 14:39:54.89 === 
  
-Origen usado: C:\Users\afpue\Downloads 
+Contenido final: 
  
-  copiado: python-para-principiantes-2023.pdf 
-  copiado: presentacion-01b-introduccion.pptx 
-  copiado: presentacion-02-algoritmia.pptx 
- 
-=== TERMINADO === 
- 
-Contenido del destino: 
-presentacion-01b-introduccion.pptx
-presentacion-02-algoritmia.pptx
-python-para-principiantes-2023.pdf
- 
-=== copiar2.bat  Mon 07/27/2026 18:21:29.10 === 
-  copiado: presentacion-01a-presentacion-del-curso.pptx 
- 
-Contenido final del destino: 
-presentacion-01a-presentacion-del-curso.pptx
-presentacion-01b-introduccion.pptx
-presentacion-02-algoritmia.pptx
-python-para-principiantes-2023.pdf
+Temporal _tmp_docx eliminado. 

@@ -1,0 +1,81 @@
+<!--
+  terminal-copy.html
+  Botón de copiar para los bloques .terminal de las diapositivas.
+
+  Cada bloque declara qué se copia en su atributo data-copy; si no lo declara,
+  se copia el texto del <pre> quitando el prompt (span.prompt) y las líneas de
+  salida marcadas con .salida.
+-->
+<script>
+(function () {
+  function textoACopiar(term) {
+    if (term.dataset.copy !== undefined) return term.dataset.copy;
+    var pre = term.querySelector("pre");
+    if (!pre) return term.textContent.trim();
+    var clon = pre.cloneNode(true);
+    clon.querySelectorAll(".prompt, .salida").forEach(function (n) { n.remove(); });
+    return clon.textContent.replace(/^\s+|\s+$/g, "");
+  }
+
+  function copiar(texto) {
+    if (navigator.clipboard && window.isSecureContext) {
+      return navigator.clipboard.writeText(texto);
+    }
+    // Reserva para file:// y navegadores viejos
+    return new Promise(function (resolver, rechazar) {
+      var ta = document.createElement("textarea");
+      ta.value = texto;
+      ta.style.position = "fixed";
+      ta.style.opacity = "0";
+      document.body.appendChild(ta);
+      ta.select();
+      try {
+        document.execCommand("copy") ? resolver() : rechazar();
+      } catch (e) {
+        rechazar(e);
+      } finally {
+        document.body.removeChild(ta);
+      }
+    });
+  }
+
+  function preparar() {
+    document.querySelectorAll(".terminal").forEach(function (term) {
+      if (term.querySelector(".term-copy")) return;
+      if (term.dataset.nocopy !== undefined) return;
+
+      var btn = document.createElement("button");
+      btn.className = "term-copy";
+      btn.type = "button";
+      btn.textContent = "Copiar";
+      btn.setAttribute("aria-label", "Copiar el comando al portapapeles");
+
+      btn.addEventListener("click", function (ev) {
+        ev.stopPropagation();
+        ev.preventDefault();
+        copiar(textoACopiar(term)).then(function () {
+          btn.textContent = "¡Copiado!";
+          btn.classList.add("copiado");
+          setTimeout(function () {
+            btn.textContent = "Copiar";
+            btn.classList.remove("copiado");
+          }, 1600);
+        }, function () {
+          btn.textContent = "Error";
+          setTimeout(function () { btn.textContent = "Copiar"; }, 1600);
+        });
+      });
+
+      term.appendChild(btn);
+    });
+  }
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", preparar);
+  } else {
+    preparar();
+  }
+  // reveal.js puede crear diapositivas de reserva; volvemos a pasar al arrancar
+  window.addEventListener("load", preparar);
+})();
+</script>

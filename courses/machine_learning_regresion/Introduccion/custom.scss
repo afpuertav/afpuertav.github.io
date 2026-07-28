@@ -527,6 +527,157 @@ $barra-inferior: 30px;
 /*----------------------------------------------------------
   12. Utilidades
 ----------------------------------------------------------*/
+/*----------------------------------------------------------
+  16. Código y terminal
+----------------------------------------------------------*/
+// Bloques de código: aspecto de consola, para comandos copiables
+.reveal div.sourceCode,
+.reveal pre.sourceCode {
+  background: #10243d;
+  border: 0;
+  border-left: 5px solid $sapphire-lt;
+  border-radius: 8px;
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.25);
+  margin: 0.5em 0;
+  overflow-x: auto;
+}
+
+.reveal pre.sourceCode code,
+.reveal pre code {
+  background: transparent;
+  color: #e8f0f9;
+  font-family: "Cascadia Mono", "Consolas", "SF Mono", Menlo, monospace;
+  font-size: 0.62em;
+  line-height: 1.6;
+  padding: 0.75em 1em;
+  white-space: pre-wrap;
+  word-break: break-word;
+  max-height: none;
+}
+
+// Resaltado de sintaxis legible sobre fondo oscuro
+.reveal pre code .co { color: #8fa6bd; font-style: italic; }
+.reveal pre code .st { color: #9fd88a; }
+.reveal pre code .kw { color: #6fb3ff; font-weight: 600; }
+.reveal pre code .fu { color: #ffd479; }
+
+// Bloque de terminal: reproduce una sesión con su prompt y su salida
+.terminal {
+  background: #10243d;
+  color: #e8f0f9;
+  font-family: "Cascadia Mono", "Consolas", "SF Mono", Menlo, monospace;
+  font-size: 0.6em;
+  line-height: 1.65;
+  padding: 2.2em 1.1em 0.9em 1.1em;
+  border-radius: 8px;
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.25);
+  margin: 0.6em 0;
+  white-space: pre-wrap;
+  word-break: break-word;
+  position: relative;
+}
+
+// El <pre> interior es lo que conserva los saltos de línea de verdad:
+// dentro de un div de Pandoc, un salto de línea suelto se convierte en un
+// simple espacio, y por eso el prompt y la salida acababan en el mismo
+// renglón. Con <pre> cada línea queda donde debe.
+// Hay que anular aquí el aspecto de bloque de código que reveal da a <pre>.
+.reveal .terminal pre {
+  margin: 0;
+  padding: 0;
+  background: transparent;
+  border: 0;
+  border-radius: 0;
+  box-shadow: none;
+  width: 100%;
+  max-height: none;
+  overflow: visible;
+  font-size: inherit;
+  font-family: inherit;
+  line-height: inherit;
+  color: inherit;
+  white-space: pre-wrap;
+  word-break: break-word;
+  text-align: left;
+}
+
+.reveal .terminal pre code {
+  padding: 0;
+  font-size: inherit;
+  background: transparent;
+  color: inherit;
+}
+
+// Barra superior con los tres círculos, como una ventana de consola
+.terminal::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 1.5em;
+  background: #1c3a5c;
+  border-radius: 8px 8px 0 0;
+}
+
+// Los tres circulitos de la barra de la ventana
+.terminal::after {
+  content: "";
+  position: absolute;
+  top: 0.52em;
+  left: 0.9em;
+  width: 0.42em;
+  height: 0.42em;
+  border-radius: 50%;
+  background: #ff5f57;
+  box-shadow: 0.75em 0 0 #febc2e, 1.5em 0 0 #28c840;
+}
+
+.terminal .prompt {
+  color: #7fd06a;
+  font-weight: 700;
+  user-select: none;
+}
+
+// Botón de copiar, alojado en la barra de la ventana
+.reveal .terminal .term-copy {
+  position: absolute;
+  top: 0.16em;
+  right: 0.5em;
+  z-index: 2;
+  font-family: inherit;
+  font-size: 0.8em;
+  line-height: 1.2;
+  padding: 0.14em 0.7em;
+  color: #cfe0f2;
+  background: rgba(255, 255, 255, 0.09);
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background 0.15s ease, color 0.15s ease;
+}
+
+.reveal .terminal .term-copy:hover {
+  background: rgba(255, 255, 255, 0.2);
+  color: #ffffff;
+}
+
+.reveal .terminal .term-copy.copiado {
+  background: #28c840;
+  border-color: #28c840;
+  color: #08240f;
+  font-weight: 700;
+}
+
+// Deja sitio al botón para que nunca tape los tres circulitos
+.terminal::after { z-index: 1; }
+
+// Líneas de salida del programa: se distinguen del comando y no se copian
+.terminal .salida {
+  color: #b9cbde;
+  user-select: text;
+}
+
 .small   { font-size: 0.8em; }
 .smaller { font-size: 0.66em; }
 .center  { text-align: center; }
@@ -537,6 +688,10 @@ $barra-inferior: 30px;
 .reveal .slides section.level2 > ol { margin: 0.35em 0; }
 
 .reveal .columns { align-items: flex-start; }
+
+// En las diapositivas de imagen con dos columnas, la figura y el texto
+// quedan mejor centrados entre sí que colgando desde arriba.
+.reveal .slides section.imagen .columns { align-items: center; }
 
 .reveal strong { color: $sapphire-dark; }
 .reveal .seccion strong { color: #ffffff; }
