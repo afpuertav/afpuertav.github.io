@@ -401,6 +401,10 @@
     "compthinking.material": { es: "Material de clase", en: "Class material" },
     "compthinking.week": { es: "Semana", en: "Week" },
 
+    /* --- Curso: Machine Learning --- */
+    "mlcourse.sessions": { es: "Sesiones", en: "Sessions" },
+    "mlcourse.session": { es: "Sesión", en: "Session" },
+
     /* --- Cursos en preparación --- */
     "course.pending.heading": {
       es: "Contenido en preparación",

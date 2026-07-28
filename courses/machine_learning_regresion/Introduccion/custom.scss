@@ -1,0 +1,543 @@
+/*==============================================================
+  Tema tipo «Madrid» de Beamer para Quarto revealjs
+  Estructura de Madrid (barra de título sólida, bloques
+  redondeados con sombra, triple barra inferior) con la paleta
+  del sitio de Andrés F. Puerta.
+==============================================================*/
+
+/*-- scss:defaults --*/
+
+// Paleta
+$sapphire:      #1553ad;   // color de estructura (equivale al azul de Madrid)
+$sapphire-dark: #0f3f83;
+$sapphire-mid:  #2166c4;
+$sapphire-lt:   #4a8bd6;
+$sapphire-pale: #dce8f5;
+$jonquil:       #f1c40f;
+$persian-red:   #cc2936;
+$platinum:      #cdd7d6;
+$ink:           #2c3e50;
+
+$body-bg:    #ffffff;
+$body-color: #1c2833;
+$link-color: $sapphire;
+
+$font-family-sans-serif: "Segoe UI", "Helvetica Neue", Tahoma, Arial, sans-serif;
+$presentation-heading-font: $font-family-sans-serif;
+$presentation-heading-color: $sapphire-dark;
+$presentation-font-size-root: 29px;
+
+// Alto de las barras
+$barra-inferior: 30px;
+
+/*-- scss:rules --*/
+
+/*----------------------------------------------------------
+  1. Lienzo
+----------------------------------------------------------*/
+.reveal .slide-background { background-color: #ffffff; }
+
+.reveal section { text-align: left; }
+
+// ── Centrado vertical ──────────────────────────────────────────
+// reveal.js escribe display:block (o display:none) como estilo EN LÍNEA
+// sobre cada <section>, y eso gana sobre cualquier regla de esta hoja.
+// Por eso el flex se aplica solo a la diapositiva presente y con
+// !important: si se aplicara a todas, las ocultas se harían visibles.
+// OJO con la estructura que genera Quarto: cada "#" agrupa sus "##" en un
+// <section class="stack">, así que las diapositivas de contenido reales son
+// NIETAS de .slides, no hijas. Además reveal fuerza padding:0 y height:100%
+// sobre .stack, de modo que cualquier regla puesta ahí no hace nada.
+// Por eso apuntamos a section.level2, que es lo que Quarto marca como
+// diapositiva de contenido.
+.reveal .slides section.level2 {
+  top: 0;
+  bottom: 0;
+  height: auto;
+
+  box-sizing: border-box;
+  flex-direction: column;
+  padding-top: 86px;                       // hueco de la barra de título
+  padding-bottom: $barra-inferior + 46px;  // hueco de la cita + el pie
+
+  // "safe center" centra cuando el contenido cabe y alinea arriba cuando
+  // no cabe. Sin "safe", el sobrante se reparte arriba y abajo, y la parte
+  // de arriba se esconde bajo la barra de título.
+  justify-content: center;
+  justify-content: safe center;
+}
+
+// reveal escribe display:block / display:none EN LÍNEA sobre cada sección.
+// Solo la presente puede llevar !important; si se aplicara a todas, las
+// ocultas se volverían visibles.
+.reveal .slides section.level2.present {
+  display: flex !important;
+}
+
+// La portada y las diapositivas de sección las centra reveal por su cuenta
+// (llevan la clase .center), así que no las tocamos.
+
+/*----------------------------------------------------------
+  2. Barra de título (frametitle de Beamer)
+     Sólida, de borde a borde, texto blanco en negrita.
+----------------------------------------------------------*/
+.reveal .slides section > h2 {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 1;
+  background: $sapphire;
+  color: #ffffff;
+  font-size: 1.24em;
+  font-weight: 700;
+  letter-spacing: -0.005em;
+  border: 0;
+  margin: 0;
+  padding: 0.32em 0.55em;
+  border-radius: 2px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.16);
+}
+
+// Sangrado lateral para que la barra llegue a los bordes del marco
+.reveal .slides section > h2::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: -6%;
+  right: -6%;
+  background: $sapphire;
+  border-radius: 2px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.16);
+  z-index: -1;
+}
+
+.reveal .slides section > h3 {
+  color: $sapphire-dark;
+  font-size: 1.02em;
+  font-weight: 700;
+  margin-top: 0.4em;
+}
+
+/*----------------------------------------------------------
+  3. Portada (title page de Beamer)
+----------------------------------------------------------*/
+.reveal .title-slide,
+.reveal #title-slide {
+  text-align: center;
+}
+
+.reveal #title-slide .title {
+  color: $sapphire-dark;
+  font-size: 1.85em;
+  font-weight: 700;
+  line-height: 1.15;
+  margin-bottom: 0.25em;
+}
+
+.reveal #title-slide .subtitle {
+  color: $ink;
+  font-size: 0.92em;
+  font-style: italic;
+  margin-bottom: 1.1em;
+}
+
+.reveal #title-slide .quarto-title-author-name {
+  font-size: 0.92em;
+  color: $body-color;
+}
+
+.reveal #title-slide .date {
+  font-size: 0.78em;
+  color: #5a6774;
+  margin-top: 0.8em;
+}
+
+// Filete decorativo bajo el título, como la regla de la portada de Beamer
+.reveal #title-slide .title::after {
+  content: "";
+  display: block;
+  width: 200px;
+  height: 3px;
+  background: $sapphire;
+  margin: 0.45em auto 0;
+}
+
+/*----------------------------------------------------------
+  4. Triple barra inferior (footline «infolines» de Madrid)
+----------------------------------------------------------*/
+.reveal .footer {
+  bottom: 0 !important;
+  left: 0 !important;
+  right: 0 !important;
+  width: 100% !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  font-size: 13px;
+  line-height: $barra-inferior;
+  height: $barra-inferior;
+  color: #ffffff;
+  text-align: left;
+}
+
+// Quarto envuelve el contenido del pie en un <p>: el flex va ahí
+.reveal .footer,
+.reveal .footer > p {
+  display: flex !important;
+  align-items: stretch;
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  height: $barra-inferior;
+  line-height: $barra-inferior;
+}
+
+.fcell {
+  display: inline-block;
+  height: $barra-inferior;
+  padding: 0 14px;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.f1 { background: $sapphire-dark; flex: 0 0 30%; }
+.f2 { background: $sapphire;      flex: 1 1 auto; }
+// padding-right deja hueco al número de diapositiva, que se ancla a la derecha
+.f3 { background: $sapphire-mid;  flex: 0 0 26%; text-align: right; padding-right: 78px; }
+
+// El número de diapositiva se integra en la celda derecha
+.reveal .slide-number {
+  right: 8px;
+  bottom: 0;
+  height: $barra-inferior;
+  line-height: $barra-inferior;
+  padding: 0 8px;
+  background: transparent;
+  color: #ffffff;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.reveal .slide-number a { color: #ffffff; }
+
+/*----------------------------------------------------------
+  5. Bloques (inner theme «rounded» de Madrid)
+----------------------------------------------------------*/
+.concepto,
+.destacado,
+.alerta {
+  border-radius: 8px;
+  padding: 0.55em 0.85em;
+  margin: 0.5em 0;
+  box-shadow: 0 3px 7px rgba(0, 0, 0, 0.17);
+  position: relative;
+}
+
+.concepto {
+  background: $sapphire-pale;
+  border-top: 26px solid $sapphire;
+  padding-top: 0.5em;
+}
+
+.concepto::before {
+  content: "Definición";
+  position: absolute;
+  top: -23px;
+  left: 12px;
+  font-size: 0.55em;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  color: #ffffff;
+  text-transform: uppercase;
+}
+
+.destacado {
+  background: #fdf6d8;
+  border-top: 26px solid darken($jonquil, 8%);
+  padding-top: 0.5em;
+}
+
+.destacado::before {
+  content: "Idea clave";
+  position: absolute;
+  top: -23px;
+  left: 12px;
+  font-size: 0.55em;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  color: #4a3b00;
+  text-transform: uppercase;
+}
+
+.alerta {
+  background: #fdeaec;
+  border-top: 26px solid $persian-red;
+  padding-top: 0.5em;
+}
+
+.alerta::before {
+  content: "Atención";
+  position: absolute;
+  top: -23px;
+  left: 12px;
+  font-size: 0.55em;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  color: #ffffff;
+  text-transform: uppercase;
+}
+
+// (Las preguntas de discusión viven en guion-clase.md, no en las diapositivas.)
+
+/*----------------------------------------------------------
+  6. Listas con viñetas triangulares (estilo Beamer)
+----------------------------------------------------------*/
+.reveal ul {
+  list-style: none;
+  margin-left: 0.2em;
+}
+
+.reveal ul > li {
+  position: relative;
+  padding-left: 1.05em;
+  margin-bottom: 0.32em;
+}
+
+.reveal ul > li::before {
+  content: "\25B8";           // ▸
+  position: absolute;
+  left: 0;
+  color: $sapphire;
+  font-size: 0.95em;
+}
+
+.reveal ul ul > li::before {
+  content: "\2013";           // –
+  color: $sapphire-lt;
+}
+
+.reveal ol > li { margin-bottom: 0.32em; }
+
+/*----------------------------------------------------------
+  7. Tarjetas
+----------------------------------------------------------*/
+.tarjetas {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(205px, 1fr));
+  gap: 0.65em;
+  margin-top: 0.5em;
+}
+
+.tarjeta {
+  background: #ffffff;
+  border: 1px solid $platinum;
+  border-top: 4px solid $sapphire;
+  border-radius: 8px;
+  padding: 0.6em 0.75em;
+  box-shadow: 0 3px 7px rgba(0, 0, 0, 0.13);
+  font-size: 0.76em;
+  line-height: 1.4;
+}
+
+// Solo el PRIMER <strong> de la tarjeta hace de título y ocupa su línea.
+// Los demás son énfasis dentro del texto y deben quedarse en línea.
+.tarjeta > p:first-child > strong:first-child {
+  color: $sapphire-dark;
+  display: block;
+  margin-bottom: 0.25em;
+  font-size: 1.04em;
+}
+
+.tarjeta strong { color: $sapphire-dark; }
+
+/*----------------------------------------------------------
+  8. Etiquetas
+----------------------------------------------------------*/
+.etiqueta {
+  display: inline-block;
+  font-size: 0.6em;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: #fff;
+  background: $sapphire;
+  padding: 0.14em 0.7em;
+  border-radius: 999px;
+  margin-bottom: 0.3em;
+}
+
+.etiqueta-amarilla { background: darken($jonquil, 10%); color: #3d3000; }
+.etiqueta-roja     { background: $persian-red; }
+.etiqueta-gris     { background: #78858f; }
+
+/*----------------------------------------------------------
+  9. Tablas
+----------------------------------------------------------*/
+.reveal table {
+  font-size: 0.68em;
+  border-collapse: collapse;
+  box-shadow: 0 3px 7px rgba(0, 0, 0, 0.13);
+  border-radius: 6px;
+  overflow: hidden;
+}
+
+.reveal table th {
+  background: $sapphire;
+  color: #ffffff;
+  font-weight: 700;
+  border: 0;
+  padding: 0.4em 0.6em;
+}
+
+.reveal table td {
+  border: 0;
+  border-bottom: 1px solid $platinum;
+  padding: 0.35em 0.6em;
+}
+
+.reveal table tr:nth-child(even) td { background: #eef2f7; }
+
+/*----------------------------------------------------------
+  10. Diapositivas de sección (parte de Beamer)
+----------------------------------------------------------*/
+.reveal .seccion,
+.reveal .seccion h1,
+.reveal .seccion h2,
+.reveal .seccion h3 {
+  color: #ffffff;
+  border: 0;
+  background: transparent;
+  box-shadow: none;
+  text-align: center;
+}
+
+.reveal .seccion h2::before,
+.reveal .seccion h1::before { display: none; }
+
+.reveal .seccion h1,
+.reveal .seccion h2 {
+  font-size: 1.75em;
+  font-weight: 700;
+  margin: 0 0 0.35em 0;
+  padding: 0;
+  line-height: 1.15;
+}
+
+// Filete blanco bajo el título de sección
+.reveal .seccion h1::after {
+  content: "";
+  display: block;
+  width: 160px;
+  height: 3px;
+  background: rgba(255, 255, 255, 0.75);
+  margin: 0.35em auto 0;
+}
+
+.reveal .seccion p,
+.reveal .seccion h3 {
+  font-weight: 400;
+  font-size: 0.95em;
+  opacity: 0.92;
+  text-align: center;
+}
+
+.reveal .seccion a { color: #ffffff; }
+
+/*----------------------------------------------------------
+  11. Cita de fuente al pie de la diapositiva
+----------------------------------------------------------*/
+// Queda por ENCIMA de la cinta inferior, nunca solapada con ella.
+.fuente {
+  position: absolute;
+  bottom: $barra-inferior + 8px;
+  left: 0;
+  right: 0;
+  font-size: 0.38em;
+  color: #6b7783;
+  background: rgba(255, 255, 255, 0.94);
+  border-top: 1px solid $platinum;
+  padding: 5px 2px 3px 2px;
+  line-height: 1.45;
+  word-break: break-word;
+}
+
+.fuente a {
+  color: #4a7fbf;
+  text-decoration: none;
+  border-bottom: 1px dotted #9fb6d4;
+}
+
+// Frase destacada bajo un esquema, a modo de subtítulo
+.subtitulo {
+  text-align: center;
+  font-size: 0.82em;
+  font-weight: 600;
+  color: $sapphire-dark;
+  margin-top: 0.6em;
+}
+
+// Pie de figura o de video
+.piefoto {
+  font-size: 0.62em;
+  color: #4a5560;
+  line-height: 1.45;
+  margin-top: 0.5em;
+  padding-left: 0.7em;
+  border-left: 3px solid $platinum;
+}
+
+// Diapositivas cuyo protagonista es una imagen o un video
+.reveal .slides section.imagen { padding-bottom: $barra-inferior + 52px; }
+
+// Alturas en px sobre el lienzo de 760: título 86 + relleno inferior 76
+// + pie de figura ≈ 70 dejan unos 470 px de sitio para la imagen.
+.reveal .slides section.imagen img {
+  max-height: 470px;
+  max-width: 100%;
+  width: auto;
+  height: auto;
+  object-fit: contain;
+  margin: 0 auto;
+  display: block;
+  border-radius: 6px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.18);
+}
+
+.reveal .slides section.imagen iframe,
+.reveal .slides section.imagen video {
+  display: block;
+  margin: 0 auto;
+  max-height: 470px;
+  max-width: 100%;
+  border-radius: 6px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.18);
+}
+
+// Por si alguna imagen conserva r-stretch, que no la deje en altura 0
+.reveal .slides section.imagen .r-stretch {
+  height: auto !important;
+  max-height: 470px;
+}
+
+.reveal figure { margin: 0; }
+.reveal figcaption { display: none; }
+
+/*----------------------------------------------------------
+  12. Utilidades
+----------------------------------------------------------*/
+.small   { font-size: 0.8em; }
+.smaller { font-size: 0.66em; }
+.center  { text-align: center; }
+
+// Compacta un poco el contenido para que quepa dentro del marco
+.reveal .slides section.level2 > p { margin: 0.35em 0; }
+.reveal .slides section.level2 > ul,
+.reveal .slides section.level2 > ol { margin: 0.35em 0; }
+
+.reveal .columns { align-items: flex-start; }
+
+.reveal strong { color: $sapphire-dark; }
+.reveal .seccion strong { color: #ffffff; }
+.reveal .tarjeta strong { color: $sapphire-dark; }

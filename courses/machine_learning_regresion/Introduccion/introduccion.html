@@ -1,0 +1,1195 @@
+<!DOCTYPE html>
+<html lang="es"><head>
+<script src="introduccion_files/libs/clipboard/clipboard.min.js"></script>
+<script src="introduccion_files/libs/quarto-html/tabby.min.js"></script>
+<script src="introduccion_files/libs/quarto-html/popper.min.js"></script>
+<script src="introduccion_files/libs/quarto-html/tippy.umd.min.js"></script>
+<link href="introduccion_files/libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="introduccion_files/libs/quarto-html/light-border.css" rel="stylesheet">
+<link href="introduccion_files/libs/quarto-html/quarto-syntax-highlighting-15634bcf2e68342d4ad2dfa704d543f6.css" rel="stylesheet" id="quarto-text-highlighting-styles"><meta charset="utf-8">
+  <meta name="generator" content="quarto-1.9.38">
+
+  <meta name="author" content="Andrés Felipe Puerta Vélez">
+  <title>Introducción a la Inteligencia Artificial y el Machine Learning</title>
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
+  <link rel="stylesheet" href="introduccion_files/libs/revealjs/dist/reset.css">
+  <link rel="stylesheet" href="introduccion_files/libs/revealjs/dist/reveal.css">
+  <style>
+    /* Default styles provided by pandoc.
+    ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+    */
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    ul.task-list{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+      vertical-align: middle;
+    }
+  </style>
+  <link rel="stylesheet" href="introduccion_files/libs/revealjs/dist/theme/quarto-c3c00fef51acccb3b1440f832fbdc851.css">
+  <link href="introduccion_files/libs/revealjs/plugin/quarto-line-highlight/line-highlight.css" rel="stylesheet">
+  <link href="introduccion_files/libs/revealjs/plugin/reveal-menu/menu.css" rel="stylesheet">
+  <link href="introduccion_files/libs/revealjs/plugin/reveal-menu/quarto-menu.css" rel="stylesheet">
+  <link href="introduccion_files/libs/revealjs/plugin/reveal-chalkboard/font-awesome/css/all.css" rel="stylesheet">
+  <link href="introduccion_files/libs/revealjs/plugin/reveal-chalkboard/style.css" rel="stylesheet">
+  <link href="introduccion_files/libs/revealjs/plugin/quarto-support/footer.css" rel="stylesheet">
+  <style type="text/css">
+    .reveal div.sourceCode {
+      margin: 0;
+      overflow: auto;
+    }
+    .reveal div.hanging-indent {
+      margin-left: 1em;
+      text-indent: -1em;
+    }
+    .reveal .slide:not(.center) {
+      height: 100%;
+    }
+    .reveal .slide.scrollable {
+      overflow-y: auto;
+    }
+    .reveal .footnotes {
+      height: 100%;
+      overflow-y: auto;
+    }
+    .reveal .slide .absolute {
+      position: absolute;
+      display: block;
+    }
+    .reveal .footnotes ol {
+      counter-reset: ol;
+      list-style-type: none; 
+      margin-left: 0;
+    }
+    .reveal .footnotes ol li:before {
+      counter-increment: ol;
+      content: counter(ol) ". "; 
+    }
+    .reveal .footnotes ol li > p:first-child {
+      display: inline-block;
+    }
+    .reveal .slide ul,
+    .reveal .slide ol {
+      margin-bottom: 0.5em;
+    }
+    .reveal .slide ul li,
+    .reveal .slide ol li {
+      margin-top: 0.4em;
+      margin-bottom: 0.2em;
+    }
+    .reveal .slide ul[role="tablist"] li {
+      margin-bottom: 0;
+    }
+    .reveal .slide ul li > *:first-child,
+    .reveal .slide ol li > *:first-child {
+      margin-block-start: 0;
+    }
+    .reveal .slide ul li > *:last-child,
+    .reveal .slide ol li > *:last-child {
+      margin-block-end: 0;
+    }
+    .reveal .slide .columns:nth-child(3) {
+      margin-block-start: 0.8em;
+    }
+    .reveal blockquote {
+      box-shadow: none;
+    }
+    .reveal .tippy-content>* {
+      margin-top: 0.2em;
+      margin-bottom: 0.7em;
+    }
+    .reveal .tippy-content>*:last-child {
+      margin-bottom: 0.2em;
+    }
+    .reveal .slide > img.stretch.quarto-figure-center,
+    .reveal .slide > img.r-stretch.quarto-figure-center {
+      display: block;
+      margin-left: auto;
+      margin-right: auto; 
+    }
+    .reveal .slide > img.stretch.quarto-figure-left,
+    .reveal .slide > img.r-stretch.quarto-figure-left  {
+      display: block;
+      margin-left: 0;
+      margin-right: auto; 
+    }
+    .reveal .slide > img.stretch.quarto-figure-right,
+    .reveal .slide > img.r-stretch.quarto-figure-right  {
+      display: block;
+      margin-left: auto;
+      margin-right: 0; 
+    }
+  </style>
+</head>
+<body class="quarto-light">
+  <div class="reveal">
+    <div class="slides">
+
+<section class="quarto-title-block center">
+  <h1 class="title">Introducción a la Inteligencia Artificial y el Machine Learning</h1>
+  <p class="subtitle">Curso: Machine learning — aprendizaje supervisado de regresión en Python</p>
+
+<div class="quarto-title-authors">
+<div class="quarto-title-author">
+<div class="quarto-title-author-name">
+Andrés Felipe Puerta Vélez 
+</div>
+</div>
+</div>
+
+  <p class="date">28 de julio de 2026</p>
+</section>
+<section>
+<section class="title-slide slide level1 seccion center" data-background-color="#1553ad">
+<h1>Sesión 1</h1>
+<p>De qué hablamos cuando hablamos de “inteligencia artificial”</p>
+</section>
+<section class="slide level2">
+<h2>Qué veremos hoy</h2>
+<ol type="1">
+<li><strong>Inteligencia artificial</strong> — qué es, qué no es, y de dónde viene el término.</li>
+<li><strong>Machine learning</strong> — en qué se diferencia de programar “a mano”.</li>
+<li><strong>Paradigmas</strong> — supervisado, no supervisado, semisupervisado, por refuerzo.</li>
+<li><strong>Tipos de tarea</strong> — clasificación, regresión, clustering.</li>
+<li><strong>Aplicaciones</strong> — dónde se usa esto de verdad.</li>
+<li><strong>Hacia dónde va el curso</strong> — por qué nos centraremos en regresión.</li>
+</ol>
+<p>Hoy <strong>no</strong> habrá código ni matemáticas. La idea es construir el mapa mental completo antes de entrar en las fórmulas y en Python.</p>
+</section></section>
+<section>
+<section class="title-slide slide level1 seccion center" data-background-color="#1553ad">
+<h1>1 · ¿Qué es la inteligencia artificial?</h1>
+
+</section>
+<section class="slide level2">
+<h2>Una definición oficial</h2>
+<div class="concepto">
+<p>Un <strong>sistema de IA</strong> es <em>“un sistema basado en máquinas que, para objetivos explícitos o implícitos, infiere, a partir de la entrada que recibe, cómo generar salidas tales como predicciones, contenido, recomendaciones o decisiones que pueden influir en entornos físicos o virtuales”</em>.</p>
+</div>
+<p>Los sistemas de IA <strong>varían en su nivel de autonomía y de adaptabilidad</strong> después de ser desplegados.</p>
+<div class="fuente">
+<p>OCDE (2023). <em>Explanatory memorandum on the updated OECD definition of an AI system</em>. <a href="https://oecd.ai/en/dashboards/policy-initiatives/updated-oecd-definition-of-an-ai-system-4108" class="uri">https://oecd.ai/en/dashboards/policy-initiatives/updated-oecd-definition-of-an-ai-system-4108</a></p>
+</div>
+</section>
+<section class="slide level2">
+<h2>Por qué esa definición es tan cuidadosa</h2>
+<p>Es la definición que adoptaron los países miembros de la OCDE en 2023 y la que sirve de base a buena parte de la regulación actual sobre IA.</p>
+<div class="tarjetas">
+<div class="tarjeta">
+<p><strong>“Infiere”</strong> No basta con seguir reglas fijas: el sistema deriva algo que no estaba escrito explícitamente.</p>
+</div>
+<div class="tarjeta">
+<p><strong>“Objetivos implícitos”</strong> El objetivo puede no estar declarado; puede estar embebido en los datos.</p>
+</div>
+<div class="tarjeta">
+<p><strong>“Adaptabilidad”</strong> El sistema puede cambiar su comportamiento después de haber sido desplegado.</p>
+</div>
+</div>
+<p>Fíjense en lo que <strong>no</strong> dice: no menciona redes neuronales, ni Python, ni grandes volúmenes de datos.</p>
+<div class="fuente">
+<p>OCDE (2023). <em>Updated OECD Definition of an AI system</em>. <a href="https://oecd.ai/en/dashboards/policy-initiatives/updated-oecd-definition-of-an-ai-system-4108" class="uri">https://oecd.ai/en/dashboards/policy-initiatives/updated-oecd-definition-of-an-ai-system-4108</a></p>
+</div>
+</section>
+<section class="slide level2">
+<h2>IA no es lo mismo que machine learning</h2>
+<svg viewbox="0 0 1120 480" style="width:100%;max-height:530px" role="img" aria-label="Tres marcos anidados: inteligencia artificial contiene machine learning, que contiene aprendizaje profundo">
+
+  <rect x="4" y="4" width="1112" height="472" rx="16" fill="#dce8f5" stroke="#1553ad" stroke-width="3"></rect>
+  <rect x="150" y="96" width="900" height="352" rx="14" fill="#9dc0e6" stroke="#1553ad" stroke-width="3"></rect>
+  <rect x="300" y="188" width="700" height="240" rx="12" fill="#1553ad" stroke="#0f3f83" stroke-width="3"></rect>
+
+  <text x="34" y="46" font-size="30" font-weight="700" fill="#0f3f83">Inteligencia artificial</text>
+  <text x="34" y="76" font-size="19" fill="#31506f">Sistemas de reglas, búsqueda, lógica, planificación…</text>
+
+  <text x="180" y="140" font-size="27" font-weight="700" fill="#0f3f83">Machine learning</text>
+  <text x="180" y="170" font-size="19" fill="#31506f">Aprende los patrones a partir de los datos</text>
+
+  <text x="330" y="252" font-size="25" font-weight="700" fill="#ffffff">Aprendizaje profundo</text>
+  <text x="330" y="286" font-size="18" fill="#dce8f5">Redes neuronales de muchas capas</text>
+</svg>
+<div class="subtitulo">
+<p>Todo el machine learning es IA, pero no toda la IA es machine learning.</p>
+</div>
+<div class="fuente">
+<p>IBM. <em>¿Qué es el machine learning (ML)?</em> — <a href="https://www.ibm.com/mx-es/think/topics/machine-learning" class="uri">https://www.ibm.com/mx-es/think/topics/machine-learning</a></p>
+</div>
+</section></section>
+<section>
+<section class="title-slide slide level1 seccion center" data-background-color="#1553ad">
+<h1>2 · ¿Qué es el machine learning?</h1>
+
+</section>
+<section class="slide level2">
+<h2>Definición</h2>
+<div class="concepto">
+<p>El machine learning es el <strong>subconjunto de la inteligencia artificial centrado en algoritmos que pueden “aprender” los patrones de los datos de entrenamiento</strong> y, posteriormente, hacer inferencias precisas sobre datos nuevos.</p>
+</div>
+<p>Esa capacidad de reconocimiento de patrones permite que los modelos <strong>tomen decisiones o predicciones sin instrucciones explícitas y codificadas</strong>.</p>
+<p>En palabras de Google: el ML es el proceso de <strong>entrenar un programa —llamado <em>modelo</em>— para hacer predicciones útiles o generar contenido a partir de datos</strong>.</p>
+<div class="fuente">
+<p>IBM. <em>¿Qué es el machine learning (ML)?</em> — <a href="https://www.ibm.com/mx-es/think/topics/machine-learning" class="uri">https://www.ibm.com/mx-es/think/topics/machine-learning</a> · Google for Developers. <em>What is Machine Learning?</em> — <a href="https://developers.google.com/machine-learning/intro-to-ml/what-is-ml" class="uri">https://developers.google.com/machine-learning/intro-to-ml/what-is-ml</a></p>
+</div>
+</section>
+<section class="slide level2">
+<h2>El cambio de enfoque</h2>
+<svg viewbox="0 0 1100 400" style="width:100%;max-height:460px" role="img" aria-label="Comparación: en programación tradicional datos y reglas entran a un programa que produce respuestas; en machine learning datos y respuestas entran al entrenamiento que produce un modelo, y el modelo produce respuestas nuevas">
+
+  <defs>
+    <marker id="fg" markerwidth="10" markerheight="10" refx="8" refy="5" orient="auto">
+      <path d="M0 0 L10 5 L0 10 z" fill="#7d8a97"></path>
+    </marker>
+    <marker id="fa" markerwidth="10" markerheight="10" refx="8" refy="5" orient="auto">
+      <path d="M0 0 L10 5 L0 10 z" fill="#1553ad"></path>
+    </marker>
+  </defs>
+
+  <!-- ── PROGRAMACIÓN TRADICIONAL ── -->
+  <text x="10" y="26" font-size="23" font-weight="700" fill="#5a6774">Programación tradicional</text>
+
+  <rect x="10" y="46" width="170" height="56" rx="9" fill="#fff" stroke="#7d8a97" stroke-width="2.5"></rect>
+  <text x="95" y="82" font-size="20" text-anchor="middle" fill="#2c3e50">Datos</text>
+
+  <rect x="10" y="118" width="170" height="56" rx="9" fill="#fff" stroke="#7d8a97" stroke-width="2.5"></rect>
+  <text x="95" y="154" font-size="20" text-anchor="middle" fill="#2c3e50">Reglas</text>
+
+  <path d="M188 74  L250 100" stroke="#7d8a97" stroke-width="3" fill="none" marker-end="url(#fg)"></path>
+  <path d="M188 146 L250 120" stroke="#7d8a97" stroke-width="3" fill="none" marker-end="url(#fg)"></path>
+
+  <rect x="258" y="82" width="180" height="56" rx="9" fill="#7d8a97"></rect>
+  <text x="348" y="118" font-size="20" text-anchor="middle" fill="#fff">Programa</text>
+
+  <path d="M446 110 L508 110" stroke="#7d8a97" stroke-width="3" marker-end="url(#fg)"></path>
+
+  <rect x="516" y="82" width="180" height="56" rx="9" fill="#fff" stroke="#7d8a97" stroke-width="2.5"></rect>
+  <text x="606" y="118" font-size="20" text-anchor="middle" fill="#2c3e50">Respuestas</text>
+
+  <line x1="10" y1="205" x2="1090" y2="205" stroke="#cdd7d6" stroke-width="2" stroke-dasharray="8 6"></line>
+
+  <!-- ── MACHINE LEARNING ── -->
+  <text x="10" y="243" font-size="23" font-weight="700" fill="#0f3f83">Machine learning</text>
+
+  <rect x="10" y="263" width="170" height="56" rx="9" fill="#fff" stroke="#1553ad" stroke-width="2.5"></rect>
+  <text x="95" y="299" font-size="20" text-anchor="middle" fill="#2c3e50">Datos</text>
+
+  <rect x="10" y="335" width="170" height="56" rx="9" fill="#fff" stroke="#1553ad" stroke-width="2.5"></rect>
+  <text x="95" y="371" font-size="20" text-anchor="middle" fill="#2c3e50">Respuestas</text>
+
+  <path d="M188 291 L250 317" stroke="#1553ad" stroke-width="3" fill="none" marker-end="url(#fa)"></path>
+  <path d="M188 363 L250 337" stroke="#1553ad" stroke-width="3" fill="none" marker-end="url(#fa)"></path>
+
+  <rect x="258" y="299" width="180" height="56" rx="9" fill="#1553ad"></rect>
+  <text x="348" y="335" font-size="20" text-anchor="middle" fill="#fff">Entrenamiento</text>
+
+  <path d="M446 327 L508 327" stroke="#1553ad" stroke-width="3" marker-end="url(#fa)"></path>
+
+  <rect x="516" y="297" width="180" height="60" rx="9" fill="#fff" stroke="#1553ad" stroke-width="4"></rect>
+  <text x="606" y="334" font-size="21" text-anchor="middle" fill="#0f3f83" font-weight="700">Modelo</text>
+
+  <path d="M704 327 L766 327" stroke="#1553ad" stroke-width="3" marker-end="url(#fa)"></path>
+
+  <rect x="774" y="299" width="200" height="56" rx="9" fill="#dce8f5" stroke="#1553ad" stroke-width="2.5"></rect>
+  <text x="874" y="329" font-size="19" text-anchor="middle" fill="#0f3f83">Respuestas</text>
+  <text x="874" y="348" font-size="14" text-anchor="middle" fill="#31506f">para datos nuevos</text>
+</svg>
+<p>En la programación clásica escribimos las <strong>reglas</strong>. En machine learning damos <strong>ejemplos resueltos</strong> y el algoritmo deduce las reglas por su cuenta.</p>
+<div class="fuente">
+<p>Google for Developers. <em>What is Machine Learning?</em> — <a href="https://developers.google.com/machine-learning/intro-to-ml/what-is-ml" class="uri">https://developers.google.com/machine-learning/intro-to-ml/what-is-ml</a></p>
+</div>
+</section>
+<section class="slide level2">
+<h2>Un ejemplo concreto: predecir la lluvia</h2>
+<div class="columns">
+<div class="column" style="width:48%;">
+<div class="tarjeta">
+<p><strong>Enfoque tradicional</strong></p>
+<p>Construir una representación física de la atmósfera y la superficie terrestre, y resolver enormes cantidades de ecuaciones de dinámica de fluidos.</p>
+<p><em>Google lo describe como “increíblemente difícil”.</em></p>
+</div>
+</div><div class="column" style="width:4%;">
+
+</div><div class="column" style="width:48%;">
+<div class="tarjeta">
+<p><strong>Enfoque de machine learning</strong></p>
+<p>Darle al modelo grandes cantidades de datos meteorológicos históricos hasta que aprenda la relación entre los patrones del clima y la cantidad de lluvia.</p>
+<p>Después le damos el clima actual y predice la lluvia.</p>
+</div>
+</div></div>
+<p>Ninguno de los dos es “mejor” siempre. El ML gana cuando la relación es <strong>difícil de escribir a mano pero está presente en los datos</strong>.</p>
+<div class="fuente">
+<p>Google for Developers. <em>What is Machine Learning?</em> — <a href="https://developers.google.com/machine-learning/intro-to-ml/what-is-ml" class="uri">https://developers.google.com/machine-learning/intro-to-ml/what-is-ml</a></p>
+</div>
+</section>
+<section class="slide level2">
+<h2>Tres palabras que usaremos todo el curso</h2>
+<div class="tarjetas">
+<div class="tarjeta">
+<p><strong>Modelo</strong> La relación matemática derivada de los datos que el sistema usa para predecir. No es un programa escrito por nosotros: es el resultado del entrenamiento.</p>
+</div>
+<div class="tarjeta">
+<p><strong>Entrenamiento</strong> El proceso de ajustar el modelo mostrándole datos.</p>
+</div>
+<div class="tarjeta">
+<p><strong>Inferencia / predicción</strong> Usar el modelo ya entrenado sobre datos <strong>nuevos</strong>, que nunca vio.</p>
+</div>
+</div>
+<div class="fuente">
+<p>Google for Developers. <em>What is Machine Learning?</em> — <a href="https://developers.google.com/machine-learning/intro-to-ml/what-is-ml" class="uri">https://developers.google.com/machine-learning/intro-to-ml/what-is-ml</a> · IBM. <em>¿Qué es el machine learning (ML)?</em> — <a href="https://www.ibm.com/mx-es/think/topics/machine-learning" class="uri">https://www.ibm.com/mx-es/think/topics/machine-learning</a></p>
+</div>
+</section></section>
+<section>
+<section class="title-slide slide level1 seccion center" data-background-color="#1553ad">
+<h1>3 · Paradigmas de aprendizaje</h1>
+
+</section>
+<section class="slide level2">
+<h2>Los tres paradigmas fundamentales</h2>
+<p>Todos los métodos de machine learning pueden clasificarse en uno de tres paradigmas, según <strong>la naturaleza de sus objetivos de entrenamiento</strong>.</p>
+<div class="tarjetas">
+<div class="tarjeta">
+<p><span class="etiqueta">Supervisado</span></p>
+<p>Entrena un modelo para predecir la salida <strong>correcta</strong> para una entrada dada. Requiere una “verdad fundamental” externa.</p>
+</div>
+<div class="tarjeta">
+<p><span class="etiqueta etiqueta-gris">No supervisado</span></p>
+<p>Entrena un modelo para <strong>descubrir patrones intrínsecos</strong>, dependencias y correlaciones. No hay respuesta correcta contra la cual comparar.</p>
+</div>
+<div class="tarjeta">
+<p><span class="etiqueta etiqueta-amarilla">Por refuerzo</span></p>
+<p>Entrena un modelo para <strong>evaluar su entorno y actuar</strong> buscando la mayor recompensa. No hay una verdad única, pero sí acciones buenas y malas.</p>
+</div>
+</div>
+<div class="fuente">
+<p>IBM. <em>¿Qué es el machine learning (ML)?</em> — <a href="https://www.ibm.com/mx-es/think/topics/machine-learning" class="uri">https://www.ibm.com/mx-es/think/topics/machine-learning</a></p>
+</div>
+</section>
+<section class="slide level2">
+<h2>Aprendizaje supervisado</h2>
+<div class="concepto">
+<p>El modelo aprende a partir de datos <strong>que ya traen la respuesta correcta</strong> (datos <em>etiquetados</em>).</p>
+</div>
+<p>Google lo compara con un estudiante que se prepara estudiando exámenes antiguos que incluyen tanto las preguntas <strong>como</strong> las respuestas. Cuando ha practicado con suficientes exámenes viejos, está listo para uno nuevo.</p>
+<p>Es “supervisado” en el sentido de que <strong>un humano le entrega al sistema datos con los resultados correctos ya conocidos</strong>. Sus dos casos de uso más comunes son <strong>regresión</strong> y <strong>clasificación</strong>.</p>
+<div class="fuente">
+<p>Google for Developers. <em>What is Machine Learning?</em> — <a href="https://developers.google.com/machine-learning/intro-to-ml/what-is-ml" class="uri">https://developers.google.com/machine-learning/intro-to-ml/what-is-ml</a></p>
+</div>
+</section>
+<section class="slide level2">
+<h2>Aprendizaje no supervisado</h2>
+<div class="concepto">
+<p>Los algoritmos <strong>disciernen patrones intrínsecos en datos no etiquetados</strong>: similitudes, correlaciones o agrupaciones potenciales.</p>
+</div>
+<p>Son especialmente útiles cuando esos patrones <strong>no son evidentes para un observador humano</strong>.</p>
+<p>Como no se asume la preexistencia de una salida “correcta” conocida, no requieren señales de supervisión ni funciones de pérdida convencionales — de ahí el nombre.</p>
+<div class="fuente">
+<p>IBM. <em>¿Qué es el machine learning (ML)?</em> — <a href="https://www.ibm.com/mx-es/think/topics/machine-learning" class="uri">https://www.ibm.com/mx-es/think/topics/machine-learning</a></p>
+</div>
+</section>
+<section class="slide level2">
+<h2>Aprendizaje semisupervisado</h2>
+<div class="concepto">
+<p>Usa <strong>tanto datos etiquetados como datos no etiquetados</strong>.</p>
+</div>
+<p>La idea: aprovechar la información de los pocos datos etiquetados disponibles para hacer suposiciones sobre los puntos <strong>no</strong> etiquetados, de modo que estos últimos puedan incorporarse al flujo de trabajo supervisado.</p>
+<p><strong>Por qué existe:</strong> etiquetar datos es caro y lento. Un radiólogo marcando tumores en diez mil imágenes cuesta muchísimo; conseguir diez mil imágenes sin marcar es barato.</p>
+<p>En scikit-learn esto aparece como <em>Self Training</em> y <em>Label Propagation</em>.</p>
+<div class="fuente">
+<p>IBM. <em>¿Qué es el machine learning (ML)?</em> — <a href="https://www.ibm.com/mx-es/think/topics/machine-learning" class="uri">https://www.ibm.com/mx-es/think/topics/machine-learning</a> · scikit-learn. <em>1.14. Semi-supervised learning</em> — <a href="https://scikit-learn.org/stable/modules/semi_supervised.html" class="uri">https://scikit-learn.org/stable/modules/semi_supervised.html</a></p>
+</div>
+</section>
+<section class="slide level2">
+<h2>Aprendizaje por refuerzo</h2>
+<div class="concepto">
+<p>El modelo aprende <strong>por prueba y error</strong>, recibiendo recompensas o penalizaciones según las acciones que realiza dentro de un entorno.</p>
+</div>
+<p>En lugar de pares independientes de entrada-salida, opera sobre tuplas interdependientes de <strong>estado – acción – recompensa</strong>. El objetivo no es minimizar un error, sino <strong>maximizar la recompensa</strong>.</p>
+<p>Se usa sobre todo en robótica, videojuegos y problemas donde el espacio de soluciones es muy amplio o difícil de definir. Al sistema se le suele llamar <strong>agente</strong>.</p>
+<p><em>Ejemplos: enseñar a un robot a caminar; AlphaGo aprendiendo a jugar Go.</em></p>
+<div class="fuente">
+<p>IBM. <em>¿Qué es el machine learning (ML)?</em> — <a href="https://www.ibm.com/mx-es/think/topics/machine-learning" class="uri">https://www.ibm.com/mx-es/think/topics/machine-learning</a> · Google for Developers. <em>What is Machine Learning?</em> — <a href="https://developers.google.com/machine-learning/intro-to-ml/what-is-ml" class="uri">https://developers.google.com/machine-learning/intro-to-ml/what-is-ml</a></p>
+</div>
+</section>
+<section class="slide level2">
+<h2>Y además: IA generativa</h2>
+<div class="concepto">
+<p>Una clase de modelos que <strong>crea contenido</strong> a partir de la entrada del usuario: texto, imágenes, audio, video, código.</p>
+</div>
+<p>Aprenden patrones de los datos con el objetivo de <strong>producir datos nuevos pero similares</strong>. Google los compara con un comediante que imita a otros observándolos, o con una banda tributo que aprende a sonar como un grupo escuchando muchas de sus canciones.</p>
+<p>Los modelos generativos se entrenan <strong>inicialmente con un enfoque no supervisado</strong>, y a veces se afinan después con aprendizaje supervisado o por refuerzo. No es un cuarto paradigma aislado, sino una combinación.</p>
+<div class="fuente">
+<p>Google for Developers. <em>What is Machine Learning?</em> — <a href="https://developers.google.com/machine-learning/intro-to-ml/what-is-ml" class="uri">https://developers.google.com/machine-learning/intro-to-ml/what-is-ml</a></p>
+</div>
+</section>
+<section class="slide level2">
+<h2>Resumen de paradigmas</h2>
+<table class="caption-top">
+<colgroup>
+<col style="width: 25%">
+<col style="width: 25%">
+<col style="width: 25%">
+<col style="width: 25%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Paradigma</th>
+<th>¿Datos etiquetados?</th>
+<th>¿Qué optimiza?</th>
+<th>Tareas típicas</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><strong>Supervisado</strong></td>
+<td>Sí</td>
+<td>Acercarse a la respuesta correcta</td>
+<td>Clasificación, regresión</td>
+</tr>
+<tr class="even">
+<td><strong>Semisupervisado</strong></td>
+<td>Algunos sí, la mayoría no</td>
+<td>Igual, aprovechando lo no etiquetado</td>
+<td>Clasificación con pocos datos</td>
+</tr>
+<tr class="odd">
+<td><strong>No supervisado</strong></td>
+<td>No</td>
+<td>Estructura interna de los datos</td>
+<td>Clustering, asociación, reducción de dimensionalidad</td>
+</tr>
+<tr class="even">
+<td><strong>Por refuerzo</strong></td>
+<td>No aplica</td>
+<td>Maximizar recompensa acumulada</td>
+<td>Control, robótica, juegos</td>
+</tr>
+</tbody>
+</table>
+<div class="fuente">
+<p>IBM. <em>¿Qué es el machine learning (ML)?</em> — <a href="https://www.ibm.com/mx-es/think/topics/machine-learning" class="uri">https://www.ibm.com/mx-es/think/topics/machine-learning</a> · Google for Developers. <em>What is Machine Learning?</em> — <a href="https://developers.google.com/machine-learning/intro-to-ml/what-is-ml" class="uri">https://developers.google.com/machine-learning/intro-to-ml/what-is-ml</a></p>
+</div>
+</section></section>
+<section>
+<section class="title-slide slide level1 seccion center" data-background-color="#1553ad">
+<h1>4 · Tipos de tarea</h1>
+
+</section>
+<section class="slide level2">
+<h2>Las tres tareas más comunes</h2>
+<svg viewbox="0 0 960 300" style="width:100%;max-height:380px" role="img" aria-label="Tres gráficos: clasificación con frontera, regresión con recta ajustada, clustering con grupos">
+  <text x="20" y="22" font-size="17" font-weight="700" fill="#0f3f83">Clasificación</text>
+  <rect x="20" y="34" width="270" height="220" fill="#fff" stroke="#cdd7d6" stroke-width="2" rx="6"></rect>
+  <line x1="40" y1="240" x2="272" y2="70" stroke="#cc2936" stroke-width="3" stroke-dasharray="7 5"></line>
+  <g fill="#1553ad">
+    <circle cx="70" cy="90" r="8"></circle><circle cx="105" cy="70" r="8"></circle><circle cx="95" cy="120" r="8"></circle>
+    <circle cx="140" cy="95" r="8"></circle><circle cx="60" cy="140" r="8"></circle><circle cx="125" cy="135" r="8"></circle>
+  </g>
+  <g fill="#f1c40f" stroke="#b8960b" stroke-width="1.5">
+    <rect x="185" y="180" width="15" height="15"></rect><rect x="225" y="205" width="15" height="15"></rect>
+    <rect x="160" y="215" width="15" height="15"></rect><rect x="245" y="165" width="15" height="15"></rect>
+    <rect x="205" y="150" width="15" height="15"></rect><rect x="140" y="190" width="15" height="15"></rect>
+  </g>
+  <text x="30" y="277" font-size="13" fill="#5a6774">Salida: una categoría</text>
+
+  <text x="345" y="22" font-size="17" font-weight="700" fill="#0f3f83">Regresión</text>
+  <rect x="345" y="34" width="270" height="220" fill="#fff" stroke="#cdd7d6" stroke-width="2" rx="6"></rect>
+  <line x1="365" y1="228" x2="597" y2="72" stroke="#1553ad" stroke-width="3.5"></line>
+  <g fill="#2c3e50">
+    <circle cx="390" cy="222" r="6"></circle><circle cx="425" cy="192" r="6"></circle><circle cx="452" cy="185" r="6"></circle>
+    <circle cx="486" cy="152" r="6"></circle><circle cx="515" cy="140" r="6"></circle><circle cx="548" cy="105" r="6"></circle>
+    <circle cx="575" cy="95" r="6"></circle><circle cx="410" cy="215" r="6"></circle><circle cx="530" cy="122" r="6"></circle>
+  </g>
+  <text x="355" y="277" font-size="13" fill="#5a6774">Salida: un número continuo</text>
+
+  <text x="670" y="22" font-size="17" font-weight="700" fill="#0f3f83">Clustering</text>
+  <rect x="670" y="34" width="270" height="220" fill="#fff" stroke="#cdd7d6" stroke-width="2" rx="6"></rect>
+  <ellipse cx="740" cy="105" rx="52" ry="45" fill="none" stroke="#8a97a4" stroke-width="2" stroke-dasharray="5 4"></ellipse>
+  <ellipse cx="865" cy="195" rx="52" ry="45" fill="none" stroke="#8a97a4" stroke-width="2" stroke-dasharray="5 4"></ellipse>
+  <g fill="#2176ae">
+    <circle cx="720" cy="90" r="7"></circle><circle cx="755" cy="80" r="7"></circle><circle cx="738" cy="118" r="7"></circle>
+    <circle cx="765" cy="120" r="7"></circle><circle cx="712" cy="122" r="7"></circle>
+    <circle cx="850" cy="180" r="7"></circle><circle cx="885" cy="172" r="7"></circle><circle cx="862" cy="212" r="7"></circle>
+    <circle cx="890" cy="210" r="7"></circle><circle cx="838" cy="205" r="7"></circle>
+  </g>
+  <text x="680" y="277" font-size="13" fill="#5a6774">Salida: grupos que nadie definió</text>
+</svg>
+<div class="fuente">
+<p>Google for Developers. <em>What is Machine Learning?</em> — <a href="https://developers.google.com/machine-learning/intro-to-ml/what-is-ml" class="uri">https://developers.google.com/machine-learning/intro-to-ml/what-is-ml</a> · IBM. <em>¿Qué es el machine learning (ML)?</em> — <a href="https://www.ibm.com/mx-es/think/topics/machine-learning" class="uri">https://www.ibm.com/mx-es/think/topics/machine-learning</a></p>
+</div>
+</section>
+<section class="slide level2">
+<h2>Clasificación</h2>
+<div class="concepto">
+<p>Un modelo de clasificación predice <strong>la probabilidad de que algo pertenezca a una categoría</strong>. A diferencia de la regresión, su salida no es un número sino una pertenencia.</p>
+</div>
+<div class="columns">
+<div class="column" style="width:50%;">
+<p><strong>Binaria</strong> — dos valores posibles</p>
+<p><em>Ejemplos:</em> ¿este correo es spam o no? ¿va a llover o no?</p>
+</div><div class="column" style="width:50%;">
+<p><strong>Multiclase</strong> — más de dos valores</p>
+<p><em>Ejemplos:</em> ¿esta foto contiene un gato, un perro o un pájaro? ¿lluvia, granizo, nieve o aguanieve?</p>
+</div></div>
+<div class="fuente">
+<p>Google for Developers. <em>What is Machine Learning?</em> — <a href="https://developers.google.com/machine-learning/intro-to-ml/what-is-ml" class="uri">https://developers.google.com/machine-learning/intro-to-ml/what-is-ml</a></p>
+</div>
+</section>
+<section class="slide level2 imagen">
+<h2>Clasificación: cómo se ve de verdad</h2>
+<div class="quarto-figure quarto-figure-center">
+<figure>
+<p><img data-src="imgs/ejemplo-clasificador.png" class="quarto-figure quarto-figure-center" style="width:98.0%"></p>
+</figure>
+</div>
+<div class="piefoto">
+<p>Distintos clasificadores sobre los mismos tres conjuntos de datos. Cada color de fondo es la región que el modelo asigna a cada clase; el número es su exactitud. Fíjense en que <strong>el mismo dato admite fronteras muy distintas</strong>.</p>
+</div>
+<div class="fuente">
+<p>scikit-learn developers. <em>Classifier comparison</em> — <a href="https://scikit-learn.org/stable/auto_examples/classification/plot_classifier_comparison.html" class="uri">https://scikit-learn.org/stable/auto_examples/classification/plot_classifier_comparison.html</a></p>
+</div>
+</section>
+<section class="slide level2">
+<h2>Regresión</h2>
+<div class="concepto">
+<p>Un modelo de regresión predice <strong>un valor numérico</strong>.</p>
+</div>
+<p>Los modelos de regresión predicen valores continuos: precio, duración, temperatura, tamaño.</p>
+<table class="caption-top">
+<colgroup>
+<col style="width: 33%">
+<col style="width: 33%">
+<col style="width: 33%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Escenario</th>
+<th>Datos de entrada posibles</th>
+<th>Predicción numérica</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Precio futuro de una vivienda</td>
+<td>Metros cuadrados, código postal, número de habitaciones y baños, tamaño del lote, tasa de interés hipotecario, impuestos</td>
+<td>El precio de la vivienda</td>
+</tr>
+<tr class="even">
+<td>Duración futura de un trayecto</td>
+<td>Condiciones históricas de tráfico, distancia al destino, condiciones meteorológicas</td>
+<td>El tiempo hasta llegar</td>
+</tr>
+</tbody>
+</table>
+<div class="fuente">
+<p>Google for Developers. <em>What is Machine Learning?</em> — <a href="https://developers.google.com/machine-learning/intro-to-ml/what-is-ml" class="uri">https://developers.google.com/machine-learning/intro-to-ml/what-is-ml</a> · IBM. <em>¿Qué es el machine learning (ML)?</em> — <a href="https://www.ibm.com/mx-es/think/topics/machine-learning" class="uri">https://www.ibm.com/mx-es/think/topics/machine-learning</a></p>
+</div>
+</section>
+<section class="slide level2 imagen">
+<h2>Regresión: cómo se ve de verdad</h2>
+<div class="quarto-figure quarto-figure-center">
+<figure>
+<p><img data-src="imgs/ejemplo-regresor.png" class="quarto-figure quarto-figure-center" style="width:82.0%"></p>
+</figure>
+</div>
+<div class="piefoto">
+<p>Predicción del consumo eléctrico a lo largo de la semana. La línea azul es lo que ocurrió; naranja y verde son dos modelos con distinto grado de ajuste. <strong>La salida es un número para cada instante</strong>, no una categoría.</p>
+</div>
+<div class="fuente">
+<p>scikit-learn developers. <em>Time-related feature engineering</em> — <a href="https://scikit-learn.org/stable/auto_examples/applications/plot_cyclical_feature_engineering.html" class="uri">https://scikit-learn.org/stable/auto_examples/applications/plot_cyclical_feature_engineering.html</a></p>
+</div>
+</section>
+<section class="slide level2">
+<h2>Clustering y otras tareas no supervisadas</h2>
+<p>La mayoría de los métodos no supervisados hacen una de estas tres cosas:</p>
+<div class="tarjetas">
+<div class="tarjeta">
+<p><strong>Agrupación (clustering)</strong> Divide los puntos en grupos según su proximidad o similitud. <em>Usos: segmentación de mercado, detección de fraude.</em> Algoritmos: k-means, mezclas gaussianas, DBSCAN.</p>
+</div>
+<div class="tarjeta">
+<p><strong>Asociación</strong> Distingue correlaciones entre acciones y condiciones. <em>Usos: motores de recomendación de comercio electrónico.</em></p>
+</div>
+<div class="tarjeta">
+<p><strong>Reducción de dimensionalidad</strong> Representa los datos con menos características conservando lo significativo. <em>Usos: preprocesamiento, compresión, visualización.</em> Algoritmos: PCA, LDA, t-SNE, autocodificadores.</p>
+</div>
+</div>
+<p>El clustering <strong>se diferencia de la clasificación</strong> en que las categorías no las define uno: el modelo agrupa, y darles nombre es trabajo del humano después.</p>
+<div class="fuente">
+<p>IBM. <em>¿Qué es el machine learning (ML)?</em> — <a href="https://www.ibm.com/mx-es/think/topics/machine-learning" class="uri">https://www.ibm.com/mx-es/think/topics/machine-learning</a> · Google for Developers. <em>What is Machine Learning?</em> — <a href="https://developers.google.com/machine-learning/intro-to-ml/what-is-ml" class="uri">https://developers.google.com/machine-learning/intro-to-ml/what-is-ml</a></p>
+</div>
+</section>
+<section class="slide level2 imagen">
+<h2>Clustering: cómo se ve de verdad</h2>
+<div class="quarto-figure quarto-figure-center">
+<figure>
+<p><img data-src="imgs/ejemplo-agrupador.png" class="quarto-figure quarto-figure-center" style="width:80.0%"></p>
+</figure>
+</div>
+<div class="piefoto">
+<p>Once algoritmos de agrupación sobre seis conjuntos de datos distintos. Ninguno gana siempre: los círculos concéntricos de la primera fila derrotan a k-means y los resuelve DBSCAN. <strong>No existe el algoritmo universalmente mejor.</strong></p>
+</div>
+<div class="fuente">
+<p>scikit-learn developers. <em>Comparing different clustering algorithms on toy datasets</em> — <a href="https://scikit-learn.org/stable/auto_examples/cluster/plot_cluster_comparison.html" class="uri">https://scikit-learn.org/stable/auto_examples/cluster/plot_cluster_comparison.html</a></p>
+</div>
+</section>
+<section class="slide level2">
+<h2>Un mismo algoritmo, varias tareas</h2>
+<p>Muchos algoritmos de ML supervisado sirven <strong>para clasificación y para regresión</strong>. El resultado de lo que nominalmente es un algoritmo de regresión puede usarse después para fundamentar una predicción de clasificación.</p>
+<p>En la documentación de scikit-learn, las <strong>máquinas de vectores de soporte (SVM)</strong> tienen su propia sección de clasificación <em>y</em> su propia sección de regresión. Lo mismo ocurre con los árboles de decisión y con los vecinos más cercanos.</p>
+<div class="fuente">
+<p>IBM. <em>¿Qué es el machine learning (ML)?</em> — <a href="https://www.ibm.com/mx-es/think/topics/machine-learning" class="uri">https://www.ibm.com/mx-es/think/topics/machine-learning</a> · scikit-learn. <em>1.4. Support Vector Machines</em> — <a href="https://scikit-learn.org/stable/modules/svm.html" class="uri">https://scikit-learn.org/stable/modules/svm.html</a></p>
+</div>
+</section></section>
+<section>
+<section class="title-slide slide level1 seccion center" data-background-color="#1553ad">
+<h1>5 · ¿Dónde se usa esto?</h1>
+
+</section>
+<section class="slide level2 imagen">
+<h2>Vehículos autónomos</h2>
+<iframe data-external="1" src="https://www.youtube.com/embed/Q1nVBqAU8z8" width="780" height="440" title="" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen=""></iframe>
+<div class="piefoto">
+<p>Los vehículos autónomos son uno de los ejemplos que Google cita como emblemáticos del machine learning.</p>
+</div>
+<div class="fuente">
+<p>Video propio · Google for Developers. <em>What is Machine Learning?</em> — <a href="https://developers.google.com/machine-learning/intro-to-ml/what-is-ml" class="uri">https://developers.google.com/machine-learning/intro-to-ml/what-is-ml</a></p>
+</div>
+</section>
+<section class="slide level2 imagen">
+<h2>Predicción del clima</h2>
+<div class="quarto-figure quarto-figure-center">
+<figure>
+<p><img data-src="imgs/ejemplo-regresiones.png" class="quarto-figure quarto-figure-center" style="width:74.0%"></p>
+</figure>
+</div>
+<div class="piefoto">
+<p>Precipitación observada (a) frente a la predicción del modelo (b) y a la predicción <strong>corregida</strong> (c). Corregir la salida de un modelo físico con datos históricos es, en esencia, un problema de regresión.</p>
+</div>
+<div class="fuente">
+<p>Organización Meteorológica Mundial (OMM/WMO). <em>Desarrollo de la predicción meteorológica operativa condicionada por las propiedades de la triple…</em> — <a href="https://wmo.int/es/media/magazine-article/desarrollo-de-la-prediccion-meteorologica-operativa-condicionada-por-las-propiedades-de-la-triple-de" class="uri">https://wmo.int/es/media/magazine-article/desarrollo-de-la-prediccion-meteorologica-operativa-condicionada-por-las-propiedades-de-la-triple-de</a></p>
+</div>
+</section>
+<section class="slide level2 imagen">
+<h2>Tiempo de ruta</h2>
+<div class="quarto-figure quarto-figure-center">
+<figure>
+<p><img data-src="imgs/ejemplo-viajes.png" class="quarto-figure quarto-figure-center" style="width:62.0%"></p>
+</figure>
+</div>
+<div class="piefoto">
+<p>Estimar cuánto tardará un trayecto a partir del tráfico histórico, la distancia y las condiciones meteorológicas es <strong>regresión pura</strong>: la salida es un número de minutos.</p>
+</div>
+<div class="fuente">
+<p>Google Maps Platform. <em>Ofrece rutas eficientes</em> — <a href="https://mapsplatform.google.com/intl/es-419_mx/solutions/offer-efficient-routes/" class="uri">https://mapsplatform.google.com/intl/es-419_mx/solutions/offer-efficient-routes/</a></p>
+</div>
+</section>
+<section class="slide level2">
+<h2>Y muchas más</h2>
+<ul>
+<li><strong>Traducción automática</strong> — aplicaciones de traducción entre idiomas.</li>
+<li><strong>Recomendación</strong> — sugerir canciones; motores de recomendación en comercio electrónico.</li>
+<li><strong>Texto</strong> — autocompletar frases, resumir artículos.</li>
+<li><strong>Imágenes</strong> — generar imágenes nunca antes vistas; mejorar fotos de producto y quitar fondos.</li>
+<li><strong>Negocio y riesgo</strong> — segmentación de mercado y detección de fraude mediante clustering.</li>
+<li><strong>Salud</strong> — apoyo al diagnóstico a partir de imágenes médicas.</li>
+</ul>
+<div class="fuente">
+<p>Google for Developers. <em>What is Machine Learning?</em> — <a href="https://developers.google.com/machine-learning/intro-to-ml/what-is-ml" class="uri">https://developers.google.com/machine-learning/intro-to-ml/what-is-ml</a> · IBM. <em>¿Qué es el machine learning (ML)?</em> — <a href="https://www.ibm.com/mx-es/think/topics/machine-learning" class="uri">https://www.ibm.com/mx-es/think/topics/machine-learning</a></p>
+</div>
+</section>
+<section class="slide level2">
+<h2>¿Cuándo tiene sentido usar machine learning?</h2>
+<div class="concepto">
+<p>Cuando existe un patrón, <strong>no sabemos escribirlo como reglas explícitas</strong>, y tenemos datos suficientes que lo contienen.</p>
+</div>
+<div class="alerta">
+<p><strong>Cuándo <em>no</em>:</strong> si el problema se resuelve con una fórmula conocida, con reglas claras y estables, o si no hay datos representativos, un modelo de ML añade complejidad, coste y opacidad sin ganar nada.</p>
+</div>
+<div class="fuente">
+<p>Elaboración propia a partir de Google for Developers, <em>What is Machine Learning?</em> — <a href="https://developers.google.com/machine-learning/intro-to-ml/what-is-ml" class="uri">https://developers.google.com/machine-learning/intro-to-ml/what-is-ml</a></p>
+</div>
+</section></section>
+<section>
+<section class="title-slide slide level1 seccion center" data-background-color="#1553ad">
+<h1>6 · Hacia dónde va este curso</h1>
+
+</section>
+<section class="slide level2">
+<h2>Nuestro recorrido</h2>
+<p>Nos concentraremos en <strong>aprendizaje supervisado de regresión en Python</strong>, con <strong>scikit-learn</strong>, la librería estándar de machine learning clásico.</p>
+<p>Empezaremos por la regresión lineal y sus variantes, y llegaremos a las máquinas de vectores de soporte para regresión (SVR). Pero conviene que vean desde hoy <strong>cuántas familias de modelos de regresión existen</strong>.</p>
+<div class="fuente">
+<p>scikit-learn developers. <em>1. Supervised learning</em> — <a href="https://scikit-learn.org/stable/supervised_learning.html" class="uri">https://scikit-learn.org/stable/supervised_learning.html</a></p>
+</div>
+</section>
+<section class="slide level2 smaller">
+<h2>Modelos de regresión en scikit-learn</h2>
+<div class="tarjetas">
+<div class="tarjeta">
+<p><strong>Modelos lineales</strong> Mínimos cuadrados ordinarios, Ridge, Lasso, Elastic-Net, LARS, regresión bayesiana, regresión cuantílica, regresión polinómica.</p>
+</div>
+<div class="tarjeta">
+<p><strong>Regresión robusta</strong> RANSAC, Huber, Theil-Sen — para datos con valores atípicos.</p>
+</div>
+<div class="tarjeta">
+<p><strong>Máquinas de vectores de soporte</strong> SVR, con distintos núcleos (lineal, polinómico, RBF).</p>
+</div>
+<div class="tarjeta">
+<p><strong>Vecinos más cercanos</strong> Predice promediando los ejemplos más parecidos.</p>
+</div>
+<div class="tarjeta">
+<p><strong>Árboles de decisión</strong> Divide el espacio en regiones y predice un valor en cada una.</p>
+</div>
+<div class="tarjeta">
+<p><strong>Ensambles</strong> Bosques aleatorios, <em>gradient boosting</em>, AdaBoost, <em>bagging</em>, <em>stacking</em>.</p>
+</div>
+<div class="tarjeta">
+<p><strong>Procesos gaussianos</strong> Predicen un valor <strong>y su incertidumbre</strong>.</p>
+</div>
+<div class="tarjeta">
+<p><strong>Redes neuronales</strong> Perceptrón multicapa para regresión.</p>
+</div>
+<div class="tarjeta">
+<p><strong>Otros</strong> Kernel ridge, descenso de gradiente estocástico, regresión isotónica, PLS.</p>
+</div>
+</div>
+<div class="fuente">
+<p>scikit-learn developers. <em>1. Supervised learning</em> — <a href="https://scikit-learn.org/stable/supervised_learning.html" class="uri">https://scikit-learn.org/stable/supervised_learning.html</a> · <em>1.1. Linear Models</em> — <a href="https://scikit-learn.org/stable/modules/linear_model.html" class="uri">https://scikit-learn.org/stable/modules/linear_model.html</a> · <em>1.4. Support Vector Machines</em> — <a href="https://scikit-learn.org/stable/modules/svm.html" class="uri">https://scikit-learn.org/stable/modules/svm.html</a></p>
+</div>
+</section>
+<section class="slide level2">
+<h2>Para cerrar</h2>
+<div class="concepto">
+<ol type="1">
+<li>La IA es <strong>cualquier sistema que infiere salidas</strong> a partir de entradas para cumplir un objetivo.</li>
+<li>El machine learning es el subconjunto que <strong>aprende esos patrones de los datos</strong> en vez de recibirlos como reglas.</li>
+<li>Hay tres paradigmas: <strong>supervisado, no supervisado y por refuerzo</strong> — más combinaciones como el semisupervisado y la IA generativa.</li>
+<li>Las tareas más comunes son <strong>clasificación, regresión y clustering</strong>.</li>
+<li>Este curso vive en la casilla <strong>supervisado → regresión</strong>.</li>
+</ol>
+</div>
+<p>A partir de la próxima sesión sí habrá código y matemáticas.</p>
+</section>
+<section class="slide level2 smaller">
+<h2>Referencias</h2>
+<p><strong>Definición de inteligencia artificial</strong></p>
+<ul>
+<li>OCDE (2023). <em>Explanatory memorandum on the updated OECD definition of an AI system</em>. OECD Artificial Intelligence Papers No.&nbsp;8. <a href="https://www.oecd.org/en/publications/explanatory-memorandum-on-the-updated-oecd-definition-of-an-ai-system_623da898-en.html" class="uri">https://www.oecd.org/en/publications/explanatory-memorandum-on-the-updated-oecd-definition-of-an-ai-system_623da898-en.html</a></li>
+<li>OECD.AI. <em>Updated OECD Definition of an AI system</em>. <a href="https://oecd.ai/en/dashboards/policy-initiatives/updated-oecd-definition-of-an-ai-system-4108" class="uri">https://oecd.ai/en/dashboards/policy-initiatives/updated-oecd-definition-of-an-ai-system-4108</a></li>
+</ul>
+<p><strong>Machine learning: conceptos y paradigmas</strong></p>
+<ul>
+<li>IBM. <em>¿Qué es el machine learning (ML)?</em> — <a href="https://www.ibm.com/mx-es/think/topics/machine-learning" class="uri">https://www.ibm.com/mx-es/think/topics/machine-learning</a></li>
+<li>Google for Developers. <em>Machine Learning Crash Course — What is Machine Learning?</em> <a href="https://developers.google.com/machine-learning/intro-to-ml/what-is-ml" class="uri">https://developers.google.com/machine-learning/intro-to-ml/what-is-ml</a> <em>(licencia CC BY 4.0)</em></li>
+</ul>
+<p><strong>Algoritmos e implementación</strong></p>
+<ul>
+<li>scikit-learn developers. <em>1. Supervised learning</em> · <em>2. Unsupervised learning</em> · <em>1.4. Support Vector Machines</em> · <em>1.14. Semi-supervised learning</em>. <a href="https://scikit-learn.org/stable/supervised_learning.html" class="uri">https://scikit-learn.org/stable/supervised_learning.html</a></li>
+<li>scikit-learn developers. <em>Classifier comparison</em> · <em>Comparing clustering algorithms</em> · <em>Time-related feature engineering</em> (figuras). <a href="https://scikit-learn.org/stable/auto_examples/index.html" class="uri">https://scikit-learn.org/stable/auto_examples/index.html</a></li>
+</ul>
+<p><strong>Figuras de aplicaciones</strong></p>
+<ul>
+<li>OMM/WMO. <em>Desarrollo de la predicción meteorológica operativa…</em> — <a href="https://wmo.int/es/media/magazine-article/desarrollo-de-la-prediccion-meteorologica-operativa-condicionada-por-las-propiedades-de-la-triple-de" class="uri">https://wmo.int/es/media/magazine-article/desarrollo-de-la-prediccion-meteorologica-operativa-condicionada-por-las-propiedades-de-la-triple-de</a></li>
+<li>Google Maps Platform. <em>Ofrece rutas eficientes</em> — <a href="https://mapsplatform.google.com/intl/es-419_mx/solutions/offer-efficient-routes/" class="uri">https://mapsplatform.google.com/intl/es-419_mx/solutions/offer-efficient-routes/</a></li>
+</ul>
+<div class="smaller">
+<p>Consultado el 27 de julio de 2026.</p>
+</div>
+</section></section>
+<section class="title-slide slide level1 seccion center" data-background-color="#1553ad">
+<h1>Gracias</h1>
+<p>Preguntas</p>
+<p><a href="https://afpuertav.github.io/">afpuertav.github.io</a></p>
+
+</section>
+    </div>
+  <div class="quarto-auto-generated-content" style="display: none;">
+<div class="footer footer-default">
+<p><span class="fcell f1">Andrés F. Puerta</span><span class="fcell f2">Introducción a la IA y el Machine Learning</span><span class="fcell f3">Sesión 1</span></p>
+</div>
+</div></div>
+
+  <script>window.backupDefine = window.define; window.define = undefined;</script>
+  <script src="introduccion_files/libs/revealjs/dist/reveal.js"></script>
+  <!-- reveal.js plugins -->
+  <script src="introduccion_files/libs/revealjs/plugin/quarto-line-highlight/line-highlight.js"></script>
+  <script src="introduccion_files/libs/revealjs/plugin/pdf-export/pdfexport.js"></script>
+  <script src="introduccion_files/libs/revealjs/plugin/reveal-menu/menu.js"></script>
+  <script src="introduccion_files/libs/revealjs/plugin/reveal-menu/quarto-menu.js"></script>
+  <script src="introduccion_files/libs/revealjs/plugin/reveal-chalkboard/plugin.js"></script>
+  <script src="introduccion_files/libs/revealjs/plugin/quarto-support/support.js"></script>
+  
+
+  <script src="introduccion_files/libs/revealjs/plugin/notes/notes.js"></script>
+  <script src="introduccion_files/libs/revealjs/plugin/search/search.js"></script>
+  <script src="introduccion_files/libs/revealjs/plugin/zoom/zoom.js"></script>
+  <script src="introduccion_files/libs/revealjs/plugin/math/math.js"></script>
+  <script>window.define = window.backupDefine; window.backupDefine = undefined;</script>
+
+  <script>
+
+      // Full list of configuration options available at:
+      // https://revealjs.com/config/
+      Reveal.initialize({
+'controlsAuto': true,
+'previewLinksAuto': true,
+'pdfSeparateFragments': false,
+'autoAnimateEasing': "ease",
+'autoAnimateDuration': 1,
+'autoAnimateUnmatched': true,
+'jumpToSlide': true,
+'menu': {"side":"left","useTextContentForMissingTitles":true,"markers":false,"loadIcons":false,"custom":[{"title":"Tools","icon":"<i class=\"fas fa-gear\"></i>","content":"<ul class=\"slide-menu-items\">\n<li class=\"slide-tool-item active\" data-item=\"0\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.fullscreen(event)\"><kbd>f</kbd> Fullscreen</a></li>\n<li class=\"slide-tool-item\" data-item=\"1\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.speakerMode(event)\"><kbd>s</kbd> Speaker View</a></li>\n<li class=\"slide-tool-item\" data-item=\"2\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.overview(event)\"><kbd>o</kbd> Slide Overview</a></li>\n<li class=\"slide-tool-item\" data-item=\"3\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.togglePdfExport(event)\"><kbd>e</kbd> PDF Export Mode</a></li>\n<li class=\"slide-tool-item\" data-item=\"4\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.toggleScrollView(event)\"><kbd>r</kbd> Scroll View Mode</a></li>\n<li class=\"slide-tool-item\" data-item=\"5\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.toggleChalkboard(event)\"><kbd>b</kbd> Toggle Chalkboard</a></li>\n<li class=\"slide-tool-item\" data-item=\"6\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.toggleNotesCanvas(event)\"><kbd>c</kbd> Toggle Notes Canvas</a></li>\n<li class=\"slide-tool-item\" data-item=\"7\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.downloadDrawings(event)\"><kbd>d</kbd> Download Drawings</a></li>\n<li class=\"slide-tool-item\" data-item=\"8\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.keyboardHelp(event)\"><kbd>?</kbd> Keyboard Help</a></li>\n</ul>"}],"openButton":true,"width":"normal"},
+'chalkboard': {"buttons":true},
+'smaller': false,
+ 
+        // Display controls in the bottom right corner
+        controls: false,
+
+        // Help the user learn the controls by providing hints, for example by
+        // bouncing the down arrow when they first encounter a vertical slide
+        controlsTutorial: false,
+
+        // Determines where controls appear, "edges" or "bottom-right"
+        controlsLayout: 'edges',
+
+        // Visibility rule for backwards navigation arrows; "faded", "hidden"
+        // or "visible"
+        controlsBackArrows: 'faded',
+
+        // Display a presentation progress bar
+        progress: true,
+
+        // Display the page number of the current slide
+        slideNumber: 'c/t',
+
+        // 'all', 'print', or 'speaker'
+        showSlideNumber: 'all',
+
+        // Add the current slide number to the URL hash so that reloading the
+        // page/copying the URL will return you to the same slide
+        hash: true,
+
+        // Start with 1 for the hash rather than 0
+        hashOneBasedIndex: false,
+
+        // Flags if we should monitor the hash and change slides accordingly
+        respondToHashChanges: true,
+
+        // Push each slide change to the browser history
+        history: true,
+
+        // Enable keyboard shortcuts for navigation
+        keyboard: true,
+
+        // Enable the slide overview mode
+        overview: true,
+
+        // Disables the default reveal.js slide layout (scaling and centering)
+        // so that you can use custom CSS layout
+        disableLayout: false,
+
+        // Vertical centering of slides
+        center: false,
+
+        // Enables touch navigation on devices with touch input
+        touch: true,
+
+        // Loop the presentation
+        loop: false,
+
+        // Change the presentation direction to be RTL
+        rtl: false,
+
+        // see https://revealjs.com/vertical-slides/#navigation-mode
+        navigationMode: 'linear',
+
+        // Randomizes the order of slides each time the presentation loads
+        shuffle: false,
+
+        // Turns fragments on and off globally
+        fragments: true,
+
+        // Flags whether to include the current fragment in the URL,
+        // so that reloading brings you to the same fragment position
+        fragmentInURL: false,
+
+        // Flags if the presentation is running in an embedded mode,
+        // i.e. contained within a limited portion of the screen
+        embedded: false,
+
+        // Flags if we should show a help overlay when the questionmark
+        // key is pressed
+        help: true,
+
+        // Flags if it should be possible to pause the presentation (blackout)
+        pause: true,
+
+        // Flags if speaker notes should be visible to all viewers
+        showNotes: false,
+
+        // Global override for autoplaying embedded media (null/true/false)
+        autoPlayMedia: null,
+
+        // Global override for preloading lazy-loaded iframes (null/true/false)
+        preloadIframes: null,
+
+        // Number of milliseconds between automatically proceeding to the
+        // next slide, disabled when set to 0, this value can be overwritten
+        // by using a data-autoslide attribute on your slides
+        autoSlide: 0,
+
+        // Stop auto-sliding after user input
+        autoSlideStoppable: true,
+
+        // Use this method for navigation when auto-sliding
+        autoSlideMethod: null,
+
+        // Specify the average time in seconds that you think you will spend
+        // presenting each slide. This is used to show a pacing timer in the
+        // speaker view
+        defaultTiming: null,
+
+        // Enable slide navigation via mouse wheel
+        mouseWheel: false,
+
+        // The display mode that will be used to show slides
+        display: 'block',
+
+        // Hide cursor if inactive
+        hideInactiveCursor: true,
+
+        // Time before the cursor is hidden (in ms)
+        hideCursorTime: 5000,
+
+        // Opens links in an iframe preview overlay
+        previewLinks: false,
+
+        // Transition style (none/fade/slide/convex/concave/zoom)
+        transition: 'slide',
+
+        // Transition speed (default/fast/slow)
+        transitionSpeed: 'fast',
+
+        // Transition style for full page slide backgrounds
+        // (none/fade/slide/convex/concave/zoom)
+        backgroundTransition: 'none',
+
+        // Number of slides away from the current that are visible
+        viewDistance: 3,
+
+        // Number of slides away from the current that are visible on mobile
+        // devices. It is advisable to set this to a lower number than
+        // viewDistance in order to save resources.
+        mobileViewDistance: 2,
+
+        // The "normal" size of the presentation, aspect ratio will be preserved
+        // when the presentation is scaled to fit different resolutions. Can be
+        // specified using percentage units.
+        width: 1280,
+
+        height: 760,
+
+        // Factor of the display size that should remain empty around the content
+        margin: 5.0e-2,
+
+        math: {
+          mathjax: 'https://cdn.jsdelivr.net/npm/mathjax@2.7.9/MathJax.js',
+          config: 'TeX-AMS_HTML-full',
+          tex2jax: {
+            inlineMath: [['\\(','\\)']],
+            displayMath: [['\\[','\\]']],
+            balanceBraces: true,
+            processEscapes: false,
+            processRefs: true,
+            processEnvironments: true,
+            preview: 'TeX',
+            skipTags: ['script','noscript','style','textarea','pre','code'],
+            ignoreClass: 'tex2jax_ignore',
+            processClass: 'tex2jax_process'
+          },
+        },
+
+        // reveal.js plugins
+        plugins: [QuartoLineHighlight, PdfExport, RevealMenu, RevealChalkboard, QuartoSupport,
+
+          RevealMath,
+          RevealNotes,
+          RevealSearch,
+          RevealZoom
+        ]
+      });
+    </script>
+    <script id="quarto-html-after-body" type="application/javascript">
+      window.document.addEventListener("DOMContentLoaded", function (event) {
+        const tabsets =  window.document.querySelectorAll(".panel-tabset-tabby")
+        tabsets.forEach(function(tabset) {
+          const tabby = new Tabby('#' + tabset.id);
+        });
+        const isCodeAnnotation = (el) => {
+          for (const clz of el.classList) {
+            if (clz.startsWith('code-annotation-')) {                     
+              return true;
+            }
+          }
+          return false;
+        }
+        const onCopySuccess = function(e) {
+          // button target
+          const button = e.trigger;
+          // don't keep focus
+          button.blur();
+          // flash "checked"
+          button.classList.add('code-copy-button-checked');
+          var currentTitle = button.getAttribute("title");
+          button.setAttribute("title", "Copiado");
+          let tooltip;
+          if (window.bootstrap) {
+            button.setAttribute("data-bs-toggle", "tooltip");
+            button.setAttribute("data-bs-placement", "left");
+            button.setAttribute("data-bs-title", "Copiado");
+            tooltip = new bootstrap.Tooltip(button, 
+              { trigger: "manual", 
+                customClass: "code-copy-button-tooltip",
+                offset: [0, -8]});
+            tooltip.show();    
+          }
+          setTimeout(function() {
+            if (tooltip) {
+              tooltip.hide();
+              button.removeAttribute("data-bs-title");
+              button.removeAttribute("data-bs-toggle");
+              button.removeAttribute("data-bs-placement");
+            }
+            button.setAttribute("title", currentTitle);
+            button.classList.remove('code-copy-button-checked');
+          }, 1000);
+          // clear code selection
+          e.clearSelection();
+        }
+        const getTextToCopy = function(trigger) {
+          const outerScaffold = trigger.parentElement.cloneNode(true);
+          const codeEl = outerScaffold.querySelector('code');
+          for (const childEl of codeEl.children) {
+            if (isCodeAnnotation(childEl)) {
+              childEl.remove();
+            }
+          }
+          return codeEl.innerText;
+        }
+        const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+          text: getTextToCopy
+        });
+        clipboard.on('success', onCopySuccess);
+        if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+          const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+            text: getTextToCopy,
+            container: window.document.getElementById('quarto-embedded-source-code-modal')
+          });
+          clipboardModal.on('success', onCopySuccess);
+        }
+          var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+          var mailtoRegex = new RegExp(/^mailto:/);
+            var filterRegex = new RegExp('/' + window.location.host + '/');
+          var isInternal = (href) => {
+              return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+          }
+          // Inspect non-navigation links and adorn them if external
+         var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+          for (var i=0; i<links.length; i++) {
+            const link = links[i];
+            if (!isInternal(link.href)) {
+              // undo the damage that might have been done by quarto-nav.js in the case of
+              // links that we want to consider external
+              if (link.dataset.originalHref !== undefined) {
+                link.href = link.dataset.originalHref;
+              }
+            }
+          }
+        function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+          const config = {
+            allowHTML: true,
+            maxWidth: 500,
+            delay: 100,
+            arrow: false,
+            appendTo: function(el) {
+                return el.closest('section.slide') || el.parentElement;
+            },
+            interactive: true,
+            interactiveBorder: 10,
+            theme: 'light-border',
+            placement: 'bottom-start',
+          };
+          if (contentFn) {
+            config.content = contentFn;
+          }
+          if (onTriggerFn) {
+            config.onTrigger = onTriggerFn;
+          }
+          if (onUntriggerFn) {
+            config.onUntrigger = onUntriggerFn;
+          }
+            config['offset'] = [0,0];
+            config['maxWidth'] = 700;
+          window.tippy(el, config); 
+        }
+        const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+        for (var i=0; i<noterefs.length; i++) {
+          const ref = noterefs[i];
+          tippyHover(ref, function() {
+            // use id or data attribute instead here
+            let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+            try { href = new URL(href).hash; } catch {}
+            const id = href.replace(/^#\/?/, "");
+            const note = window.document.getElementById(id);
+            if (note) {
+              return note.innerHTML;
+            } else {
+              return "";
+            }
+          });
+        }
+        const findCites = (el) => {
+          const parentEl = el.parentElement;
+          if (parentEl) {
+            const cites = parentEl.dataset.cites;
+            if (cites) {
+              return {
+                el,
+                cites: cites.split(' ')
+              };
+            } else {
+              return findCites(el.parentElement)
+            }
+          } else {
+            return undefined;
+          }
+        };
+        var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+        for (var i=0; i<bibliorefs.length; i++) {
+          const ref = bibliorefs[i];
+          const citeInfo = findCites(ref);
+          if (citeInfo) {
+            tippyHover(citeInfo.el, function() {
+              var popup = window.document.createElement('div');
+              citeInfo.cites.forEach(function(cite) {
+                var citeDiv = window.document.createElement('div');
+                citeDiv.classList.add('hanging-indent');
+                citeDiv.classList.add('csl-entry');
+                var biblioDiv = window.document.getElementById('ref-' + cite);
+                if (biblioDiv) {
+                  citeDiv.innerHTML = biblioDiv.innerHTML;
+                }
+                popup.appendChild(citeDiv);
+              });
+              return popup.innerHTML;
+            });
+          }
+        }
+      });
+      </script>
+    
+
+</body></html>
