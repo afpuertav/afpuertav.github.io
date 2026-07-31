@@ -63,8 +63,8 @@
     },
     "home.about.heading": { es: "Sobre mí", en: "About me" },
     "home.about.text": {
-      es: "Estudiante de maestría en Matemáticas Aplicadas, ingeniero mecánico (con énfasis en diseño integrado de sistemas técnicos) y tecnólogo en desarrollo de software. Con experiencia en mecánica computacional, modelado e impresión 3D, robótica, automatización y maquinaria de taller, complementada con formación en programación, inteligencia artificial y gestión de proyectos. He trabajado como asistente de investigación, asistente académico y logístico, ingeniero de proyectos, analista de calidad de IA y tutor independiente. Actualmente desarrollo proyectos de procesamiento de lenguaje natural, estadística y ciencia de datos en el contexto de la investigación aplicada.",
-      en: "Master’s student in Applied Mathematics with a bachelor’s degree in Mechanical Engineering (specializing in integrated design of technical systems) and an associate degree in Software Development. Skilled in computational mechanics, 3D modeling and printing, robotics, automation, and workshop machinery. Complemented by training in programming, artificial intelligence, and project management. Experienced in roles such as research, academic, and logistics assistant, project engineer, AI quality analyst, and independent tutor. Currently working on projects involving natural language processing, statistics, and data science within the context of applied research."
+      es: "Estudiante de maestría en Matemáticas Aplicadas, ingeniero mecánico (con énfasis en diseño integrado de sistemas técnicos) y técnico en desarrollo de software. Con experiencia en mecánica computacional, modelado e impresión 3D, robótica, automatización y maquinaria de taller, complementada con formación en programación, inteligencia artificial y gestión de proyectos. He trabajado como asistente de investigación, asistente académico y logístico, ingeniero de proyectos, analista de calidad de IA y tutor independiente. Actualmente soy profesor de cátedra en la Universidad EAFIT y desarrollo proyectos de procesamiento de lenguaje natural, estadística y ciencia de datos en el contexto de la investigación aplicada.",
+      en: "Master’s student in Applied Mathematics with a bachelor’s degree in Mechanical Engineering (specializing in integrated design of technical systems) and a technical degree in Software Development. Skilled in computational mechanics, 3D modeling and printing, robotics, automation, and workshop machinery. Complemented by training in programming, artificial intelligence, and project management. Experienced in roles such as research, academic, and logistics assistant, project engineer, AI quality analyst, and independent tutor. Currently an adjunct professor at Universidad EAFIT, working on projects involving natural language processing, statistics, and data science within the context of applied research."
     },
     "home.carousel.heading": {
       es: "Proyectos en imágenes",
@@ -119,21 +119,37 @@
       en: "Politécnico Jaime Isaza Cadavid — 2019"
     },
 
+    "cv.exp.professor": {
+      es: "Profesor de cátedra",
+      en: "Adjunct professor"
+    },
+    "cv.exp.professor.meta": {
+      es: "Universidad EAFIT · jul 2026 – actualidad",
+      en: "Universidad EAFIT · Jul 2026 – present"
+    },
+    "cv.exp.db": {
+      es: "Asistente de investigación: integración de bases de datos heterogéneas",
+      en: "Research assistant: heterogeneous database integration"
+    },
+    "cv.exp.db.meta": {
+      es: "Universidad EAFIT · ene 2024 – actualidad",
+      en: "Universidad EAFIT · Jan 2024 – present"
+    },
     "cv.exp.stats2": {
       es: "Monitor de Estadística General",
       en: "General statistics class assistant"
     },
     "cv.exp.stats2.meta": {
-      es: "Universidad EAFIT · jul 2025 – actualidad",
-      en: "Universidad EAFIT · Jul 2025 – present"
+      es: "Universidad EAFIT · jul 2025 – jun 2026",
+      en: "Universidad EAFIT · Jul 2025 – Jun 2026"
     },
     "cv.exp.seedbed": {
       es: "Coordinador del semillero de Automatización, Robótica y Sistemas",
       en: "Coordinator of the Automation, Robotics and Systems Study Seedbed"
     },
     "cv.exp.seedbed.meta": {
-      es: "Universidad EAFIT · feb 2023 – actualidad",
-      en: "Universidad EAFIT · Feb 2023 – present"
+      es: "Universidad EAFIT · feb 2023 – jun 2026",
+      en: "Universidad EAFIT · Feb 2023 – Jun 2026"
     },
     "cv.exp.research": {
       es: "Asistente de investigación: emisiones de gases contaminantes",
@@ -400,6 +416,29 @@
     "compthinking.openBook": { es: "Abrir el libro", en: "Open textbook" },
     "compthinking.material": { es: "Material de clase", en: "Class material" },
     "compthinking.week": { es: "Semana", en: "Week" },
+    "compthinking.simulators": {
+      es: "Simuladores de parciales",
+      en: "Midterm simulators"
+    },
+    "compthinking.openSimulator": {
+      es: "Abrir el simulador",
+      en: "Open simulator"
+    },
+    "compthinking.p1": { es: "Primer parcial", en: "First midterm" },
+    "compthinking.p1.desc": {
+      es: "Variables y tipos, pilares del pensamiento computacional, condicionales, diagramas de flujo y ciclo while.",
+      en: "Variables and types, computational thinking pillars, conditionals, flowcharts and the while loop."
+    },
+    "compthinking.p2": { es: "Segundo parcial", en: "Second midterm" },
+    "compthinking.p2.desc": {
+      es: "En construcción.",
+      en: "Under construction."
+    },
+    "compthinking.p3": { es: "Tercer parcial", en: "Third midterm" },
+    "compthinking.p3.desc": {
+      es: "En construcción.",
+      en: "Under construction."
+    },
 
     /* --- Curso: Machine Learning --- */
     "mlcourse.sessions": { es: "Sesiones", en: "Sessions" },

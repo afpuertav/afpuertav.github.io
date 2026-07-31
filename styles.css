@@ -587,6 +587,26 @@ a.card:hover .card-cta {
   background-color: var(--sapphire-light);
 }
 
+/* Tarjeta de contenido aún no publicado ("Próximamente") */
+.card.is-soon {
+  border-top-color: var(--color-text-soft);
+  box-shadow: none;
+  cursor: default;
+}
+
+.card.is-soon .card-code,
+.card.is-soon h2,
+.card.is-soon h3 {
+  color: var(--color-text-soft);
+}
+
+.card.is-soon .card-cta {
+  background-color: transparent;
+  color: var(--color-text-soft);
+  border: 1px dashed var(--color-text-soft);
+  padding: 0.35rem 1rem;
+}
+
 .badge {
   display: inline-block;
   align-self: flex-start;

@@ -1,0 +1,1417 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="author" content="Andrés Felipe Puerta Vélez">
+    <meta name="description" content="Simulador del primer parcial de Pensamiento Computacional (FH1002, Universidad EAFIT): genera un parcial aleatorio, califica las respuestas y verifica el código Python del estudiante.">
+    <link rel="canonical" href="https://afpuertav.github.io/courses/pensamiento_computacional/primerParcial.html">
+    <link rel="icon" href="../../assets/icon.svg" type="image/svg+xml">
+    <title>Simulador del Primer Parcial de Pensamiento Computacional</title>
+
+    <style>
+        :root {
+            --primary-color: #2c3e50;
+            --secondary-color: #3498db;
+            --accent-color: #e74c3c;
+            --light-color: #ecf0f1;
+            --success-color: #27ae60;
+            --warning-color: #f39c12;
+            --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: #f5f7fa;
+            color: #333;
+            line-height: 1.6;
+            padding: 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 25px;
+            padding: 20px;
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: var(--shadow);
+        }
+
+        h1 { color: var(--primary-color); margin-bottom: 10px; font-size: 2.1rem; }
+        .subtitle { color: var(--secondary-color); font-size: 1.05rem; }
+        .back-link { display: inline-block; margin-bottom: 15px; color: var(--secondary-color); text-decoration: none; font-weight: 600; }
+        .back-link:hover { text-decoration: underline; }
+
+        .instructions {
+            background-color: var(--light-color);
+            padding: 15px 18px;
+            border-radius: 8px;
+            margin-bottom: 25px;
+            border-left: 5px solid var(--secondary-color);
+        }
+        .instructions h3 { color: var(--primary-color); margin-bottom: 8px; }
+        .instructions p { font-size: 0.97rem; }
+
+        .exam-container { display: grid; grid-template-columns: 2fr 1fr; gap: 25px; align-items: start; }
+
+        .questions-section, .control-panel {
+            background-color: white;
+            padding: 25px;
+            border-radius: 10px;
+            box-shadow: var(--shadow);
+        }
+        .control-panel { position: sticky; top: 20px; }
+
+        .question-card {
+            margin-bottom: 30px;
+            padding-bottom: 22px;
+            border-bottom: 1px solid #eee;
+            scroll-margin-top: 20px;
+        }
+        .question-card:last-child { border-bottom: none; margin-bottom: 0; }
+
+        .question-header { display: flex; justify-content: space-between; align-items: center; gap: 12px; margin-bottom: 14px; }
+        .question-number {
+            background-color: var(--primary-color);
+            color: white;
+            width: 30px; height: 30px;
+            border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            font-weight: bold; flex-shrink: 0;
+        }
+        .question-topic { color: #7f8c8d; font-weight: 600; text-align: right; font-size: 0.95rem; }
+
+        .statement { margin-bottom: 16px; }
+        .statement p { margin-bottom: 10px; }
+        .statement ul, .statement ol { margin: 8px 0 12px 22px; }
+        .statement li { margin-bottom: 3px; }
+
+        pre.code {
+            background-color: #1e2733;
+            color: #e6edf3;
+            padding: 14px 16px;
+            border-radius: 8px;
+            overflow-x: auto;
+            font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+            font-size: 0.92rem;
+            line-height: 1.65;
+            margin: 12px 0;
+            white-space: pre;
+        }
+        pre.code .ln { color: #6b7c93; user-select: none; }
+        pre.code .num { color: #79c0ff; }
+        pre.code .str { color: #ff7b72; }
+        pre.code .kw  { color: #d2a8ff; }
+        pre.code .fn  { color: #7ee787; }
+        pre.code .cm  { color: #8b949e; font-style: italic; }
+
+        .io-example { display: flex; gap: 14px; flex-wrap: wrap; margin: 12px 0; }
+        .io-box { flex: 1 1 180px; background: #f7f9fb; border: 1px solid #e3e8ee; border-radius: 8px; padding: 10px 12px; }
+        .io-box h5 { font-size: 0.78rem; text-transform: uppercase; letter-spacing: .04em; color: #7f8c8d; margin-bottom: 6px; }
+        .io-box pre { font-family: 'Consolas', 'Courier New', monospace; font-size: 0.95rem; white-space: pre-wrap; }
+
+        .diagram { margin: 14px 0; text-align: center; background: #fff; border: 1px solid #e3e8ee; border-radius: 8px; padding: 12px; }
+        .diagram img { max-width: 100%; height: auto; }
+
+        /* --- Respuestas de rellenar --- */
+        .blank-row {
+            display: flex; align-items: center; gap: 12px;
+            padding: 10px 12px; margin-bottom: 10px;
+            background: #f9fafb; border: 2px solid #e8ecf1; border-radius: 8px;
+            flex-wrap: wrap;
+        }
+        .blank-row .blank-q { flex: 1 1 320px; }
+        .blank-row .blank-in { display: flex; align-items: center; gap: 8px; }
+        .blank-row label { font-size: 0.88rem; color: #7f8c8d; white-space: nowrap; }
+        .blank-row input {
+            width: 190px; padding: 8px 11px;
+            border: 2px solid #dfe4ea; border-radius: 7px; font-size: 0.95rem;
+        }
+        .blank-row input:focus { outline: none; border-color: var(--secondary-color); }
+        .blank-row.correct { background-color: #d4edda; border-color: var(--success-color); }
+        .blank-row.incorrect { background-color: #f8d7da; border-color: var(--accent-color); }
+        .blank-row .expected { flex-basis: 100%; font-size: 0.9rem; color: #155724; }
+        .blank-row.incorrect .expected { color: #721c24; }
+
+        /* --- Opción múltiple --- */
+        .mcq-block { margin-bottom: 20px; }
+        .mcq-question { font-weight: 600; margin-bottom: 10px; color: var(--primary-color); }
+        .options-container { display: flex; flex-direction: column; gap: 10px; }
+        .option {
+            padding: 11px 14px;
+            border: 2px solid #ddd; border-radius: 8px;
+            cursor: pointer; transition: all .2s;
+            display: flex; align-items: flex-start; gap: 10px;
+        }
+        .option:hover { background-color: #f0f8ff; border-color: var(--secondary-color); }
+        .option.selected { background-color: #e1f0ff; border-color: var(--secondary-color); font-weight: 600; }
+        .option.correct { background-color: #d4edda; border-color: var(--success-color); color: #155724; }
+        .option.incorrect { background-color: #f8d7da; border-color: var(--accent-color); color: #721c24; }
+        .option .letter { font-weight: bold; flex-shrink: 0; }
+        .exam-done .option { cursor: default; }
+        .exam-done .option:hover { background-color: inherit; border-color: inherit; }
+        .exam-done .option.selected:hover { background-color: #e1f0ff; }
+        .exam-done .option.correct:hover { background-color: #d4edda; border-color: var(--success-color); }
+        .exam-done .option.incorrect:hover { background-color: #f8d7da; border-color: var(--accent-color); }
+
+        /* --- Valor numérico --- */
+        .value-row {
+            display: flex; align-items: center; gap: 10px; flex-wrap: wrap;
+            padding: 12px 14px; background: #f9fafb;
+            border: 2px solid #e8ecf1; border-radius: 8px;
+        }
+        .value-row label { font-weight: 600; color: #4a5568; }
+        .value-row input { width: 160px; padding: 8px 11px; border: 2px solid #dfe4ea; border-radius: 7px; font-size: 0.95rem; }
+        .value-row input:focus { outline: none; border-color: var(--secondary-color); }
+        .value-row.correct { background-color: #d4edda; border-color: var(--success-color); }
+        .value-row.incorrect { background-color: #f8d7da; border-color: var(--accent-color); }
+        .value-row .expected { flex-basis: 100%; font-size: 0.9rem; }
+
+        /* --- Editor de código --- */
+        .code-editor {
+            width: 100%; min-height: 190px; resize: vertical;
+            padding: 12px 14px;
+            border: 2px solid #dfe4ea; border-radius: 8px;
+            font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+            font-size: 0.93rem; line-height: 1.6;
+            background: #fbfcfd; color: #24292f;
+            tab-size: 4;
+        }
+        .code-editor:focus { outline: none; border-color: var(--secondary-color); background: #fff; }
+        .editor-hint { font-size: 0.85rem; color: #7f8c8d; margin-top: 5px; }
+
+        .test-results { margin-top: 14px; border-radius: 8px; overflow: hidden; border: 1px solid #e3e8ee; }
+        .test-row { display: flex; gap: 10px; padding: 9px 13px; font-size: 0.9rem; align-items: baseline; flex-wrap: wrap; border-bottom: 1px solid #eef1f4; }
+        .test-row:last-child { border-bottom: none; }
+        .test-row.pass { background: #eefaf1; }
+        .test-row.fail { background: #fdeeee; }
+        .test-row .badge { font-weight: 700; flex-shrink: 0; }
+        .test-row.pass .badge { color: var(--success-color); }
+        .test-row.fail .badge { color: var(--accent-color); }
+        .test-row code { font-family: 'Consolas', 'Courier New', monospace; background: rgba(0,0,0,.05); padding: 1px 5px; border-radius: 4px; white-space: pre-wrap; }
+
+        /* Tarjeta amarilla de explicación (mismo estilo que los parciales de Estadística) */
+        .explanation {
+            margin-top: 12px;
+            margin-bottom: 18px;
+            padding: 14px 16px;
+            background-color: #fff3cd;
+            border-left: 5px solid #ffc107;
+            border-radius: 5px;
+            font-size: 0.95rem;
+        }
+        .explanation .answer { font-weight: 700; }
+        .explanation pre.code {
+            background-color: #f8f9fa;
+            color: #24292f;
+            border: 1px solid #e3e8ee;
+            margin-top: 10px;
+        }
+        .explanation .note { display: block; margin-top: 9px; font-style: italic; }
+
+        .result-summary {
+            display: none;
+            margin-top: 14px;
+            font-weight: 700;
+            color: var(--primary-color);
+        }
+        .result-summary.visible { display: block; }
+
+        .btn {
+            padding: 11px 20px;
+            border: none; border-radius: 7px;
+            font-size: 0.95rem; font-weight: 600;
+            cursor: pointer; transition: all .2s;
+        }
+        .btn:disabled { opacity: .55; cursor: not-allowed; }
+        .btn-primary { background-color: var(--secondary-color); color: white; }
+        .btn-primary:hover:not(:disabled) { background-color: #2980b9; }
+        .btn-secondary { background-color: var(--light-color); color: var(--primary-color); }
+        .btn-secondary:hover:not(:disabled) { background-color: #dfe6e9; }
+        .button-group { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 24px; }
+
+        .control-panel h3 { color: var(--primary-color); margin-bottom: 12px; }
+        .control-panel h4 { color: var(--primary-color); margin: 20px 0 10px; font-size: 0.95rem; }
+
+        .stats { display: flex; gap: 10px; text-align: center; }
+        .stat-box { flex: 1; background: #f7f9fb; border-radius: 8px; padding: 12px 6px; }
+        .stat-value { font-size: 1.7rem; font-weight: 700; color: var(--primary-color); }
+        .stat-label { font-size: 0.78rem; color: #7f8c8d; text-transform: uppercase; letter-spacing: .04em; }
+
+        .topic-item {
+            display: flex; align-items: center; justify-content: space-between;
+            gap: 8px; padding: 9px 11px; margin-bottom: 6px;
+            background: #f7f9fb; border-radius: 7px; cursor: pointer;
+            font-size: 0.9rem; transition: background .2s;
+        }
+        .topic-item:hover { background: #e8f1fa; }
+        .topic-name { color: var(--primary-color); font-weight: 600; }
+        .topic-status { width: 11px; height: 11px; border-radius: 50%; background: #dfe4ea; flex-shrink: 0; }
+        .topic-status.answered { background: var(--secondary-color); }
+        .topic-status.correct { background: var(--success-color); }
+        .topic-status.partial { background: var(--warning-color); }
+        .topic-status.incorrect { background: var(--accent-color); }
+
+        .engine-status {
+            margin-top: 18px; padding: 10px 12px; border-radius: 7px;
+            font-size: 0.85rem; background: #fff8e6; border: 1px solid #f0d9a0; color: #7a5b13;
+        }
+        .engine-status.ready { background: #eefaf1; border-color: #b7e4c7; color: #1b6b3a; }
+        .engine-status.error { background: #fdeeee; border-color: #f5c2c0; color: #7a1f1c; }
+
+        .results-container {
+            display: none;
+            background-color: white;
+            padding: 28px;
+            border-radius: 10px;
+            box-shadow: var(--shadow);
+            margin-top: 25px;
+        }
+        .results-container h2 { color: var(--primary-color); text-align: center; margin-bottom: 20px; }
+        .score-display { text-align: center; margin-bottom: 22px; }
+        .score-circle {
+            width: 120px; height: 120px; border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 2.6rem; font-weight: 700; color: white;
+            margin: 0 auto 12px; background-color: var(--warning-color);
+        }
+        .score-circle.high { background-color: var(--success-color); }
+        .score-circle.medium { background-color: var(--warning-color); }
+        .score-circle.low { background-color: var(--accent-color); }
+        .recommendations { margin-top: 22px; background: #f7f9fb; border-radius: 8px; padding: 16px 18px; }
+        .recommendations h3 { color: var(--primary-color); margin-bottom: 8px; font-size: 1.05rem; }
+        .recommendations ul { margin: 8px 0 0 20px; }
+        .recommendations li { margin-bottom: 4px; }
+
+        footer { text-align: center; margin-top: 35px; padding: 18px; color: #7f8c8d; font-size: 0.9rem; }
+        footer a { color: var(--secondary-color); }
+
+        @media (max-width: 900px) {
+            .exam-container { grid-template-columns: 1fr; }
+            .control-panel { position: static; }
+        }
+    </style>
+</head>
+<body>
+    <a class="back-link" href="index.html">&larr; Pensamiento Computacional</a>
+
+    <header>
+        <h1>Simulador del Primer Parcial</h1>
+        <p class="subtitle">Pensamiento Computacional · FH1002 · Universidad EAFIT</p>
+    </header>
+
+    <div class="instructions">
+        <h3>Instrucciones</h3>
+        <p>El parcial consta de <strong>5 actividades</strong>: las dos primeras teóricas y las tres restantes prácticas.
+        Cada vez que generes un parcial nuevo, el simulador escoge una versión distinta de cada actividad.
+        Responde todo y pulsa <strong>Calificar Examen</strong>: se revisan las respuestas escritas, las de selección
+        y el código Python, que se ejecuta contra varios casos de prueba.</p>
+    </div>
+
+    <div class="exam-container">
+        <section class="questions-section" id="questions-section">
+            <div id="questions-container"></div>
+
+            <div class="button-group">
+                <button id="submit-btn" class="btn btn-primary">Calificar Examen</button>
+                <button id="new-exam-btn" class="btn btn-secondary">Nuevo Examen Aleatorio</button>
+            </div>
+        </section>
+
+        <aside class="control-panel">
+            <h3>Progreso</h3>
+            <div class="stats">
+                <div class="stat-box">
+                    <div class="stat-value" id="answered-count">0</div>
+                    <div class="stat-label">Respondidas</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-value" id="total-count">5</div>
+                    <div class="stat-label">Total</div>
+                </div>
+            </div>
+
+            <h4>Navegación:</h4>
+            <div id="topics-list"></div>
+
+            <div class="engine-status" id="engine-status">Motor de Python: cargando…</div>
+        </aside>
+    </div>
+
+    <div class="results-container" id="results-container">
+        <h2>Resultados del Parcial</h2>
+
+        <div class="score-display">
+            <div class="score-circle" id="final-score">0.0</div>
+            <h3>Calificación Final</h3>
+            <p>Sobre 5.0 puntos</p>
+        </div>
+
+        <div class="stats">
+            <div class="stat-box">
+                <div class="stat-value" id="correct-count">0</div>
+                <div class="stat-label">Correctas</div>
+            </div>
+            <div class="stat-box">
+                <div class="stat-value" id="incorrect-count">0</div>
+                <div class="stat-label">Incorrectas</div>
+            </div>
+            <div class="stat-box">
+                <div class="stat-value" id="percentage-score">0%</div>
+                <div class="stat-label">Porcentaje</div>
+            </div>
+        </div>
+
+        <div class="recommendations" id="recommendations">
+            <h3>Retroalimentación</h3>
+            <p id="recommendations-text"></p>
+            <ul id="topics-to-study"></ul>
+        </div>
+
+        <div style="text-align:center; margin-top:20px;">
+            <button id="review-btn" class="btn btn-secondary">Revisar Respuestas</button>
+            <button id="restart-btn" class="btn btn-primary">Intentar Otro Examen</button>
+        </div>
+    </div>
+
+    <footer>
+        <p>Simulador del Primer Parcial de Pensamiento Computacional<br>
+        &copy; <span id="year">2026</span> <a href="../../index.html">Andrés Felipe Puerta Vélez</a></p>
+    </footer>
+
+    <script>
+    // ==========================================================
+    //  Helpers de presentación
+    // ==========================================================
+    const N = v => '<span class="num">' + v + '</span>';
+    const S = v => '<span class="str">' + v + '</span>';
+
+    function codeBlock(lines) {
+        return '<pre class="code">' + lines.map((l, i) =>
+            '<span class="ln">' + String(i + 1).padStart(2, ' ') + '</span>  ' + l
+        ).join('\n') + '</pre>';
+    }
+
+    function ioExample(entrada, salida) {
+        return '<div class="io-example">' +
+            '<div class="io-box"><h5>Ejemplo de entrada</h5><pre>' + entrada + '</pre></div>' +
+            '<div class="io-box"><h5>Ejemplo de salida</h5><pre>' + salida + '</pre></div>' +
+            '</div>';
+    }
+
+    function esc(s) {
+        return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+    }
+
+    // Conjuntos de respuestas aceptadas para tipos de datos
+    const T_FLOAT = ["float", "flotante", "decimal", "numero decimal", "real", "numero real",
+                     "float decimal", "punto flotante", "numero flotante", "tipo float", "double"];
+    const T_STR   = ["str", "string", "cadena", "texto", "cadena de texto", "caracteres",
+                     "cadena de caracteres", "tipo str", "palabra", "str string"];
+
+    // ==========================================================
+    //  BANCO DE EJERCICIOS — Parcial 01
+    //  5 actividades x 5 versiones. Fuente: "Parcial-01-Actividad-0X.docx".
+    // ==========================================================
+    const activities = [
+
+    // ============ 1. Variables y tipos de datos ============
+    {
+        id: 1,
+        tema: "Variables y tipos de datos",
+        kind: "fill",
+        options: [
+            {
+                statement: '<p>Basado en el siguiente código responda las siguientes preguntas:</p>' +
+                    codeBlock([
+                        'totalDeuda = ' + N('1200.5'),
+                        'nombreProducto = ' + S('"Comedor"'),
+                        'totalDeuda = totalDeuda + ' + N('200'),
+                        'lunas = ' + S('"7"'),
+                        'motores = ' + N('5')
+                    ]),
+                blanks: [
+                    { q: '¿De qué tipo es la variable “totalDeuda”?', accept: T_FLOAT, show: 'float (decimal)',
+                      why: 'El valor 1200.5 tiene parte decimal.' },
+                    { q: '¿Cuál es el valor que contiene la variable “totalDeuda” en la línea 3?', accept: ["1400.5"], show: '1400.5',
+                      why: 'La línea 3 reasigna totalDeuda = 1200.5 + 200.' },
+                    { q: '¿De qué tipo es la variable “lunas”?', accept: T_STR, show: 'str (cadena de texto)',
+                      why: 'Aunque el contenido parece un número, "7" está entre comillas.' },
+                    { q: '¿Cuántas variables se definen en el código anterior?', accept: ["4", "cuatro"], show: '4',
+                      why: 'totalDeuda, nombreProducto, lunas y motores. La línea 3 reasigna, no define una nueva.' }
+                ]
+            },
+            {
+                statement: '<p>Basado en el siguiente código responda las siguientes preguntas:</p>' +
+                    codeBlock([
+                        'items = ' + N('4'),
+                        'precio = ' + N('1200.5'),
+                        'marca = ' + S('"Samsung"'),
+                        'pantallas = ' + N('5'),
+                        'baterias = ' + S('"3"'),
+                        'pantallas = pantallas + items'
+                    ]),
+                blanks: [
+                    { q: '¿De qué tipo es la variable “precio”?', accept: T_FLOAT, show: 'float (decimal)',
+                      why: 'El valor 1200.5 tiene parte decimal.' },
+                    { q: '¿De qué tipo es la variable “baterias”?', accept: T_STR, show: 'str (cadena de texto)',
+                      why: 'El valor "3" está entre comillas.' },
+                    { q: '¿Cuál es el valor que contiene la variable “pantallas” al final del código?', accept: ["9", "nueve"], show: '9',
+                      why: 'La última línea calcula 5 + 4.' },
+                    { q: '¿Cuántas variables se definen en el código anterior?', accept: ["5", "cinco"], show: '5',
+                      why: 'items, precio, marca, pantallas y baterias.' }
+                ]
+            },
+            {
+                statement: '<p>Basado en el siguiente código responda las siguientes preguntas:</p>' +
+                    codeBlock([
+                        'distancia = ' + N('150.3'),
+                        'destino = ' + S('"Paris"'),
+                        'pasajeros = ' + N('120'),
+                        'vuelos = ' + S('"5"'),
+                        'pasajeros = pasajeros + ' + N('20')
+                    ]),
+                blanks: [
+                    { q: '¿De qué tipo es la variable “distancia”?', accept: T_FLOAT, show: 'float (decimal)',
+                      why: 'El valor 150.3 tiene parte decimal.' },
+                    { q: '¿Cuál es el valor que contiene la variable “pasajeros” en la línea 5?', accept: ["140"], show: '140',
+                      why: 'La línea 5 calcula 120 + 20.' },
+                    { q: '¿De qué tipo es la variable “vuelos”?', accept: T_STR, show: 'str (cadena de texto)',
+                      why: 'El valor "5" está entre comillas.' },
+                    { q: '¿Cuántas variables se definen en el código anterior?', accept: ["4", "cuatro"], show: '4',
+                      why: 'distancia, destino, pasajeros y vuelos.' }
+                ]
+            },
+            {
+                statement: '<p>Basado en el siguiente código responda las siguientes preguntas:</p>' +
+                    codeBlock([
+                        'velocidad = ' + N('80.7'),
+                        'vehiculo = ' + S('"Carro"'),
+                        'ruedas = ' + N('4'),
+                        'asientos = ' + S('"5"'),
+                        'ruedas = ruedas - ' + N('5')
+                    ]),
+                blanks: [
+                    { q: '¿De qué tipo es la variable “velocidad”?', accept: T_FLOAT, show: 'float (decimal)',
+                      why: 'El valor 80.7 tiene parte decimal.' },
+                    { q: '¿De qué tipo es la variable “asientos”?', accept: T_STR, show: 'str (cadena de texto)',
+                      why: 'El valor "5" está entre comillas.' },
+                    { q: '¿Cuál es el valor que contiene la variable “ruedas” al final del código?', accept: ["-1"], show: '-1',
+                      why: 'La última línea calcula 4 - 5. El resultado es negativo aunque no tenga sentido físico: Python solo hace la resta.' },
+                    { q: '¿Cuántas variables se definen en el código anterior?', accept: ["4", "cuatro"], show: '4',
+                      why: 'velocidad, vehiculo, ruedas y asientos.' }
+                ]
+            },
+            {
+                statement: '<p>Basado en el siguiente código responda las siguientes preguntas:</p>' +
+                    codeBlock([
+                        'calorias = ' + N('250.5'),
+                        'comida = ' + S('"Pizza"'),
+                        'ingredientes = ' + N('6'),
+                        'extra = ' + N('8'),
+                        'porciones = ' + S('"8"'),
+                        'ingredientes = ingredientes + extra'
+                    ]),
+                blanks: [
+                    { q: '¿De qué tipo es la variable “calorias”?', accept: T_FLOAT, show: 'float (decimal)',
+                      why: 'El valor 250.5 tiene parte decimal.' },
+                    { q: '¿Cuál es el valor que contiene la variable “ingredientes” en la línea 6?', accept: ["14"], show: '14',
+                      why: 'La línea 6 calcula 6 + 8.' },
+                    { q: '¿De qué tipo es la variable “porciones”?', accept: T_STR, show: 'str (cadena de texto)',
+                      why: 'El valor "8" está entre comillas.' },
+                    { q: '¿Cuántas variables se definen en el código anterior?', accept: ["5", "cinco"], show: '5',
+                      why: 'calorias, comida, ingredientes, extra y porciones.' }
+                ]
+            }
+        ]
+    },
+
+    // ============ 2. Pilares del pensamiento computacional ============
+    {
+        id: 2,
+        tema: "Pilares del pensamiento computacional",
+        kind: "mcq",
+        options: [
+            {
+                statement:
+                    "<p>Lea el siguiente problema (<strong>no debe codificarlo</strong>):</p><p>Una estación de monitoreo de tsunamis de la región de Kazán necesita un sistema para emitir alertas. La estación debe emitir una alerta cuando ocurra un sismo de magnitud 5.2 o mayor. Se requiere un programa en el cual se le solicite al usuario que ingrese por teclado la magnitud de un sismo. Si la magnitud ingresada es mayor o igual a 5.2 el programa imprime por pantalla \"Alerta de tsunami\". En caso contrario, imprimirá “No hay alerta”.</p>",
+                questions: [
+                    { q: "¿Cuáles son los datos de entrada?",
+                      a: ["La magnitud del sismo", "La región de Kazán", "El mensaje \"Alerta de tsunami\"", "El umbral 5.2"], c: 0,
+                      why: "Las entradas son los datos que el usuario teclea. Aquí lo único que se pide por teclado es la magnitud del sismo. La región es contexto del enunciado, el umbral 5.2 está fijo dentro del programa y el mensaje es una salida, no una entrada." },
+                    { q: "¿Cuáles son los procesos u operaciones a realizar?",
+                      a: ["Comparar si la magnitud ingresada es mayor o igual a 5.2", "Sumar la magnitud del sismo al umbral 5.2", "Contar cuántos sismos ocurren en la región", "Convertir la magnitud a kilómetros"], c: 0,
+                      why: "El proceso es lo que el programa hace con la entrada para decidir. Aquí solo hay una comparación (&ge; 5.2); el enunciado no pide sumar, contar ni convertir nada." },
+                    { q: "¿Cuáles son los datos de salida?",
+                      a: ["El mensaje \"Alerta de tsunami\" o el mensaje \"No hay alerta\"", "La magnitud del sismo ingresada", "El nombre de la región", "El umbral 5.2"], c: 0,
+                      why: "La salida es lo que el programa imprime. El enunciado dice explícitamente que imprime uno de los dos mensajes; la magnitud entra pero nunca se muestra." },
+                    { q: "Utilizando el pilar de “Generalización y abstracción”, ¿cuál es el dato más relevante a analizar?",
+                      a: ["La magnitud del sismo", "El nombre de la región Kazán", "El mensaje que se imprime", "Todos los anteriores"], c: 0,
+                      why: "Abstraer es quedarse solo con lo que cambia el resultado. Si cambias la región, la respuesta del programa no cambia; si cambias la magnitud, sí. Por eso la magnitud es el dato relevante y la región es ruido." }
+                ]
+            },
+            {
+                statement:
+                    "<p>Lea el siguiente problema (<strong>no debe codificarlo</strong>):</p><p>Un aeropuerto con capacidad para 4000 pasajeros necesita un sistema de advertencia para condiciones climáticas peligrosas. El sistema debe activar una alerta cuando la velocidad del viento alcance o supere los 70 kilómetros por hora. Se solicita un programa en el que el usuario introduzca la velocidad actual del viento, y si es igual o superior a 70 km/h, el programa mostrará en pantalla \"Alerta de condiciones climáticas peligrosas\", en caso contrario mostrará “No hay alerta”.</p>",
+                questions: [
+                    { q: "¿Cuáles son los datos de entrada?",
+                      a: ["La velocidad actual del viento", "La capacidad de 4000 pasajeros", "El mensaje de alerta", "El umbral de 70 km/h"], c: 0,
+                      why: "El enunciado dice \"el usuario introduzca la velocidad actual del viento\": esa es la única entrada. Los 4000 pasajeros son un dato del enunciado que nunca se pide ni se usa." },
+                    { q: "¿Cuáles son los procesos u operaciones a realizar?",
+                      a: ["Comparar si la velocidad del viento es mayor o igual a 70 km/h", "Multiplicar la velocidad del viento por 70", "Dividir los 4000 pasajeros entre la velocidad del viento", "Contar los pasajeros que hay en el aeropuerto"], c: 0,
+                      why: "El único cálculo que exige el problema es la comparación con 70 km/h. Multiplicar, dividir o contar pasajeros no aparece en ninguna parte del enunciado." },
+                    { q: "¿Cuáles son los datos de salida?",
+                      a: ["\"Alerta de condiciones climáticas peligrosas\" o \"No hay alerta\"", "La velocidad del viento ingresada", "La cantidad de pasajeros", "El umbral de 70 km/h"], c: 0,
+                      why: "El programa solo imprime uno de los dos mensajes. La velocidad se lee para decidir, pero no se muestra." },
+                    { q: "Utilizando el pilar de “Generalización y abstracción”, ¿cuál es el dato más relevante a analizar?",
+                      a: ["La velocidad del viento", "La capacidad de 4000 pasajeros", "4000 y 70", "Todos los anteriores"], c: 0,
+                      why: "La velocidad del viento es lo único que decide la alerta. Los 4000 pasajeros son un dato irrelevante puesto a propósito para distraer, y \"4000 y 70\" son números sueltos sin el significado que los hace útiles." }
+                ]
+            },
+            {
+                statement:
+                    "<p>Lea el siguiente problema (<strong>no debe codificarlo</strong>):</p><p>Un viajero que tiene pelo negro y 40 años necesita un sistema de conversión de dólares a pesos. Se solicita un programa en el que el viajero introduzca la cantidad de dólares, y si la cantidad es superior a 100, el programa mostrará en pantalla \"No tenemos tantos dólares para cambiar\"; en caso contrario, entregará por cada dólar 4000 pesos y mostrará el total de pesos a entregar.</p>",
+                questions: [
+                    { q: "¿Cuáles son los datos de entrada?",
+                      a: ["La cantidad de dólares", "La edad y el color del cabello de la persona", "La disponibilidad del dólar", "Generalización y abstracción"], c: 0,
+                      why: "La única entrada es la cantidad de dólares que introduce el viajero. La edad y el color del cabello son datos irrelevantes del enunciado, y \"generalización y abstracción\" es un pilar del pensamiento computacional, no un dato." },
+                    { q: "¿Cuáles son los procesos u operaciones a realizar?",
+                      a: ["Comparar si la cantidad de dólares es mayor a 100 y, si no lo es, multiplicarla por 4000", "Sumar 4000 a la cantidad de dólares", "Dividir 100 entre la cantidad de dólares", "Restar la edad del viajero a la cantidad de dólares"], c: 0,
+                      why: "Hay dos procesos encadenados: primero la comparación con 100 y, solo si la cantidad no la supera, la multiplicación por 4000. Ojo: es multiplicar, no sumar, porque cada dólar equivale a 4000 pesos." },
+                    { q: "¿Cuáles son los datos de salida?",
+                      a: ["\"No tenemos tantos dólares para cambiar\", o el total de pesos a entregar", "La cantidad de dólares ingresada", "La edad del viajero", "El color del cabello del viajero"], c: 0,
+                      why: "Según la rama que se tome, el programa imprime el mensaje de rechazo o el total en pesos. Son las dos únicas salidas posibles." },
+                    { q: "Utilizando el pilar de “Generalización y abstracción”, ¿cuáles son los dos datos más relevantes a analizar?",
+                      a: ["Cantidad de dólares y valor del dólar en pesos", "Edad y color de cabello", "100 y 4000", "Todos los anteriores"], c: 0,
+                      why: "Lo relevante es qué representa cada dato, no el número en sí. \"100 y 4000\" son los valores sueltos sin su significado; la edad y el cabello no afectan el resultado." }
+                ]
+            },
+            {
+                statement:
+                    "<p>Lea el siguiente problema (<strong>no debe codificarlo</strong>):</p><p>Un agricultor de Antioquia tiene 40 años y barba negra. El agricultor desea elaborar un sistema que permita repartir una parcela de 20 hectáreas entre sus hijos, pero todavía no sabe cuántos hijos desea tener. Se solicita un programa en el que el agricultor introduzca la cantidad de hijos que desea tener, y si la cantidad es superior a 20, el programa mostrará en pantalla \"No tenemos tantas hectáreas para repartir\"; en caso contrario, repartirá de manera equitativa las hectáreas entre la cantidad de hijos ingresados y mostrará cuántas hectáreas le tocan a cada hijo.</p>",
+                questions: [
+                    { q: "¿Cuáles son los datos de entrada?",
+                      a: ["La cantidad de hijos que desea tener", "La edad del agricultor", "Las 20 hectáreas de la parcela", "El color de la barba del agricultor"], c: 0,
+                      why: "Lo único que el agricultor teclea es la cantidad de hijos. Las 20 hectáreas son un valor fijo dentro del programa (no se pide por teclado), y la edad y la barba son irrelevantes." },
+                    { q: "¿Cuáles son los procesos u operaciones a realizar?",
+                      a: ["Comparar si la cantidad de hijos es mayor a 20 y, si no lo es, dividir las 20 hectáreas entre esa cantidad", "Multiplicar la cantidad de hijos por 20 hectáreas", "Sumar la edad del agricultor a la cantidad de hijos", "Contar cuántas hectáreas tiene Antioquia"], c: 0,
+                      why: "Primero la comparación con 20 y después, solo en la otra rama, el reparto equitativo, que es una división. Multiplicar daría más tierra cuantos más hijos, lo contrario de repartir." },
+                    { q: "¿Cuáles son los datos de salida?",
+                      a: ["\"No tenemos tantas hectáreas para repartir\", o las hectáreas que le tocan a cada hijo", "La cantidad de hijos ingresada", "La edad del agricultor", "El nombre de la parcela"], c: 0,
+                      why: "El programa imprime el mensaje de rechazo o el resultado del reparto, según la rama que se cumpla." },
+                    { q: "Utilizando el pilar de “Generalización y abstracción”, ¿cuáles son los dos datos más relevantes a analizar?",
+                      a: ["La cantidad de hijos y el tamaño de la parcela", "La edad y la barba del agricultor", "40 años y Antioquia", "Todos los anteriores"], c: 0,
+                      why: "Sin la cantidad de hijos no se puede repartir, y sin el tamaño de la parcela no hay qué repartir: ambos cambian el resultado. La edad, la barba y la región no lo cambian." }
+                ]
+            },
+            {
+                statement:
+                    "<p>Lea el siguiente problema (<strong>no debe codificarlo</strong>):</p><p>Una biblioteca de la ciudad de Medellín está generando una promoción para sus más de 20.000 usuarios. El administrador desea elaborar un sistema que permita saber cuántos libros regalar en esta promoción. Se solicita un programa en el que el administrador introduzca el día a realizar la promoción, y si el día es igual a “lunes” o “martes”, el programa mostrará en pantalla \"No hay promoción en estos días\"; en caso contrario, mostrará el mensaje “Regalaremos todos nuestros libros”.</p>",
+                questions: [
+                    { q: "¿Cuáles son los datos de entrada?",
+                      a: ["El día en que se realizará la promoción", "La cantidad de 20.000 usuarios", "La ciudad de Medellín", "La cantidad de libros a regalar"], c: 0,
+                      why: "La única entrada es el día, que el administrador escribe por teclado. Los 20.000 usuarios y la ciudad son contexto que nunca se usa, y la cantidad de libros no se calcula en esta versión del problema." },
+                    { q: "¿Cuáles son los procesos u operaciones a realizar?",
+                      a: ["Comparar si el día ingresado es igual a \"lunes\" o igual a \"martes\"", "Contar los 20.000 usuarios de la biblioteca", "Dividir los libros entre los 20.000 usuarios", "Sumar los días de la semana"], c: 0,
+                      why: "La comparación es de texto, no de números, y son dos condiciones unidas por un \"o\": basta que el día sea uno de los dos para que no haya promoción." },
+                    { q: "¿Cuáles son los datos de salida?",
+                      a: ["\"No hay promoción en estos días\" o “Regalaremos todos nuestros libros”", "El día ingresado por el administrador", "La cantidad de usuarios", "El nombre de la biblioteca"], c: 0,
+                      why: "Son los dos únicos mensajes que el enunciado pide imprimir." },
+                    { q: "Utilizando el pilar de “Generalización y abstracción”, ¿cuál es el dato más relevante a analizar?",
+                      a: ["El día de la promoción", "La ciudad de Medellín", "Los 20.000 usuarios", "Todos los anteriores"], c: 0,
+                      why: "El día es lo único que decide qué mensaje se muestra. Medellín y los 20.000 usuarios se mencionan pero no intervienen en ninguna comparación ni cálculo." }
+                ]
+            }
+        ]
+    },
+
+    // ============ 3. Condicionales simples ============
+    {
+        id: 3,
+        tema: "Condicionales simples",
+        kind: "code",
+        options: [
+            {
+                statement:
+                    '<p>En el colegio donde estudia una niña necesitan que les ayude a diseñar un programa para saber quién ganó las ' +
+                    'elecciones para representante de grupo. Hay dos estudiantes candidatos, y quien obtuvo la mayor votación es el ganador.</p>' +
+                    '<p>Implemente un programa en el cual le solicite al usuario que ingrese por teclado:</p>' +
+                    '<ul><li>El nombre del primer estudiante.</li><li>La votación del primer estudiante.</li>' +
+                    '<li>El nombre del segundo estudiante.</li><li>La votación del segundo estudiante.</li></ul>' +
+                    '<p>El programa deberá imprimir por pantalla el nombre del estudiante ganador <strong>dos veces</strong> ' +
+                    '(si hay empate debe imprimir el mensaje "Empate").</p>' +
+                    ioExample('Tanjiro\n30\nNezuko\n60', 'Nezuko\nNezuko'),
+                tests: [
+                    { in: ['Tanjiro', '30', 'Nezuko', '60'], out: 'Nezuko\nNezuko' },
+                    { in: ['Ana', '50', 'Luis', '20'], out: 'Ana\nAna' },
+                    { in: ['Ana', '40', 'Luis', '40'], out: 'Empate' }
+                ],
+                solution:
+                    'nombre1 = input()\n' +
+                    'votos1 = int(input())\n' +
+                    'nombre2 = input()\n' +
+                    'votos2 = int(input())\n\n' +
+                    'if votos1 > votos2:\n' +
+                    '    print(nombre1)\n' +
+                    '    print(nombre1)\n' +
+                    'elif votos2 > votos1:\n' +
+                    '    print(nombre2)\n' +
+                    '    print(nombre2)\n' +
+                    'else:\n' +
+                    '    print("Empate")',
+                note: 'Las votaciones se convierten con int(). Sin la conversión Python compararía textos y "30" > "60" daría un resultado equivocado.'
+            },
+            {
+                statement:
+                    '<p>En una tienda se realizan análisis de productos y se requiere su ayuda para diseñar un programa para saber cuál ' +
+                    'producto es más barato entre dos productos.</p>' +
+                    '<p>Implemente un programa en el cual le solicite al usuario que ingrese por teclado:</p>' +
+                    '<ul><li>El nombre del primer producto.</li><li>El precio del primer producto.</li>' +
+                    '<li>El nombre del segundo producto.</li><li>El precio del segundo producto.</li></ul>' +
+                    '<p>El programa deberá imprimir por pantalla el nombre del producto más barato <strong>dos veces</strong> ' +
+                    '(si hay empate debe imprimir el mensaje "Empate").</p>' +
+                    ioExample('Chocorramo\n100\nTrululu\n20', 'Trululu\nTrululu'),
+                tests: [
+                    { in: ['Chocorramo', '100', 'Trululu', '20'], out: 'Trululu\nTrululu' },
+                    { in: ['Pan', '10', 'Leche', '50'], out: 'Pan\nPan' },
+                    { in: ['Pan', '30', 'Leche', '30'], out: 'Empate' }
+                ],
+                solution:
+                    'nombre1 = input()\n' +
+                    'precio1 = float(input())\n' +
+                    'nombre2 = input()\n' +
+                    'precio2 = float(input())\n\n' +
+                    'if precio1 < precio2:\n' +
+                    '    print(nombre1)\n' +
+                    '    print(nombre1)\n' +
+                    'elif precio2 < precio1:\n' +
+                    '    print(nombre2)\n' +
+                    '    print(nombre2)\n' +
+                    'else:\n' +
+                    '    print("Empate")',
+                note: 'Ojo con la dirección de la comparación: aquí gana el precio menor, por eso se usa < y no >.'
+            },
+            {
+                statement:
+                    '<p>En un polideportivo desean realizar análisis de corredores y se requiere su ayuda para diseñar un programa para ' +
+                    'saber cuál corredor es más lento.</p>' +
+                    '<p>Implemente un programa en el cual le solicite al usuario que ingrese por teclado:</p>' +
+                    '<ul><li>El nombre del primer corredor.</li><li>La velocidad del primer corredor.</li>' +
+                    '<li>El nombre del segundo corredor.</li><li>La velocidad del segundo corredor.</li></ul>' +
+                    '<p>El programa deberá imprimir por pantalla el <strong>nombre y la velocidad</strong> del corredor más lento ' +
+                    '(si hay empate debe imprimir el mensaje "Empate").</p>' +
+                    ioExample('Maluma\n20\nKarolG\n35', 'Maluma 20'),
+                tests: [
+                    { in: ['Maluma', '20', 'KarolG', '35'], out: 'Maluma 20' },
+                    { in: ['Ana', '50', 'Luis', '10'], out: 'Luis 10' },
+                    { in: ['Ana', '25', 'Luis', '25'], out: 'Empate' }
+                ],
+                solution:
+                    'nombre1 = input()\n' +
+                    'velocidad1 = int(input())\n' +
+                    'nombre2 = input()\n' +
+                    'velocidad2 = int(input())\n\n' +
+                    'if velocidad1 < velocidad2:\n' +
+                    '    print(nombre1, velocidad1)\n' +
+                    'elif velocidad2 < velocidad1:\n' +
+                    '    print(nombre2, velocidad2)\n' +
+                    'else:\n' +
+                    '    print("Empate")',
+                note: 'Más lento = menor velocidad. print(nombre1, velocidad1) imprime ambos separados por un espacio, como en el ejemplo.'
+            },
+            {
+                statement:
+                    '<p>En un polideportivo desean realizar análisis de atletas y se requiere su ayuda para diseñar un programa para saber ' +
+                    'cuál atleta salta más alto.</p>' +
+                    '<p>Implemente un programa en el cual le solicite al usuario que ingrese por teclado:</p>' +
+                    '<ul><li>El nombre del primer atleta.</li><li>La altura alcanzada por el primer atleta.</li>' +
+                    '<li>El nombre del segundo atleta.</li><li>La altura alcanzada por el segundo atleta.</li></ul>' +
+                    '<p>El programa deberá imprimir por pantalla el <strong>nombre y la altura</strong> del atleta que saltó más alto ' +
+                    '(si hay empate debe imprimir el mensaje "Empate").</p>' +
+                    ioExample('Luffy\n4.3\nKaido\n4.2', 'Luffy 4.3'),
+                tests: [
+                    { in: ['Luffy', '4.3', 'Kaido', '4.2'], out: 'Luffy 4.3' },
+                    { in: ['Ana', '1.5', 'Luis', '2.5'], out: 'Luis 2.5' },
+                    { in: ['Ana', '3.0', 'Luis', '3.0'], out: 'Empate' }
+                ],
+                solution:
+                    'nombre1 = input()\n' +
+                    'altura1 = float(input())\n' +
+                    'nombre2 = input()\n' +
+                    'altura2 = float(input())\n\n' +
+                    'if altura1 > altura2:\n' +
+                    '    print(nombre1, altura1)\n' +
+                    'elif altura2 > altura1:\n' +
+                    '    print(nombre2, altura2)\n' +
+                    'else:\n' +
+                    '    print("Empate")',
+                note: 'Las alturas se leen con float() porque tienen decimales (4.3, 4.2).'
+            },
+            {
+                statement:
+                    '<p>En una competencia desean realizar análisis de lanzamiento de peso de atletas y se requiere su ayuda para diseñar ' +
+                    'un programa para saber cuál atleta lanzó más lejos.</p>' +
+                    '<p>Implemente un programa en el cual le solicite al usuario que ingrese por teclado:</p>' +
+                    '<ul><li>El nombre del primer atleta.</li><li>La distancia de lanzamiento del primer atleta.</li>' +
+                    '<li>El nombre del segundo atleta.</li><li>La distancia de lanzamiento del segundo atleta.</li></ul>' +
+                    '<p>El programa deberá imprimir el nombre del atleta que lanzó más lejos y <strong>la diferencia</strong> entre su ' +
+                    'distancia y la del contrincante (si hay empate solo debe imprimir el mensaje "Empate").</p>' +
+                    ioExample('Misty\n4.4\nAsh\n4.2', 'Misty 0.2'),
+                tests: [
+                    { in: ['Misty', '4.4', 'Ash', '4.2'], out: 'Misty 0.2' },
+                    { in: ['Ana', '10.0', 'Luis', '12.5'], out: 'Luis 2.5' },
+                    { in: ['Ana', '5.0', 'Luis', '5.0'], out: 'Empate' }
+                ],
+                solution:
+                    'nombre1 = input()\n' +
+                    'distancia1 = float(input())\n' +
+                    'nombre2 = input()\n' +
+                    'distancia2 = float(input())\n\n' +
+                    'if distancia1 > distancia2:\n' +
+                    '    print(nombre1, round(distancia1 - distancia2, 2))\n' +
+                    'elif distancia2 > distancia1:\n' +
+                    '    print(nombre2, round(distancia2 - distancia1, 2))\n' +
+                    'else:\n' +
+                    '    print("Empate")',
+                note: 'Se usa round(..., 2) porque restar decimales en Python puede dar 0.20000000000000018. El simulador acepta ambas formas, pero en el parcial se ve mejor redondeado.'
+            }
+        ]
+    },
+
+    // ============ 4. Diagramas de flujo ============
+    {
+        id: 4,
+        tema: "Diagramas de flujo",
+        kind: "value",
+        options: [
+            {
+                statement:
+                    '<p>Un pintor desea realizar un programa para saber qué tan bueno o malo ha sido durante sus trabajos de pintura. ' +
+                    'El pintor sabe de diagramas, pero no sabe de programación, por lo tanto le envía el siguiente diagrama que usted deberá codificar.</p>' +
+                    '<div class="diagram"><img src="Archivos/parcial01/diagrama-01-pintor.png" alt="Diagrama de flujo: pinturaDerramada"></div>' +
+                    '<p><strong>Pregunta —</strong> ¿Qué número de <code>pinturaDerramada</code> debería ingresar por pantalla para generar la siguiente salida?</p>' +
+                    '<pre class="code">Podrías mejorar\nFin programa</pre>',
+                varName: 'pinturaDerramada',
+                check: { min: 0, minIncl: false, max: 15, maxIncl: true },
+                show: 'Cualquier número mayor que 0 y menor o igual a 15 (por ejemplo, 10)',
+                why: 'Con 10: la primera condición (> 15) es False, así que baja; la segunda (> 0) es True e imprime "Podrías mejorar". Luego "Fin programa" se imprime siempre, porque está fuera del condicional.'
+            },
+            {
+                statement:
+                    '<p>Un chef desea realizar un programa para saber si ha cocinado un huevo a la perfección. El chef sabe de diagramas, ' +
+                    'pero no sabe de programación, por lo tanto le envía el siguiente diagrama que usted deberá codificar.</p>' +
+                    '<div class="diagram"><img src="Archivos/parcial01/diagrama-02-chef.png" alt="Diagrama de flujo: tiempo de cocción del huevo"></div>' +
+                    '<p><strong>Pregunta —</strong> ¿Qué valor de <code>tiempo</code> debería ingresar por pantalla para generar la siguiente salida?</p>' +
+                    '<pre class="code">El huevo está perfecto\nFin programa</pre>',
+                varName: 'tiempo',
+                check: { min: 4, minIncl: true, max: 12, maxIncl: true },
+                show: 'Cualquier número entre 4 y 12, incluidos ambos extremos (por ejemplo, 8)',
+                why: 'Con 8: 8 > 12 es False y 8 < 4 también es False, así que llega a la rama final.'
+            },
+            {
+                statement:
+                    '<p>Un jardinero desea realizar un programa para saber si regar las plantas. El jardinero sabe de diagramas, ' +
+                    'pero no sabe de programación, por lo tanto le envía el siguiente diagrama que usted deberá codificar.</p>' +
+                    '<div class="diagram"><img src="Archivos/parcial01/diagrama-03-jardinero.png" alt="Diagrama de flujo: días sin lluvia"></div>' +
+                    '<p><strong>Pregunta —</strong> ¿Qué valor de <code>diasSinLluvia</code> debería ingresar por pantalla para generar la siguiente salida?</p>' +
+                    '<pre class="code">Quizás regar\nFin programa</pre>',
+                varName: 'diasSinLluvia',
+                check: { min: 3, minIncl: true, max: 7, maxIncl: true },
+                show: 'Cualquier número entre 3 y 7, incluidos ambos extremos (por ejemplo, 5)',
+                why: 'Con 5: 5 < 3 es False y 5 > 7 también es False, así que cae en la rama final.'
+            },
+            {
+                statement:
+                    '<p>Un profesor desea realizar un programa para saber cómo va un estudiante. El profesor sabe de diagramas, ' +
+                    'pero no sabe de programación, por lo tanto le envía el siguiente diagrama que usted deberá codificar.</p>' +
+                    '<div class="diagram"><img src="Archivos/parcial01/diagrama-04-profesor.png" alt="Diagrama de flujo: nota del estudiante"></div>' +
+                    '<p><strong>Pregunta —</strong> ¿Qué valor de <code>nota</code> debería ingresar por pantalla para generar la siguiente salida?</p>' +
+                    '<pre class="code">Puedes mejorar\nFin programa</pre>',
+                varName: 'nota',
+                check: { min: 3, minIncl: true, max: 7, maxIncl: false },
+                show: 'Cualquier número mayor o igual a 3 y menor que 7 (por ejemplo, 5)',
+                why: 'Con 5: 5 < 3 es False, pero 5 < 7 es True. Cuidado con los extremos: 3 sí sirve, 7 no.'
+            },
+            {
+                statement:
+                    '<p>Un conductor desea realizar un programa para saber si debe cargar gasolina o no. El conductor sabe de diagramas, ' +
+                    'pero no sabe de programación, por lo tanto le envía el siguiente diagrama que usted deberá codificar.</p>' +
+                    '<div class="diagram"><img src="Archivos/parcial01/diagrama-05-conductor.png" alt="Diagrama de flujo: litros restantes de gasolina"></div>' +
+                    '<p><strong>Pregunta —</strong> ¿Qué valor de <code>litrosRestantes</code> debería ingresar por pantalla para generar la siguiente salida?</p>' +
+                    '<pre class="code">Todavía hay tiempo\nFin programa</pre>',
+                varName: 'litrosRestantes',
+                check: { min: 3, minIncl: true, max: 7, maxIncl: false },
+                show: 'Cualquier número mayor o igual a 3 y menor que 7 (por ejemplo, 5)',
+                why: 'Con 5: 5 < 3 es False, pero 5 < 7 es True.'
+            }
+        ]
+    },
+
+    // ============ 5. Ciclo while sencillo ============
+    // El parcial 1 se presenta antes de ver ciclos, por eso las soluciones de referencia
+    // se resuelven solo con condicionales. Del banco oficial se conservan las tres versiones
+    // con valor inicial acotado, que son las unicas resolubles sin while ni for.
+    {
+        id: 5,
+        tema: "Ciclo while sencillo",
+        kind: "code",
+        options: [
+            {
+                statement:
+                    "<p>A un piloto le gusta ascender en su avión de 50 en 50 metros hasta llegar siempre a los 200 metros.</p><p>Implemente un programa en Python para ayudar al piloto a ascender. Pídale al usuario un número que representa la altura inicial (siempre será múltiplo de 50 y menor a 200). Imprima ese número y luego vaya sumando e imprimiendo de 50 en 50 hasta llegar a 200.</p>" +
+                    ioExample("50", "50\n100\n150\n200"),
+                tests: [
+                    { in: ["50"], out: "50\n100\n150\n200" },
+                    { in: ["100"], out: "100\n150\n200" },
+                    { in: ["0"], out: "0\n50\n100\n150\n200" }
+                ],
+                solution: "altura = int(input())\nprint(altura)\n\nif altura < 200:\n    altura = altura + 50\n    print(altura)\n\nif altura < 200:\n    altura = altura + 50\n    print(altura)\n\nif altura < 200:\n    altura = altura + 50\n    print(altura)\n\nif altura < 200:\n    altura = altura + 50\n    print(altura)",
+                note: "En este punto del curso todavía no se han visto ciclos, así que la solución se arma repitiendo el condicional: se imprime, se avanza un paso y se vuelve a preguntar si aún falta. Como el enunciado acota el valor inicial, se sabe de antemano cuántos pasos hacen falta como máximo (4). Si ya viste el ciclo while, esto mismo se escribe en tres líneas."
+            },
+            {
+                statement:
+                    "<p>A un atleta le gusta subir un terreno saltando de 2 en 2 metros hasta llegar siempre a los 14 metros.</p><p>Implemente un programa en Python para ayudar al atleta. Pídale al usuario un número que representa la altura inicial (siempre será múltiplo de 2 y menor a 14). Imprima ese número y luego vaya sumando e imprimiendo de 2 en 2 hasta llegar a 14.</p>" +
+                    ioExample("4", "4\n6\n8\n10\n12\n14"),
+                tests: [
+                    { in: ["4"], out: "4\n6\n8\n10\n12\n14" },
+                    { in: ["10"], out: "10\n12\n14" },
+                    { in: ["2"], out: "2\n4\n6\n8\n10\n12\n14" }
+                ],
+                solution: "altura = int(input())\nprint(altura)\n\nif altura < 14:\n    altura = altura + 2\n    print(altura)\n\nif altura < 14:\n    altura = altura + 2\n    print(altura)\n\nif altura < 14:\n    altura = altura + 2\n    print(altura)\n\nif altura < 14:\n    altura = altura + 2\n    print(altura)\n\nif altura < 14:\n    altura = altura + 2\n    print(altura)\n\nif altura < 14:\n    altura = altura + 2\n    print(altura)\n\nif altura < 14:\n    altura = altura + 2\n    print(altura)",
+                note: "En este punto del curso todavía no se han visto ciclos, así que la solución se arma repitiendo el condicional: se imprime, se avanza un paso y se vuelve a preguntar si aún falta. Como el enunciado acota el valor inicial, se sabe de antemano cuántos pasos hacen falta como máximo (7). Si ya viste el ciclo while, esto mismo se escribe en tres líneas."
+            },
+            {
+                statement:
+                    "<p>A un corredor le gusta subir un terreno saltando de 3 en 3 metros hasta llegar siempre a los 21 metros.</p><p>Implemente un programa en Python para ayudar al corredor a subir el terreno. Pídale al usuario un número que representa la altura inicial (siempre será múltiplo de 3 y menor a 21). Imprima ese número y luego vaya sumando e imprimiendo de 3 en 3 hasta llegar a 21.</p>" +
+                    ioExample("15", "15\n18\n21"),
+                tests: [
+                    { in: ["15"], out: "15\n18\n21" },
+                    { in: ["3"], out: "3\n6\n9\n12\n15\n18\n21" },
+                    { in: ["9"], out: "9\n12\n15\n18\n21" }
+                ],
+                solution: "altura = int(input())\nprint(altura)\n\nif altura < 21:\n    altura = altura + 3\n    print(altura)\n\nif altura < 21:\n    altura = altura + 3\n    print(altura)\n\nif altura < 21:\n    altura = altura + 3\n    print(altura)\n\nif altura < 21:\n    altura = altura + 3\n    print(altura)\n\nif altura < 21:\n    altura = altura + 3\n    print(altura)\n\nif altura < 21:\n    altura = altura + 3\n    print(altura)\n\nif altura < 21:\n    altura = altura + 3\n    print(altura)",
+                note: "En este punto del curso todavía no se han visto ciclos, así que la solución se arma repitiendo el condicional: se imprime, se avanza un paso y se vuelve a preguntar si aún falta. Como el enunciado acota el valor inicial, se sabe de antemano cuántos pasos hacen falta como máximo (7). Si ya viste el ciclo while, esto mismo se escribe en tres líneas."
+            }
+        ]
+    }
+    ];
+
+    // ==========================================================
+    //  Motor de Python (Pyodide)
+    // ==========================================================
+    const RUNNER_PY = `
+import sys, io, json, builtins
+
+_LIMIT = 400000
+
+def _run_user(code, inputs_json):
+    inputs = json.loads(inputs_json)
+    it = iter(inputs)
+    buf = io.StringIO()
+
+    def _inp(prompt=''):
+        try:
+            return next(it)
+        except StopIteration:
+            raise EOFError('El programa pidió más datos de los que entrega el caso de prueba')
+
+    steps = [0]
+    def _guard(frame, event, arg):
+        steps[0] += 1
+        if steps[0] > _LIMIT:
+            raise RuntimeError('El programa tardó demasiado. ¿Quedó un ciclo infinito?')
+        return _guard
+
+    old_out, old_in = sys.stdout, builtins.input
+    sys.stdout, builtins.input = buf, _inp
+    result = {'ok': True, 'out': '', 'err': ''}
+    try:
+        sys.settrace(_guard)
+        exec(compile(code, '<parcial>', 'exec'), {'__name__': '__main__'})
+    except BaseException as e:
+        result['ok'] = False
+        result['err'] = type(e).__name__ + ': ' + str(e)
+    finally:
+        sys.settrace(None)
+        sys.stdout, builtins.input = old_out, old_in
+    result['out'] = buf.getvalue()
+    return json.dumps(result)
+`;
+
+    // Se prueban varias versiones por si alguna deja de estar publicada en el CDN.
+    const PYODIDE_BASES = [
+        'https://cdn.jsdelivr.net/pyodide/v0.26.4/full/',
+        'https://cdn.jsdelivr.net/pyodide/v0.26.3/full/',
+        'https://cdn.jsdelivr.net/pyodide/v0.27.2/full/',
+        'https://cdn.jsdelivr.net/pyodide/v314.0.2/full/'
+    ];
+
+    let pyodide = null;
+    let pyReady = null;
+
+    function setEngineStatus(text, cls) {
+        const el = document.getElementById('engine-status');
+        el.textContent = text;
+        el.className = 'engine-status' + (cls ? ' ' + cls : '');
+    }
+
+    function injectScript(src) {
+        return new Promise((resolve, reject) => {
+            const s = document.createElement('script');
+            s.src = src;
+            s.onload = resolve;
+            s.onerror = () => reject(new Error('No se pudo descargar ' + src));
+            document.head.appendChild(s);
+        });
+    }
+
+    function loadPython() {
+        if (pyReady) return pyReady;
+        pyReady = (async () => {
+            let lastError = null;
+            for (const base of PYODIDE_BASES) {
+                try {
+                    if (typeof window.loadPyodide !== 'function') await injectScript(base + 'pyodide.js');
+                    const py = await window.loadPyodide({ indexURL: base });
+                    py.runPython(RUNNER_PY);
+                    pyodide = py;
+                    return py;
+                } catch (e) {
+                    lastError = e;
+                    try { delete window.loadPyodide; } catch (_) { window.loadPyodide = undefined; }
+                }
+            }
+            throw lastError || new Error('No hay motor de Python disponible');
+        })();
+        pyReady.then(
+            () => setEngineStatus('Motor de Python: listo ✓', 'ready'),
+            () => setEngineStatus('No se pudo cargar el motor de Python. Las actividades de código no se podrán calificar automáticamente (revisa tu conexión).', 'error')
+        );
+        return pyReady;
+    }
+
+    async function runPython(code, inputs) {
+        await loadPython();
+        const raw = pyodide.globals.get('_run_user')(code, JSON.stringify(inputs));
+        return JSON.parse(raw);
+    }
+
+    // Compara salidas siendo tolerante con el formato numérico:
+    // "20" == "20.0"  y  "0.2" == "0.20000000000000018"
+    function outputsMatch(expected, actual) {
+        const linesE = String(expected).replace(/\r/g, '').split('\n').map(s => s.trim()).filter(s => s !== '');
+        const linesA = String(actual).replace(/\r/g, '').split('\n').map(s => s.trim()).filter(s => s !== '');
+        if (linesE.length !== linesA.length) return false;
+        for (let i = 0; i < linesE.length; i++) {
+            const te = linesE[i].split(/\s+/), ta = linesA[i].split(/\s+/);
+            if (te.length !== ta.length) return false;
+            for (let j = 0; j < te.length; j++) {
+                if (te[j] === ta[j]) continue;
+                const ne = Number(te[j]), na = Number(ta[j]);
+                if (Number.isFinite(ne) && Number.isFinite(na) && Math.abs(ne - na) < 1e-6) continue;
+                return false;
+            }
+        }
+        return true;
+    }
+
+    // ==========================================================
+    //  Estado y utilidades
+    // ==========================================================
+    let currentExam = [];
+    let examFinished = false;
+
+    function shuffle(array) {
+        const a = array.slice();
+        for (let i = a.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [a[i], a[j]] = [a[j], a[i]];
+        }
+        return a;
+    }
+
+    function norm(s) {
+        return String(s == null ? '' : s)
+            .toLowerCase().trim()
+            .normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+            .replace(/["'`“”‘’]/g, '')
+            .replace(/,/g, '.')
+            .replace(/\s+/g, ' ')
+            .replace(/[.]$/, '');
+    }
+
+    function matchesBlank(userText, accept) {
+        const u = norm(userText);
+        if (u === '') return false;
+        for (const a of accept) {
+            const na = norm(a);
+            if (u === na) return true;
+            const nu = Number(u), nn = Number(na);
+            if (Number.isFinite(nu) && Number.isFinite(nn) && Math.abs(nu - nn) < 1e-9) return true;
+        }
+        return false;
+    }
+
+    function checkValue(text, rule) {
+        const v = Number(String(text).trim().replace(',', '.'));
+        if (!Number.isFinite(v)) return false;
+        if (rule.minIncl ? v < rule.min : v <= rule.min) return false;
+        if (rule.maxIncl ? v > rule.max : v >= rule.max) return false;
+        return true;
+    }
+
+    // ==========================================================
+    //  Generación y render
+    // ==========================================================
+    function generateExam() {
+        examFinished = false;
+        document.getElementById('results-container').style.display = 'none';
+        document.getElementById('questions-section').classList.remove('exam-done');
+        document.getElementById('submit-btn').disabled = false;
+        document.getElementById('submit-btn').textContent = 'Calificar Examen';
+
+        currentExam = activities.map(act => {
+            const idx = Math.floor(Math.random() * act.options.length);
+            const opt = act.options[idx];
+            const entry = { act, opt, mcq: null, selections: {} };
+
+            if (act.kind === 'mcq') {
+                entry.mcq = opt.questions.map(q => {
+                    const correctText = q.a[q.c];
+                    const shuffled = shuffle(q.a);
+                    return { q: q.q, a: shuffled, c: shuffled.indexOf(correctText), why: q.why };
+                });
+            }
+            return entry;
+        });
+
+        render();
+        updateProgress();
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function render() {
+        const container = document.getElementById('questions-container');
+        const topicsList = document.getElementById('topics-list');
+        container.innerHTML = '';
+        topicsList.innerHTML = '';
+
+        currentExam.forEach((item, i) => {
+            const act = item.act;
+            let body = '';
+
+            if (act.kind === 'fill') {
+                body = '<div class="blanks">' + item.opt.blanks.map((b, k) =>
+                    '<div class="blank-row" id="blank-' + i + '-' + k + '">' +
+                        '<div class="blank-q">' + (k + 1) + '. ' + b.q + '</div>' +
+                        '<div class="blank-in">' +
+                            '<label for="fill-' + i + '-' + k + '">Ingresar respuesta:</label>' +
+                            '<input type="text" id="fill-' + i + '-' + k + '" data-q="' + i + '" autocomplete="off">' +
+                        '</div>' +
+                    '</div>'
+                ).join('') + '</div>';
+            }
+            else if (act.kind === 'mcq') {
+                body = item.mcq.map((sub, k) =>
+                    '<div class="mcq-block">' +
+                        '<div class="mcq-question">' + (k + 1) + '. ' + sub.q + '</div>' +
+                        '<div class="options-container" id="opts-' + i + '-' + k + '">' +
+                            sub.a.map((opt, oi) =>
+                                '<div class="option" data-q="' + i + '" data-sub="' + k + '" data-opt="' + oi + '">' +
+                                    '<span class="letter">' + String.fromCharCode(97 + oi) + ')</span> ' +
+                                    '<span>' + opt + '</span>' +
+                                '</div>'
+                            ).join('') +
+                        '</div>' +
+                    '</div>'
+                ).join('');
+            }
+            else if (act.kind === 'value') {
+                body =
+                    '<div class="value-row" id="value-' + i + '">' +
+                        '<label for="val-' + i + '">Ingresar valor:</label>' +
+                        '<input type="text" id="val-' + i + '" data-q="' + i + '" autocomplete="off" inputmode="decimal">' +
+                    '</div>';
+            }
+            else if (act.kind === 'code') {
+                body =
+                    '<textarea class="code-editor" id="code-' + i + '" data-q="' + i + '" spellcheck="false" ' +
+                    'placeholder="# Escribe aquí tu programa en Python"></textarea>' +
+                    '<p class="editor-hint">Tu código se ejecutará contra ' + item.opt.tests.length +
+                    ' casos de prueba al calificar. Usa <code>input()</code> para leer y <code>print()</code> para mostrar.</p>' +
+                    '<div id="code-out-' + i + '"></div>';
+            }
+
+            const card = document.createElement('div');
+            card.className = 'question-card';
+            card.id = 'q-' + i;
+            card.innerHTML =
+                '<div class="question-header">' +
+                    '<div class="question-number">' + (i + 1) + '</div>' +
+                    '<span class="question-topic">' + act.tema + '</span>' +
+                '</div>' +
+                '<div class="statement">' + item.opt.statement + '</div>' +
+                body +
+                '<div class="result-summary" id="fb-' + i + '"></div>';
+            container.appendChild(card);
+
+            const navItem = document.createElement('div');
+            navItem.className = 'topic-item';
+            navItem.innerHTML =
+                '<span class="topic-name">' + (i + 1) + '. ' + act.tema + '</span>' +
+                '<div class="topic-status" id="dot-' + i + '"></div>';
+            navItem.onclick = () => document.getElementById('q-' + i).scrollIntoView({ behavior: 'smooth', block: 'start' });
+            topicsList.appendChild(navItem);
+        });
+
+        container.querySelectorAll('.option').forEach(el => {
+            el.addEventListener('click', () => {
+                if (examFinished) return;
+                const qi = +el.dataset.q, sub = +el.dataset.sub, oi = +el.dataset.opt;
+                currentExam[qi].selections[sub] = oi;
+                const parent = document.getElementById('opts-' + qi + '-' + sub);
+                Array.from(parent.children).forEach(c => c.classList.remove('selected'));
+                el.classList.add('selected');
+                updateProgress();
+            });
+        });
+
+        container.querySelectorAll('input[type="text"], textarea').forEach(el => {
+            el.addEventListener('input', updateProgress);
+        });
+    }
+
+    function isAnswered(i) {
+        const act = currentExam[i].act;
+        if (act.kind === 'fill') {
+            return currentExam[i].opt.blanks.some((_, k) =>
+                (document.getElementById('fill-' + i + '-' + k).value || '').trim() !== '');
+        }
+        if (act.kind === 'mcq') return Object.keys(currentExam[i].selections).length > 0;
+        if (act.kind === 'value') return (document.getElementById('val-' + i).value || '').trim() !== '';
+        if (act.kind === 'code') return (document.getElementById('code-' + i).value || '').trim() !== '';
+        return false;
+    }
+
+    function updateProgress() {
+        if (examFinished) return;
+        let count = 0;
+        currentExam.forEach((_, i) => {
+            const ok = isAnswered(i);
+            if (ok) count++;
+            document.getElementById('dot-' + i).className = 'topic-status' + (ok ? ' answered' : '');
+        });
+        document.getElementById('answered-count').textContent = count;
+    }
+
+    // ==========================================================
+    //  Calificación
+    // ==========================================================
+    async function submitExam() {
+        if (examFinished) return;
+
+        const pending = currentExam.filter((_, i) => !isAnswered(i)).length;
+        if (pending > 0 && !confirm('Aún faltan ' + pending + ' actividad(es) por responder. ¿Deseas calificar de todas formas?')) return;
+
+        const btn = document.getElementById('submit-btn');
+        btn.disabled = true;
+        btn.textContent = 'Calificando…';
+
+        const scores = [];
+
+        // Crea una tarjeta amarilla de explicación
+        function explainCard(html) {
+            const d = document.createElement('div');
+            d.className = 'explanation';
+            d.innerHTML = html;
+            return d;
+        }
+
+        for (let i = 0; i < currentExam.length; i++) {
+            const item = currentExam[i];
+            const act = item.act;
+            const fb = document.getElementById('fb-' + i);
+            let ratio = 0;
+            let summary = '';
+
+            // ---------- Rellenar ----------
+            if (act.kind === 'fill') {
+                let ok = 0;
+                item.opt.blanks.forEach((b, k) => {
+                    const input = document.getElementById('fill-' + i + '-' + k);
+                    const row = document.getElementById('blank-' + i + '-' + k);
+                    input.disabled = true;
+                    const good = matchesBlank(input.value, b.accept);
+                    if (good) ok++;
+                    row.classList.add(good ? 'correct' : 'incorrect');
+                    row.insertAdjacentElement('afterend', explainCard(
+                        '<strong class="tag">Explicación ' + (k + 1) + ':</strong> ' +
+                        'La respuesta correcta es <span class="answer">' + b.show + '</span>. ' + b.why
+                    ));
+                });
+                ratio = ok / item.opt.blanks.length;
+                summary = ok + ' de ' + item.opt.blanks.length + ' respuestas correctas';
+            }
+
+            // ---------- Opción múltiple ----------
+            else if (act.kind === 'mcq') {
+                let ok = 0;
+                item.mcq.forEach((sub, k) => {
+                    const parent = document.getElementById('opts-' + i + '-' + k);
+                    const chosen = item.selections[k];
+                    Array.from(parent.children).forEach(c => c.classList.remove('selected'));
+                    if (chosen === sub.c) ok++;
+                    else if (chosen !== undefined) parent.children[chosen].classList.add('incorrect');
+                    parent.children[sub.c].classList.add('correct');
+
+                    const letra = String.fromCharCode(97 + sub.c);
+                    parent.parentNode.appendChild(explainCard(
+                        '<strong class="tag">Explicación ' + (k + 1) + ':</strong> ' +
+                        'La respuesta correcta es <span class="answer">' + letra + ') ' + sub.a[sub.c] + '</span>. ' + sub.why
+                    ));
+                });
+                ratio = ok / item.mcq.length;
+                summary = ok + ' de ' + item.mcq.length + ' respuestas correctas';
+            }
+
+            // ---------- Valor numérico ----------
+            else if (act.kind === 'value') {
+                const input = document.getElementById('val-' + i);
+                const row = document.getElementById('value-' + i);
+                input.disabled = true;
+                const good = checkValue(input.value, item.opt.check);
+                ratio = good ? 1 : 0;
+                row.classList.add(good ? 'correct' : 'incorrect');
+                row.insertAdjacentElement('afterend', explainCard(
+                    '<strong class="tag">Explicación:</strong> ' +
+                    'La respuesta correcta es <span class="answer">' + item.opt.show + '</span>. ' + item.opt.why
+                ));
+                summary = good ? 'Respuesta correcta' : 'Respuesta incorrecta';
+            }
+
+            // ---------- Código Python ----------
+            else if (act.kind === 'code') {
+                const ta = document.getElementById('code-' + i);
+                const out = document.getElementById('code-out-' + i);
+                ta.readOnly = true;
+                const code = (ta.value || '').trim();
+                const tests = item.opt.tests;
+
+                if (code === '') {
+                    ratio = 0;
+                    summary = 'Sin código para evaluar';
+                } else {
+                    let passed = 0, rows = '', engineOk = true;
+                    for (const t of tests) {
+                        let r;
+                        try {
+                            r = await runPython(code, t.in);
+                        } catch (e) { engineOk = false; break; }
+                        const good = r.ok && outputsMatch(t.out, r.out);
+                        if (good) passed++;
+                        rows +=
+                            '<div class="test-row ' + (good ? 'pass' : 'fail') + '">' +
+                                '<span class="badge">' + (good ? '✓' : '✗') + '</span>' +
+                                '<span>Entrada: <code>' + esc(t.in.join(' / ')) + '</code></span>' +
+                                '<span>Esperado: <code>' + esc(t.out.replace(/\n/g, ' ⏎ ')) + '</code></span>' +
+                                '<span>Obtenido: <code>' +
+                                    (r.ok ? esc((r.out || '(sin salida)').trim().replace(/\n/g, ' ⏎ ')) : esc(r.err)) +
+                                '</code></span>' +
+                            '</div>';
+                    }
+                    if (!engineOk) {
+                        ratio = 0;
+                        summary = 'No se pudo ejecutar tu código: el motor de Python no está disponible';
+                    } else {
+                        ratio = passed / tests.length;
+                        summary = passed + ' de ' + tests.length + ' casos de prueba superados';
+                        const box = document.createElement('div');
+                        box.className = 'test-results';
+                        box.innerHTML = rows;
+                        out.appendChild(box);
+                    }
+                }
+
+                out.appendChild(explainCard(
+                    '<strong class="tag">Explicación:</strong> Una solución correcta es:' +
+                    '<pre class="code">' + esc(item.opt.solution) + '</pre>' +
+                    '<span class="note">' + item.opt.note + '</span>'
+                ));
+            }
+
+            fb.textContent = summary;
+            fb.classList.add('visible');
+            scores.push(ratio);
+
+            const dot = document.getElementById('dot-' + i);
+            dot.className = 'topic-status ' + (ratio === 1 ? 'correct' : ratio > 0 ? 'partial' : 'incorrect');
+        }
+
+        examFinished = true;
+        document.getElementById('questions-section').classList.add('exam-done');
+        btn.textContent = 'Examen calificado';
+
+        showResults(scores);
+    }
+
+    function showResults(scores) {
+        const total = scores.reduce((a, b) => a + b, 0);
+        const score = (total / scores.length) * 5;
+        const percentage = Math.round((total / scores.length) * 100);
+        const fullyCorrect = scores.filter(s => s === 1).length;
+
+        const circle = document.getElementById('final-score');
+        circle.textContent = score.toFixed(1);
+        circle.className = 'score-circle ' + (score >= 4 ? 'high' : score >= 3 ? 'medium' : 'low');
+
+        document.getElementById('correct-count').textContent = fullyCorrect;
+        document.getElementById('incorrect-count').textContent = scores.length - fullyCorrect;
+        document.getElementById('percentage-score').textContent = percentage + '%';
+
+        const recText = document.getElementById('recommendations-text');
+        const recList = document.getElementById('topics-to-study');
+        recList.innerHTML = '';
+
+        if (score >= 4.0) recText.textContent = '¡Excelente trabajo! Tienes un buen dominio de los temas del primer parcial.';
+        else if (score >= 3.0) recText.textContent = 'Buen intento. Revisa los temas marcados abajo antes del parcial.';
+        else recText.textContent = 'Es necesario reforzar los conceptos básicos. Repasa los temas marcados abajo.';
+
+        const weak = currentExam.filter((item, i) => scores[i] < 1).map(item => item.act.tema);
+        if (weak.length) {
+            [...new Set(weak)].forEach(t => {
+                const li = document.createElement('li');
+                li.textContent = 'Repasar: ' + t;
+                recList.appendChild(li);
+            });
+        } else {
+            recList.innerHTML = '<li>¡Sin temas pendientes!</li>';
+        }
+
+        const box = document.getElementById('results-container');
+        box.style.display = 'block';
+        box.scrollIntoView({ behavior: 'smooth' });
+    }
+
+    // ==========================================================
+    //  Arranque
+    // ==========================================================
+    document.getElementById('submit-btn').addEventListener('click', submitExam);
+    document.getElementById('new-exam-btn').addEventListener('click', generateExam);
+    document.getElementById('restart-btn').addEventListener('click', generateExam);
+    document.getElementById('review-btn').addEventListener('click', () =>
+        document.getElementById('questions-section').scrollIntoView({ behavior: 'smooth' }));
+    document.getElementById('year').textContent = new Date().getFullYear();
+
+    generateExam();
+    loadPython();
+    </script>
+</body>
+</html>

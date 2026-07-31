@@ -1,0 +1,1497 @@
+---
+title: "Preprocesamiento de datos"
+subtitle: "Curso: Machine learning — aprendizaje supervisado de regresión en Python"
+author: "Andrés Felipe Puerta Vélez"
+date: today
+date-format: "D [de] MMMM [de] YYYY"
+lang: es
+format:
+  revealjs:
+    theme: [default, ../Introduccion/custom.scss]
+    slide-number: c/t
+    show-slide-number: all
+    progress: true
+    history: true
+    chalkboard: true
+    preview-links: auto
+    hash-type: number
+    width: 1280
+    height: 760
+    margin: 0.05
+    center: false
+    transition: slide
+    transition-speed: fast
+    auto-stretch: false
+    code-copy: true
+    highlight-style: atom-one
+    menu:
+      side: left
+      width: normal
+    footer: |
+      <span class="fcell f1">Andrés F. Puerta</span><span class="fcell f2">Preprocesamiento de datos</span><span class="fcell f3">Sesión 2</span>
+    include-after-body: ../Introduccion/terminal-copy.html
+---
+
+# Sesión 2 {.seccion background-color="#1553ad"}
+
+Antes de entrenar cualquier modelo hay que dejar los datos en condiciones
+
+---
+
+## Qué veremos hoy
+
+1. **Primer contacto** — mirar los datos antes de tocarlos.
+2. **Valores faltantes** — detectarlos, entenderlos, eliminarlos o imputarlos.
+3. **Partir en entrenamiento y prueba** — y por qué va *antes* que casi todo.
+4. **Variables categóricas** — label, ordinal y one-hot encoding.
+5. **Agrupación** — `groupby`, categorías raras y discretización.
+6. **Escalado** — normalización, estandarización y escalado robusto.
+7. **Transformaciones** — qué hacer con una variable sesgada.
+8. **Todo junto** — `Pipeline` y `ColumnTransformer`.
+
+Hoy **sí** hay código. La idea es que abran el cuaderno y ejecuten conmigo.
+
+---
+
+## La frase que van a oír toda la vida
+
+::: {.destacado}
+En un proyecto real, entre el **60 % y el 80 %** del tiempo se va en conseguir,
+limpiar y preparar los datos. El modelo es la parte corta.
+:::
+
+No es una queja: es donde está casi todo el valor. Un modelo mediocre con datos
+bien preparados casi siempre gana a un modelo sofisticado con datos sucios.
+
+Hoy vamos a ver por qué, con números.
+
+---
+
+## Los dos conjuntos de datos de hoy
+
+::: {.tarjetas}
+::: {.tarjeta}
+**Cars93** · 93 filas × 27 columnas
+93 automóviles a la venta en EE. UU. en 1993. Queremos predecir el **precio**.
+Tiene vacíos de verdad y categóricas de todo tipo. Cabe en pantalla, así que
+podemos ir viendo la tabla entera.
+:::
+::: {.tarjeta}
+**diamonds** · 53.940 filas × 10 columnas
+Precios de diamantes. Aporta lo que a Cars93 le falta: **categóricas ordinales
+reales** (calidad del tallado, color, pureza) y volumen suficiente para que se
+note el coste de cada decisión.
+:::
+:::
+
+Ambos vienen de paquetes clásicos de R y están alojados en la web del curso,
+así que se cargan con una línea y sin registrarse en ningún sitio.
+
+---
+
+## Cargar los datos
+
+```python
+import pandas as pd
+import numpy as np
+
+URL = "https://afpuertav.github.io/courses/machine_learning_regresion/Preprocesamiento/data/"
+
+cars = pd.read_csv(URL + "cars93.csv")
+dia  = pd.read_csv(URL + "diamonds.csv.gz")
+
+print(cars.shape, dia.shape)
+```
+
+```{=html}
+<div class="terminal" data-nocopy>
+<pre>(93, 27) (53940, 10)</pre>
+</div>
+```
+
+::: {.destacado}
+`read_csv` lee igual de bien una ruta local, una URL o un archivo comprimido.
+El `.gz` se descomprime solo.
+:::
+
+# 1 · Primer contacto {.seccion background-color="#1553ad"}
+
+Mirar antes de tocar
+
+---
+
+## Nunca empiecen por el modelo
+
+::: {.alerta}
+Antes de transformar nada: **miren los datos**. Cuántas filas, qué columnas, de
+qué tipo, qué falta y qué valores raros hay.
+:::
+
+Casi todos los errores caros del preprocesamiento son errores de no haber
+mirado: una columna que era texto y parecía número, un `-999` que significaba
+"no medido", una fecha en formato americano.
+
+---
+
+## Las cuatro órdenes de siempre
+
+```python
+cars.shape        # cuántas filas y columnas
+cars.head()       # las primeras filas
+cars.info()       # tipos y no-nulos por columna
+cars.describe()   # resumen numérico
+```
+
+```{=html}
+<div class="terminal" data-nocopy>
+<pre>  Manufacturer    Model     Type  Price  MPG.city  Horsepower   Origin
+0        Acura  Integra    Small   15.9        25         140  non-USA
+1        Acura   Legend  Midsize   33.9        18         200  non-USA
+2         Audi       90  Compact   29.1        20         172  non-USA
+3         Audi      100  Midsize   37.7        19         172  non-USA
+4          BMW     535i  Midsize   30.0        22         208  non-USA</pre>
+</div>
+```
+
+---
+
+## `info()`: el primer diagnóstico
+
+```python
+cars[["Manufacturer","Type","Price","AirBags",
+      "Cylinders","Horsepower","Luggage.room","Origin"]].info()
+```
+
+```{=html}
+<div class="terminal" data-nocopy>
+<pre>&lt;class 'pandas.core.frame.DataFrame'&gt;
+RangeIndex: 93 entries, 0 to 92
+Data columns (total 8 columns):
+ #   Column        Non-Null Count  Dtype
+---  ------        --------------  -----
+ 0   Manufacturer  93 non-null     object
+ 1   Type          93 non-null     object
+ 2   Price         93 non-null     float64
+ 3   AirBags       59 non-null     object
+ 4   Cylinders     93 non-null     object
+ 5   Horsepower    93 non-null     int64
+ 6   Luggage.room  82 non-null     float64
+ 7   Origin        93 non-null     object</pre>
+</div>
+```
+
+Dos cosas saltan: **`AirBags` solo tiene 59 de 93** y **`Cylinders` es `object`**,
+o sea texto, cuando uno esperaría un número.
+
+---
+
+## `describe()`: órdenes de magnitud muy distintos
+
+```python
+cars[["Price", "MPG.city", "Horsepower", "Weight"]].describe().round(2)
+```
+
+```{=html}
+<div class="terminal" data-nocopy>
+<pre>       Price  MPG.city  Horsepower  Weight
+count  93.00     93.00       93.00    93.0
+mean   19.51     22.37      143.83  3072.9
+std     9.66      5.62       52.37   589.9
+min     7.40     15.00       55.00  1695.0
+25%    12.20     18.00      103.00  2620.0
+50%    17.70     21.00      140.00  3040.0
+75%    23.30     25.00      170.00  3525.0
+max    61.90     46.00      300.00  4105.0</pre>
+</div>
+```
+
+::: {.destacado}
+`Weight` vive en los miles y `MPG.city` en las decenas. Guarden esa idea:
+es exactamente el problema que resolverá el **escalado**.
+:::
+
+# 2 · Valores faltantes {.seccion background-color="#1553ad"}
+
+Lo que no está también dice algo
+
+---
+
+## Detectarlos
+
+```python
+faltan = cars.isna().sum()
+print(faltan[faltan > 0])
+
+pct = (cars.isna().mean() * 100).round(1)
+print(pct[pct > 0].sort_values(ascending=False))
+```
+
+```{=html}
+<div class="terminal" data-nocopy>
+<pre>AirBags           34
+Rear.seat.room     2
+Luggage.room      11
+dtype: int64
+
+AirBags           36.6
+Luggage.room      11.8
+Rear.seat.room     2.2
+dtype: float64</pre>
+</div>
+```
+
+El porcentaje importa más que el conteo: 34 vacíos sobre 93 filas es **más de
+un tercio de la columna**.
+
+---
+
+## No todos los vacíos son iguales
+
+::: {.tarjetas}
+::: {.tarjeta}
+**MCAR** — falta al azar
+La ausencia no depende de nada. Es el caso cómodo y el más raro.
+*Ej.: se perdió una hoja del cuestionario.*
+:::
+::: {.tarjeta}
+**MAR** — falta según lo observado
+La ausencia depende de otras columnas que **sí** tenemos.
+*Ej.: las furgonetas no traen medida de maletero.*
+:::
+::: {.tarjeta}
+**MNAR** — falta según lo no observado
+La ausencia depende del valor que falta. El caso peligroso.
+*Ej.: los de renta alta no declaran su renta.*
+:::
+:::
+
+::: {.alerta}
+Imputar con la media asume MCAR. Si el mecanismo es MNAR, imputar **introduce
+sesgo** en lugar de arreglarlo.
+:::
+
+---
+
+## El caso de `AirBags`
+
+```python
+cars["AirBags"].value_counts(dropna=False)
+```
+
+```{=html}
+<div class="terminal" data-nocopy>
+<pre>AirBags
+Driver only           43
+NaN                   34
+Driver &amp; Passenger    16
+Name: count, dtype: int64</pre>
+</div>
+```
+
+::: {.concepto}
+Aquí el `NaN` **no es un dato perdido**: es el coche que no traía airbag. En el
+original esa categoría era `"None"` y al leerla se convirtió en vacío.
+:::
+
+Imputar esos 34 con la moda (`"Driver only"`) sería inventarse airbags que no
+existen. Lo correcto es tratarlos como una categoría propia.
+
+---
+
+## Lección: pregunten qué significa el vacío
+
+Antes de imputar, la pregunta no es *"¿con qué lo relleno?"* sino
+**"¿por qué no está?"**.
+
+::: {.tarjetas}
+::: {.tarjeta}
+**No se midió**
+Imputar tiene sentido.
+:::
+::: {.tarjeta}
+**No aplica**
+Es una categoría, no un vacío. `"No aplica"`.
+:::
+::: {.tarjeta}
+**Se perdió**
+Imputar, y anotar de dónde salió el dato.
+:::
+::: {.tarjeta}
+**Es cero**
+Un cero mal codificado. Se corrige, no se imputa.
+:::
+:::
+
+Muchas veces la respuesta está en el diccionario de datos, no en el código.
+
+---
+
+## Opción 1 · Eliminar
+
+```python
+print("original        ", cars.shape)
+print("dropna() filas  ", cars.dropna().shape)
+print("dropna(axis=1)  ", cars.dropna(axis=1).shape)
+print("thresh 90% cols ", cars.dropna(axis=1, thresh=int(0.9*len(cars))).shape)
+```
+
+```{=html}
+<div class="terminal" data-nocopy>
+<pre>original         (93, 27)
+dropna() filas   (54, 27)
+dropna(axis=1)   (93, 24)
+thresh 90% cols  (93, 25)</pre>
+</div>
+```
+
+::: {.alerta}
+`dropna()` nos deja **54 de 93 filas**: perdemos el 42 % de los datos por
+culpa de tres columnas. Casi nunca es la opción correcta.
+:::
+
+---
+
+## ¿Cuándo sí eliminar?
+
+::: {.tarjetas}
+::: {.tarjeta}
+**Eliminar la columna**
+Cuando falta muchísimo (>50-60 %) y no es clave. Lo que quede no sostiene una
+imputación creíble.
+:::
+::: {.tarjeta}
+**Eliminar la fila**
+Cuando son poquísimas filas (<2-5 %) y el faltante es MCAR.
+:::
+::: {.tarjeta}
+**Eliminar la fila, siempre**
+Si lo que falta es la **variable objetivo**. No se imputa lo que hay que
+predecir.
+:::
+::: {.tarjeta}
+**No eliminar**
+Cuando el hecho de faltar es informativo. Ahí conviene una columna
+`_faltaba` de 0 y 1.
+:::
+:::
+
+---
+
+## Opción 2 · Imputar: ¿media, mediana o moda?
+
+```python
+lr = cars["Luggage.room"]
+print(f"media    {lr.mean():.3f}")
+print(f"mediana  {lr.median():.3f}")
+print(f"moda     {lr.mode()[0]:.3f}")
+```
+
+```{=html}
+<div class="terminal" data-nocopy>
+<pre>media    13.890
+mediana  14.000
+moda     14.000</pre>
+</div>
+```
+
+::: {.destacado}
+Aquí dan casi lo mismo porque la variable es simétrica. En una variable
+sesgada (ingresos, precios) la **media se va detrás de los atípicos** y la
+mediana es la opción segura.
+:::
+
+Regla práctica: **numérica simétrica → media; numérica sesgada → mediana;
+categórica → moda o una categoría nueva**.
+
+---
+
+# 3 · Partir antes de transformar {.seccion background-color="#1553ad"}
+
+El error más caro de todos
+
+---
+
+## La fuga de datos
+
+::: {.concepto}
+Hay **fuga de datos** (*data leakage*) cuando en el entrenamiento se cuela
+información que en el momento de predecir no estaría disponible. El resultado
+es un modelo que parece buenísimo en pruebas y fracasa en producción.
+:::
+
+Imputar con la media de **todo** el dataset es fuga: esa media contiene
+información de las filas de prueba.
+
+---
+
+## Se ve con números
+
+```python
+from sklearn.model_selection import train_test_split
+
+X = cars.drop(columns=["Price"])
+y = cars["Price"]
+X_train, X_test, y_train, y_test = train_test_split(
+    X, y, test_size=0.2, random_state=42)
+```
+
+```{=html}
+<div class="terminal" data-nocopy>
+<pre>X_train (74, 22)  X_test (19, 22)
+y_train (74,)     y_test (19,)
+
+media de Luggage.room en TODO el dataset : 13.890
+media de Luggage.room solo en train      : 14.212</pre>
+</div>
+```
+
+Son valores distintos. Usar el primero para rellenar el conjunto de prueba
+significa que la prueba ya sabe algo de sí misma.
+
+---
+
+## La regla, en una frase
+
+::: {.alerta}
+**Todo lo que aprenda un parámetro de los datos** —medias, medianas, mínimos,
+máximos, categorías, desviaciones— se ajusta **solo con entrenamiento** y se
+aplica a prueba.
+:::
+
+::: {.tarjetas}
+::: {.tarjeta}
+**`fit` en train**
+Aprende los parámetros.
+:::
+::: {.tarjeta}
+**`transform` en train y en test**
+Aplica lo aprendido, sin volver a aprender.
+:::
+::: {.tarjeta}
+**Nunca `fit` en test**
+Ni `fit_transform`. Es el error clásico.
+:::
+:::
+
+---
+
+## El orden correcto
+
+1. Cargar los datos y **mirarlos**.
+2. Arreglar lo que es objetivamente un error (tipos, duplicados, unidades).
+3. **Partir en entrenamiento y prueba.**
+4. `fit` de imputadores, codificadores y escaladores **con entrenamiento**.
+5. `transform` de ambos conjuntos.
+6. Entrenar, evaluar.
+
+::: {.destacado}
+El paso 2 puede ir antes de partir porque no aprende nada de los datos:
+convertir texto a número no depende de qué filas tengamos.
+:::
+
+## `SimpleImputer`: la versión de scikit-learn
+
+```python
+from sklearn.impute import SimpleImputer
+
+imp_num = SimpleImputer(strategy="median")      # mean, median, most_frequent, constant
+imp_num.fit(X_train[num_cols])
+
+pd.Series(imp_num.statistics_, index=num_cols)[["Rear.seat.room", "Luggage.room"]]
+```
+
+```{=html}
+<div class="terminal" data-nocopy>
+<pre>Rear.seat.room    28.0
+Luggage.room      14.0
+dtype: float64</pre>
+</div>
+```
+
+::: {.concepto}
+`fit` **aprende** los valores de relleno y los guarda en `statistics_`.
+`transform` los **aplica**. Esa separación es la que hace posible tratar el
+conjunto de prueba con lo aprendido en entrenamiento.
+:::
+
+---
+
+## Imputar categóricas
+
+```python
+imp_cat = SimpleImputer(strategy="constant", fill_value="Sin airbag")
+Xtr_cat = pd.DataFrame(imp_cat.fit_transform(X_train[cat_cols]),
+                       columns=cat_cols, index=X_train.index)
+
+Xtr_cat["AirBags"].value_counts()
+```
+
+```{=html}
+<div class="terminal" data-nocopy>
+<pre>AirBags
+Driver only           35
+Sin airbag            26
+Driver &amp; Passenger    13
+Name: count, dtype: int64</pre>
+</div>
+```
+
+Con `strategy="constant"` creamos una categoría explícita en lugar de
+disfrazar los vacíos de moda. Es lo que pedía el caso de `AirBags`.
+
+---
+
+## Imputación avanzada: `KNNImputer`
+
+En vez de un único valor para todos, busca los **k vecinos más parecidos** en
+las demás columnas y promedia su valor.
+
+```python
+from sklearn.impute import KNNImputer
+
+knn = KNNImputer(n_neighbors=5)
+Xtr_knn = knn.fit_transform(X_train[num_cols])
+```
+
+```{=html}
+<div class="terminal" data-nocopy>
+<pre>    mediana   knn
+65     14.0  17.6
+15     14.0  16.6
+69     14.0  16.6
+16     14.0  19.0</pre>
+</div>
+```
+
+::: {.destacado}
+La mediana pone 14 a todos. El KNN se da cuenta de que esos cuatro son coches
+grandes y les pone entre 16 y 19. Más fiel, pero más lento y **exige escalar
+antes**, porque el vecindario se mide con distancias.
+:::
+
+---
+
+## Otras opciones que existen
+
+::: {.tarjetas}
+::: {.tarjeta}
+**`IterativeImputer`**
+Modela cada columna con vacíos a partir de las demás, e itera. Potente y caro.
+:::
+::: {.tarjeta}
+**Imputar por grupo**
+La mediana del maletero *dentro de cada tipo de coche*. Suele batir a la
+mediana global.
+:::
+::: {.tarjeta}
+**Indicador de faltante**
+`add_indicator=True` añade una columna 0/1. Deja que el modelo aprenda si
+faltar significa algo.
+:::
+::: {.tarjeta}
+**No imputar**
+`HistGradientBoostingRegressor` y LightGBM manejan `NaN` de forma nativa.
+:::
+:::
+
+---
+
+## Imputar por grupo, y su trampa
+
+```python
+cars.groupby("Type")["Luggage.room"].median()
+```
+
+```{=html}
+<div class="terminal" data-nocopy>
+<pre>Type
+Compact    14.0
+Large      18.0
+Midsize    15.0
+Small      12.0
+Sporty     11.5
+Van         NaN
+Name: Luggage.room, dtype: float64</pre>
+</div>
+```
+
+::: {.alerta}
+`Van` sale `NaN`: **a las nueve furgonetas les falta el dato a todas**. Si el
+grupo entero está vacío, la imputación por grupo no puede rellenar nada y hay
+que caer en un valor global.
+:::
+
+Y confirma que el faltante era MAR: depende de `Type`, que sí observamos.
+
+# 4 · Variables categóricas {.seccion background-color="#1553ad"}
+
+Los modelos solo entienden números
+
+---
+
+## Tres tipos de categórica
+
+::: {.tarjetas}
+::: {.tarjeta}
+**Nominal**
+Sin orden. `Type`, `Manufacturer`, `DriveTrain`.
+→ **one-hot**
+:::
+::: {.tarjeta}
+**Ordinal**
+Con orden real. La pureza de un diamante, un nivel educativo.
+→ **ordinal encoding con el orden declarado**
+:::
+::: {.tarjeta}
+**Binaria**
+Dos valores. `Origin`, `Man.trans.avail`.
+→ **0 y 1, una sola columna**
+:::
+:::
+
+La decisión no la toma el código: la toma quien conoce el dominio.
+
+---
+
+## Cuánta variedad hay en cada una
+
+```python
+X_train.select_dtypes(exclude="number").nunique().sort_values(ascending=False)
+```
+
+```{=html}
+<div class="terminal" data-nocopy>
+<pre>Manufacturer       31
+Type                6
+Cylinders           6
+DriveTrain          3
+AirBags             2
+Man.trans.avail     2
+Origin              2
+dtype: int64</pre>
+</div>
+```
+
+::: {.alerta}
+`Manufacturer` tiene **31 niveles distintos en 74 filas de entrenamiento**.
+Guarden ese dato: al final de la sesión va a hacer explotar el modelo.
+:::
+
+---
+
+## Binaria: lo más simple que funciona
+
+```python
+X_train["Origin_USA"] = (X_train["Origin"] == "USA").astype(int)
+X_train["Origin_USA"].value_counts()
+```
+
+```{=html}
+<div class="terminal" data-nocopy>
+<pre>Origin_USA
+1    39
+0    35
+Name: count, dtype: int64</pre>
+</div>
+```
+
+Con dos categorías, una sola columna 0/1 basta y sobra. Crear dos columnas
+sería redundante: la segunda es `1 - primera`.
+
+---
+
+## Label encoding: qué hace
+
+Asigna un entero a cada categoría, **por orden alfabético**.
+
+```python
+from sklearn.preprocessing import LabelEncoder
+
+le = LabelEncoder()
+le.fit_transform(cars["Cylinders"].astype(str))
+```
+
+```{=html}
+<div class="terminal" data-nocopy>
+<pre> Cylinders original
+         0        3
+         1        4
+         2        5
+         3        6
+         4        8
+         5   rotary</pre>
+</div>
+```
+
+---
+
+## Y por qué casi siempre está mal
+
+::: {.alerta}
+El modelo lee esos números como **cantidades**: creerá que `rotary` (5) es
+mayor que `8` (4), y que la distancia de 3 a 4 cilindros es la misma que de 6 a 8.
+Ninguna de las dos cosas es cierta.
+:::
+
+::: {.destacado}
+`LabelEncoder` está pensado para la **variable objetivo** de clasificación, no
+para las variables de entrada. Para entradas ordenadas, `OrdinalEncoder` con el
+orden declarado a mano; para no ordenadas, one-hot.
+:::
+
+Excepción: los modelos de árboles toleran bastante bien el label encoding,
+porque parten por umbrales y no interpretan la magnitud.
+
+---
+
+## One-hot con pandas
+
+```python
+pd.get_dummies(X_train[["Type"]], prefix="Type", dtype=int).head()
+```
+
+```{=html}
+<div class="terminal" data-nocopy>
+<pre>    Type_Compact  Type_Large  Type_Midsize  Type_Small  Type_Sporty  Type_Van
+65             0           0             0           0            0         1
+15             0           0             0           0            0         1
+68             0           0             1           0            0         0
+78             0           0             0           1            0         0
+30             0           0             0           1            0         0
+
+columnas creadas: 6</pre>
+</div>
+```
+
+Una columna por categoría, con un 1 en la que corresponde. Cómodo para
+explorar, **peligroso para producción**: si el test trae una categoría que el
+train no tenía, `get_dummies` genera columnas distintas y todo se rompe.
+
+---
+
+## One-hot con scikit-learn
+
+```python
+from sklearn.preprocessing import OneHotEncoder
+
+enc = OneHotEncoder(handle_unknown="ignore", sparse_output=False, drop="first")
+enc.fit(X_train[["Type", "DriveTrain"]])
+enc.get_feature_names_out()
+```
+
+```{=html}
+<div class="terminal" data-nocopy>
+<pre>['Type_Large' 'Type_Midsize' 'Type_Small' 'Type_Sporty' 'Type_Van'
+ 'DriveTrain_Front' 'DriveTrain_Rear']</pre>
+</div>
+```
+
+::: {.tarjetas}
+::: {.tarjeta}
+**`handle_unknown="ignore"`**
+Una categoría no vista en train sale como fila de ceros, en vez de reventar.
+:::
+::: {.tarjeta}
+**`drop="first"`**
+Quita una columna por variable. Evita la colinealidad perfecta que estropea la
+regresión lineal.
+:::
+:::
+
+---
+
+## Por qué `drop="first"`
+
+::: {.concepto}
+Con las seis columnas de `Type`, la suma de todas es siempre 1. Esa
+**colinealidad perfecta** deja los coeficientes de la regresión lineal
+indeterminados.
+:::
+
+Al quitar `Compact`, se convierte en la categoría de referencia: los demás
+coeficientes se leen como *"cuánto más caro que un Compact"*.
+
+::: {.destacado}
+Con árboles o con regularización (Ridge, Lasso) no hace falta quitarla, y a
+veces conviene no hacerlo. Con regresión lineal pura, sí.
+:::
+
+---
+
+## Alta cardinalidad: el problema de `Manufacturer`
+
+```python
+vc = X_train["Manufacturer"].value_counts()
+print(vc.head(6))
+print("marcas con 1 solo coche:", (vc == 1).sum(), "de", len(vc))
+```
+
+```{=html}
+<div class="terminal" data-nocopy>
+<pre>Manufacturer
+Ford         7
+Chevrolet    6
+Nissan       4
+Dodge        4
+Pontiac      4
+Buick        4
+...
+marcas con 1 solo coche: 12 de 31</pre>
+</div>
+```
+
+One-hot sobre esto son **31 columnas nuevas**, 12 de ellas con un único 1.
+De esas columnas no se aprende nada: se memoriza.
+
+---
+
+## Solución: agrupar las raras
+
+```python
+frecuentes = vc[vc >= 3].index
+X_train["Manufacturer"] = X_train["Manufacturer"].where(
+    X_train["Manufacturer"].isin(frecuentes), "Otras")
+
+X_train["Manufacturer"].value_counts()
+```
+
+```{=html}
+<div class="terminal" data-nocopy>
+<pre>Manufacturer
+Otras         26
+Ford           7
+Chevrolet      6
+Nissan         4
+Buick          4
+Mazda          4
+Dodge          4
+Pontiac        4
+Oldsmobile     3
+Subaru         3
+Hyundai        3
+Volkswagen     3
+Toyota         3
+Name: count, dtype: int64</pre>
+</div>
+```
+
+De 31 niveles a 13, y el grupo `Otras` recoge 26 coches. `OneHotEncoder` trae
+esto integrado con `min_frequency=3` o `max_categories=10`.
+
+---
+
+## Otras salidas para la alta cardinalidad
+
+::: {.tarjetas}
+::: {.tarjeta}
+**Frequency encoding**
+Sustituir cada categoría por cuántas veces aparece. Una sola columna.
+:::
+::: {.tarjeta}
+**Target encoding**
+Sustituirla por la media del objetivo en esa categoría. Muy potente y **muy
+propenso a la fuga**: exige validación cruzada interna.
+:::
+::: {.tarjeta}
+**Agrupar por dominio**
+Marca → país de origen, gama, grupo empresarial. Casi siempre lo mejor.
+:::
+::: {.tarjeta}
+**Embeddings**
+Representación densa aprendida. Para cardinalidades de miles.
+:::
+:::
+
+---
+
+## Ordinales de verdad: `diamonds`
+
+```python
+for c in ["cut", "color", "clarity"]:
+    print(c, dia[c].nunique(), sorted(dia[c].unique()))
+```
+
+```{=html}
+<div class="terminal" data-nocopy>
+<pre>cut      5 niveles: ['Fair', 'Good', 'Ideal', 'Premium', 'Very Good']
+color    7 niveles: ['D', 'E', 'F', 'G', 'H', 'I', 'J']
+clarity  8 niveles: ['I1', 'IF', 'SI1', 'SI2', 'VS1', 'VS2', 'VVS1', 'VVS2']</pre>
+</div>
+```
+
+::: {.alerta}
+Ese es el orden **alfabético**, y no tiene nada que ver con la calidad. En
+color, `D` es el mejor y `J` el peor. Si dejamos que la máquina ordene, el
+orden sale al revés.
+:::
+
+---
+
+## `OrdinalEncoder` con el orden declarado
+
+```python
+from sklearn.preprocessing import OrdinalEncoder
+
+orden_cut     = ["Fair", "Good", "Very Good", "Premium", "Ideal"]
+orden_color   = ["J", "I", "H", "G", "F", "E", "D"]
+orden_clarity = ["I1", "SI2", "SI1", "VS2", "VS1", "VVS2", "VVS1", "IF"]
+
+oe = OrdinalEncoder(categories=[orden_cut, orden_color, orden_clarity])
+oe.fit_transform(dia[["cut", "color", "clarity"]])
+```
+
+```{=html}
+<div class="terminal" data-nocopy>
+<pre>   cut  color  clarity
+0    4      5        1
+1    3      5        2
+2    1      5        4
+3    3      1        3
+4    1      0        1</pre>
+</div>
+```
+
+De peor a mejor. Ese orden lo pone quien sabe de diamantes, no el código.
+
+---
+
+## ¿Ordinal u one-hot? El coste
+
+```{=html}
+<div class="terminal" data-nocopy>
+<pre>one-hot de cut+color+clarity : 20 columnas
+ordinal de cut+color+clarity :  3 columnas</pre>
+</div>
+```
+
+::: {.tarjetas}
+::: {.tarjeta}
+**Ordinal gana cuando**
+El orden es real y el efecto es más o menos monótono. Ahorra 17 columnas.
+:::
+::: {.tarjeta}
+**One-hot gana cuando**
+No hay orden, o el efecto no es monótono (que la categoría del medio sea la
+más cara).
+:::
+:::
+
+En la duda, con datos suficientes, one-hot es la apuesta segura: no impone
+ninguna estructura que no esté en los datos.
+
+# 5 · Agrupación y discretización {.seccion background-color="#1553ad"}
+
+`groupby` no es solo para informes
+
+---
+
+## `groupby` para entender antes de transformar
+
+```python
+(cars.groupby("Type")
+     .agg(n=("Price", "size"),
+          precio_medio=("Price", "mean"),
+          cv_medio=("MPG.city", "mean"),
+          hp_medio=("Horsepower", "mean"))
+     .round(1).sort_values("precio_medio", ascending=False))
+```
+
+```{=html}
+<div class="terminal" data-nocopy>
+<pre>          n  precio_medio  cv_medio  hp_medio
+Type
+Midsize  22          27.2      19.5     173.1
+Large    11          24.3      18.4     179.5
+Sporty   14          19.4      21.8     160.1
+Van       9          19.1      17.0     149.4
+Compact  16          18.2      22.7     131.0
+Small    21          10.2      29.9      91.0</pre>
+</div>
+```
+
+`Type` separa muy bien el precio: de 10,2 a 27,2. Es una variable que vale la
+pena conservar.
+
+---
+
+## Discretizar: de continua a categórica
+
+```python
+cars["gama"] = pd.cut(cars["Price"],
+                      bins=[0, 12, 20, 100],
+                      labels=["económico", "medio", "alto"])
+cars["gama"].value_counts().sort_index()
+```
+
+```{=html}
+<div class="terminal" data-nocopy>
+<pre>gama
+económico    22
+medio        40
+alto         31
+Name: count, dtype: int64</pre>
+</div>
+```
+
+::: {.tarjetas}
+::: {.tarjeta}
+**`pd.cut`**
+Cortes que ustedes eligen. Úsenlo cuando los umbrales significan algo.
+:::
+::: {.tarjeta}
+**`pd.qcut`**
+Cortes por cuantiles: grupos del mismo tamaño.
+:::
+::: {.tarjeta}
+**`KBinsDiscretizer`**
+La versión de sklearn, encajable en un `Pipeline`.
+:::
+:::
+
+---
+
+## Cuidado con discretizar
+
+::: {.alerta}
+Discretizar **tira información**: dos coches de 11.900 y 12.100 acaban en
+gamas distintas, y uno de 12.100 y otro de 19.900 en la misma.
+:::
+
+Se justifica cuando la relación no es lineal y el modelo sí, cuando los cortes
+tienen sentido de negocio, o cuando hay que comunicar el resultado a alguien.
+
+No se justifica "para simplificar": los modelos no necesitan que les
+simplifiquen las variables continuas.
+
+# 6 · Escalado {.seccion background-color="#1553ad"}
+
+Poner todas las variables en la misma unidad
+
+---
+
+## El problema
+
+```{=html}
+<div class="terminal" data-nocopy>
+<pre>      Horsepower  MPG.city   Weight
+mean      141.20     22.24  3093.11
+std        48.03      5.70   592.10
+min        55.00     15.00  1695.00
+max       300.00     46.00  4105.00</pre>
+</div>
+```
+
+::: {.concepto}
+Cualquier algoritmo basado en **distancias** (KNN, k-means, SVM) o en
+**descenso de gradiente** verá que `Weight` domina, simplemente porque sus
+números son más grandes. No porque importe más.
+:::
+
+---
+
+## Estandarización · `StandardScaler`
+
+Resta la media y divide por la desviación: media 0, desviación 1.
+
+$$z = \frac{x - \mu}{\sigma}$$
+
+```python
+from sklearn.preprocessing import StandardScaler
+std = StandardScaler().fit(X_train[cols])
+```
+
+```{=html}
+<div class="terminal" data-nocopy>
+<pre>      Horsepower  MPG.city  Weight
+mean       -0.00      0.00    0.00
+std         1.01      1.01    1.01
+min        -1.81     -1.28   -2.38
+max         3.33      4.20    1.72</pre>
+</div>
+```
+
+No acota el rango: los atípicos siguen lejos (ese 4,20 es un coche de 46 mpg).
+
+---
+
+## Normalización · `MinMaxScaler`
+
+Lleva el mínimo a 0 y el máximo a 1.
+
+$$x' = \frac{x - x_{\min}}{x_{\max} - x_{\min}}$$
+
+```python
+from sklearn.preprocessing import MinMaxScaler
+mm = MinMaxScaler().fit(X_train[cols])
+```
+
+```{=html}
+<div class="terminal" data-nocopy>
+<pre>      Horsepower  MPG.city  Weight
+mean        0.35      0.23    0.58
+std         0.20      0.18    0.25
+min         0.00      0.00    0.00
+max         1.00      1.00    1.00</pre>
+</div>
+```
+
+Rango garantizado, pero **un solo atípico comprime a todos los demás**: mírenle
+la media a `MPG.city`, aplastada en 0,23.
+
+---
+
+## Escalado robusto · `RobustScaler`
+
+Usa la mediana y el rango intercuartílico en vez de media y desviación.
+
+$$x' = \frac{x - \text{mediana}}{Q_3 - Q_1}$$
+
+```{=html}
+<div class="terminal" data-nocopy>
+<pre>      Horsepower  MPG.city  Weight
+mean        0.02      0.25    0.03
+std         0.75      1.14    0.68
+min        -1.33     -1.20   -1.57
+max         2.50      5.00    1.19</pre>
+</div>
+```
+
+::: {.destacado}
+El centro queda en 0 y el grueso de los datos entre −1 y 1, **sin que los
+atípicos muevan la referencia**. Es la opción por defecto cuando hay valores
+extremos que no queremos eliminar.
+:::
+
+---
+
+## Cuál usar
+
+::: {.tarjetas}
+::: {.tarjeta}
+**`StandardScaler`**
+El defecto razonable. Regresión lineal, regularizadas, SVM, redes, PCA.
+:::
+::: {.tarjeta}
+**`MinMaxScaler`**
+Cuando hace falta un rango acotado y no hay atípicos. Imágenes, redes con
+sigmoide.
+:::
+::: {.tarjeta}
+**`RobustScaler`**
+Cuando hay atípicos de verdad y no se pueden quitar.
+:::
+::: {.tarjeta}
+**Ninguno**
+Árboles, bosques aleatorios, *gradient boosting*. Les da exactamente igual.
+:::
+:::
+
+---
+
+## Lo que el escalador aprendió
+
+```python
+print("media aprendida en train :", std.mean_.round(2))
+print("desviación aprendida     :", std.scale_.round(2))
+```
+
+```{=html}
+<div class="terminal" data-nocopy>
+<pre>media aprendida en train : [ 141.2    22.24 3093.11]
+desviación aprendida     : [  47.7     5.66  588.08]</pre>
+</div>
+```
+
+::: {.concepto}
+Esos seis números **son el modelo de preprocesamiento**. Hay que guardarlos y
+llevárselos a producción junto con el modelo. Si se pierden, las predicciones
+futuras no significan nada.
+:::
+
+---
+
+## El test no queda entre 0 y 1, y está bien
+
+```python
+pd.DataFrame(mm.transform(X_test[cols]), columns=cols).describe().loc[["min","max"]]
+```
+
+```{=html}
+<div class="terminal" data-nocopy>
+<pre>     Horsepower  MPG.city  Weight
+min        0.08      0.00    0.15
+max        1.00      0.55    0.93</pre>
+</div>
+```
+
+::: {.destacado}
+El máximo de `MPG.city` en test es 0,55 porque el coche más eficiente estaba en
+train. Si un dato de test superara el máximo de train, saldría **mayor que 1**.
+No es un error: es la prueba de que no hubo fuga.
+:::
+
+# 7 · Transformar variables sesgadas {.seccion background-color="#1553ad"}
+
+---
+
+## El precio de los diamantes
+
+```python
+print(f"asimetría de price      : {dia['price'].skew():.3f}")
+print(f"asimetría de log(price) : {np.log1p(dia['price']).skew():.3f}")
+print(dia["price"].describe().round(1))
+```
+
+```{=html}
+<div class="terminal" data-nocopy>
+<pre>asimetría de price      : 1.618
+asimetría de log(price) : 0.116
+
+count    53940.0
+mean      3932.8
+std       3989.4
+min        326.0
+25%        950.0
+50%       2401.0
+75%       5324.2
+max      18823.0
+Name: price, dtype: float64</pre>
+</div>
+```
+
+Media 3.933 y mediana 2.401: la media va muy por encima, señal clara de cola
+a la derecha. El logaritmo la deja casi simétrica.
+
+---
+
+## Cuándo y cómo transformar
+
+::: {.tarjetas}
+::: {.tarjeta}
+**`np.log1p`**
+Para variables positivas con cola derecha: precios, ingresos, poblaciones.
+`log1p` aguanta los ceros.
+:::
+::: {.tarjeta}
+**`PowerTransformer`**
+Yeo-Johnson busca el exponente que más acerca a la normal. Admite negativos.
+:::
+::: {.tarjeta}
+**`QuantileTransformer`**
+Fuerza la distribución que se le pida. Muy agresivo; puede destruir relaciones.
+:::
+:::
+
+::: {.alerta}
+Si transforman la **variable objetivo**, las predicciones salen en escala
+logarítmica: hay que deshacer con `np.expm1` antes de interpretar el error.
+:::
+
+# 8 · Todo junto {.seccion background-color="#1553ad"}
+
+`Pipeline` y `ColumnTransformer`
+
+---
+
+## El problema que resuelven
+
+Hasta ahora hemos hecho todo a mano: imputar, codificar, escalar, y repetirlo
+igual en test. Eso son diez oportunidades de equivocarse.
+
+::: {.concepto}
+Un **`Pipeline`** encadena pasos y expone un único `fit` y un único `predict`.
+Un **`ColumnTransformer`** aplica ramas distintas a columnas distintas.
+:::
+
+Juntos garantizan que el `fit` ocurra solo con entrenamiento y que el test
+reciba exactamente el mismo tratamiento.
+
+---
+
+## Sin preprocesar no arranca
+
+```python
+from sklearn.linear_model import LinearRegression
+LinearRegression().fit(X_train, y_train)
+```
+
+```{=html}
+<div class="terminal" data-nocopy>
+<pre>ValueError: could not convert string to float: 'Nissan'</pre>
+</div>
+```
+
+El punto de partida: el modelo ni siquiera acepta los datos crudos.
+
+---
+
+## La tubería completa
+
+```python
+from sklearn.pipeline import Pipeline
+from sklearn.compose import ColumnTransformer
+
+num_pipe = Pipeline([("imp", SimpleImputer(strategy="median")),
+                     ("esc", StandardScaler())])
+
+cat_pipe = Pipeline([("imp", SimpleImputer(strategy="constant",
+                                           fill_value="Desconocido")),
+                     ("oh",  OneHotEncoder(handle_unknown="ignore",
+                                           drop="first"))])
+
+pre = ColumnTransformer([("num", num_pipe, num_cols),
+                         ("cat", cat_pipe, cat_cols)])
+
+modelo = Pipeline([("pre", pre), ("reg", LinearRegression())])
+modelo.fit(X_train, y_train)
+```
+
+Una sola llamada a `fit` hace imputación, codificación, escalado y ajuste, en
+el orden correcto y solo con entrenamiento.
+
+---
+
+## Y ahora sí, resultados
+
+```{=html}
+<div class="terminal" data-nocopy>
+<pre>columnas de entrada  : 22
+columnas tras el pre : 61
+MAE  : 7.38 miles de USD
+R2   : 0.133</pre>
+</div>
+```
+
+::: {.alerta}
+¿61 columnas para 74 filas de entrenamiento? Eso no es un modelo, es una
+memorización. Y el $R^2$ de 0,13 lo confirma.
+:::
+
+El culpable es `Manufacturer`, con sus 31 niveles.
+
+---
+
+## Validación cruzada: el diagnóstico
+
+```python
+from sklearn.model_selection import cross_val_score
+cross_val_score(modelo, X_train, y_train, cv=5, scoring="r2")
+```
+
+```{=html}
+<div class="terminal" data-nocopy>
+<pre>R2 por pliegue: [ -1.452 -18.124  -1.244  -0.062  -0.993]
+media -4.375  desviación 6.891</pre>
+</div>
+```
+
+::: {.destacado}
+Un $R^2$ negativo significa que el modelo predice **peor que decir siempre la
+media**. Y la desviación entre pliegues es enorme: el modelo no es malo, es
+inestable.
+:::
+
+---
+
+## Arreglarlo es preprocesamiento, no modelado
+
+```{=html}
+<div class="terminal" data-nocopy>
+<pre>                     columnas    MAE   R2 test   R2 val.cruzada
+Solo numéricas             15   5.50     0.315                —
++ categóricas (todas)      61   7.38     0.133           -4.375
++ sin Manufacturer         31   4.00     0.763            0.228
++ Ridge(alpha=10)          61   2.55     0.891            0.609</pre>
+</div>
+```
+
+::: {.concepto}
+Mismo dataset, mismo día. Del peor al mejor hay una diferencia de **casi 5.000
+dólares de error medio**, y no cambiamos de familia de modelo: cambiamos cómo
+preparamos las columnas.
+:::
+
+---
+
+## Lo que hay que llevarse de esa tabla
+
+::: {.tarjetas}
+::: {.tarjeta}
+**Más columnas no es mejor**
+Pasar de 15 a 61 empeoró el resultado. Cada columna cuesta filas.
+:::
+::: {.tarjeta}
+**Evalúen con validación cruzada**
+El $R^2$ de test dijo 0,13; la validación cruzada dijo −4,4. La segunda es la
+que hay que creer.
+:::
+::: {.tarjeta}
+**La regularización rescata**
+Ridge maneja las 61 columnas que la regresión pura no podía.
+:::
+::: {.tarjeta}
+**Probar es barato**
+Con `Pipeline`, comparar las cuatro filas son diez minutos.
+:::
+:::
+
+# Cierre {.seccion background-color="#1553ad"}
+
+---
+
+## Lista de comprobación
+
+1. Mirar los datos: `shape`, `head`, `info`, `describe`.
+2. Entender **por qué** falta lo que falta, antes de rellenarlo.
+3. **Partir en entrenamiento y prueba.**
+4. Imputar: mediana / moda / categoría nueva, `fit` solo en train.
+5. Codificar: binaria → 0-1; ordinal → orden declarado; nominal → one-hot.
+6. Vigilar la cardinalidad; agrupar las categorías raras.
+7. Escalar si el modelo lo necesita.
+8. Transformar lo muy sesgado.
+9. Encapsular todo en un `Pipeline`.
+10. Evaluar con validación cruzada, no con una sola partición.
+
+---
+
+## Los tres errores que más van a ver
+
+::: {.tarjetas}
+::: {.tarjeta}
+**`fit` sobre todo el dataset**
+El más común y el más silencioso: no da error, solo resultados demasiado
+buenos.
+:::
+::: {.tarjeta}
+**Label encoding en nominales**
+Le inventa un orden a lo que no lo tiene.
+:::
+::: {.tarjeta}
+**One-hot sin mirar la cardinalidad**
+Una columna de identificadores puede generar miles de columnas.
+:::
+:::
+
+---
+
+## Para practicar
+
+Repitan el recorrido completo sobre **Ames Housing**: 1.460 casas, 80
+columnas, vacíos por todas partes y categóricas ordinales de verdad.
+
+```python
+from sklearn.datasets import fetch_openml
+ames = fetch_openml(name="house_prices", as_frame=True).frame
+```
+
+::: {.destacado}
+Tres preguntas para guiarse: ¿qué columnas tienen tanto vacío que no vale la
+pena imputarlas? ¿Cuáles de las categóricas son ordinales de verdad? ¿Cuánto
+mejora el resultado al agrupar las categorías raras?
+:::
+
+# ¿Preguntas? {.seccion background-color="#1553ad"}
+
+El cuaderno de la sesión está en la página del curso
+
+[afpuertav.github.io](https://afpuertav.github.io/)
