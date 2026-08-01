@@ -22,8 +22,9 @@ format:
     transition: slide
     transition-speed: fast
     auto-stretch: false
-    code-copy: true
-    highlight-style: atom-one
+    # El botón de copiar lo pone nuestro propio script, para que sea el mismo
+    # en los bloques de código y en los de terminal.
+    code-copy: false
     menu:
       side: left
       width: normal
@@ -47,9 +48,15 @@ Antes de entrenar cualquier modelo hay que dejar los datos en condiciones
 5. **Agrupación** — `groupby`, categorías raras y discretización.
 6. **Escalado** — normalización, estandarización y escalado robusto.
 7. **Transformaciones** — qué hacer con una variable sesgada.
-8. **Todo junto** — `Pipeline` y `ColumnTransformer`.
+8. **La foto completa** — todo el recorrido en una tabla.
 
-Hoy **sí** hay código. La idea es que abran el cuaderno y ejecuten conmigo.
+::: {.destacado}
+Al cerrar **cada uno** de los ocho capítulos pararemos a medir, con una
+regresión lineal y una red neuronal, mirando MSE y $R^2$. Así se ve paso a
+paso qué aporta cada decisión — y que no aporta lo mismo a los dos modelos.
+:::
+
+Hoy **sí** hay código. Abran el cuaderno y ejecuten conmigo.
 
 ---
 
@@ -60,10 +67,10 @@ En un proyecto real, entre el **60 % y el 80 %** del tiempo se va en conseguir,
 limpiar y preparar los datos. El modelo es la parte corta.
 :::
 
-No es una queja: es donde está casi todo el valor. Un modelo mediocre con datos
-bien preparados casi siempre gana a un modelo sofisticado con datos sucios.
-
-Hoy vamos a ver por qué, con números.
+No es una queja: es donde está casi todo el valor. Hoy vamos a ver una red
+neuronal con un $R^2$ de **−377** —o sea, peor que no hacer nada— y cómo **una
+sola línea** de preprocesamiento la deja en **+0,449**, sin tocarle un
+parámetro ni una neurona.
 
 ---
 
@@ -84,21 +91,28 @@ note el coste de cada decisión.
 :::
 :::
 
-Ambos vienen de paquetes clásicos de R y están alojados en la web del curso,
-así que se cargan con una línea y sin registrarse en ningún sitio.
+Los dos vienen de paquetes clásicos de R. Están junto al cuaderno, en la
+carpeta `data/`, así que una vez descargados **corren sin conexión**.
 
 ---
 
 ## Cargar los datos
 
-```python
+```{.python .numberLines}
 import pandas as pd
 import numpy as np
 
 URL = "https://afpuertav.github.io/courses/machine_learning_regresion/Preprocesamiento/data/"
 
-cars = pd.read_csv(URL + "cars93.csv")
-dia  = pd.read_csv(URL + "diamonds.csv.gz")
+def cargar(nombre):
+    """Lee de la carpeta data/ si está; si no, de la web del curso."""
+    try:
+        return pd.read_csv("data/" + nombre)
+    except FileNotFoundError:
+        return pd.read_csv(URL + nombre)
+
+cars = cargar("cars93.csv")
+dia  = cargar("diamonds.csv.gz")
 
 print(cars.shape, dia.shape)
 ```
@@ -108,11 +122,6 @@ print(cars.shape, dia.shape)
 <pre>(93, 27) (53940, 10)</pre>
 </div>
 ```
-
-::: {.destacado}
-`read_csv` lee igual de bien una ruta local, una URL o un archivo comprimido.
-El `.gz` se descomprime solo.
-:::
 
 # 1 · Primer contacto {.seccion background-color="#1553ad"}
 
@@ -131,11 +140,14 @@ Casi todos los errores caros del preprocesamiento son errores de no haber
 mirado: una columna que era texto y parecía número, un `-999` que significaba
 "no medido", una fecha en formato americano.
 
+Ninguno de esos errores da un mensaje de error. Dan un modelo que funciona
+peor y nadie sabe por qué.
+
 ---
 
 ## Las cuatro órdenes de siempre
 
-```python
+```{.python .numberLines}
 cars.shape        # cuántas filas y columnas
 cars.head()       # las primeras filas
 cars.info()       # tipos y no-nulos por columna
@@ -144,22 +156,59 @@ cars.describe()   # resumen numérico
 
 ```{=html}
 <div class="terminal" data-nocopy>
-<pre>  Manufacturer    Model     Type  Price  MPG.city  Horsepower   Origin
-0        Acura  Integra    Small   15.9        25         140  non-USA
-1        Acura   Legend  Midsize   33.9        18         200  non-USA
-2         Audi       90  Compact   29.1        20         172  non-USA
-3         Audi      100  Midsize   37.7        19         172  non-USA
-4          BMW     535i  Midsize   30.0        22         208  non-USA</pre>
+<pre>&lt;class 'pandas.core.frame.DataFrame'&gt;
+RangeIndex: 93 entries, 0 to 92
+Data columns (total 27 columns):
+ #   Column              Non-Null Count  Dtype  
+---  ------              --------------  -----  
+ 0   Manufacturer        93 non-null     object 
+ 1   Model               93 non-null     object 
+ 2   Type                93 non-null     object 
+ 3   Min.Price           93 non-null     float64
+ 4   Price               93 non-null     float64
+ 5   Max.Price           93 non-null     float64
+ 6   MPG.city            93 non-null     int64  
+ 7   MPG.highway         93 non-null     int64  
+ 8   AirBags             59 non-null     object 
+ 9   DriveTrain          93 non-null     object 
+ 10  Cylinders           93 non-null     object 
+ 11  EngineSize          93 non-null     float64
+ 12  Horsepower          93 non-null     int64  
+ 13  RPM                 93 non-null     int64  
+ 14  Rev.per.mile        93 non-null     int64  
+ 15  Man.trans.avail     93 non-null     object 
+ 16  Fuel.tank.capacity  93 non-null     float64
+ 17  Passengers          93 non-null     int64  
+ 18  Length              93 non-null     int64  
+ 19  Wheelbase           93 non-null     int64  
+ 20  Width               93 non-null     int64  
+ 21  Turn.circle         93 non-null     int64  
+ 22  Rear.seat.room      91 non-null     float64
+ 23  Luggage.room        82 non-null     float64
+ 24  Weight              93 non-null     int64  
+ 25  Origin              93 non-null     object 
+ 26  Make                93 non-null     object 
+dtypes: float64(7), int64(11), object(9)
+memory usage: 19.7+ KB
+       Min.Price      Price  Max.Price   MPG.city  MPG.highway  EngineSize  Horsepower          RPM  Rev.per.mile  Fuel.tank.capacity  Passengers      Length   Wheelbase      Width  Turn.circle  Rear.seat.room  Luggage.room       Weight
+count  93.000000  93.000000  93.000000  93.000000    93.000000   93.000000   93.000000    93.000000     93.000000           93.000000   93.000000   93.000000   93.000000  93.000000    93.000000       91.000000     82.000000    93.000000
+mean   17.125806  19.509677  21.898925  22.365591    29.086022    2.667742  143.827957  5280.645161   2332.204301           16.664516    5.086022  183.204301  103.946237  69.376344    38.956989       27.829670     13.890244  3072.903226
+std     8.746029   9.659430  11.030457   5.619812     5.331726    1.037363   52.374410   596.731690    496.506525            3.279370    1.038979   14.602382    6.819674   3.778986     3.223265        2.989072      2.997967   589.896510
+min     6.700000   7.400000   7.900000  15.000000    20.000000    1.000000   55.000000  3800.000000   1320.000000            9.200000    2.000000  141.000000   90.000000  60.000000    32.000000       19.000000      6.000000  1695.000000
+25%    10.800000  12.200000  14.700000  18.000000    26.000000    1.800000  103.000000  4800.000000   1985.000000           14.500000    4.000000  174.000000   98.000000  67.000000    37.000000       26.000000     12.000000  2620.000000
+50%    14.700000  17.700000  19.600000  21.000000    28.000000    2.400000  140.000000  5200.000000   2340.000000           16.400000    5.000000  183.000000  103.000000  69.000000    39.000000       27.500000     14.000000  3040.000000
+75%    20.300000  23.300000  25.300000  25.000000    31.000000    3.300000  170.000000  5750.000000   2565.000000           18.800000    6.000000  192.000000  110.000000  72.000000    41.000000       30.000000     15.000000  3525.000000
+max    45.400000  61.900000  80.000000  46.000000    50.000000    5.700000  300.000000  6500.000000   3755.000000           27.000000    8.000000  219.000000  119.000000  78.000000    45.000000       36.000000     22.000000  4105.000000</pre>
 </div>
 ```
 
 ---
 
-## `info()`: el primer diagnóstico
+## El primer diagnóstico: `info()`
 
-```python
-cars[["Manufacturer","Type","Price","AirBags",
-      "Cylinders","Horsepower","Luggage.room","Origin"]].info()
+```{.python .numberLines}
+cars[["Manufacturer", "Type", "Price", "AirBags",
+      "Cylinders", "Horsepower", "Luggage.room", "Origin"]].info()
 ```
 
 ```{=html}
@@ -167,27 +216,29 @@ cars[["Manufacturer","Type","Price","AirBags",
 <pre>&lt;class 'pandas.core.frame.DataFrame'&gt;
 RangeIndex: 93 entries, 0 to 92
 Data columns (total 8 columns):
- #   Column        Non-Null Count  Dtype
----  ------        --------------  -----
- 0   Manufacturer  93 non-null     object
- 1   Type          93 non-null     object
+ #   Column        Non-Null Count  Dtype  
+---  ------        --------------  -----  
+ 0   Manufacturer  93 non-null     object 
+ 1   Type          93 non-null     object 
  2   Price         93 non-null     float64
- 3   AirBags       59 non-null     object
- 4   Cylinders     93 non-null     object
- 5   Horsepower    93 non-null     int64
+ 3   AirBags       59 non-null     object 
+ 4   Cylinders     93 non-null     object 
+ 5   Horsepower    93 non-null     int64  
  6   Luggage.room  82 non-null     float64
- 7   Origin        93 non-null     object</pre>
+ 7   Origin        93 non-null     object 
+dtypes: float64(2), int64(1), object(5)
+memory usage: 5.9+ KB</pre>
 </div>
 ```
 
-Dos cosas saltan: **`AirBags` solo tiene 59 de 93** y **`Cylinders` es `object`**,
-o sea texto, cuando uno esperaría un número.
+Dos cosas saltan: **`AirBags` solo tiene 59 de 93** y **`Cylinders` es texto**
+(`object`) cuando uno esperaría un número.
 
 ---
 
-## `describe()`: órdenes de magnitud muy distintos
+## Órdenes de magnitud muy distintos: `describe()`
 
-```python
+```{.python .numberLines}
 cars[["Price", "MPG.city", "Horsepower", "Weight"]].describe().round(2)
 ```
 
@@ -210,15 +261,178 @@ max    61.90     46.00      300.00  4105.0</pre>
 es exactamente el problema que resolverá el **escalado**.
 :::
 
+---
+
+## El banco de pruebas
+
+Al cerrar **cada capítulo** vamos a medir lo mismo, de la misma forma.
+
+::: {.tarjetas}
+::: {.tarjeta}
+**Dos modelos**
+`LinearRegression()` y una red `MLPRegressor` de una capa de 32 neuronas.
+Siempre los mismos, sin tocarles nada entre capítulos.
+:::
+::: {.tarjeta}
+**Dos métricas**
+**MSE** — error cuadrático medio, en (miles de USD)².
+**R²** — cuánta variación del precio explica el modelo. 1 es perfecto, 0 es
+tan bueno como decir la media, y negativo es peor que eso.
+:::
+::: {.tarjeta}
+**Validación cruzada**
+Cinco pliegues sobre los 93 coches. Con una sola partición de 19 coches las
+cifras bailan tanto que no se podría comparar nada.
+:::
+:::
+
+---
+
+## El código del banco
+
+```{.python .numberLines}
+from sklearn.linear_model import LinearRegression
+from sklearn.neural_network import MLPRegressor
+from sklearn.model_selection import cross_val_score
+
+def modelos():
+    """Los dos del banco. Idénticos en los ocho capítulos."""
+    return [("LinearRegression", LinearRegression()),
+            ("MLPRegressor", MLPRegressor(hidden_layer_sizes=(32,),
+                                          max_iter=2000,
+                                          random_state=7))]
+
+historial = []
+
+def chequeo(capitulo, hacer_tuberia, X, y):
+    """Mide los dos modelos y acumula la fila en el historial.
+
+    hacer_tuberia(modelo) devuelve lo que hay que evaluar: el modelo
+    a secas, o el modelo dentro de una tubería de preprocesamiento.
+    """
+    fila = [capitulo]
+    for nombre, modelo in modelos():
+        try:
+            t = hacer_tuberia(modelo)
+            # error_score="raise" deja pasar el error de verdad; si no,
+            # cross_val_score lo tapa con un "All the 5 fits failed"
+            mse = -cross_val_score(t, X, y, cv=5, error_score="raise",
+                                   scoring="neg_mean_squared_error").mean()
+            r2  =  cross_val_score(t, X, y, cv=5, error_score="raise",
+                                   scoring="r2").mean()
+            fila += [round(mse, 2), round(r2, 3)]
+        except Exception as e:
+            fila += ["error", "error"]
+            motivo = str(e).strip().splitlines()[0]
+            print(f"  {nombre}: {type(e).__name__}: {motivo[:60]}")
+    historial.append(fila)
+    return pd.DataFrame(historial, columns=["capítulo", "MSE lineal",
+                                            "R2 lineal", "MSE red", "R2 red"])
+```
+
+::: {.destacado}
+`random_state=7` fija la inicialización de la red para que el resultado sea
+reproducible. Todo lo demás se queda igual los ocho capítulos.
+:::
+
+---
+
+## Chequeo 1 · Sin preprocesar nada
+
+```{.python .numberLines}
+# Fuera lo que es el precio disfrazado o un identificador
+cars_m = cars.drop(columns=["Min.Price", "Max.Price", "Make", "Model"])
+
+X = cars_m.drop(columns=["Price"])
+y = cars_m["Price"]
+
+num_cols = X.select_dtypes(include=np.number).columns.tolist()
+cat_cols = X.select_dtypes(exclude=np.number).columns.tolist()
+
+chequeo("1a · Sin tocar nada", lambda m: m, X, y)
+```
+
+```{=html}
+<div class="terminal" data-nocopy>
+<pre>  LinearRegression: ValueError: could not convert string to float: 'Acura'
+  MLPRegressor: ValueError: could not convert string to float: 'Acura'</pre>
+</div>
+```
+
+```{.python .numberLines}
+chequeo("1b · Solo las numéricas", lambda m: m, X[num_cols], y)
+```
+
+```{=html}
+<div class="terminal" data-nocopy>
+<pre>  LinearRegression: ValueError: Input X contains NaN.
+  MLPRegressor: ValueError: Input X contains NaN.
+                  capítulo MSE lineal R2 lineal MSE red R2 red
+0      1a · Sin tocar nada      error     error   error  error
+1  1b · Solo las numéricas      error     error   error  error</pre>
+</div>
+```
+
+---
+
+## Dos errores, dos capítulos
+
+```{=html}
+<div class="terminal" data-nocopy>
+<pre>capítulo                  MSE lineal  R2 lineal   MSE red   R2 red
+1a · Sin tocar nada            error      error     error    error
+1b · Solo las numéricas        error      error     error    error</pre>
+</div>
+```
+
+::: {.alerta}
+No es que el modelo prediga mal: es que **no arranca**. Los dos errores nos
+marcan el orden del día.
+:::
+
+::: {.tarjetas}
+::: {.tarjeta}
+**`could not convert string to float`**
+Hay texto donde el modelo espera números. Lo resolveremos en el capítulo 5.
+:::
+::: {.tarjeta}
+**`Input X contains NaN`**
+Hay huecos. Es el capítulo que empieza ahora.
+:::
+:::
+
 # 2 · Valores faltantes {.seccion background-color="#1553ad"}
 
 Lo que no está también dice algo
 
 ---
 
+## Por qué hay que ocuparse de esto
+
+La razón inmediata es que **scikit-learn no acepta vacíos**: la mayoría de sus
+modelos fallan en cuanto encuentran un `NaN`.
+
+```{.python .numberLines}
+from sklearn.linear_model import LinearRegression
+LinearRegression().fit(cars[["Horsepower", "Luggage.room"]], cars["Price"])
+```
+
+```{=html}
+<div class="terminal" data-nocopy>
+<pre>ValueError: Input X contains NaN.</pre>
+</div>
+```
+
+::: {.destacado}
+La razón de fondo es más interesante: **cómo rellenamos esos huecos cambia lo
+que el modelo aprende**. No es un trámite para que deje de dar error.
+:::
+
+---
+
 ## Detectarlos
 
-```python
+```{.python .numberLines}
 faltan = cars.isna().sum()
 print(faltan[faltan > 0])
 
@@ -232,7 +446,6 @@ print(pct[pct > 0].sort_values(ascending=False))
 Rear.seat.room     2
 Luggage.room      11
 dtype: int64
-
 AirBags           36.6
 Luggage.room      11.8
 Rear.seat.room     2.2
@@ -247,34 +460,112 @@ un tercio de la columna**.
 
 ## No todos los vacíos son iguales
 
+Antes de rellenar hay que preguntarse **por qué** falta el dato. La estadística
+distingue tres mecanismos, y cada uno admite un tratamiento distinto.
+
 ::: {.tarjetas}
 ::: {.tarjeta}
-**MCAR** — falta al azar
-La ausencia no depende de nada. Es el caso cómodo y el más raro.
-*Ej.: se perdió una hoja del cuestionario.*
+**MCAR**
+[Missing Completely At Random]{.sigla}
+Falta **completamente al azar**: la ausencia no depende de nada, ni de lo que
+vemos ni de lo que no vemos. Es el caso cómodo y también el más raro.
+*Ejemplo: se perdió una hoja del cuestionario.*
 :::
 ::: {.tarjeta}
-**MAR** — falta según lo observado
-La ausencia depende de otras columnas que **sí** tenemos.
-*Ej.: las furgonetas no traen medida de maletero.*
+**MAR**
+[Missing At Random]{.sigla}
+Falta **al azar, condicionado a lo observado**: la ausencia depende de otras
+columnas que **sí** tenemos.
+*Ejemplo: a las furgonetas nunca les midieron el maletero.*
 :::
 ::: {.tarjeta}
-**MNAR** — falta según lo no observado
-La ausencia depende del valor que falta. El caso peligroso.
-*Ej.: los de renta alta no declaran su renta.*
+**MNAR**
+[Missing Not At Random]{.sigla}
+**No** falta al azar: la ausencia depende del propio valor que falta. El caso
+peligroso, porque no se puede detectar con los datos que hay.
+*Ejemplo: los de renta alta no declaran su renta.*
 :::
 :::
 
-::: {.alerta}
-Imputar con la media asume MCAR. Si el mecanismo es MNAR, imputar **introduce
-sesgo** en lugar de arreglarlo.
+---
+
+## Qué implica cada mecanismo
+
+::: {.tarjetas}
+::: {.tarjeta}
+**Si es MCAR**
+Eliminar las filas es válido: lo que queda sigue siendo una muestra
+representativa. Imputar con la media tampoco sesga.
 :::
+::: {.tarjeta}
+**Si es MAR**
+Eliminar **sí** sesga (perderíamos casi todas las furgonetas). Imputar usando
+las columnas relacionadas —por grupo, o con KNN— es lo correcto.
+:::
+::: {.tarjeta}
+**Si es MNAR**
+No hay solución estadística limpia. Lo honesto es **añadir una columna que
+marque que faltaba** y reconocer la limitación en el informe.
+:::
+:::
+
+---
+
+## Por qué imputar un MNAR introduce sesgo
+
+Supongamos una encuesta de sueldos donde **los que ganan mucho no responden**.
+De diez personas responden siete:
+
+```{=html}
+<div class="terminal" data-nocopy>
+<pre>sueldos reales     : 1.0  1.2  1.3  1.5  1.6  1.8  2.0  <span class="salida">6.0  7.0  9.0</span>
+                                                          ↑ estos tres no responden
+sueldos observados : 1.0  1.2  1.3  1.5  1.6  1.8  2.0
+media observada    : 1.49
+media verdadera    : 3.24</pre>
+</div>
+```
+
+La media que calculamos **solo con los que responden** ya está sesgada hacia
+abajo: es la media de los sueldos bajos. Al imputar 1,49 en los tres huecos, no
+estamos corrigiendo el sesgo, lo estamos **copiando tres veces más**. La media
+final baja aún más, a 1,49, cuando la verdadera era 3,24.
+
+---
+
+## Y lo mismo en un modelo
+
+::: {.alerta}
+Imputar con la media asume MCAR. Con MNAR, la media que usamos **está calculada
+justo sobre las filas que no se parecen a las que faltan**.
+:::
+
+::: {.tarjetas}
+::: {.tarjeta}
+**El error es sistemático**
+No se compensa con más datos: cuantas más filas MNAR haya, peor. No es ruido,
+es sesgo.
+:::
+::: {.tarjeta}
+**El modelo aprende una relación falsa**
+Si a los coches caros les falta el maletero y les ponemos el maletero medio,
+el modelo concluye que maletero medio y precio alto van juntos.
+:::
+::: {.tarjeta}
+**Y encima parece que funciona**
+Los vacíos desaparecen, el código corre y las métricas de entrenamiento no se
+quejan de nada.
+:::
+:::
+
+La única salida honesta es **marcar que faltaba** con una columna 0/1 y decirlo
+en el informe.
 
 ---
 
 ## El caso de `AirBags`
 
-```python
+```{.python .numberLines}
 cars["AirBags"].value_counts(dropna=False)
 ```
 
@@ -283,8 +574,7 @@ cars["AirBags"].value_counts(dropna=False)
 <pre>AirBags
 Driver only           43
 NaN                   34
-Driver &amp; Passenger    16
-Name: count, dtype: int64</pre>
+Driver &amp; Passenger    16</pre>
 </div>
 ```
 
@@ -293,8 +583,7 @@ Aquí el `NaN` **no es un dato perdido**: es el coche que no traía airbag. En e
 original esa categoría era `"None"` y al leerla se convirtió en vacío.
 :::
 
-Imputar esos 34 con la moda (`"Driver only"`) sería inventarse airbags que no
-existen. Lo correcto es tratarlos como una categoría propia.
+Imputar esos 34 con la moda sería inventarse 34 airbags que no existen.
 
 ---
 
@@ -314,11 +603,11 @@ Es una categoría, no un vacío. `"No aplica"`.
 :::
 ::: {.tarjeta}
 **Se perdió**
-Imputar, y anotar de dónde salió el dato.
+Imputar, y dejar constancia de que ese dato es reconstruido.
 :::
 ::: {.tarjeta}
-**Es cero**
-Un cero mal codificado. Se corrige, no se imputa.
+**Es un cero mal codificado**
+Se corrige, no se imputa.
 :::
 :::
 
@@ -328,11 +617,12 @@ Muchas veces la respuesta está en el diccionario de datos, no en el código.
 
 ## Opción 1 · Eliminar
 
-```python
+```{.python .numberLines}
 print("original        ", cars.shape)
 print("dropna() filas  ", cars.dropna().shape)
 print("dropna(axis=1)  ", cars.dropna(axis=1).shape)
-print("thresh 90% cols ", cars.dropna(axis=1, thresh=int(0.9*len(cars))).shape)
+minimo = int(0.9 * len(cars))
+print("thresh 90% cols ", cars.dropna(axis=1, thresh=minimo).shape)
 ```
 
 ```{=html}
@@ -366,7 +656,7 @@ Cuando son poquísimas filas (<2-5 %) y el faltante es MCAR.
 ::: {.tarjeta}
 **Eliminar la fila, siempre**
 Si lo que falta es la **variable objetivo**. No se imputa lo que hay que
-predecir.
+predecir: sería inventarse la respuesta.
 :::
 ::: {.tarjeta}
 **No eliminar**
@@ -379,7 +669,7 @@ Cuando el hecho de faltar es informativo. Ahí conviene una columna
 
 ## Opción 2 · Imputar: ¿media, mediana o moda?
 
-```python
+```{.python .numberLines}
 lr = cars["Luggage.room"]
 print(f"media    {lr.mean():.3f}")
 print(f"mediana  {lr.median():.3f}")
@@ -405,6 +695,53 @@ categórica → moda o una categoría nueva**.
 
 ---
 
+## Chequeo 2 · Eliminando los vacíos
+
+Nos quedamos con las numéricas y tiramos las filas incompletas: sobreviven
+**82 coches de 93**.
+
+```{.python .numberLines}
+X_limpio = X[num_cols].dropna()
+y_limpio = y.loc[X_limpio.index]
+print("filas que sobreviven:", len(X_limpio), "de", len(X))
+
+chequeo("2 · dropna sobre las numéricas", lambda m: m, X_limpio, y_limpio)
+```
+
+```{=html}
+<div class="terminal" data-nocopy>
+<pre>filas que sobreviven: 82 de 93
+                         capítulo MSE lineal R2 lineal   MSE red   R2 red
+0             1a · Sin tocar nada      error     error     error    error
+1         1b · Solo las numéricas      error     error     error    error
+2  2 · dropna sobre las numéricas      46.77     0.295  68165.39 -1015.81</pre>
+</div>
+```
+
+---
+
+## Ya tenemos números, y no son buenos
+
+::: {.tarjetas}
+::: {.tarjeta}
+**La lineal arranca**
+$R^2 = 0{,}295$. Explica menos de un tercio de la variación del precio, pero
+al menos funciona.
+:::
+::: {.tarjeta}
+**La red es un desastre**
+$R^2 = -1015$. Un negativo ya significa peor que predecir siempre la media; con
+esa magnitud, el error es de otro orden que los precios. En el capítulo 7
+abriremos la red para ver por qué.
+:::
+::: {.tarjeta}
+**Y hemos perdido 11 coches**
+Un 12 % de los datos, tirado por culpa de dos columnas incompletas.
+:::
+:::
+
+Los tres problemas tienen arreglo. Vamos con ellos por orden.
+
 # 3 · Partir antes de transformar {.seccion background-color="#1553ad"}
 
 El error más caro de todos
@@ -420,28 +757,30 @@ es un modelo que parece buenísimo en pruebas y fracasa en producción.
 :::
 
 Imputar con la media de **todo** el dataset es fuga: esa media contiene
-información de las filas de prueba.
+información de las filas de prueba, que se supone que aún no hemos visto.
 
 ---
 
 ## Se ve con números
 
-```python
+```{.python .numberLines}
 from sklearn.model_selection import train_test_split
 
-X = cars.drop(columns=["Price"])
-y = cars["Price"]
+# X e y son los del banco de pruebas, ya sin las columnas
+# que eran el precio disfrazado
 X_train, X_test, y_train, y_test = train_test_split(
     X, y, test_size=0.2, random_state=42)
+
+print("X_train", X_train.shape, " X_test", X_test.shape)
+print(f"media de Luggage.room en TODO   : {X['Luggage.room'].mean():.3f}")
+print(f"media de Luggage.room solo train: {X_train['Luggage.room'].mean():.3f}")
 ```
 
 ```{=html}
 <div class="terminal" data-nocopy>
 <pre>X_train (74, 22)  X_test (19, 22)
-y_train (74,)     y_test (19,)
-
-media de Luggage.room en TODO el dataset : 13.890
-media de Luggage.room solo en train      : 14.212</pre>
+media de Luggage.room en TODO   : 13.890
+media de Luggage.room solo train: 14.212</pre>
 </div>
 ```
 
@@ -461,7 +800,7 @@ aplica a prueba.
 ::: {.tarjetas}
 ::: {.tarjeta}
 **`fit` en train**
-Aprende los parámetros.
+Aprende los parámetros y los guarda dentro del objeto.
 :::
 ::: {.tarjeta}
 **`transform` en train y en test**
@@ -469,7 +808,7 @@ Aplica lo aprendido, sin volver a aprender.
 :::
 ::: {.tarjeta}
 **Nunca `fit` en test**
-Ni `fit_transform`. Es el error clásico.
+Ni `fit_transform`. Es el error clásico y no da ningún aviso.
 :::
 :::
 
@@ -478,23 +817,98 @@ Ni `fit_transform`. Es el error clásico.
 ## El orden correcto
 
 1. Cargar los datos y **mirarlos**.
-2. Arreglar lo que es objetivamente un error (tipos, duplicados, unidades).
+2. Arreglar lo que es objetivamente un error: tipos, duplicados, unidades.
 3. **Partir en entrenamiento y prueba.**
 4. `fit` de imputadores, codificadores y escaladores **con entrenamiento**.
 5. `transform` de ambos conjuntos.
-6. Entrenar, evaluar.
+6. Entrenar y evaluar.
 
 ::: {.destacado}
-El paso 2 puede ir antes de partir porque no aprende nada de los datos:
-convertir texto a número no depende de qué filas tengamos.
+El paso 2 puede ir antes de partir porque **no aprende nada de los datos**:
+convertir texto a número o quitar duplicados no depende de qué filas nos
+tocaron.
 :::
+
+
+---
+
+## Chequeo 3 · Con fuga y sin fuga
+
+Rellenamos con la mediana de dos maneras: calculándola con **todo** el dataset
+(fuga) y calculándola **dentro** de la validación cruzada (correcto).
+
+```{.python .numberLines}
+from sklearn.pipeline import Pipeline
+from sklearn.impute import SimpleImputer
+
+# con fuga: esta mediana ve los cinco pliegues
+X_fuga = X[num_cols].fillna(X[num_cols].median())
+chequeo("3a · Imputando fuera (con fuga)", lambda m: m, X_fuga, y)
+
+# correcto: la mediana se recalcula dentro de cada pliegue
+chequeo("3b · Imputando dentro (correcto)",
+        lambda m: Pipeline([("imp", SimpleImputer(strategy="median")),
+                            ("reg", m)]),
+        X[num_cols], y)
+```
+
+```{=html}
+<div class="terminal" data-nocopy>
+<pre>                           capítulo MSE lineal R2 lineal   MSE red    R2 red
+0               1a · Sin tocar nada      error     error     error     error
+1           1b · Solo las numéricas      error     error     error     error
+2    2 · dropna sobre las numéricas      46.77     0.295  68165.39  -1015.81
+3   3a · Imputando fuera (con fuga)      37.39      0.44  71652.15 -1132.738
+4  3b · Imputando dentro (correcto)      37.39      0.44  71652.37 -1132.739</pre>
+</div>
+```
+
+---
+
+## Salen iguales. Y eso es justo lo peligroso
+
+::: {.alerta}
+La fuga **no se nota en las métricas**. Si se notara, la cazaríamos enseguida:
+el problema es que se cuela sin dejar rastro.
+:::
+
+Aquí no cambia nada porque la mediana es muy robusta: quitar 20 coches apenas
+la mueve. Pero el mismo error con otras técnicas sí hace daño:
+
+::: {.tarjetas}
+::: {.tarjeta}
+**Target encoding**
+La media del objetivo por categoría se contamina de lleno con las filas de
+prueba.
+:::
+::: {.tarjeta}
+**Selección de variables**
+Elegir columnas mirando todo el dataset ya es haber usado el conjunto de
+prueba.
+:::
+::: {.tarjeta}
+**Escalado con atípicos**
+Un solo valor extremo en prueba mueve el mínimo y el máximo.
+:::
+:::
+
+La regla no se sigue porque se vea el daño, sino **porque no se ve**.
+
+# 4 · Imputar en serio {.seccion background-color="#1553ad"}
+
+Ahora sí, con el conjunto ya partido
+
+---
 
 ## `SimpleImputer`: la versión de scikit-learn
 
-```python
-from sklearn.impute import SimpleImputer
+Hacerlo con pandas funciona, pero deja los valores de relleno sueltos en una
+variable. `SimpleImputer` los **guarda dentro del objeto**, y eso es lo que
+permite aplicar exactamente lo mismo al conjunto de prueba y a producción.
 
-imp_num = SimpleImputer(strategy="median")      # mean, median, most_frequent, constant
+```{.python .numberLines}
+# estrategias: "mean", "median", "most_frequent", "constant"
+imp_num = SimpleImputer(strategy="median")
 imp_num.fit(X_train[num_cols])
 
 pd.Series(imp_num.statistics_, index=num_cols)[["Rear.seat.room", "Luggage.room"]]
@@ -503,22 +917,15 @@ pd.Series(imp_num.statistics_, index=num_cols)[["Rear.seat.room", "Luggage.room"
 ```{=html}
 <div class="terminal" data-nocopy>
 <pre>Rear.seat.room    28.0
-Luggage.room      14.0
-dtype: float64</pre>
+Luggage.room      14.0</pre>
 </div>
 ```
-
-::: {.concepto}
-`fit` **aprende** los valores de relleno y los guarda en `statistics_`.
-`transform` los **aplica**. Esa separación es la que hace posible tratar el
-conjunto de prueba con lo aprendido en entrenamiento.
-:::
 
 ---
 
 ## Imputar categóricas
 
-```python
+```{.python .numberLines}
 imp_cat = SimpleImputer(strategy="constant", fill_value="Sin airbag")
 Xtr_cat = pd.DataFrame(imp_cat.fit_transform(X_train[cat_cols]),
                        columns=cat_cols, index=X_train.index)
@@ -531,26 +938,27 @@ Xtr_cat["AirBags"].value_counts()
 <pre>AirBags
 Driver only           35
 Sin airbag            26
-Driver &amp; Passenger    13
-Name: count, dtype: int64</pre>
+Driver &amp; Passenger    13</pre>
 </div>
 ```
 
 Con `strategy="constant"` creamos una categoría explícita en lugar de
-disfrazar los vacíos de moda. Es lo que pedía el caso de `AirBags`.
+disfrazar los vacíos de moda. Es justo lo que pedía el caso de `AirBags`.
 
 ---
 
 ## Imputación avanzada: `KNNImputer`
 
-En vez de un único valor para todos, busca los **k vecinos más parecidos** en
-las demás columnas y promedia su valor.
+En vez de un único valor para todos, busca los **k coches más parecidos** en
+las demás columnas y promedia su valor. Sirve cuando el faltante es MAR:
+aprovecha precisamente esas columnas de las que depende la ausencia.
 
-```python
+```{.python .numberLines}
 from sklearn.impute import KNNImputer
 
 knn = KNNImputer(n_neighbors=5)
-Xtr_knn = knn.fit_transform(X_train[num_cols])
+Xtr_knn = pd.DataFrame(knn.fit_transform(X_train[num_cols]),
+                       columns=num_cols, index=X_train.index)
 ```
 
 ```{=html}
@@ -564,41 +972,16 @@ Xtr_knn = knn.fit_transform(X_train[num_cols])
 ```
 
 ::: {.destacado}
-La mediana pone 14 a todos. El KNN se da cuenta de que esos cuatro son coches
-grandes y les pone entre 16 y 19. Más fiel, pero más lento y **exige escalar
-antes**, porque el vecindario se mide con distancias.
-:::
-
----
-
-## Otras opciones que existen
-
-::: {.tarjetas}
-::: {.tarjeta}
-**`IterativeImputer`**
-Modela cada columna con vacíos a partir de las demás, e itera. Potente y caro.
-:::
-::: {.tarjeta}
-**Imputar por grupo**
-La mediana del maletero *dentro de cada tipo de coche*. Suele batir a la
-mediana global.
-:::
-::: {.tarjeta}
-**Indicador de faltante**
-`add_indicator=True` añade una columna 0/1. Deja que el modelo aprenda si
-faltar significa algo.
-:::
-::: {.tarjeta}
-**No imputar**
-`HistGradientBoostingRegressor` y LightGBM manejan `NaN` de forma nativa.
-:::
+La mediana pone 14 a todos. El KNN nota que esos cuatro son coches grandes y
+les pone entre 16 y 19. Más fiel, pero más lento y **exige escalar antes**,
+porque el vecindario se mide con distancias.
 :::
 
 ---
 
 ## Imputar por grupo, y su trampa
 
-```python
+```{.python .numberLines}
 cars.groupby("Type")["Luggage.room"].median()
 ```
 
@@ -610,22 +993,94 @@ Large      18.0
 Midsize    15.0
 Small      12.0
 Sporty     11.5
-Van         NaN
-Name: Luggage.room, dtype: float64</pre>
+Van         NaN</pre>
 </div>
 ```
 
 ::: {.alerta}
 `Van` sale `NaN`: **a las nueve furgonetas les falta el dato a todas**. Si el
-grupo entero está vacío, la imputación por grupo no puede rellenar nada y hay
-que caer en un valor global.
+grupo entero está vacío, la imputación por grupo no rellena nada y hay que
+caer en un valor global.
 :::
 
-Y confirma que el faltante era MAR: depende de `Type`, que sí observamos.
+Y de paso confirma que el faltante era MAR: depende de `Type`, que sí observamos.
 
-# 4 · Variables categóricas {.seccion background-color="#1553ad"}
+---
+
+## El catálogo completo
+
+::: {.tarjetas}
+::: {.tarjeta}
+**`IterativeImputer`**
+Modela cada columna con vacíos a partir de las demás, e itera hasta converger.
+Lo más potente y lo más caro.
+:::
+::: {.tarjeta}
+**Indicador de faltante**
+`SimpleImputer(add_indicator=True)` añade una columna 0/1. Deja que el modelo
+aprenda si el hecho de faltar significa algo.
+:::
+::: {.tarjeta}
+**No imputar**
+`HistGradientBoostingRegressor`, LightGBM y XGBoost manejan `NaN` de forma
+nativa y suelen hacerlo mejor que cualquier imputación.
+:::
+:::
+
+---
+
+## Chequeo 4 · Con imputación
+
+```{.python .numberLines}
+chequeo("4 · SimpleImputer(mediana)",
+        lambda m: Pipeline([("imp", SimpleImputer(strategy="median")),
+                            ("reg", m)]),
+        X[num_cols], y)
+```
+
+```{=html}
+<div class="terminal" data-nocopy>
+<pre>capítulo                        MSE lineal  R2 lineal    MSE red     R2 red
+2 · dropna sobre las numéricas       46.77      0.295   68165.39  -1015.810
+4 · SimpleImputer(mediana)           <span class="salida">37.39      0.440</span>   71652.37  -1132.739</pre>
+</div>
+```
+
+::: {.destacado}
+La lineal mejora de verdad: el MSE baja de 46,77 a 37,39 y el $R^2$ sube de
+0,295 a 0,440. No porque imputar sea mágico, sino porque **entrenamos con 93
+coches en vez de 82**.
+:::
+
+La red sigue igual de rota. Su problema es otro y todavía no lo hemos tocado.
+
+# 5 · Variables categóricas {.seccion background-color="#1553ad"}
 
 Los modelos solo entienden números
+
+---
+
+## Por qué hay que codificar
+
+```{.python .numberLines}
+from sklearn.linear_model import LinearRegression
+LinearRegression().fit(X_train, y_train)
+```
+
+```{=html}
+<div class="terminal" data-nocopy>
+<pre>ValueError: could not convert string to float: 'Nissan'</pre>
+</div>
+```
+
+::: {.concepto}
+Un modelo de regresión multiplica cada columna por un coeficiente y suma. La
+palabra `"Nissan"` no se puede multiplicar por nada. **Codificar** es
+convertir esas etiquetas en números **sin inventarse relaciones que no
+existen**.
+:::
+
+Esa última condición es toda la dificultad del asunto.
 
 ---
 
@@ -635,12 +1090,13 @@ Los modelos solo entienden números
 ::: {.tarjeta}
 **Nominal**
 Sin orden. `Type`, `Manufacturer`, `DriveTrain`.
+Un Sedán no es "más" que una furgoneta.
 → **one-hot**
 :::
 ::: {.tarjeta}
 **Ordinal**
-Con orden real. La pureza de un diamante, un nivel educativo.
-→ **ordinal encoding con el orden declarado**
+Con orden real. La pureza de un diamante, un nivel educativo, una talla S/M/L.
+→ **ordinal encoding con el orden declarado a mano**
 :::
 ::: {.tarjeta}
 **Binaria**
@@ -655,7 +1111,7 @@ La decisión no la toma el código: la toma quien conoce el dominio.
 
 ## Cuánta variedad hay en cada una
 
-```python
+```{.python .numberLines}
 X_train.select_dtypes(exclude="number").nunique().sort_values(ascending=False)
 ```
 
@@ -667,86 +1123,142 @@ Cylinders           6
 DriveTrain          3
 AirBags             2
 Man.trans.avail     2
-Origin              2
-dtype: int64</pre>
+Origin              2</pre>
 </div>
 ```
 
 ::: {.alerta}
 `Manufacturer` tiene **31 niveles distintos en 74 filas de entrenamiento**.
-Guarden ese dato: al final de la sesión va a hacer explotar el modelo.
+Guarden ese dato: dentro de un rato va a hacer explotar el modelo.
 :::
 
 ---
 
 ## Binaria: lo más simple que funciona
 
-```python
-X_train["Origin_USA"] = (X_train["Origin"] == "USA").astype(int)
-X_train["Origin_USA"].value_counts()
+```{.python .numberLines}
+es_usa = (X_train["Origin"] == "USA").astype(int)
+es_usa.value_counts()
 ```
 
 ```{=html}
 <div class="terminal" data-nocopy>
-<pre>Origin_USA
+<pre>Origin
 1    39
-0    35
-Name: count, dtype: int64</pre>
+0    35</pre>
 </div>
 ```
 
 Con dos categorías, una sola columna 0/1 basta y sobra. Crear dos columnas
-sería redundante: la segunda es `1 - primera`.
+sería redundante: la segunda sería siempre `1 - primera`.
 
 ---
 
-## Label encoding: qué hace
+## Label encoding: ¿para qué sirve?
 
-Asigna un entero a cada categoría, **por orden alfabético**.
+::: {.concepto}
+**Label encoding** sustituye cada categoría por un número entero. Ni más ni
+menos. `LabelEncoder` los asigna **por orden alfabético**, empezando en 0.
+:::
 
-```python
+Su uso legítimo es **la variable objetivo de un problema de clasificación**:
+cuando hay que predecir `"perro"` / `"gato"` / `"pájaro"`, el modelo necesita
+que esas tres etiquetas sean 0, 1 y 2, y ahí el número es solo un
+identificador que nunca se opera.
+
+El problema empieza cuando alguien lo usa en las **variables de entrada**.
+
+---
+
+## Qué hace exactamente
+
+```{.python .numberLines}
 from sklearn.preprocessing import LabelEncoder
 
 le = LabelEncoder()
-le.fit_transform(cars["Cylinders"].astype(str))
+cilindros = cars["Cylinders"].astype(str)
+codigos = le.fit_transform(cilindros)
+
+# la correspondencia que aprendió
+pd.DataFrame({"categoría": le.classes_,
+              "número asignado": range(len(le.classes_))})
 ```
 
 ```{=html}
 <div class="terminal" data-nocopy>
-<pre> Cylinders original
-         0        3
-         1        4
-         2        5
-         3        6
-         4        8
-         5   rotary</pre>
+<pre>  categoría  número asignado
+0         3                0
+1         4                1
+2         5                2
+3         6                3
+4         8                4
+5    rotary                5</pre>
 </div>
 ```
 
+Ordenó las seis categorías alfabéticamente y les puso 0, 1, 2, 3, 4 y 5.
+
 ---
 
-## Y por qué casi siempre está mal
+## Y así queda cada fila
+
+```{.python .numberLines}
+pd.DataFrame({"Cylinders": cilindros, "codificado": codigos}).head(6)
+```
+
+```{=html}
+<div class="terminal" data-nocopy>
+<pre>  Cylinders  codificado
+0         4           1
+1         6           3
+2         6           3
+3         6           3
+4         4           1
+5         4           1</pre>
+</div>
+```
+
+Un coche de 4 cilindros pasa a ser un 1, y uno de 6 pasa a ser un 3.
+
+---
+
+## Por qué casi siempre está mal
 
 ::: {.alerta}
-El modelo lee esos números como **cantidades**: creerá que `rotary` (5) es
-mayor que `8` (4), y que la distancia de 3 a 4 cilindros es la misma que de 6 a 8.
-Ninguna de las dos cosas es cierta.
+El modelo lee esos números como **cantidades**, no como etiquetas. Con esta
+codificación estamos afirmando tres cosas falsas:
 :::
 
-::: {.destacado}
-`LabelEncoder` está pensado para la **variable objetivo** de clasificación, no
-para las variables de entrada. Para entradas ordenadas, `OrdinalEncoder` con el
-orden declarado a mano; para no ordenadas, one-hot.
+::: {.tarjetas}
+::: {.tarjeta}
+**`rotary` > 8 cilindros**
+Al motor rotativo le tocó el 5 y al de 8 cilindros el 4. Alfabéticamente tiene
+sentido; mecánicamente no significa nada.
+:::
+::: {.tarjeta}
+**Las distancias son iguales**
+De 3 a 4 cilindros hay "1", y de 6 a 8 también hay "1". En la realidad no.
+:::
+::: {.tarjeta}
+**El orden es el alfabético**
+Que es una casualidad de cómo se escriben las palabras.
+:::
 :::
 
-Excepción: los modelos de árboles toleran bastante bien el label encoding,
-porque parten por umbrales y no interpretan la magnitud.
+Excepción: los **árboles** lo toleran bastante bien, porque parten por umbrales
+y no interpretan la magnitud.
 
 ---
 
-## One-hot con pandas
+## One-hot: la alternativa para nominales
 
-```python
+::: {.concepto}
+**One-hot encoding** crea una columna por categoría, con un 1 en la que
+corresponde y 0 en las demás. Así ninguna categoría queda "por encima" de otra:
+todas están a la misma distancia.
+:::
+
+```{.python .numberLines}
 pd.get_dummies(X_train[["Type"]], prefix="Type", dtype=int).head()
 ```
 
@@ -757,21 +1269,21 @@ pd.get_dummies(X_train[["Type"]], prefix="Type", dtype=int).head()
 15             0           0             0           0            0         1
 68             0           0             1           0            0         0
 78             0           0             0           1            0         0
-30             0           0             0           1            0         0
-
-columnas creadas: 6</pre>
+30             0           0             0           1            0         0</pre>
 </div>
 ```
 
-Una columna por categoría, con un 1 en la que corresponde. Cómodo para
-explorar, **peligroso para producción**: si el test trae una categoría que el
-train no tenía, `get_dummies` genera columnas distintas y todo se rompe.
-
 ---
 
-## One-hot con scikit-learn
+## `get_dummies` está bien para explorar, no para producción
 
-```python
+::: {.alerta}
+Si el conjunto de prueba trae una categoría que el entrenamiento no tenía,
+`get_dummies` genera **un juego de columnas distinto** y el modelo recibe una
+matriz que no reconoce.
+:::
+
+```{.python .numberLines}
 from sklearn.preprocessing import OneHotEncoder
 
 enc = OneHotEncoder(handle_unknown="ignore", sparse_output=False, drop="first")
@@ -781,20 +1293,28 @@ enc.get_feature_names_out()
 
 ```{=html}
 <div class="terminal" data-nocopy>
-<pre>['Type_Large' 'Type_Midsize' 'Type_Small' 'Type_Sporty' 'Type_Van'
- 'DriveTrain_Front' 'DriveTrain_Rear']</pre>
+<pre>array(['Type_Large', 'Type_Midsize', 'Type_Small', 'Type_Sporty',
+       'Type_Van', 'DriveTrain_Front', 'DriveTrain_Rear'], dtype=object)</pre>
 </div>
 ```
+
+`OneHotEncoder` **recuerda** las categorías del entrenamiento y siempre
+devuelve las mismas columnas, en el mismo orden.
+
+---
+
+## Los dos argumentos que importan
 
 ::: {.tarjetas}
 ::: {.tarjeta}
 **`handle_unknown="ignore"`**
-Una categoría no vista en train sale como fila de ceros, en vez de reventar.
+Una categoría no vista en entrenamiento sale como una fila de ceros, en vez de
+lanzar una excepción en mitad de producción.
 :::
 ::: {.tarjeta}
 **`drop="first"`**
-Quita una columna por variable. Evita la colinealidad perfecta que estropea la
-regresión lineal.
+Quita una columna por variable. Evita la colinealidad perfecta que deja
+indeterminados los coeficientes de la regresión lineal.
 :::
 :::
 
@@ -804,12 +1324,13 @@ regresión lineal.
 
 ::: {.concepto}
 Con las seis columnas de `Type`, la suma de todas es siempre 1. Esa
-**colinealidad perfecta** deja los coeficientes de la regresión lineal
-indeterminados.
+**colinealidad perfecta** hace que existan infinitas combinaciones de
+coeficientes que dan el mismo resultado, y la regresión no sabe cuál elegir.
 :::
 
-Al quitar `Compact`, se convierte en la categoría de referencia: los demás
-coeficientes se leen como *"cuánto más caro que un Compact"*.
+Al quitar `Compact`, esa pasa a ser la categoría de referencia y los demás
+coeficientes se leen como *"cuánto más caro que un Compact"*, que además es
+más fácil de explicar.
 
 ::: {.destacado}
 Con árboles o con regularización (Ridge, Lasso) no hace falta quitarla, y a
@@ -820,7 +1341,7 @@ veces conviene no hacerlo. Con regresión lineal pura, sí.
 
 ## Alta cardinalidad: el problema de `Manufacturer`
 
-```python
+```{.python .numberLines}
 vc = X_train["Manufacturer"].value_counts()
 print(vc.head(6))
 print("marcas con 1 solo coche:", (vc == 1).sum(), "de", len(vc))
@@ -835,24 +1356,25 @@ Nissan       4
 Dodge        4
 Pontiac      4
 Buick        4
-...
+Name: count, dtype: int64
 marcas con 1 solo coche: 12 de 31</pre>
 </div>
 ```
 
 One-hot sobre esto son **31 columnas nuevas**, 12 de ellas con un único 1.
-De esas columnas no se aprende nada: se memoriza.
+De una columna así no se aprende nada: se memoriza esa fila.
 
 ---
 
-## Solución: agrupar las raras
+## Salida 1 · Agrupar las categorías raras
 
-```python
+**Cuándo:** siempre que haya una cola larga de categorías poco frecuentes y no
+exista un criterio de dominio mejor. Es la primera que hay que probar.
+
+```{.python .numberLines}
 frecuentes = vc[vc >= 3].index
 X_train["Manufacturer"] = X_train["Manufacturer"].where(
     X_train["Manufacturer"].isin(frecuentes), "Otras")
-
-X_train["Manufacturer"].value_counts()
 ```
 
 ```{=html}
@@ -875,79 +1397,179 @@ Name: count, dtype: int64</pre>
 </div>
 ```
 
-De 31 niveles a 13, y el grupo `Otras` recoge 26 coches. `OneHotEncoder` trae
-esto integrado con `min_frequency=3` o `max_categories=10`.
+De 31 niveles a 13. `OneHotEncoder(min_frequency=3)` lo hace solo.
 
 ---
 
-## Otras salidas para la alta cardinalidad
+## Salida 2 · Frequency encoding
+
+::: {.concepto}
+Sustituir cada categoría por **la frecuencia con que aparece**. Una sola
+columna numérica, sin importar cuántos niveles haya.
+:::
+
+```{.python .numberLines}
+frec = cars["Manufacturer"].value_counts(normalize=True)
+cars["Manuf_frec"] = cars["Manufacturer"].map(frec)
+```
+
+```{=html}
+<div class="terminal" data-nocopy>
+<pre>0    0.0215
+1    0.0215
+2    0.0215
+3    0.0215
+4    0.0108
+5    0.0430</pre>
+</div>
+```
+
+**Cuándo:** cuando la popularidad de la categoría es en sí misma informativa
+—un fabricante con muchos modelos es un fabricante masivo— y hay miles de
+niveles. **Riesgo:** dos marcas distintas con la misma frecuencia quedan
+indistinguibles.
+
+---
+
+## Salida 3 · Target encoding
+
+::: {.concepto}
+Sustituir cada categoría por **la media de la variable objetivo** dentro de esa
+categoría. Una columna, y muy informativa: le da al modelo directamente lo que
+la categoría dice sobre el precio.
+:::
+
+```{.python .numberLines}
+medias = cars.groupby("Manufacturer")["Price"].mean()
+cars["Manuf_te"] = cars["Manufacturer"].map(medias)
+```
+
+```{=html}
+<div class="terminal" data-nocopy>
+<pre>0    24.90
+1    24.90
+2    33.40
+3    33.40
+4    30.00
+5    21.62</pre>
+</div>
+```
+
+**Cuándo:** competiciones y modelos tabulares con cardinalidad muy alta
+(códigos postales, IDs de producto). Suele ser la codificación que más aporta.
+
+---
+
+## Target encoding: el peligro
+
+```{=html}
+<div class="terminal" data-nocopy>
+<pre>Infiniti: media = 47.9  (calculada con 1 coche)</pre>
+</div>
+```
+
+::: {.alerta}
+Para una marca con un solo coche, la "media de la categoría" **es el precio de
+ese coche**. Le estamos dando al modelo la respuesta de esa fila disfrazada de
+variable de entrada. Es fuga de datos de manual.
+:::
+
+Se controla con **suavizado** (mezclar la media del grupo con la media global,
+según cuántas filas tenga) y calculando las medias **dentro de una validación
+cruzada**. `sklearn.preprocessing.TargetEncoder` ya lo trae hecho.
+
+---
+
+## Salida 4 · Agrupar por conocimiento del dominio
+
+::: {.concepto}
+Reemplazar la categoría por una **propiedad suya** que sí tenga pocos niveles y
+significado.
+:::
 
 ::: {.tarjetas}
 ::: {.tarjeta}
-**Frequency encoding**
-Sustituir cada categoría por cuántas veces aparece. Una sola columna.
+**Marca → origen**
+`Manufacturer` (31) → `Origin` (2). Ya lo tenemos en el dataset.
 :::
 ::: {.tarjeta}
-**Target encoding**
-Sustituirla por la media del objetivo en esa categoría. Muy potente y **muy
-propenso a la fuga**: exige validación cruzada interna.
+**Marca → gama**
+Generalista / prémium / lujo. 31 → 3.
 :::
 ::: {.tarjeta}
-**Agrupar por dominio**
-Marca → país de origen, gama, grupo empresarial. Casi siempre lo mejor.
-:::
-::: {.tarjeta}
-**Embeddings**
-Representación densa aprendida. Para cardinalidades de miles.
+**Marca → grupo empresarial**
+Audi, SEAT y Volkswagen comparten plataformas. 31 → ~10.
 :::
 :::
+
+**Cuándo:** siempre que se pueda. Es la única salida que **añade información**
+en lugar de limitarse a comprimir la que ya había, y la que mejor resiste
+categorías nuevas en producción.
+
+---
+
+## Salida 5 · Embeddings
+
+::: {.concepto}
+Aprender, durante el entrenamiento de una red neuronal, un **vector de pocas
+dimensiones** para cada categoría. Categorías que se comportan parecido acaban
+con vectores parecidos.
+:::
+
+Es lo mismo que se hace con las palabras en procesamiento de lenguaje: 50.000
+palabras representadas en 300 números.
+
+**Cuándo:** cardinalidades de miles o decenas de miles (usuarios, productos,
+ciudades) y con una red neuronal de por medio. **Cuándo no:** en este curso.
+Con 31 marcas y 93 coches, un embedding es artillería para matar una mosca.
 
 ---
 
 ## Ordinales de verdad: `diamonds`
 
-```python
+```{.python .numberLines}
 for c in ["cut", "color", "clarity"]:
     print(c, dia[c].nunique(), sorted(dia[c].unique()))
 ```
 
 ```{=html}
 <div class="terminal" data-nocopy>
-<pre>cut      5 niveles: ['Fair', 'Good', 'Ideal', 'Premium', 'Very Good']
-color    7 niveles: ['D', 'E', 'F', 'G', 'H', 'I', 'J']
-clarity  8 niveles: ['I1', 'IF', 'SI1', 'SI2', 'VS1', 'VS2', 'VVS1', 'VVS2']</pre>
+<pre>cut 5 ['Fair', 'Good', 'Ideal', 'Premium', 'Very Good']
+color 7 ['D', 'E', 'F', 'G', 'H', 'I', 'J']
+clarity 8 ['I1', 'IF', 'SI1', 'SI2', 'VS1', 'VS2', 'VVS1', 'VVS2']</pre>
 </div>
 ```
 
 ::: {.alerta}
 Ese es el orden **alfabético**, y no tiene nada que ver con la calidad. En
 color, `D` es el mejor y `J` el peor. Si dejamos que la máquina ordene, el
-orden sale al revés.
+orden sale justo al revés.
 :::
 
 ---
 
 ## `OrdinalEncoder` con el orden declarado
 
-```python
+```{.python .numberLines}
 from sklearn.preprocessing import OrdinalEncoder
 
-orden_cut     = ["Fair", "Good", "Very Good", "Premium", "Ideal"]
-orden_color   = ["J", "I", "H", "G", "F", "E", "D"]
-orden_clarity = ["I1", "SI2", "SI1", "VS2", "VS1", "VVS2", "VVS1", "IF"]
+cut     = ["Fair", "Good", "Very Good", "Premium", "Ideal"]
+color   = ["J", "I", "H", "G", "F", "E", "D"]
+clarity = ["I1", "SI2", "SI1", "VS2", "VS1", "VVS2", "VVS1", "IF"]
 
-oe = OrdinalEncoder(categories=[orden_cut, orden_color, orden_clarity])
+oe = OrdinalEncoder(categories=[cut, color, clarity])
 oe.fit_transform(dia[["cut", "color", "clarity"]])
 ```
 
 ```{=html}
 <div class="terminal" data-nocopy>
-<pre>   cut  color  clarity
-0    4      5        1
-1    3      5        2
-2    1      5        4
-3    3      1        3
-4    1      0        1</pre>
+<pre>array([[4., 5., 1.],
+       [3., 5., 2.],
+       [1., 5., 4.],
+       ...,
+       [2., 6., 2.],
+       [3., 2., 1.],
+       [4., 6., 1.]], shape=(53940, 3))</pre>
 </div>
 ```
 
@@ -971,15 +1593,74 @@ El orden es real y el efecto es más o menos monótono. Ahorra 17 columnas.
 :::
 ::: {.tarjeta}
 **One-hot gana cuando**
-No hay orden, o el efecto no es monótono (que la categoría del medio sea la
-más cara).
+No hay orden, o el efecto no es monótono: que la categoría del medio sea la más
+cara, por ejemplo.
 :::
 :::
 
-En la duda, con datos suficientes, one-hot es la apuesta segura: no impone
+En la duda, y con datos suficientes, one-hot es la apuesta segura: no impone
 ninguna estructura que no esté en los datos.
 
-# 5 · Agrupación y discretización {.seccion background-color="#1553ad"}
+---
+
+## Chequeo 5 · Con las categóricas codificadas
+
+Ya podemos meter las 7 columnas de texto. One-hot a todas, sin más.
+
+```{.python .numberLines}
+from sklearn.compose import ColumnTransformer
+
+def rama_categorica(min_frec):
+    return Pipeline([("imp", SimpleImputer(strategy="constant",
+                                           fill_value="Desconocido")),
+                     ("oh",  OneHotEncoder(handle_unknown="ignore",
+                                           drop="first",
+                                           min_frequency=min_frec))])
+
+pre_todas = ColumnTransformer([
+    ("num", Pipeline([("imp", SimpleImputer(strategy="median"))]), num_cols),
+    ("cat", rama_categorica(1), cat_cols),
+])
+print("columnas tras codificar:", pre_todas.fit(X).transform(X).shape[1])
+
+chequeo("5 · + one-hot de todas",
+        lambda m: Pipeline([("pre", pre_todas), ("reg", m)]), X, y)
+```
+
+```{=html}
+<div class="terminal" data-nocopy>
+<pre>columnas tras codificar: 62   (para 93 coches)
+
+capítulo                    MSE lineal  R2 lineal    MSE red    R2 red
+4 · SimpleImputer(mediana)       37.39      0.440   71652.37 -1132.739
+5 · + one-hot de todas           <span class="salida">91.10     -0.242</span>   18748.45  -389.281</pre>
+</div>
+```
+
+---
+
+## El $R^2$ se volvió negativo
+
+::: {.alerta}
+De 0,440 a **−0,242**: añadir información hizo el modelo **peor que predecir
+siempre la media**. Y no es ruido, es aritmética: 62 columnas para 93 coches.
+:::
+
+::: {.tarjetas}
+::: {.tarjeta}
+**El culpable tiene nombre**
+`Manufacturer`, con sus 31 niveles, aporta 30 de esas 62 columnas.
+:::
+::: {.tarjeta}
+**La red "mejora"**
+De −1132 a −389. Sigue siendo un disparate; que baje no significa que sirva.
+:::
+:::
+
+La codificación no estaba mal. Lo que falta es **controlar la cardinalidad**,
+que es el capítulo siguiente.
+
+# 6 · Agrupación y discretización {.seccion background-color="#1553ad"}
 
 `groupby` no es solo para informes
 
@@ -987,7 +1668,7 @@ ninguna estructura que no esté en los datos.
 
 ## `groupby` para entender antes de transformar
 
-```python
+```{.python .numberLines}
 (cars.groupby("Type")
      .agg(n=("Price", "size"),
           precio_medio=("Price", "mean"),
@@ -999,7 +1680,7 @@ ninguna estructura que no esté en los datos.
 ```{=html}
 <div class="terminal" data-nocopy>
 <pre>          n  precio_medio  cv_medio  hp_medio
-Type
+Type                                         
 Midsize  22          27.2      19.5     173.1
 Large    11          24.3      18.4     179.5
 Sporty   14          19.4      21.8     160.1
@@ -1016,7 +1697,7 @@ pena conservar.
 
 ## Discretizar: de continua a categórica
 
-```python
+```{.python .numberLines}
 cars["gama"] = pd.cut(cars["Price"],
                       bins=[0, 12, 20, 100],
                       labels=["económico", "medio", "alto"])
@@ -1028,8 +1709,7 @@ cars["gama"].value_counts().sort_index()
 <pre>gama
 económico    22
 medio        40
-alto         31
-Name: count, dtype: int64</pre>
+alto         31</pre>
 </div>
 ```
 
@@ -1053,23 +1733,72 @@ La versión de sklearn, encajable en un `Pipeline`.
 ## Cuidado con discretizar
 
 ::: {.alerta}
-Discretizar **tira información**: dos coches de 11.900 y 12.100 acaban en
-gamas distintas, y uno de 12.100 y otro de 19.900 en la misma.
+Discretizar **tira información**: dos coches de 11.900 y 12.100 acaban en gamas
+distintas, y uno de 12.100 y otro de 19.900 acaban en la misma.
 :::
 
-Se justifica cuando la relación no es lineal y el modelo sí, cuando los cortes
-tienen sentido de negocio, o cuando hay que comunicar el resultado a alguien.
+Se justifica cuando la relación no es lineal y el modelo sí lo es, cuando los
+cortes tienen sentido de negocio, o cuando hay que comunicar el resultado a
+alguien que no va a leer un coeficiente.
 
 No se justifica "para simplificar": los modelos no necesitan que les
 simplifiquen las variables continuas.
 
-# 6 · Escalado {.seccion background-color="#1553ad"}
+---
+
+## Chequeo 6 · Agrupando las categorías raras
+
+Una categoría necesita **15 coches** para tener columna propia. Las demás se
+juntan en un grupo.
+
+```{.python .numberLines}
+pre_agrupadas = ColumnTransformer([
+    ("num", Pipeline([("imp", SimpleImputer(strategy="median"))]), num_cols),
+    ("cat", rama_categorica(15), cat_cols),          # <- el cambio
+])
+print("columnas:", pre_todas.fit(X).transform(X).shape[1], "->",
+      pre_agrupadas.fit(X).transform(X).shape[1])
+
+chequeo("6 · + agrupar categorías raras",
+        lambda m: Pipeline([("pre", pre_agrupadas), ("reg", m)]), X, y)
+```
+
+```{=html}
+<div class="terminal" data-nocopy>
+<pre>columnas: 62 -> 26
+
+capítulo                       MSE lineal  R2 lineal    MSE red    R2 red
+4 · SimpleImputer(mediana)          37.39      0.440   71652.37 -1132.739
+5 · + one-hot de todas              91.10     -0.242   18748.45  -389.281
+6 · + agrupar categorías raras      <span class="salida">33.30      0.455</span>   26326.33  -377.586</pre>
+</div>
+```
+
+---
+
+## Recuperado, y mejor que antes
+
+::: {.concepto}
+El $R^2$ pasa de −0,242 a **0,455**: no solo deshacemos el destrozo del
+capítulo anterior, sino que superamos el 0,440 que teníamos sin categóricas.
+Ahora sí aportan.
+:::
+
+::: {.destacado}
+La lección no es "one-hot es peligroso". Es que **una técnica correcta,
+aplicada sin mirar lo que produce, hace daño**. Bastó contar cuántos coches
+había por marca.
+:::
+
+Seis capítulos y la red sigue en −377.
+
+# 7 · Escalado {.seccion background-color="#1553ad"}
 
 Poner todas las variables en la misma unidad
 
 ---
 
-## El problema
+## Por qué escalar
 
 ```{=html}
 <div class="terminal" data-nocopy>
@@ -1089,15 +1818,49 @@ números son más grandes. No porque importe más.
 
 ---
 
+## Y se mide
+
+```{.python .numberLines}
+from sklearn.neighbors import KNeighborsRegressor
+from sklearn.preprocessing import StandardScaler
+from sklearn.metrics import mean_absolute_error
+
+sin = Pipeline([("imp", SimpleImputer()),
+                ("knn", KNeighborsRegressor(5))]).fit(X_train[num_cols], y_train)
+
+con = Pipeline([("imp", SimpleImputer()),
+                ("esc", StandardScaler()),
+                ("knn", KNeighborsRegressor(5))]).fit(X_train[num_cols], y_train)
+
+for nombre, m in [("sin escalar", sin), ("escalado   ", con)]:
+    p = m.predict(X_test[num_cols])
+    print(f"KNN {nombre} : MAE {mean_absolute_error(y_test, p):.2f}")
+```
+
+```{=html}
+<div class="terminal" data-nocopy>
+<pre>KNN sin escalar : MAE 4.39
+KNN escalado    : MAE 3.29</pre>
+</div>
+```
+
+Un 10 % mejor sin tocar el modelo. Con variables de escalas más dispares la
+diferencia es mucho mayor.
+
+---
+
 ## Estandarización · `StandardScaler`
 
 Resta la media y divide por la desviación: media 0, desviación 1.
 
 $$z = \frac{x - \mu}{\sigma}$$
 
-```python
-from sklearn.preprocessing import StandardScaler
+```{.python .numberLines}
+cols = ["Horsepower", "MPG.city", "Weight"]
+
 std = StandardScaler().fit(X_train[cols])
+pd.DataFrame(std.transform(X_train[cols]), columns=cols) \
+  .describe().loc[["mean", "std", "min", "max"]].round(2)
 ```
 
 ```{=html}
@@ -1120,9 +1883,12 @@ Lleva el mínimo a 0 y el máximo a 1.
 
 $$x' = \frac{x - x_{\min}}{x_{\max} - x_{\min}}$$
 
-```python
+```{.python .numberLines}
 from sklearn.preprocessing import MinMaxScaler
+
 mm = MinMaxScaler().fit(X_train[cols])
+pd.DataFrame(mm.transform(X_train[cols]), columns=cols) \
+  .describe().loc[["mean", "std", "min", "max"]].round(2)
 ```
 
 ```{=html}
@@ -1135,8 +1901,8 @@ max         1.00      1.00    1.00</pre>
 </div>
 ```
 
-Rango garantizado, pero **un solo atípico comprime a todos los demás**: mírenle
-la media a `MPG.city`, aplastada en 0,23.
+Rango garantizado, pero **un solo atípico comprime a todos los demás**: miren
+la media de `MPG.city`, aplastada en 0,23.
 
 ---
 
@@ -1190,7 +1956,7 @@ Cuando hay atípicos de verdad y no se pueden quitar.
 
 ## Lo que el escalador aprendió
 
-```python
+```{.python .numberLines}
 print("media aprendida en train :", std.mean_.round(2))
 print("desviación aprendida     :", std.scale_.round(2))
 ```
@@ -1198,7 +1964,7 @@ print("desviación aprendida     :", std.scale_.round(2))
 ```{=html}
 <div class="terminal" data-nocopy>
 <pre>media aprendida en train : [ 141.2    22.24 3093.11]
-desviación aprendida     : [  47.7     5.66  588.08]</pre>
+desviación aprendida     : [ 47.7    5.66 588.08]</pre>
 </div>
 ```
 
@@ -1212,8 +1978,9 @@ futuras no significan nada.
 
 ## El test no queda entre 0 y 1, y está bien
 
-```python
-pd.DataFrame(mm.transform(X_test[cols]), columns=cols).describe().loc[["min","max"]]
+```{.python .numberLines}
+pd.DataFrame(mm.transform(X_test[cols]),
+             columns=cols).describe().loc[["min", "max"]].round(2)
 ```
 
 ```{=html}
@@ -1226,17 +1993,157 @@ max        1.00      0.55    0.93</pre>
 
 ::: {.destacado}
 El máximo de `MPG.city` en test es 0,55 porque el coche más eficiente estaba en
-train. Si un dato de test superara el máximo de train, saldría **mayor que 1**.
-No es un error: es la prueba de que no hubo fuga.
+entrenamiento. Si un dato de test superara el máximo de train, saldría **mayor
+que 1**. No es un error: es la prueba de que no hubo fuga.
 :::
 
-# 7 · Transformar variables sesgadas {.seccion background-color="#1553ad"}
+---
+
+## Chequeo 7 · Con escalado
+
+Una línea más en la rama numérica: `StandardScaler()`.
+
+```{.python .numberLines}
+pre_escalado = ColumnTransformer([
+    ("num", Pipeline([("imp", SimpleImputer(strategy="median")),
+                      ("esc", StandardScaler())]), num_cols),
+    ("cat", rama_categorica(15), cat_cols),
+])
+
+chequeo("7 · + escalado",
+        lambda m: Pipeline([("pre", pre_escalado), ("reg", m)]), X, y)
+```
+
+```{=html}
+<div class="terminal" data-nocopy>
+<pre>capítulo                       MSE lineal  R2 lineal    MSE red    R2 red
+5 · + one-hot de todas              91.10     -0.242   18748.45  -389.281
+6 · + agrupar categorías raras      33.30      0.455   26326.33  -377.586
+7 · + StandardScaler                33.30      0.455      <span class="salida">35.23     0.449</span></pre>
+</div>
+```
+
+---
+
+## Esta es la diapositiva de la sesión
+
+::: {.concepto}
+La red pasa de $R^2 = -377{,}6$ a $R^2 = +0{,}449$. El MSE cae de **26.326 a
+35**: es setecientas veces menos error. La regresión lineal, en la misma
+línea, no se mueve **ni una milésima**.
+:::
+
+::: {.tarjetas}
+::: {.tarjeta}
+**Por qué a la lineal le da igual**
+Resuelve un sistema de ecuaciones. Si una columna vale mil veces más, su
+coeficiente vale mil veces menos y el resultado es idéntico.
+:::
+::: {.tarjeta}
+**Por qué a la red le cambia todo**
+Entrena a base de pasos pequeños. Con las columnas en escalas incomparables, la
+dirección de mejora es casi imposible de encontrar. Vamos a verlo por dentro.
+:::
+:::
+
+::: {.alerta}
+No existe "el preprocesamiento correcto". Existe **el correcto para el modelo
+que van a usar**.
+:::
+
+---
+
+## Abramos la red y miremos
+
+```{.python .numberLines}
+from sklearn.model_selection import KFold
+
+Xn = X[num_cols].dropna(); yn = y.loc[Xn.index]
+tr, te = next(iter(KFold(5).split(Xn)))
+
+for etiqueta, pasos in [("SIN escalar", []),
+                        ("CON escalar", [("esc", StandardScaler())])]:
+    m = Pipeline(pasos + [("red", MLPRegressor(hidden_layer_sizes=(32,),
+                                               max_iter=2000,
+                                               random_state=7))])
+    m.fit(Xn.iloc[tr], yn.iloc[tr])
+    r, p = m.named_steps["red"], m.predict(Xn.iloc[te])
+    print(f"{etiqueta}: {r.n_iter_} iteraciones, pérdida {r.loss_:.3g}, "
+          f"peso mayor {np.abs(r.coefs_[0]).max():.3f}, "
+          f"predice de {p.min():.0f} a {p.max():.0f}")
+```
+
+```{=html}
+<div class="terminal" data-nocopy>
+<pre>                    SIN escalar        CON escalar
+iteraciones usadas       <span class="salida">40 de 2000</span>       2000 de 2000
+pérdida final              3.27e+04               2.99
+peso mayor                    0.375              1.978
+predicciones           <span class="salida">-478 a  212</span>          11 a  41
+precios reales             11 a   40          11 a   40</pre>
+</div>
+```
+
+---
+
+## No es que explote: es que se rinde
+
+::: {.alerta}
+Lo primero que sorprende: **los pesos no se disparan**. El mayor vale 0,375,
+más pequeño que el 1,978 de la versión escalada. La red no revienta.
+:::
+
+::: {.concepto}
+Lo que pasa es que **se para sola en la iteración 40 de 2000**. La pérdida cae
+rápido al principio —de 690.000 a 33.000— y ahí se estanca. `MLPRegressor` deja
+de entrenar cuando la pérdida no mejora más de `tol=1e-4` durante 10 rondas
+seguidas, y eso ocurre enseguida.
+:::
+
+Se detiene creyendo que ha terminado, con una pérdida de 33.000 y prediciendo
+**precios negativos**: de −478 a 212 mil dólares para coches que cuestan
+entre 11 y 40.
+
+::: {.destacado}
+Y la escalada, en cambio, agota las 2000 iteraciones: **todavía estaba
+mejorando** cuando se le acabó el permiso.
+:::
+
+---
+
+## De ahí sale el $R^2$ de −377
+
+$$R^2 = 1 - \frac{SS_{res}}{SS_{tot}}$$
+
+```{=html}
+<div class="terminal" data-nocopy>
+<pre>SS_res  (error del modelo)     2.102.083
+SS_tot  (varianza del precio)      1.343
+
+R2 = 1 - 2.102.083 / 1.343 = -1564</pre>
+</div>
+```
+
+::: {.concepto}
+El denominador es **pequeño**: los precios se mueven en un rango estrecho, así
+que hay poca varianza que explicar. El numerador es enorme porque la red falla
+por cientos de miles. Un cociente de mil y pico da un $R^2$ de mil y pico en
+negativo.
+:::
+
+::: {.destacado}
+Un $R^2$ muy negativo no significa "mil veces peor que la media" en ningún
+sentido intuitivo. Significa que el error es de **otro orden de magnitud** que
+la variación que se pretendía explicar.
+:::
+
+# 8 · Transformar variables sesgadas {.seccion background-color="#1553ad"}
 
 ---
 
 ## El precio de los diamantes
 
-```python
+```{.python .numberLines}
 print(f"asimetría de price      : {dia['price'].skew():.3f}")
 print(f"asimetría de log(price) : {np.log1p(dia['price']).skew():.3f}")
 print(dia["price"].describe().round(1))
@@ -1246,7 +2153,6 @@ print(dia["price"].describe().round(1))
 <div class="terminal" data-nocopy>
 <pre>asimetría de price      : 1.618
 asimetría de log(price) : 0.116
-
 count    53940.0
 mean      3932.8
 std       3989.4
@@ -1259,8 +2165,21 @@ Name: price, dtype: float64</pre>
 </div>
 ```
 
-Media 3.933 y mediana 2.401: la media va muy por encima, señal clara de cola
-a la derecha. El logaritmo la deja casi simétrica.
+Media 3.933 y mediana 2.401: la media va muy por encima, señal clara de cola a
+la derecha. El logaritmo la deja casi simétrica.
+
+---
+
+## Por qué molesta el sesgo
+
+::: {.concepto}
+La regresión lineal minimiza el **error al cuadrado**. Con una cola larga, los
+pocos diamantes carísimos aportan errores enormes al elevarlos al cuadrado, y
+el ajuste entero se va detrás de ellos para complacerlos.
+:::
+
+Al trabajar en escala logarítmica, un error del 10 % pesa lo mismo en un
+diamante de 500 dólares que en uno de 15.000. Que suele ser lo que queremos.
 
 ---
 
@@ -1270,7 +2189,7 @@ a la derecha. El logaritmo la deja casi simétrica.
 ::: {.tarjeta}
 **`np.log1p`**
 Para variables positivas con cola derecha: precios, ingresos, poblaciones.
-`log1p` aguanta los ceros.
+El `1p` es para que aguante los ceros.
 :::
 ::: {.tarjeta}
 **`PowerTransformer`**
@@ -1278,7 +2197,8 @@ Yeo-Johnson busca el exponente que más acerca a la normal. Admite negativos.
 :::
 ::: {.tarjeta}
 **`QuantileTransformer`**
-Fuerza la distribución que se le pida. Muy agresivo; puede destruir relaciones.
+Fuerza la distribución que se le pida. Muy agresivo; puede destruir relaciones
+reales entre variables.
 :::
 :::
 
@@ -1287,153 +2207,159 @@ Si transforman la **variable objetivo**, las predicciones salen en escala
 logarítmica: hay que deshacer con `np.expm1` antes de interpretar el error.
 :::
 
-# 8 · Todo junto {.seccion background-color="#1553ad"}
-
-`Pipeline` y `ColumnTransformer`
-
 ---
 
-## El problema que resuelven
+## Chequeo 8 · Con el objetivo en logaritmo
 
-Hasta ahora hemos hecho todo a mano: imputar, codificar, escalar, y repetirlo
-igual en test. Eso son diez oportunidades de equivocarse.
+```{.python .numberLines}
+from sklearn.compose import TransformedTargetRegressor
 
-::: {.concepto}
-Un **`Pipeline`** encadena pasos y expone un único `fit` y un único `predict`.
-Un **`ColumnTransformer`** aplica ramas distintas a columnas distintas.
-:::
-
-Juntos garantizan que el `fit` ocurra solo con entrenamiento y que el test
-reciba exactamente el mismo tratamiento.
-
----
-
-## Sin preprocesar no arranca
-
-```python
-from sklearn.linear_model import LinearRegression
-LinearRegression().fit(X_train, y_train)
+chequeo("8 · + log del objetivo",
+        lambda m: TransformedTargetRegressor(
+            regressor=Pipeline([("pre", pre_escalado), ("reg", m)]),
+            func=np.log1p, inverse_func=np.expm1),
+        X, y)
 ```
 
 ```{=html}
 <div class="terminal" data-nocopy>
-<pre>ValueError: could not convert string to float: 'Nissan'</pre>
-</div>
-```
-
-El punto de partida: el modelo ni siquiera acepta los datos crudos.
-
----
-
-## La tubería completa
-
-```python
-from sklearn.pipeline import Pipeline
-from sklearn.compose import ColumnTransformer
-
-num_pipe = Pipeline([("imp", SimpleImputer(strategy="median")),
-                     ("esc", StandardScaler())])
-
-cat_pipe = Pipeline([("imp", SimpleImputer(strategy="constant",
-                                           fill_value="Desconocido")),
-                     ("oh",  OneHotEncoder(handle_unknown="ignore",
-                                           drop="first"))])
-
-pre = ColumnTransformer([("num", num_pipe, num_cols),
-                         ("cat", cat_pipe, cat_cols)])
-
-modelo = Pipeline([("pre", pre), ("reg", LinearRegression())])
-modelo.fit(X_train, y_train)
-```
-
-Una sola llamada a `fit` hace imputación, codificación, escalado y ajuste, en
-el orden correcto y solo con entrenamiento.
-
----
-
-## Y ahora sí, resultados
-
-```{=html}
-<div class="terminal" data-nocopy>
-<pre>columnas de entrada  : 22
-columnas tras el pre : 61
-MAE  : 7.38 miles de USD
-R2   : 0.133</pre>
+<pre>capítulo                 MSE lineal  R2 lineal   MSE red   R2 red
+7 · + StandardScaler          33.30      0.455     35.23    0.449
+8 · + log del objetivo        <span class="salida">29.59      0.581</span>    334.16   -3.704</pre>
 </div>
 ```
 
 ::: {.alerta}
-¿61 columnas para 74 filas de entrenamiento? Eso no es un modelo, es una
-memorización. Y el $R^2$ de 0,13 lo confirma.
-:::
-
-El culpable es `Manufacturer`, con sus 31 niveles.
-
----
-
-## Validación cruzada: el diagnóstico
-
-```python
-from sklearn.model_selection import cross_val_score
-cross_val_score(modelo, X_train, y_train, cv=5, scoring="r2")
-```
-
-```{=html}
-<div class="terminal" data-nocopy>
-<pre>R2 por pliegue: [ -1.452 -18.124  -1.244  -0.062  -0.993]
-media -4.375  desviación 6.891</pre>
-</div>
-```
-
-::: {.destacado}
-Un $R^2$ negativo significa que el modelo predice **peor que decir siempre la
-media**. Y la desviación entre pliegues es enorme: el modelo no es malo, es
-inestable.
+La lineal firma su mejor resultado de la sesión —$R^2 = 0{,}581$— y la red se
+desploma de 0,449 a **−3,7**.
 :::
 
 ---
 
-## Arreglarlo es preprocesamiento, no modelado
-
-```{=html}
-<div class="terminal" data-nocopy>
-<pre>                     columnas    MAE   R2 test   R2 val.cruzada
-Solo numéricas             15   5.50     0.315                —
-+ categóricas (todas)      61   7.38     0.133           -4.375
-+ sin Manufacturer         31   4.00     0.763            0.228
-+ Ridge(alpha=10)          61   2.55     0.891            0.609</pre>
-</div>
-```
+## El mismo aviso, al revés
 
 ::: {.concepto}
-Mismo dataset, mismo día. Del peor al mejor hay una diferencia de **casi 5.000
-dólares de error medio**, y no cambiamos de familia de modelo: cambiamos cómo
-preparamos las columnas.
+El logaritmo ayuda a la regresión lineal porque la relación entre las
+características y el precio se vuelve **más lineal** en esa escala. A la red
+no le hacía falta: ya podía curvarse sola, y lo único que le dimos fue un
+objetivo más difícil de deshacer.
 :::
+
+::: {.destacado}
+En el capítulo 7 el escalado salvó a la red y no le hizo nada a la lineal.
+Aquí pasa exactamente lo contrario. **Cada paso hay que probarlo con el modelo
+que se va a usar**, y quedarse con el que mejore.
+:::
+
+# 9 · La foto completa {.seccion background-color="#1553ad"}
+
+Ocho capítulos, dos modelos, una tabla
 
 ---
 
-## Lo que hay que llevarse de esa tabla
+## Todo el camino de una vez
+
+```{=html}
+<div class="terminal" data-nocopy>
+<pre>capítulo                          MSE lineal  R2 lineal    MSE red     R2 red
+1a · Sin tocar nada                    error      error      error      error
+1b · Solo las numéricas                error      error      error      error
+2  · dropna sobre las numéricas        46.77      0.295   68165.39  -1015.810
+3  · Partir bien (fuga o no)           37.39      0.440   71652.37  -1132.739
+4  · + imputación con la mediana       37.39      0.440   71652.37  -1132.739
+5  · + one-hot de todas                91.10     -0.242   18748.45   -389.281
+6  · + agrupar categorías raras        33.30      0.455   26326.33   -377.586
+7  · + escalado                        33.30      0.455      <span class="salida">35.23      0.449</span>
+8  · + log del objetivo                <span class="salida">29.59      0.581</span>     334.16     -3.704</pre>
+</div>
+```
+
+Mismos dos modelos las ocho veces. Todo lo que cambia sale del preprocesamiento.
+
+---
+
+## Los dos recorridos no se parecen en nada
 
 ::: {.tarjetas}
 ::: {.tarjeta}
-**Más columnas no es mejor**
-Pasar de 15 a 61 empeoró el resultado. Cada columna cuesta filas.
+**La regresión lineal**
+Arranca en cuanto hay números y va mejorando poco a poco: 0,295 → 0,440 →
+0,455 → 0,581. Solo tropieza una vez, con las 62 columnas del capítulo 5.
 :::
 ::: {.tarjeta}
-**Evalúen con validación cruzada**
-El $R^2$ de test dijo 0,13; la validación cruzada dijo −4,4. La segunda es la
-que hay que creer.
+**La red neuronal**
+Inservible durante **seis capítulos** — R² entre −377 y −1132 — y de golpe
+útil al escalar. Después el logaritmo vuelve a hundirla.
+:::
+:::
+
+::: {.alerta}
+Si alguien mira solo la columna de la lineal, concluye que el escalado no sirve
+para nada. Si mira solo la de la red, concluye que sin escalar no se puede
+hacer nada. Las dos lecturas son falsas.
+:::
+
+---
+
+## Cinco cosas que deja esta tabla
+
+::: {.tarjetas}
+::: {.tarjeta}
+**Cada paso resuelve un problema distinto**
+Imputar recupera filas. Codificar añade información. Agrupar controla las
+columnas. Escalar habilita modelos. Transformar linealiza.
 :::
 ::: {.tarjeta}
-**La regularización rescata**
-Ridge maneja las 61 columnas que la regresión pura no podía.
+**Un paso correcto puede empeorar**
+El capítulo 5 hizo el $R^2$ negativo. La técnica estaba bien; faltaba mirar el
+resultado.
 :::
 ::: {.tarjeta}
-**Probar es barato**
-Con `Pipeline`, comparar las cuatro filas son diez minutos.
+**Y otro puede no cambiar nada**
+El capítulo 3 dio cifras idénticas con fuga y sin ella. Se sigue la regla igual.
+:::
+::: {.tarjeta}
+**El mejor paso depende del modelo**
+El escalado salvó a la red y no tocó a la lineal. El logaritmo, al revés.
+:::
+::: {.tarjeta}
+**Sin medir, nada de esto se ve**
+Ocho chequeos son ocho oportunidades de descubrir que el último cambio fue en
+la dirección equivocada.
 :::
 :::
+
+---
+
+## El error que esta tabla evita
+
+::: {.alerta}
+Un estudiante que pruebe la red en el capítulo 6 y vea un $R^2$ de −377
+concluirá que "las redes no sirven para datos tabulares" o que "faltan datos".
+Las dos conclusiones son falsas, y las dos son caras.
+:::
+
+Lo que hacía falta era una línea: `StandardScaler()`.
+
+::: {.destacado}
+Por eso el orden es **preparar los datos, medir, y solo entonces cambiar de
+modelo**. Al revés, uno pasa semanas buscando arquitecturas para arreglar un
+problema de preprocesamiento.
+:::
+
+---
+
+## Lo que no hemos hecho
+
+::: {.concepto}
+Ninguno de los dos modelos está **afinado**. La red lleva 32 neuronas y 2000
+iteraciones porque hacía falta fijar algo, no porque sea la mejor opción; la
+lineal no tiene nada que afinar.
+:::
+
+Con los datos ya preparados, un $R^2$ de 0,581 es el punto de partida, no el
+final. Elegir y ajustar el modelo es la sesión siguiente — y ahora se puede
+hacer sobre una base limpia.
 
 # Cierre {.seccion background-color="#1553ad"}
 
@@ -1444,13 +2370,13 @@ Con `Pipeline`, comparar las cuatro filas son diez minutos.
 1. Mirar los datos: `shape`, `head`, `info`, `describe`.
 2. Entender **por qué** falta lo que falta, antes de rellenarlo.
 3. **Partir en entrenamiento y prueba.**
-4. Imputar: mediana / moda / categoría nueva, `fit` solo en train.
+4. Imputar: mediana / moda / categoría nueva, con `fit` solo en entrenamiento.
 5. Codificar: binaria → 0-1; ordinal → orden declarado; nominal → one-hot.
-6. Vigilar la cardinalidad; agrupar las categorías raras.
+6. Vigilar la cardinalidad y agrupar las categorías raras.
 7. Escalar si el modelo lo necesita.
 8. Transformar lo muy sesgado.
 9. Encapsular todo en un `Pipeline`.
-10. Evaluar con validación cruzada, no con una sola partición.
+10. Comparar contra una línea base y validar de forma cruzada.
 
 ---
 
@@ -1460,15 +2386,16 @@ Con `Pipeline`, comparar las cuatro filas son diez minutos.
 ::: {.tarjeta}
 **`fit` sobre todo el dataset**
 El más común y el más silencioso: no da error, solo resultados demasiado
-buenos.
+buenos que luego no se reproducen.
 :::
 ::: {.tarjeta}
 **Label encoding en nominales**
-Le inventa un orden a lo que no lo tiene.
+Le inventa un orden y unas distancias a lo que no las tiene.
 :::
 ::: {.tarjeta}
 **One-hot sin mirar la cardinalidad**
-Una columna de identificadores puede generar miles de columnas.
+Una columna de identificadores puede generar miles de columnas y hundir el
+modelo, como acabamos de ver.
 :::
 :::
 
@@ -1476,10 +2403,10 @@ Una columna de identificadores puede generar miles de columnas.
 
 ## Para practicar
 
-Repitan el recorrido completo sobre **Ames Housing**: 1.460 casas, 80
-columnas, vacíos por todas partes y categóricas ordinales de verdad.
+Repitan el recorrido completo sobre **Ames Housing**: 1.460 casas, 80 columnas,
+vacíos por todas partes y categóricas ordinales de verdad.
 
-```python
+```{.python .numberLines}
 from sklearn.datasets import fetch_openml
 ames = fetch_openml(name="house_prices", as_frame=True).frame
 ```

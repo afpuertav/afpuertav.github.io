@@ -13,6 +13,8 @@
     var pre = term.querySelector("pre");
     if (!pre) return term.textContent.trim();
     var clon = pre.cloneNode(true);
+    // .prompt y .salida no forman parte del comando; los <a> de los números
+    // de línea van vacíos, así que no estorban.
     clon.querySelectorAll(".prompt, .salida").forEach(function (n) { n.remove(); });
     return clon.textContent.replace(/^\s+|\s+$/g, "");
   }
@@ -40,7 +42,9 @@
   }
 
   function preparar() {
-    document.querySelectorAll(".terminal").forEach(function (term) {
+    // Los bloques de código de Quarto llevan el mismo botón que las terminales
+    var bloques = document.querySelectorAll(".terminal, div.sourceCode");
+    bloques.forEach(function (term) {
       if (term.querySelector(".term-copy")) return;
       if (term.dataset.nocopy !== undefined) return;
 

@@ -113,11 +113,45 @@ $barra-inferior: 30px;
   z-index: -1;
 }
 
+// El `código en línea` dentro de la barra azul de título salía casi del color
+// del fondo y desaparecía. Aquí se le da contraste propio.
+.reveal .slides section > h2 code {
+  color: #ffffff;
+  background: rgba(255, 255, 255, 0.16);
+  border-radius: 4px;
+  padding: 0.04em 0.3em;
+  font-size: 0.94em;
+  font-weight: 600;
+}
+
+// Lo mismo en las diapositivas de sección, que van sobre fondo azul sólido
+.reveal .seccion code {
+  color: #ffffff;
+  background: rgba(255, 255, 255, 0.16);
+  border-radius: 4px;
+  padding: 0.04em 0.3em;
+}
+
 .reveal .slides section > h3 {
   color: $sapphire-dark;
   font-size: 1.02em;
   font-weight: 700;
   margin-top: 0.4em;
+}
+
+// Código en línea dentro del cuerpo: legible y distinguible del texto
+.reveal p code,
+.reveal li code,
+.reveal .tarjeta code,
+.reveal .concepto code,
+.reveal .destacado code,
+.reveal .alerta code {
+  color: #b3261e;
+  background: #f1f3f4;
+  border-radius: 4px;
+  padding: 0.05em 0.32em;
+  font-family: "Cascadia Mono", "Consolas", "SF Mono", Menlo, monospace;
+  font-size: 0.88em;
 }
 
 /*----------------------------------------------------------
@@ -352,6 +386,18 @@ $barra-inferior: 30px;
 
 .tarjeta strong { color: $sapphire-dark; }
 
+// Subtítulo bajo el título de la tarjeta: el desarrollo de una sigla, la
+// traducción de un término, una aclaración corta.
+.reveal .sigla {
+  display: block;
+  font-style: italic;
+  font-weight: 400;
+  color: #5f6b77;
+  font-size: 0.96em;
+  line-height: 1.3;
+  margin: -0.15em 0 0.4em 0;
+}
+
 /*----------------------------------------------------------
   8. Etiquetas
 ----------------------------------------------------------*/
@@ -530,36 +576,216 @@ $barra-inferior: 30px;
 /*----------------------------------------------------------
   16. Código y terminal
 ----------------------------------------------------------*/
-// Bloques de código: aspecto de consola, para comandos copiables
-.reveal div.sourceCode,
-.reveal pre.sourceCode {
+// ── Bloques de código ─────────────────────────────────────────────────
+// Misma ventana que los bloques .terminal (barra con tres círculos, esquinas
+// redondeadas, botón de copiar) y la paleta del tema OSCURO de Google Colab:
+// fondo casi negro, palabras clave moradas, cadenas naranjas.
+//
+// OJO: Quarto envuelve el código en <div class="sourceCode"><pre
+// class="sourceCode">. Si se le pone fondo y sombra a los dos, se ve una
+// tarjeta dentro de otra. El marco lo lleva SOLO el div.
+// Los valores de aquí son EXACTAMENTE los del bloque .terminal (sección 16.3):
+// mismo fondo, mismo tipo y tamaño de letra, mismo interlineado, mismo relleno
+// y misma barra de ventana. Lo único propio del código es el color del texto.
+// Si se cambia uno de los dos bloques, hay que cambiar el otro.
+.reveal div.sourceCode {
+  position: relative;
+  width: 100%;
+  box-sizing: border-box;
   background: #10243d;
+  color: #d4d4d4;
+  font-family: "Cascadia Mono", "Consolas", "SF Mono", Menlo, monospace;
+  font-size: 0.6em;
+  line-height: 1.65;
   border: 0;
-  border-left: 5px solid $sapphire-lt;
   border-radius: 8px;
   box-shadow: 0 3px 8px rgba(0, 0, 0, 0.25);
-  margin: 0.5em 0;
-  overflow-x: auto;
+  margin: 0.6em 0;
+  padding: 2.2em 1.1em 0.9em 1.1em;
+  overflow: hidden;
+
+  // Columna flexible para que, cuando haya que encoger, el que se desplace
+  // sea el <pre> de dentro y no el bloque entero. Si se desplazara el
+  // bloque, la barra de la ventana (que va en ::before, posicionada) se
+  // iría hacia arriba con el desplazamiento.
+  display: flex;
+  flex-direction: column;
 }
 
-.reveal pre.sourceCode code,
-.reveal pre code {
+// Ni el <pre> ni el <code> llevan marco, tamaño ni relleno propios: todo lo
+// heredan del div, que es quien reproduce la ventana de terminal.
+.reveal div.sourceCode > pre.sourceCode,
+.reveal div.sourceCode pre.sourceCode code {
   background: transparent;
-  color: #e8f0f9;
-  font-family: "Cascadia Mono", "Consolas", "SF Mono", Menlo, monospace;
-  font-size: 0.62em;
-  line-height: 1.6;
-  padding: 0.75em 1em;
-  white-space: pre-wrap;
-  word-break: break-word;
+  border: 0;
+  border-radius: 0;
+  box-shadow: none;
+  margin: 0;
+  padding: 0;
+  width: 100%;
   max-height: none;
+  font-family: inherit;
+  font-size: inherit;
+  line-height: inherit;
+  color: inherit;
 }
 
-// Resaltado de sintaxis legible sobre fondo oscuro
-.reveal pre code .co { color: #8fa6bd; font-style: italic; }
-.reveal pre code .st { color: #9fd88a; }
-.reveal pre code .kw { color: #6fb3ff; font-weight: 600; }
-.reveal pre code .fu { color: #ffd479; }
+.reveal div.sourceCode > pre.sourceCode {
+  flex: 1 1 auto;
+  min-height: 0;      // sin esto un hijo flexible nunca baja de su contenido
+  overflow: auto;
+}
+
+.reveal div.sourceCode pre.sourceCode code {
+  display: block;
+  white-space: pre;
+}
+
+// Barra superior de la ventana, idéntica a la de .terminal
+.reveal div.sourceCode::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 1.5em;
+  background: #1c3a5c;
+  border-radius: 8px 8px 0 0;
+  z-index: 1;
+}
+
+.reveal div.sourceCode::after {
+  content: "";
+  position: absolute;
+  top: 0.52em;
+  left: 0.9em;
+  width: 0.42em;
+  height: 0.42em;
+  border-radius: 50%;
+  background: #ff5f57;
+  box-shadow: 0.75em 0 0 #febc2e, 1.5em 0 0 #28c840;
+  z-index: 2;
+}
+
+/*----------------------------------------------------------
+  16.1 Números de línea
+  Se activan escribiendo el bloque como ```{.python .numberLines}.
+  Pandoc envuelve cada línea en un <span> con un <a> vacío delante;
+  el número lo pone este contador.
+----------------------------------------------------------*/
+.reveal pre.numberSource code {
+  counter-reset: linea 0;
+}
+
+// OJO CON TRES COSAS, que ya rompieron esto una vez:
+//
+// 1. NO poner display:block aquí. Pandoc deja un salto de línea literal en el
+//    HTML entre el </span> de una línea y el <span> de la siguiente. Con
+//    white-space:pre ese salto YA produce el cambio de renglón, y por eso
+//    Quarto deja los spans en inline-block. Si además se les pone block, se
+//    suman los dos saltos y el código sale a doble espacio.
+//
+// 2. NO tocar solo el padding-left. Quarto pone en estos spans el par
+//    "text-indent:-5em; padding-left:5em", que se anulan entre sí y dejan
+//    hueco para el número dentro del relleno. Si se quita únicamente el
+//    padding, la línea entera se va 5em a la izquierda y el número se pierde
+//    fuera del recorte del bloque. Hay que cambiar los dos a la vez.
+//
+// 3. El <a> que pandoc pone delante lleva href VACÍO, que apunta a la página
+//    sin el hash: al pulsarlo, reveal.js se va a la primera diapositiva. Como
+//    solo está ahí para colgar el número, se le quitan los eventos de ratón.
+.reveal pre.numberSource code > span {
+  counter-increment: linea;
+  text-indent: -2.3em;    // ancho del número (1.6) + su margen (0.7)
+  padding-left: 2.3em;
+}
+
+.reveal div.sourceCode pre.sourceCode code > span > a:first-child {
+  pointer-events: none;
+  cursor: default;
+  text-decoration: none;
+  border: 0;
+  color: inherit;
+}
+
+// El número, tenue y sin franja de fondo, para no comerse ancho de línea.
+.reveal pre.numberSource code > span > a:first-child::before {
+  content: counter(linea);
+  display: inline-block;
+  width: 1.6em;
+  margin-right: 0.7em;
+  text-align: right;
+  color: #5b7796;
+  text-decoration: none;
+  user-select: none;
+}
+
+// ── 16.2 Paleta del tema oscuro de Google Colab ──────────────────────
+//
+// OJO CON LA ESPECIFICIDAD. Quarto inyecta su propia hoja de resaltado,
+// que es de tema CLARO, y en ella hay una regla "code span" a secas que
+// pinta de azul oscuro cualquier span dentro de un bloque de código.
+//
+// Esa regla alcanza también al span que envuelve cada LÍNEA, y de ahí lo
+// hereda el texto SIN clase: el nombre del módulo en "import pandas as
+// pd" salía azul aunque pandoc no le ponga ninguna clase.
+//
+// Por eso aquí se repinta explícitamente el span de línea y se declaran
+// los tokens con el selector completo, para ganarle siempre.
+$c-texto:   #d4d4d4;   // texto sin clasificar
+$c-morado:  #c586c0;   // import, from, def, if, for
+$c-naranja: #ce9178;   // cadenas
+$c-verde:   #6a9955;   // comentarios
+$c-numero:  #b5cea8;
+$c-amarillo:#dcdcaa;   // nombres de función
+$c-turquesa:#4ec9b0;   // print, len, range
+$c-azul:    #9cdcfe;   // variables y atributos
+$c-rojo:    #f48771;
+
+.reveal div.sourceCode pre.sourceCode code,
+.reveal div.sourceCode pre.sourceCode code > span,
+.reveal div.sourceCode pre.sourceCode code span { color: $c-texto; }
+
+.reveal div.sourceCode pre.sourceCode code {
+  span.kw,                     // def, class, lambda, pass, None, True
+  span.cf,                     // if, for, while, return, try
+  span.im { color: $c-morado; }                 // import, from, as
+
+  span.st,                     // "cadenas"
+  span.ss,                     // f"..."
+  span.ch,
+  span.vs { color: $c-naranja; }
+
+  span.sc { color: #d7ba7d; }                   // {} dentro de una f-string
+
+  span.co,                                      // # comentario
+  span.cv,
+  span.do { color: $c-verde; font-style: italic; }
+
+  span.dv,                     // 42
+  span.fl,                     // 3.14
+  span.bn,
+  span.cn { color: $c-numero; }
+
+  span.fu { color: $c-amarillo; }                // nombre de función
+  span.bu,                                       // print, len, range
+  span.dt { color: $c-turquesa; }
+
+  span.va,                                       // variables
+  span.at,                                       // decoradores
+  span.ot { color: $c-azul; }
+
+  span.op { color: $c-texto; }                   // + = ==
+
+  span.al,
+  span.er,
+  span.wa { color: $c-rojo; }
+}
+
+// Quarto subraya el ancla de los números de línea; aquí no queremos raya
+.reveal div.sourceCode pre.sourceCode code > span > a:first-child::before {
+  text-decoration: none;
+}
 
 // Bloque de terminal: reproduce una sesión con su prompt y su salida
 .terminal {
@@ -577,11 +803,97 @@ $barra-inferior: 30px;
   position: relative;
 }
 
+/*----------------------------------------------------------
+  16.4 Reparto de altura cuando hay varios bloques
+
+  La diapositiva es un contenedor flexible en columna. En flexbox, un hijo
+  cuyo overflow NO es visible puede encoger hasta cero, y uno cuyo overflow
+  SÍ es visible no encoge nada (su min-height:auto vale lo que su
+  contenido). El bloque de código tenía overflow:hidden y la terminal no:
+  por eso, en cuanto faltaban dos píxeles, TODO el recorte se lo comía el
+  código y se quedaba en una línea.
+
+  La solución es igualar a los dos: que ambos puedan encoger y que el
+  desplazamiento ocurra en su <pre> interior. Flexbox reparte entonces el
+  sobrante en proporción al tamaño de cada uno, así que dos bloques
+  grandes acaban aproximadamente a mitad y mitad, y si el contenido cabe
+  no se encoge nada.
+
+  Se les pone además un suelo para que ninguno pueda quedar en una línea:
+  por debajo de eso es preferible que se salgan.
+----------------------------------------------------------*/
+.reveal .slides section.level2 > div.sourceCode,
+.reveal .slides section.level2 > .terminal {
+  flex: 0 1 auto;
+  // Suelo deliberadamente bajo: apenas por encima de lo que ocupa un bloque
+  // de una sola línea, para no dejar hueco vacío en las diapositivas donde
+  // la salida es corta. Solo actúa como red de seguridad.
+  min-height: 5em;
+}
+
+/*----------------------------------------------------------
+  16.5 Barra de desplazamiento
+
+  Si un bloque se desplaza, tiene que NOTARSE: en clase, una barra
+  invisible es una barra que nadie usa. La de Chromium por defecto es casi
+  del color del fondo oscuro, así que se le da contraste.
+----------------------------------------------------------*/
+.reveal .terminal pre,
+.reveal div.sourceCode > pre.sourceCode {
+  scrollbar-width: thin;                          // Firefox
+  scrollbar-color: #5b7796 rgba(255, 255, 255, 0.06);
+}
+
+.reveal .terminal pre::-webkit-scrollbar,
+.reveal div.sourceCode > pre.sourceCode::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+.reveal .terminal pre::-webkit-scrollbar-track,
+.reveal div.sourceCode > pre.sourceCode::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.06);
+  border-radius: 5px;
+}
+
+.reveal .terminal pre::-webkit-scrollbar-thumb,
+.reveal div.sourceCode > pre.sourceCode::-webkit-scrollbar-thumb {
+  background: #5b7796;
+  border-radius: 5px;
+}
+
+.reveal .terminal pre::-webkit-scrollbar-thumb:hover,
+.reveal div.sourceCode > pre.sourceCode::-webkit-scrollbar-thumb:hover {
+  background: #7e9cbb;
+}
+
+// reveal.js captura la rueda del ratón para cambiar de diapositiva. Dentro
+// de un bloque desplazable eso impide leer el resto de la salida, así que
+// se marca para que el gesto se quede en el bloque.
+.reveal .terminal pre,
+.reveal div.sourceCode > pre.sourceCode {
+  overscroll-behavior: contain;
+}
+
+// La terminal también desplaza su <pre> interior, por el mismo motivo que
+// el bloque de código: la barra de la ventana va posicionada, y si se
+// desplazara el bloque entero se iría hacia arriba con el contenido.
+.terminal {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;   // recorta a las esquinas redondeadas
+}
+
 // El <pre> interior es lo que conserva los saltos de línea de verdad:
 // dentro de un div de Pandoc, un salto de línea suelto se convierte en un
 // simple espacio, y por eso el prompt y la salida acababan en el mismo
 // renglón. Con <pre> cada línea queda donde debe.
 // Hay que anular aquí el aspecto de bloque de código que reveal da a <pre>.
+//
+// OJO: el overflow va AQUÍ y no en una regla aparte. Esta tiene la misma
+// especificidad que ".reveal .terminal > pre", así que si se pone el
+// desplazamiento en otro sitio gana la que esté más abajo en el archivo —
+// que es justo lo que hacía que la salida se saliera de la tarjeta.
 .reveal .terminal pre {
   margin: 0;
   padding: 0;
@@ -591,7 +903,9 @@ $barra-inferior: 30px;
   box-shadow: none;
   width: 100%;
   max-height: none;
-  overflow: visible;
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow: auto;
   font-size: inherit;
   font-family: inherit;
   line-height: inherit;
@@ -640,7 +954,8 @@ $barra-inferior: 30px;
 }
 
 // Botón de copiar, alojado en la barra de la ventana
-.reveal .terminal .term-copy {
+.reveal .terminal .term-copy,
+.reveal div.sourceCode .term-copy {
   position: absolute;
   top: 0.16em;
   right: 0.5em;
@@ -657,12 +972,16 @@ $barra-inferior: 30px;
   transition: background 0.15s ease, color 0.15s ease;
 }
 
-.reveal .terminal .term-copy:hover {
+.reveal div.sourceCode .term-copy { z-index: 3; }
+
+.reveal .terminal .term-copy:hover,
+.reveal div.sourceCode .term-copy:hover {
   background: rgba(255, 255, 255, 0.2);
   color: #ffffff;
 }
 
-.reveal .terminal .term-copy.copiado {
+.reveal .terminal .term-copy.copiado,
+.reveal div.sourceCode .term-copy.copiado {
   background: #28c840;
   border-color: #28c840;
   color: #08240f;
