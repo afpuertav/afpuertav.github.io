@@ -293,7 +293,7 @@ cifras bailan tanto que no se podría comparar nada.
 ```{.python .numberLines}
 from sklearn.linear_model import LinearRegression
 from sklearn.neural_network import MLPRegressor
-from sklearn.model_selection import cross_val_score
+from sklearn.model_selection import cross_validate
 
 def modelos():
     """Los dos del banco. Idénticos en los ocho capítulos."""
@@ -304,23 +304,23 @@ def modelos():
 
 historial = []
 
-def chequeo(capitulo, hacer_tuberia, X, y):
+def chequeo(capitulo, hacer_pipeline, X, y):
     """Mide los dos modelos y acumula la fila en el historial.
 
-    hacer_tuberia(modelo) devuelve lo que hay que evaluar: el modelo
-    a secas, o el modelo dentro de una tubería de preprocesamiento.
+    hacer_pipeline(modelo) devuelve lo que hay que evaluar: el modelo
+    a secas, o el modelo dentro de un pipeline de preprocesamiento.
     """
     fila = [capitulo]
     for nombre, modelo in modelos():
         try:
-            t = hacer_tuberia(modelo)
+            t = hacer_pipeline(modelo)
+            # cross_validate saca las dos métricas en una sola pasada.
             # error_score="raise" deja pasar el error de verdad; si no,
-            # cross_val_score lo tapa con un "All the 5 fits failed"
-            mse = -cross_val_score(t, X, y, cv=5, error_score="raise",
-                                   scoring="neg_mean_squared_error").mean()
-            r2  =  cross_val_score(t, X, y, cv=5, error_score="raise",
-                                   scoring="r2").mean()
-            fila += [round(mse, 2), round(r2, 3)]
+            # sklearn lo tapa con un "All the 5 fits failed".
+            r = cross_validate(t, X, y, cv=5, error_score="raise",
+                               scoring=["neg_mean_squared_error", "r2"])
+            fila += [round(-r["test_neg_mean_squared_error"].mean(), 2),
+                     round(r["test_r2"].mean(), 3)]
         except Exception as e:
             fila += ["error", "error"]
             motivo = str(e).strip().splitlines()[0]
@@ -354,8 +354,10 @@ chequeo("1a · Sin tocar nada", lambda m: m, X, y)
 
 ```{=html}
 <div class="terminal" data-nocopy>
-<pre>  LinearRegression: ValueError: could not convert string to float: 'Acura'
-  MLPRegressor: ValueError: could not convert string to float: 'Acura'</pre>
+<pre>  LinearRegression: ValueError: could not convert string to float: 'Chrylser'
+  MLPRegressor: ValueError: could not convert string to float: 'Chrylser'
+              capítulo MSE lineal R2 lineal MSE red R2 red
+0  1a · Sin tocar nada      error     error   error  error</pre>
 </div>
 ```
 
@@ -2358,8 +2360,129 @@ lineal no tiene nada que afinar.
 :::
 
 Con los datos ya preparados, un $R^2$ de 0,581 es el punto de partida, no el
-final. Elegir y ajustar el modelo es la sesión siguiente — y ahora se puede
+final. Elegir y ajustar el modelo es lo que viene después — y ahora se puede
 hacer sobre una base limpia.
+
+Vamos a asomarnos un momento a eso.
+
+---
+
+## Y esto es a lo que se puede llegar
+
+Con los datos ya preparados, el resto del curso es **elegir modelo y afinarlo**.
+Un adelanto, sobre estos mismos 93 coches:
+
+```{=html}
+<div class="terminal" data-nocopy>
+<pre>modelo                                          MSE       R2
+LinearRegression + preprocesamiento (hoy)     33.30    0.455
+Ridge, con alpha buscado                      35.19    0.567
+Ridge + log del objetivo                      31.97    0.609
+RandomForest afinado                          35.69    0.525
+HistGradientBoosting afinado                  <span class="salida">31.68    0.640</span></pre>
+</div>
+```
+
+::: {.concepto}
+De **0,455 a 0,640** sin tocar ni una línea del preprocesamiento. Eso es lo que
+aporta la parte del curso que viene después de hoy.
+:::
+
+---
+
+## Cómo se afina sin hacerse trampa
+
+```{.python .numberLines}
+from sklearn.model_selection import GridSearchCV
+from sklearn.linear_model import Ridge
+
+busqueda = GridSearchCV(
+    Pipeline([("pre", pre_escalado), ("reg", Ridge())]),
+    {"reg__alpha": [0.1, 1, 10, 50, 100]},
+    cv=5, scoring="r2")
+
+# la búsqueda va DENTRO de la validación cruzada, no fuera
+r = cross_validate(busqueda, X, y, cv=5, scoring=["r2"])
+print(round(r["test_r2"].mean(), 3))
+```
+
+::: {.alerta}
+Si se busca el mejor `alpha` con todos los datos y **luego** se mide con esos
+mismos datos, el resultado sale inflado: habríamos elegido el parámetro que
+mejor le venía al conjunto de prueba. Es fuga otra vez, ahora en los
+hiperparámetros.
+:::
+
+Por eso se anida: en cada pliegue se busca con lo de dentro y se mide con lo de
+fuera. Se llama **validación cruzada anidada**.
+
+---
+
+## El giro final
+
+El mejor de la tabla, `HistGradientBoosting`, **maneja los `NaN` y las
+categorías de forma nativa**. No necesita ni imputar ni codificar.
+
+::: {.destacado}
+¿Sobraba entonces la sesión de hoy? Miren qué pasa si a ese mismo modelo le
+damos el dataset **tal y como viene en el CSV**.
+:::
+
+```{=html}
+<div class="terminal" data-nocopy>
+<pre>HistGradientBoosting, todas las columnas del CSV      R2  <span class="salida">0.747</span>
+HistGradientBoosting, sin Min.Price ni Max.Price     R2   0.599</pre>
+</div>
+```
+
+Un $R^2$ de 0,747: el mejor número de toda la sesión. Y completamente inútil.
+
+---
+
+## Por qué ese 0,747 es basura
+
+```{=html}
+<div class="terminal" data-nocopy>
+<pre>correlación con Price     Min.Price  0.971     Max.Price  0.982
+
+Price - (Min.Price + Max.Price) / 2   ->   error medio de 0.017</pre>
+</div>
+```
+
+::: {.alerta}
+`Price` **es** el promedio de `Min.Price` y `Max.Price`. El modelo no está
+prediciendo el precio: lo está leyendo de otras dos columnas que, en la vida
+real, no existirían hasta después de conocerlo.
+:::
+
+::: {.concepto}
+Ningún modelo, por potente que sea, va a avisar de esto. Quitar esas dos
+columnas fue una decisión nuestra, en la primera línea del primer chequeo, y es
+**la más importante de toda la sesión**.
+:::
+
+---
+
+## Lo que se llevan de hoy
+
+::: {.tarjetas}
+::: {.tarjeta}
+**Lo que el modelo puede hacer por ustedes**
+Imputar, codificar, escalar. Hay modelos modernos que se lo hacen solos, y cada
+año hacen más.
+:::
+::: {.tarjeta}
+**Lo que no va a hacer nunca**
+Darse cuenta de que una columna es la respuesta disfrazada. Saber que aquel
+`NaN` significaba "sin airbag". Decidir que 31 marcas en 93 coches son
+demasiadas.
+:::
+:::
+
+::: {.destacado}
+Lo primero se automatiza. Lo segundo es criterio, y es lo que van a estar
+construyendo durante todo el curso.
+:::
 
 # Cierre {.seccion background-color="#1553ad"}
 

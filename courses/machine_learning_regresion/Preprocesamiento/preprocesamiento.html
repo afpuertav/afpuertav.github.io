@@ -398,7 +398,7 @@ max    61.90     46.00      300.00  4105.0</pre>
 <h2>El código del banco</h2>
 <div class="sourceCode" id="cb5"><pre class="sourceCode numberSource python numberLines number-lines"><code class="sourceCode python"><span id="cb5-1"><a href=""></a><span class="im">from</span> sklearn.linear_model <span class="im">import</span> LinearRegression</span>
 <span id="cb5-2"><a href=""></a><span class="im">from</span> sklearn.neural_network <span class="im">import</span> MLPRegressor</span>
-<span id="cb5-3"><a href=""></a><span class="im">from</span> sklearn.model_selection <span class="im">import</span> cross_val_score</span>
+<span id="cb5-3"><a href=""></a><span class="im">from</span> sklearn.model_selection <span class="im">import</span> cross_validate</span>
 <span id="cb5-4"><a href=""></a></span>
 <span id="cb5-5"><a href=""></a><span class="kw">def</span> modelos():</span>
 <span id="cb5-6"><a href=""></a>    <span class="co">"""Los dos del banco. Idénticos en los ocho capítulos."""</span></span>
@@ -419,13 +419,13 @@ max    61.90     46.00      300.00  4105.0</pre>
 <span id="cb5-21"><a href=""></a>    <span class="cf">for</span> nombre, modelo <span class="kw">in</span> modelos():</span>
 <span id="cb5-22"><a href=""></a>        <span class="cf">try</span>:</span>
 <span id="cb5-23"><a href=""></a>            t <span class="op">=</span> hacer_tuberia(modelo)</span>
-<span id="cb5-24"><a href=""></a>            <span class="co"># error_score="raise" deja pasar el error de verdad; si no,</span></span>
-<span id="cb5-25"><a href=""></a>            <span class="co"># cross_val_score lo tapa con un "All the 5 fits failed"</span></span>
-<span id="cb5-26"><a href=""></a>            mse <span class="op">=</span> <span class="op">-</span>cross_val_score(t, X, y, cv<span class="op">=</span><span class="dv">5</span>, error_score<span class="op">=</span><span class="st">"raise"</span>,</span>
-<span id="cb5-27"><a href=""></a>                                   scoring<span class="op">=</span><span class="st">"neg_mean_squared_error"</span>).mean()</span>
-<span id="cb5-28"><a href=""></a>            r2  <span class="op">=</span>  cross_val_score(t, X, y, cv<span class="op">=</span><span class="dv">5</span>, error_score<span class="op">=</span><span class="st">"raise"</span>,</span>
-<span id="cb5-29"><a href=""></a>                                   scoring<span class="op">=</span><span class="st">"r2"</span>).mean()</span>
-<span id="cb5-30"><a href=""></a>            fila <span class="op">+=</span> [<span class="bu">round</span>(mse, <span class="dv">2</span>), <span class="bu">round</span>(r2, <span class="dv">3</span>)]</span>
+<span id="cb5-24"><a href=""></a>            <span class="co"># cross_validate saca las dos métricas en una sola pasada.</span></span>
+<span id="cb5-25"><a href=""></a>            <span class="co"># error_score="raise" deja pasar el error de verdad; si no,</span></span>
+<span id="cb5-26"><a href=""></a>            <span class="co"># sklearn lo tapa con un "All the 5 fits failed".</span></span>
+<span id="cb5-27"><a href=""></a>            r <span class="op">=</span> cross_validate(t, X, y, cv<span class="op">=</span><span class="dv">5</span>, error_score<span class="op">=</span><span class="st">"raise"</span>,</span>
+<span id="cb5-28"><a href=""></a>                               scoring<span class="op">=</span>[<span class="st">"neg_mean_squared_error"</span>, <span class="st">"r2"</span>])</span>
+<span id="cb5-29"><a href=""></a>            fila <span class="op">+=</span> [<span class="bu">round</span>(<span class="op">-</span>r[<span class="st">"test_neg_mean_squared_error"</span>].mean(), <span class="dv">2</span>),</span>
+<span id="cb5-30"><a href=""></a>                     <span class="bu">round</span>(r[<span class="st">"test_r2"</span>].mean(), <span class="dv">3</span>)]</span>
 <span id="cb5-31"><a href=""></a>        <span class="cf">except</span> <span class="pp">Exception</span> <span class="im">as</span> e:</span>
 <span id="cb5-32"><a href=""></a>            fila <span class="op">+=</span> [<span class="st">"error"</span>, <span class="st">"error"</span>]</span>
 <span id="cb5-33"><a href=""></a>            motivo <span class="op">=</span> <span class="bu">str</span>(e).strip().splitlines()[<span class="dv">0</span>]</span>
@@ -450,8 +450,10 @@ max    61.90     46.00      300.00  4105.0</pre>
 <span id="cb6-9"><a href=""></a></span>
 <span id="cb6-10"><a href=""></a>chequeo(<span class="st">"1a · Sin tocar nada"</span>, <span class="kw">lambda</span> m: m, X, y)</span></code></pre></div>
 <div class="terminal" data-nocopy="">
-<pre>  LinearRegression: ValueError: could not convert string to float: 'Acura'
-  MLPRegressor: ValueError: could not convert string to float: 'Acura'</pre>
+<pre>  LinearRegression: ValueError: could not convert string to float: 'Chrylser'
+  MLPRegressor: ValueError: could not convert string to float: 'Chrylser'
+              capítulo MSE lineal R2 lineal MSE red R2 red
+0  1a · Sin tocar nada      error     error   error  error</pre>
 </div>
 <div class="sourceCode" id="cb7"><pre class="sourceCode numberSource python numberLines number-lines"><code class="sourceCode python"><span id="cb7-1"><a href=""></a>chequeo(<span class="st">"1b · Solo las numéricas"</span>, <span class="kw">lambda</span> m: m, X[num_cols], y)</span></code></pre></div>
 <div class="terminal" data-nocopy="">
@@ -1730,7 +1732,81 @@ Name: price, dtype: float64</pre>
 <div class="concepto">
 <p>Ninguno de los dos modelos está <strong>afinado</strong>. La red lleva 32 neuronas y 2000 iteraciones porque hacía falta fijar algo, no porque sea la mejor opción; la lineal no tiene nada que afinar.</p>
 </div>
-<p>Con los datos ya preparados, un <span class="math inline">\(R^2\)</span> de 0,581 es el punto de partida, no el final. Elegir y ajustar el modelo es la sesión siguiente — y ahora se puede hacer sobre una base limpia.</p>
+<p>Con los datos ya preparados, un <span class="math inline">\(R^2\)</span> de 0,581 es el punto de partida, no el final. Elegir y ajustar el modelo es lo que viene después — y ahora se puede hacer sobre una base limpia.</p>
+<p>Vamos a asomarnos un momento a eso.</p>
+</section>
+<section class="slide level2">
+<h2>Y esto es a lo que se puede llegar</h2>
+<p>Con los datos ya preparados, el resto del curso es <strong>elegir modelo y afinarlo</strong>. Un adelanto, sobre estos mismos 93 coches:</p>
+<div class="terminal" data-nocopy="">
+<pre>modelo                                          MSE       R2
+LinearRegression + preprocesamiento (hoy)     33.30    0.455
+Ridge, con alpha buscado                      35.19    0.567
+Ridge + log del objetivo                      31.97    0.609
+RandomForest afinado                          35.69    0.525
+HistGradientBoosting afinado                  <span class="salida">31.68    0.640</span></pre>
+</div>
+<div class="concepto">
+<p>De <strong>0,455 a 0,640</strong> sin tocar ni una línea del preprocesamiento. Eso es lo que aporta la parte del curso que viene después de hoy.</p>
+</div>
+</section>
+<section class="slide level2">
+<h2>Cómo se afina sin hacerse trampa</h2>
+<div class="sourceCode" id="cb47"><pre class="sourceCode numberSource python numberLines number-lines"><code class="sourceCode python"><span id="cb47-1"><a href=""></a><span class="im">from</span> sklearn.model_selection <span class="im">import</span> GridSearchCV</span>
+<span id="cb47-2"><a href=""></a><span class="im">from</span> sklearn.linear_model <span class="im">import</span> Ridge</span>
+<span id="cb47-3"><a href=""></a></span>
+<span id="cb47-4"><a href=""></a>busqueda <span class="op">=</span> GridSearchCV(</span>
+<span id="cb47-5"><a href=""></a>    Pipeline([(<span class="st">"pre"</span>, pre_escalado), (<span class="st">"reg"</span>, Ridge())]),</span>
+<span id="cb47-6"><a href=""></a>    {<span class="st">"reg__alpha"</span>: [<span class="fl">0.1</span>, <span class="dv">1</span>, <span class="dv">10</span>, <span class="dv">50</span>, <span class="dv">100</span>]},</span>
+<span id="cb47-7"><a href=""></a>    cv<span class="op">=</span><span class="dv">5</span>, scoring<span class="op">=</span><span class="st">"r2"</span>)</span>
+<span id="cb47-8"><a href=""></a></span>
+<span id="cb47-9"><a href=""></a><span class="co"># la búsqueda va DENTRO de la validación cruzada, no fuera</span></span>
+<span id="cb47-10"><a href=""></a>r <span class="op">=</span> cross_validate(busqueda, X, y, cv<span class="op">=</span><span class="dv">5</span>, scoring<span class="op">=</span>[<span class="st">"r2"</span>])</span>
+<span id="cb47-11"><a href=""></a><span class="bu">print</span>(<span class="bu">round</span>(r[<span class="st">"test_r2"</span>].mean(), <span class="dv">3</span>))</span></code></pre></div>
+<div class="alerta">
+<p>Si se busca el mejor <code>alpha</code> con todos los datos y <strong>luego</strong> se mide con esos mismos datos, el resultado sale inflado: habríamos elegido el parámetro que mejor le venía al conjunto de prueba. Es fuga otra vez, ahora en los hiperparámetros.</p>
+</div>
+<p>Por eso se anida: en cada pliegue se busca con lo de dentro y se mide con lo de fuera. Se llama <strong>validación cruzada anidada</strong>.</p>
+</section>
+<section class="slide level2">
+<h2>El giro final</h2>
+<p>El mejor de la tabla, <code>HistGradientBoosting</code>, <strong>maneja los <code>NaN</code> y las categorías de forma nativa</strong>. No necesita ni imputar ni codificar.</p>
+<div class="destacado">
+<p>¿Sobraba entonces la sesión de hoy? Miren qué pasa si a ese mismo modelo le damos el dataset <strong>tal y como viene en el CSV</strong>.</p>
+</div>
+<div class="terminal" data-nocopy="">
+<pre>HistGradientBoosting, todas las columnas del CSV      R2  <span class="salida">0.747</span>
+HistGradientBoosting, sin Min.Price ni Max.Price     R2   0.599</pre>
+</div>
+<p>Un <span class="math inline">\(R^2\)</span> de 0,747: el mejor número de toda la sesión. Y completamente inútil.</p>
+</section>
+<section class="slide level2">
+<h2>Por qué ese 0,747 es basura</h2>
+<div class="terminal" data-nocopy="">
+<pre>correlación con Price     Min.Price  0.971     Max.Price  0.982
+
+Price - (Min.Price + Max.Price) / 2   -&gt;   error medio de 0.017</pre>
+</div>
+<div class="alerta">
+<p><code>Price</code> <strong>es</strong> el promedio de <code>Min.Price</code> y <code>Max.Price</code>. El modelo no está prediciendo el precio: lo está leyendo de otras dos columnas que, en la vida real, no existirían hasta después de conocerlo.</p>
+</div>
+<div class="concepto">
+<p>Ningún modelo, por potente que sea, va a avisar de esto. Quitar esas dos columnas fue una decisión nuestra, en la primera línea del primer chequeo, y es <strong>la más importante de toda la sesión</strong>.</p>
+</div>
+</section>
+<section class="slide level2">
+<h2>Lo que se llevan de hoy</h2>
+<div class="tarjetas">
+<div class="tarjeta">
+<p><strong>Lo que el modelo puede hacer por ustedes</strong> Imputar, codificar, escalar. Hay modelos modernos que se lo hacen solos, y cada año hacen más.</p>
+</div>
+<div class="tarjeta">
+<p><strong>Lo que no va a hacer nunca</strong> Darse cuenta de que una columna es la respuesta disfrazada. Saber que aquel <code>NaN</code> significaba “sin airbag”. Decidir que 31 marcas en 93 coches son demasiadas.</p>
+</div>
+</div>
+<div class="destacado">
+<p>Lo primero se automatiza. Lo segundo es criterio, y es lo que van a estar construyendo durante todo el curso.</p>
+</div>
 </section></section>
 <section>
 <section class="title-slide slide level1 seccion center" data-background-color="#1553ad">
@@ -1769,8 +1845,8 @@ Name: price, dtype: float64</pre>
 <section class="slide level2">
 <h2>Para practicar</h2>
 <p>Repitan el recorrido completo sobre <strong>Ames Housing</strong>: 1.460 casas, 80 columnas, vacíos por todas partes y categóricas ordinales de verdad.</p>
-<div class="sourceCode" id="cb47"><pre class="sourceCode numberSource python numberLines number-lines"><code class="sourceCode python"><span id="cb47-1"><a href=""></a><span class="im">from</span> sklearn.datasets <span class="im">import</span> fetch_openml</span>
-<span id="cb47-2"><a href=""></a>ames <span class="op">=</span> fetch_openml(name<span class="op">=</span><span class="st">"house_prices"</span>, as_frame<span class="op">=</span><span class="va">True</span>).frame</span></code></pre></div>
+<div class="sourceCode" id="cb48"><pre class="sourceCode numberSource python numberLines number-lines"><code class="sourceCode python"><span id="cb48-1"><a href=""></a><span class="im">from</span> sklearn.datasets <span class="im">import</span> fetch_openml</span>
+<span id="cb48-2"><a href=""></a>ames <span class="op">=</span> fetch_openml(name<span class="op">=</span><span class="st">"house_prices"</span>, as_frame<span class="op">=</span><span class="va">True</span>).frame</span></code></pre></div>
 <div class="destacado">
 <p>Tres preguntas para guiarse: ¿qué columnas tienen tanto vacío que no vale la pena imputarlas? ¿Cuáles de las categóricas son ordinales de verdad? ¿Cuánto mejora el resultado al agrupar las categorías raras?</p>
 </div>
