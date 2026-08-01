@@ -665,6 +665,17 @@ a.card:hover .card-cta {
   transform: translateX(3px);
 }
 
+/* "descargar", a la derecha del todo */
+.file-hint {
+  margin-left: auto;
+  flex-shrink: 0;
+  font-size: 0.74rem;
+  color: #6b7783;
+  border: 1px solid #d7dee6;
+  border-radius: 999px;
+  padding: 0.08rem 0.55rem;
+}
+
 .file-tag {
   flex-shrink: 0;
   font-size: 0.7rem;
