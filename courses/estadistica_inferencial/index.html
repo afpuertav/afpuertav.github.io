@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="author" content="Andrés Felipe Puerta Vélez">
+    <meta name="description" content="Estadística Inferencial (UNIMINUTO): presentaciones de clase semana a semana, de la probabilidad a las pruebas de hipótesis.">
+    <link rel="canonical" href="https://afpuertav.github.io/courses/estadistica_inferencial/">
+    <link rel="icon" href="../../assets/icon.svg" type="image/svg+xml">
+    <link rel="stylesheet" href="../../styles.css">
+    <title data-i18n="page.inf.title">Estadística Inferencial — Andrés F. Puerta</title>
+    <script src="../../js/i18n.js"></script>
+</head>
+<body>
+    <a class="skip-link" href="#main" data-i18n="nav.skip">Skip to content</a>
+
+    <header class="site-header">
+        <div class="header-inner">
+            <a href="../../index.html" class="logo-text"><strong>Andrés F. Puerta</strong></a>
+
+            <button type="button" class="nav-toggle" aria-expanded="false" aria-controls="site-nav" data-i18n-attr="aria-label:nav.toggle">
+                <span class="nav-toggle-bar"></span>
+                <span class="nav-toggle-bar"></span>
+                <span class="nav-toggle-bar"></span>
+            </button>
+
+            <nav class="site-nav" id="site-nav" data-i18n-attr="aria-label:nav.main">
+                <ul class="menu">
+                    <li><a href="../../index.html" data-i18n="nav.home">Home</a></li>
+                    <li><a href="../../cv.html" data-i18n="nav.cv">Curriculum vitae</a></li>
+                    <li><a href="../../courses.html" aria-current="page" data-i18n="nav.courses">Courses</a></li>
+                    <li><a href="../../publications.html" data-i18n="nav.publications">Publications</a></li>
+                    <li><a href="../../presentations.html" data-i18n="nav.presentations">Presentations</a></li>
+                    <li><a href="../../blog.html" data-i18n="nav.blog">Blog</a></li>
+                    <li><a href="../../gallery.html" data-i18n="nav.gallery">Gallery</a></li>
+                </ul>
+                <div class="lang-switch" role="group" data-i18n-attr="aria-label:nav.language">
+                    <button type="button" class="lang-btn" data-lang="es" aria-pressed="false">ES</button>
+                    <button type="button" class="lang-btn" data-lang="en" aria-pressed="false">EN</button>
+                </div>
+            </nav>
+        </div>
+    </header>
+
+    <main class="page" id="main">
+        <p class="breadcrumb">
+            <a href="../../courses.html" data-i18n="nav.courses">Courses</a> ›
+            <span data-i18n="inf.heading">Inferential Statistics</span>
+        </p>
+
+        <h1 class="page-title" data-i18n="inf.heading">Inferential Statistics</h1>
+        <p class="page-intro">UNIMINUTO · <span data-i18n="inf.subtitle">Class slides, week by week</span></p>
+
+        <section aria-labelledby="files-title">
+            <h2 class="section-heading" id="files-title" data-i18n="course.slides">Class slides</h2>
+            <div class="file-list" id="course-files"></div>
+        </section>
+    </main>
+
+    <footer class="site-footer">
+        <p>&copy; <span data-current-year>2026</span> Andrés Felipe Puerta Vélez</p>
+    </footer>
+
+    <script src="../../js/site.js"></script>
+    <script>
+        /* Sesiones del curso. Las semanas de examen no tienen PDF: file = null. */
+        (function () {
+            var SESSIONS = [
+                { week: 1,  file: "Semana-01.pdf",
+                  es: "Presentación del curso · Conceptos de probabilidad: teoría de conjuntos",
+                  en: "Course introduction · Probability concepts: set theory" },
+                { week: 2,  file: "Semana-02.pdf",
+                  es: "Reglas de conteo, combinaciones y permutaciones",
+                  en: "Counting rules, combinations and permutations" },
+                { week: 3,  file: "Semana-03.pdf",
+                  es: "Regla de Laplace · Axiomas y reglas de la probabilidad",
+                  en: "Laplace's rule · Axioms and rules of probability" },
+                { week: 4,  file: "Semana-04.pdf",
+                  es: "Probabilidad condicional e independencia · Fundamentos del muestreo",
+                  en: "Conditional probability and independence · Foundations of sampling" },
+                { week: 5,  file: "Semana-05.pdf",
+                  es: "Muestreo probabilístico y no probabilístico · Tamaño de la muestra",
+                  en: "Probability and non-probability sampling · Sample size" },
+                { week: 6,  file: null,
+                  es: "Examen 1 (33,3 %) — Unidad 1",
+                  en: "Exam 1 (33.3 %) — Unit 1" },
+                { week: 7,  file: "Semana-07.pdf",
+                  es: "Distribución binomial · Distribución de Poisson",
+                  en: "Binomial distribution · Poisson distribution" },
+                { week: 8,  file: "Semana-08.pdf",
+                  es: "Distribución normal",
+                  en: "The normal distribution" },
+                { week: 9,  file: "Semana-09.pdf",
+                  es: "Distribución t de Student · Medias muestrales y Teorema del Límite Central",
+                  en: "Student's t distribution · Sampling distributions and the Central Limit Theorem" },
+                { week: 10, file: "Semana-10.pdf",
+                  es: "Estimación puntual · Intervalos de confianza",
+                  en: "Point estimation · Confidence intervals" },
+                { week: 11, file: "Semana-11.pdf",
+                  es: "Cálculo de intervalos · Aplicaciones y limitaciones · Repaso de la Unidad 2",
+                  en: "Computing intervals · Applications and limitations · Unit 2 review" },
+                { week: 12, file: null,
+                  es: "Examen 2 (33,3 %) — Unidad 2",
+                  en: "Exam 2 (33.3 %) — Unit 2" },
+                { week: 13, file: "Semana-13.pdf",
+                  es: "Concepto y tipos de pruebas de hipótesis",
+                  en: "Hypothesis testing: concept and types" },
+                { week: 14, file: "Semana-14.pdf",
+                  es: "Los cinco pasos de una prueba de hipótesis · Uso de software estadístico",
+                  en: "The five steps of a hypothesis test · Using statistical software" },
+                { week: 15, file: "Semana-15.pdf",
+                  es: "Correlación y regresión lineal · Validación de modelos",
+                  en: "Correlation and linear regression · Model validation" },
+                { week: 16, file: null,
+                  es: "Examen 3 (33,4 %) — Unidad 3",
+                  en: "Exam 3 (33.4 %) — Unit 3" }
+            ];
+
+            var container = document.getElementById("course-files");
+
+            function render() {
+                var lang = (window.I18N && window.I18N.lang) || "es";
+                var weekLabel = (window.I18N && window.I18N.t("course.week")) || "Week";
+                var examLabel = (window.I18N && window.I18N.t("course.examWeek")) || "Exam week";
+                var html = "";
+
+                SESSIONS.forEach(function (s) {
+                    var title = s[lang] || s.es;
+                    if (s.file) {
+                        html +=
+                            '<a class="file-row" href="Archivos/' + s.file + '" ' +
+                            'target="_blank" rel="noopener">' +
+                            '<span class="file-tag">PDF</span>' +
+                            "<span><strong>" + weekLabel + " " + s.week + "</strong> — " +
+                            title + "</span></a>";
+                    } else {
+                        html +=
+                            '<div class="file-row" aria-disabled="true" ' +
+                            'style="opacity:.6;cursor:default">' +
+                            '<span class="file-tag">' + examLabel + "</span>" +
+                            "<span><strong>" + weekLabel + " " + s.week + "</strong> — " +
+                            title + "</span></div>";
+                    }
+                });
+
+                container.innerHTML = html;
+            }
+
+            document.addEventListener("DOMContentLoaded", render);
+            document.addEventListener("afp:languagechange", render);
+        })();
+    </script>
+</body>
+</html>

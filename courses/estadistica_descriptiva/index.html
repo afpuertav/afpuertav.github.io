@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="author" content="Andrés Felipe Puerta Vélez">
+    <meta name="description" content="Estadística Descriptiva (UNIMINUTO): presentaciones de clase semana a semana, de las tablas de frecuencia al informe estadístico.">
+    <link rel="canonical" href="https://afpuertav.github.io/courses/estadistica_descriptiva/">
+    <link rel="icon" href="../../assets/icon.svg" type="image/svg+xml">
+    <link rel="stylesheet" href="../../styles.css">
+    <title data-i18n="page.desc.title">Estadística Descriptiva — Andrés F. Puerta</title>
+    <script src="../../js/i18n.js"></script>
+</head>
+<body>
+    <a class="skip-link" href="#main" data-i18n="nav.skip">Skip to content</a>
+
+    <header class="site-header">
+        <div class="header-inner">
+            <a href="../../index.html" class="logo-text"><strong>Andrés F. Puerta</strong></a>
+
+            <button type="button" class="nav-toggle" aria-expanded="false" aria-controls="site-nav" data-i18n-attr="aria-label:nav.toggle">
+                <span class="nav-toggle-bar"></span>
+                <span class="nav-toggle-bar"></span>
+                <span class="nav-toggle-bar"></span>
+            </button>
+
+            <nav class="site-nav" id="site-nav" data-i18n-attr="aria-label:nav.main">
+                <ul class="menu">
+                    <li><a href="../../index.html" data-i18n="nav.home">Home</a></li>
+                    <li><a href="../../cv.html" data-i18n="nav.cv">Curriculum vitae</a></li>
+                    <li><a href="../../courses.html" aria-current="page" data-i18n="nav.courses">Courses</a></li>
+                    <li><a href="../../publications.html" data-i18n="nav.publications">Publications</a></li>
+                    <li><a href="../../presentations.html" data-i18n="nav.presentations">Presentations</a></li>
+                    <li><a href="../../blog.html" data-i18n="nav.blog">Blog</a></li>
+                    <li><a href="../../gallery.html" data-i18n="nav.gallery">Gallery</a></li>
+                </ul>
+                <div class="lang-switch" role="group" data-i18n-attr="aria-label:nav.language">
+                    <button type="button" class="lang-btn" data-lang="es" aria-pressed="false">ES</button>
+                    <button type="button" class="lang-btn" data-lang="en" aria-pressed="false">EN</button>
+                </div>
+            </nav>
+        </div>
+    </header>
+
+    <main class="page" id="main">
+        <p class="breadcrumb">
+            <a href="../../courses.html" data-i18n="nav.courses">Courses</a> ›
+            <span data-i18n="desc.heading">Descriptive Statistics</span>
+        </p>
+
+        <h1 class="page-title" data-i18n="desc.heading">Descriptive Statistics</h1>
+        <p class="page-intro">UNIMINUTO · <span data-i18n="desc.subtitle">Class slides, week by week</span></p>
+
+        <section aria-labelledby="files-title">
+            <h2 class="section-heading" id="files-title" data-i18n="course.slides">Class slides</h2>
+            <div class="file-list" id="course-files"></div>
+        </section>
+    </main>
+
+    <footer class="site-footer">
+        <p>&copy; <span data-current-year>2026</span> Andrés Felipe Puerta Vélez</p>
+    </footer>
+
+    <script src="../../js/site.js"></script>
+    <script>
+        /* Sesiones del curso. Las semanas de examen no tienen PDF: file = null. */
+        (function () {
+            var SESSIONS = [
+                { week: 1,  file: "Semana-01.pdf",
+                  es: "Presentación del curso · Población, muestra, variable y dato",
+                  en: "Course introduction · Population, sample, variable and datum" },
+                { week: 2,  file: "Semana-02.pdf",
+                  es: "Parámetros y estadísticos · Tipos de variables · Escalas de medición",
+                  en: "Parameters and statistics · Types of variables · Measurement scales" },
+                { week: 3,  file: "Semana-03.pdf",
+                  es: "Tablas de frecuencia: datos no agrupados y agrupados",
+                  en: "Frequency tables: ungrouped and grouped data" },
+                { week: 4,  file: "Semana-04.pdf",
+                  es: "Métodos gráficos: histogramas, polígonos y ojiva",
+                  en: "Graphical methods: histograms, polygons and ogive" },
+                { week: 5,  file: "Semana-05.pdf",
+                  es: "Proceso estadístico aplicado · Repaso de la Unidad 1",
+                  en: "The statistical process applied · Unit 1 review" },
+                { week: 6,  file: null,
+                  es: "Examen 1 (35 %) — Unidad 1",
+                  en: "Exam 1 (35 %) — Unit 1" },
+                { week: 7,  file: "Semana-07.pdf",
+                  es: "Tendencia central: media, mediana y moda · Cuartiles, deciles y percentiles",
+                  en: "Central tendency: mean, median and mode · Quartiles, deciles and percentiles" },
+                { week: 8,  file: "Semana-08.pdf",
+                  es: "Dispersión: rango, varianza y desviación · Asimetría y curtosis",
+                  en: "Dispersion: range, variance and standard deviation · Skewness and kurtosis" },
+                { week: 9,  file: "Semana-09.pdf",
+                  es: "Gráficos estadísticos y diagrama de caja",
+                  en: "Statistical charts and the box plot" },
+                { week: 10, file: "Semana-10.pdf",
+                  es: "Interpretación de resultados · Redacción de informes estadísticos",
+                  en: "Interpreting results · Writing statistical reports" },
+                { week: 11, file: "Semana-11.pdf",
+                  es: "Repaso integrador de la Unidad 2",
+                  en: "Unit 2 comprehensive review" },
+                { week: 12, file: null,
+                  es: "Examen 2 (35 %) — Unidad 2",
+                  en: "Exam 2 (35 %) — Unit 2" },
+                { week: 13, file: "Semana-13.pdf",
+                  es: "Integración de medidas · Interpretación global de datos y gráficos",
+                  en: "Integrating measures · Overall reading of data and charts" },
+                { week: 14, file: "Semana-14.pdf",
+                  es: "Caso completo · Cálculo de medidas y gráficos con R",
+                  en: "A complete case · Computing measures and charts with R" },
+                { week: 15, file: "Semana-15.pdf",
+                  es: "Coherencia entre análisis y conclusiones · Sustentación con datos",
+                  en: "Coherent analysis and conclusions · Defending decisions with data" },
+                { week: 16, file: null,
+                  es: "Examen 3 (30 %) — Unidad 3",
+                  en: "Exam 3 (30 %) — Unit 3" }
+            ];
+
+            var container = document.getElementById("course-files");
+
+            function render() {
+                var lang = (window.I18N && window.I18N.lang) || "es";
+                var weekLabel = (window.I18N && window.I18N.t("course.week")) || "Week";
+                var examLabel = (window.I18N && window.I18N.t("course.examWeek")) || "Exam week";
+                var html = "";
+
+                SESSIONS.forEach(function (s) {
+                    var title = s[lang] || s.es;
+                    if (s.file) {
+                        html +=
+                            '<a class="file-row" href="Archivos/' + s.file + '" ' +
+                            'target="_blank" rel="noopener">' +
+                            '<span class="file-tag">PDF</span>' +
+                            "<span><strong>" + weekLabel + " " + s.week + "</strong> — " +
+                            title + "</span></a>";
+                    } else {
+                        html +=
+                            '<div class="file-row" aria-disabled="true" ' +
+                            'style="opacity:.6;cursor:default">' +
+                            '<span class="file-tag">' + examLabel + "</span>" +
+                            "<span><strong>" + weekLabel + " " + s.week + "</strong> — " +
+                            title + "</span></div>";
+                    }
+                });
+
+                container.innerHTML = html;
+            }
+
+            document.addEventListener("DOMContentLoaded", render);
+            document.addEventListener("afp:languagechange", render);
+        })();
+    </script>
+</body>
+</html>

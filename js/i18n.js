@@ -278,6 +278,17 @@
       en: "Regression models, evaluation and deployment of supervised learning solutions with Python."
     },
     "courses.institution.eafit": { es: "Universidad EAFIT", en: "Universidad EAFIT" },
+    "courses.institution.uniminuto": { es: "UNIMINUTO", en: "UNIMINUTO" },
+    "courses.desc.name": { es: "Estadística Descriptiva", en: "Descriptive Statistics" },
+    "courses.desc.desc": {
+      es: "Trece sesiones: tablas de frecuencia, gráficos, medidas estadísticas e informes con datos.",
+      en: "Thirteen sessions: frequency tables, charts, statistical measures and data-driven reports."
+    },
+    "courses.inf.name": { es: "Estadística Inferencial", en: "Inferential Statistics" },
+    "courses.inf.desc": {
+      es: "Trece sesiones: probabilidad y muestreo, distribuciones, estimación y pruebas de hipótesis.",
+      en: "Thirteen sessions: probability and sampling, distributions, estimation and hypothesis testing."
+    },
     "courses.selfpaced": { es: "Curso propio", en: "Independent course" },
     "courses.enter": { es: "Entrar al curso", en: "Enter course" },
 
@@ -410,6 +421,33 @@
       en: "Statistical inference, hypothesis testing and regression."
     },
     "stats.week": { es: "Clase semana", en: "Class week" },
+
+    /* --- Cursos UNIMINUTO: claves compartidas --- */
+    "course.slides": { es: "Presentaciones de clase", en: "Class slides" },
+    "course.week": { es: "Semana", en: "Week" },
+    "course.examWeek": { es: "Examen", en: "Exam" },
+
+    /* --- Curso: Estadística Descriptiva --- */
+    "page.desc.title": {
+      es: "Estadística Descriptiva — Andrés F. Puerta",
+      en: "Descriptive Statistics — Andrés F. Puerta"
+    },
+    "desc.heading": { es: "Estadística Descriptiva", en: "Descriptive Statistics" },
+    "desc.subtitle": {
+      es: "Presentaciones de clase, semana a semana",
+      en: "Class slides, week by week"
+    },
+
+    /* --- Curso: Estadística Inferencial --- */
+    "page.inf.title": {
+      es: "Estadística Inferencial — Andrés F. Puerta",
+      en: "Inferential Statistics — Andrés F. Puerta"
+    },
+    "inf.heading": { es: "Estadística Inferencial", en: "Inferential Statistics" },
+    "inf.subtitle": {
+      es: "Presentaciones de clase, semana a semana",
+      en: "Class slides, week by week"
+    },
 
     /* --- Curso: Pensamiento Computacional --- */
     "compthinking.book": { es: "Libro guía", en: "Course textbook" },
