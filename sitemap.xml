@@ -58,6 +58,21 @@
     <priority>0.4</priority>
   </url>
 
+  <!-- Cursos: UNIMINUTO -->
+  <url>
+    <loc>https://afpuertav.github.io/courses/estadistica_descriptiva/</loc>
+    <lastmod>2026-08-13</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <url>
+    <loc>https://afpuertav.github.io/courses/estadistica_inferencial/</loc>
+    <lastmod>2026-08-13</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
   <!-- Cursos: Estadística General -->
   <url>
     <loc>https://afpuertav.github.io/courses/estadistica_general/</loc>
