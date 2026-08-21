@@ -73,6 +73,20 @@
     <priority>0.8</priority>
   </url>
 
+  <url>
+    <loc>https://afpuertav.github.io/courses/precalculo/</loc>
+    <lastmod>2026-08-21</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <url>
+    <loc>https://afpuertav.github.io/courses/matematicas_operativas/</loc>
+    <lastmod>2026-08-21</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
   <!-- Cursos: Estadística General -->
   <url>
     <loc>https://afpuertav.github.io/courses/estadistica_general/</loc>

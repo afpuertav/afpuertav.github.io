@@ -289,6 +289,16 @@
       es: "Trece sesiones: probabilidad y muestreo, distribuciones, estimación y pruebas de hipótesis.",
       en: "Thirteen sessions: probability and sampling, distributions, estimation and hypothesis testing."
     },
+    "courses.pre.name": { es: "Precálculo", en: "Precalculus" },
+    "courses.pre.desc": {
+      es: "Trece sesiones: campos numéricos, potenciación y logaritmos, álgebra y trigonometría.",
+      en: "Thirteen sessions: number systems, powers and logarithms, algebra and trigonometry."
+    },
+    "courses.mop.name": { es: "Matemáticas Operativas", en: "Operational Mathematics" },
+    "courses.mop.desc": {
+      es: "Trece sesiones: campos numéricos, potenciación y logaritmos, expresiones algebraicas y ecuaciones.",
+      en: "Thirteen sessions: number systems, powers and logarithms, algebraic expressions and equations."
+    },
     "courses.selfpaced": { es: "Curso propio", en: "Independent course" },
     "courses.enter": { es: "Entrar al curso", en: "Enter course" },
 
@@ -445,6 +455,28 @@
     },
     "inf.heading": { es: "Estadística Inferencial", en: "Inferential Statistics" },
     "inf.subtitle": {
+      es: "Presentaciones de clase, semana a semana",
+      en: "Class slides, week by week"
+    },
+
+    /* --- Curso: Precálculo --- */
+    "page.pre.title": {
+      es: "Precálculo — Andrés F. Puerta",
+      en: "Precalculus — Andrés F. Puerta"
+    },
+    "pre.heading": { es: "Precálculo", en: "Precalculus" },
+    "pre.subtitle": {
+      es: "Presentaciones de clase, semana a semana",
+      en: "Class slides, week by week"
+    },
+
+    /* --- Curso: Matemáticas Operativas --- */
+    "page.mop.title": {
+      es: "Matemáticas Operativas — Andrés F. Puerta",
+      en: "Operational Mathematics — Andrés F. Puerta"
+    },
+    "mop.heading": { es: "Matemáticas Operativas", en: "Operational Mathematics" },
+    "mop.subtitle": {
       es: "Presentaciones de clase, semana a semana",
       en: "Class slides, week by week"
     },
