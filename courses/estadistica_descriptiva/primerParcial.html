@@ -1,0 +1,723 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simulador del Primer Parcial - Estadística General</title>
+
+    <script src="https://cdn.plot.ly/plotly-2.27.0.min.js"></script>
+
+    <script>
+        window.MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                displayMath: [['$$', '$$'], ['\\[', '\\]']],
+                processEscapes: true
+            },
+            svg: { fontCache: 'global' },
+            startup: { pageReady: () => MathJax.typesetPromise().catch(err => console.log(err)) }
+        };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
+
+    <style>
+        :root {
+            --primary-color: #2c3e50;
+            --secondary-color: #3498db;
+            --accent-color: #e74c3c;
+            --light-color: #ecf0f1;
+            --success-color: #27ae60;
+            --warning-color: #f39c12;
+            --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: #f5f7fa;
+            color: #333;
+            line-height: 1.6;
+            padding: 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding: 20px;
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: var(--shadow);
+        }
+
+        h1 {
+            color: var(--primary-color);
+            margin-bottom: 10px;
+            font-size: 2.2rem;
+        }
+
+        .subtitle {
+            color: var(--secondary-color);
+            font-size: 1.1rem;
+            margin-bottom: 20px;
+        }
+
+        .instructions {
+            background-color: var(--light-color);
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 25px;
+            border-left: 5px solid var(--secondary-color);
+        }
+
+        .instructions h3 {
+            color: var(--primary-color);
+            margin-bottom: 10px;
+        }
+
+        .exam-container {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 25px;
+        }
+
+        .questions-section {
+            background-color: white;
+            padding: 25px;
+            border-radius: 10px;
+            box-shadow: var(--shadow);
+        }
+
+        .control-panel {
+            background-color: white;
+            padding: 25px;
+            border-radius: 10px;
+            box-shadow: var(--shadow);
+            height: fit-content;
+            position: sticky;
+            top: 20px;
+        }
+
+        .question-card {
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid #eee;
+            scroll-margin-top: 20px;
+        }
+
+        .question-card:last-child {
+            border-bottom: none;
+        }
+
+        .question-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .question-number {
+            background-color: var(--primary-color);
+            color: white;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+        }
+
+        .question-text {
+            margin-bottom: 20px;
+            font-size: 1.1rem;
+            line-height: 1.5;
+        }
+
+        .table-container {
+            margin: 15px 0;
+            padding: 15px;
+            background-color: #f9f9f9;
+            border-radius: 8px;
+            overflow-x: auto;
+        }
+
+        table { width: 100%; border-collapse: collapse; margin: 10px 0; font-size: 0.95em; }
+        th { background-color: var(--primary-color); color: white; padding: 10px; text-align: center; border: 1px solid #ddd; }
+        td { padding: 8px; text-align: center; border: 1px solid #ddd; }
+        tr:nth-child(even) { background-color: #f2f2f2; }
+
+        .options-container {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .options-grid-charts {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+
+        .option {
+            padding: 12px 15px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+        }
+
+        .option-chart-card {
+            flex-direction: column;
+            align-items: flex-start;
+            padding: 10px;
+        }
+
+        .option:hover {
+            background-color: #f0f8ff;
+            border-color: var(--secondary-color);
+        }
+
+        .option.selected {
+            background-color: #e1f0ff;
+            border-color: var(--secondary-color);
+            font-weight: 600;
+        }
+
+        .option.correct {
+            background-color: #d4edda;
+            border-color: var(--success-color);
+            color: #155724;
+        }
+
+        .option.incorrect {
+            background-color: #f8d7da;
+            border-color: var(--accent-color);
+            color: #721c24;
+        }
+
+        .chart-box {
+            width: 100%;
+            height: 250px;
+            margin-top: 5px;
+        }
+
+        .match-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 12px;
+            padding: 10px;
+            background-color: #f8f9fa;
+            border-radius: 6px;
+            border: 1px solid #e9ecef;
+        }
+
+        .match-select {
+            padding: 8px;
+            border-radius: 6px;
+            border: 1px solid #ccc;
+            font-size: 0.95rem;
+            width: 55%;
+        }
+
+        .explanation {
+            margin-top: 20px;
+            padding: 15px;
+            background-color: #fff3cd;
+            border-left: 5px solid #ffc107;
+            border-radius: 5px;
+            font-size: 0.95rem;
+        }
+
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s;
+            font-size: 1rem;
+            margin-right: 10px;
+            margin-bottom: 10px;
+        }
+
+        .btn-primary { background-color: var(--secondary-color); color: white; }
+        .btn-primary:hover { background-color: #2980b9; }
+        .btn-secondary { background-color: var(--light-color); color: var(--primary-color); border: 1px solid #ddd; }
+        .btn-secondary:hover { background-color: #d5dbdb; }
+
+        .results-container {
+            margin-top: 25px;
+            padding: 20px;
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: var(--shadow);
+            display: none;
+        }
+
+        .score-display { text-align: center; margin-bottom: 20px; }
+        .score-circle {
+            width: 120px; height: 120px; border-radius: 50%;
+            background-color: var(--light-color); display: flex;
+            justify-content: center; align-items: center;
+            margin: 0 auto 20px; font-size: 2.5rem; font-weight: bold;
+            color: var(--primary-color); border: 5px solid var(--secondary-color);
+        }
+
+        .score-circle.low { border-color: var(--accent-color); color: var(--accent-color); }
+        .score-circle.medium { border-color: var(--warning-color); color: var(--warning-color); }
+        .score-circle.high { border-color: var(--success-color); color: var(--success-color); }
+
+        .stats { display: flex; justify-content: space-between; margin-top: 20px; }
+        .stat-box { flex: 1; text-align: center; padding: 15px; background-color: var(--light-color); border-radius: 8px; margin: 0 5px; }
+        .stat-value { font-size: 2rem; font-weight: bold; color: var(--primary-color); }
+        .stat-label { font-size: 0.9rem; color: #7f8c8d; }
+
+        .topic-progress { margin-top: 20px; }
+        .topic-item { display: flex; justify-content: space-between; align-items: center; padding: 8px 0; border-bottom: 1px solid #eee; cursor: pointer; }
+        .topic-item:hover { background-color: #f5f5f5; padding-left: 5px; }
+        .topic-name { flex: 1; font-size: 0.9em; }
+        .topic-status { width: 12px; height: 12px; border-radius: 50%; margin-left: 10px; }
+        .topic-status.correct { background-color: var(--success-color); }
+        .topic-status.incorrect { background-color: var(--accent-color); }
+        .topic-status.unanswered { background-color: #ddd; }
+        .topic-status.answered { background-color: var(--secondary-color); }
+
+        footer { text-align: center; margin-top: 30px; padding: 20px; color: #7f8c8d; font-size: 0.9rem; }
+
+        @media (max-width: 900px) {
+            .exam-container { grid-template-columns: 1fr; }
+            .options-grid-charts { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+    <p style="margin:0;padding:0.6rem 1rem;background:#1553AD;font:0.95rem/1.4 'Segoe UI',Arial,sans-serif"><a href="index.html" style="color:#fff;text-decoration:none">&larr; Estadística General</a></p>
+    <header>
+        <h1>Simulador del Primer Parcial - Estadística General</h1>
+        <p class="subtitle">Estadística Descriptiva · Notación ($f_i, F_i, h_i, H_i, \%_i$) y Gráficos Interactivos</p>
+    </header>
+
+    <div class="instructions">
+        <h3>Instrucciones</h3>
+        <p>Este simulador evalúa los conceptos principales del primer parcial. Utiliza los menús desplegables para emparejar adecuadamente las definiciones conceptuales e identifica visualmente la gráfica correcta observando las representaciones interactivas generadas.</p>
+    </div>
+
+    <div class="exam-container">
+        <section class="questions-section">
+            <h2>Preguntas del Parcial</h2>
+            <div id="questions-container"></div>
+
+            <div class="button-group" style="margin-top:20px;">
+                <button id="submit-btn" class="btn btn-primary">Calificar Examen</button>
+                <button id="new-exam-btn" class="btn btn-secondary">Nuevo Examen Aleatorio</button>
+            </div>
+        </section>
+
+        <section class="control-panel">
+            <h3>Progreso</h3>
+            <div class="stats">
+                <div class="stat-box">
+                    <div class="stat-value" id="answered-count">0</div>
+                    <div class="stat-label">Respondidas</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-value" id="total-count">8</div>
+                    <div class="stat-label">Total</div>
+                </div>
+            </div>
+
+            <div class="topic-progress">
+                <h4>Navegación:</h4>
+                <div id="topics-list"></div>
+            </div>
+        </section>
+    </div>
+
+    <div class="results-container" id="results-container">
+        <h2>Resultados del Parcial</h2>
+
+        <div class="score-display">
+            <div class="score-circle" id="final-score">0.0</div>
+            <h3>Calificación Final</h3>
+            <p id="score-text">Sobre 5.0 puntos</p>
+        </div>
+
+        <div class="stats">
+            <div class="stat-box">
+                <div class="stat-value" id="correct-count">0</div>
+                <div class="stat-label">Correctas</div>
+            </div>
+            <div class="stat-box">
+                <div class="stat-value" id="incorrect-count">0</div>
+                <div class="stat-label">Incorrectas</div>
+            </div>
+            <div class="stat-box">
+                <div class="stat-value" id="percentage-score">0%</div>
+                <div class="stat-label">Porcentaje</div>
+            </div>
+        </div>
+
+        <div style="text-align: center; margin-top: 20px;">
+            <button id="review-btn" class="btn btn-secondary">Revisar Respuestas</button>
+            <button id="restart-btn" class="btn btn-primary">Intentar Otro Examen</button>
+        </div>
+    </div>
+
+    <footer>
+        <p>Simulador del Primer Parcial de Estadística General</p>
+    </footer>
+
+    <script>
+        const questionBank = {
+            poblacion_muestra: [
+                {
+                    type: "matching",
+                    q: `<p>Seleccione en el menú desplegable el concepto que corresponde a cada definición según la notación y fundamentación de clase:</p>`,
+                    pairs: [
+                        { id: "p1", label: "<strong>Población:</strong>", correct: "b", prompt: "Conjunto de todos los elementos u objetos que poseen una característica en común." },
+                        { id: "p2", label: "<strong>Muestra:</strong>", correct: "c", prompt: "Subconjunto representativo de la población sobre el cual se recolectan los datos." },
+                        { id: "p3", label: "<strong>Variable y Frecuencia ($f_i$):</strong>", correct: "d", prompt: "Característica medible u observable y el número de veces que se repite cada valor." },
+                        { id: "p4", label: "<strong>Dato:</strong>", correct: "a", prompt: "Valor específico cuantitativo o cualitativo que toma la variable en una observación." }
+                    ],
+                    options: [
+                        { val: "", text: "-- Seleccionar concepto --" },
+                        { val: "b", text: "Población" },
+                        { val: "c", text: "Muestra" },
+                        { val: "d", text: "Variable y Frecuencia (fi)" },
+                        { val: "a", text: "Dato" }
+                    ],
+                    explanation: "El flujo estadístico parte de definir la <strong>población</strong> (b), extraer una <strong>muestra</strong> (c), medir la <strong>variable</strong> registrando su frecuencia absoluta ($f_i$) (d) y obtener cada <strong>dato</strong> concreto (a)."
+                }
+            ],
+            tamano_muestra_poblacion: [
+                {
+                    type: "mcq",
+                    q: "Un estudio analiza 10.500 estudiantes universitarios ($N$). Tras aplicar una encuesta en línea se obtuvieron 543 respuestas completas. Determine el tamaño de la muestra ($n$) y de la población ($N$):",
+                    a: ["N = 543", "n = 10.500", "No se puede determinar", "n = 543, N = 10.500"],
+                    c: 3,
+                    explanation: "El tamaño de la muestra se denota con $n$ minúscula ($n = 543$) y la población total con $N$ mayúscula ($N = 10.500$)."
+                }
+            ],
+            tipo_variable_def: [
+                {
+                    type: "mcq",
+                    q: "Tipo de variable cuantitativa que resulta de un proceso de conteo directo, expresada mediante la frecuencia absoluta $f_i$ de valores enteros:",
+                    a: ["Cuantitativa continua", "Cualitativa nominal", "Cuantitativa discreta", "Cualitativa ordinal"],
+                    c: 2,
+                    explanation: "Las variables discretas provienen de conteos de unidades enteras sin valores intermedios."
+                }
+            ],
+            clasificar_variable: [
+                {
+                    type: "mcq",
+                    q: "Clasifique el tipo de variable según su naturaleza: <strong>'Nivel de satisfacción (Bajo, Medio, Alto)'</strong>:",
+                    a: ["Cuantitativa discreta", "Cualitativa ordinal", "Cualitativa nominal", "Cuantitativa continua"],
+                    c: 1,
+                    explanation: "Es cualitativa porque expresa una cualidad y es ordinal porque guarda un orden o jerarquía implícita."
+                }
+            ],
+            tabla_frecuencias: [
+                {
+                    type: "mcq",
+                    q: `<p>Dada la siguiente tabla de frecuencias parcial con la notación del curso ($f_i$, $F_i$, $h_i$, $H_i$, $\%_i$):</p>
+                        <div class="table-container">
+                        <table>
+                            <tr><th>Categoría</th><th>$f_i$</th><th>$F_i$</th><th>$h_i$</th><th>$\%_i$</th></tr>
+                            <tr><td>A</td><td>12</td><td>12</td><td>0.30</td><td>30%</td></tr>
+                            <tr><td>B</td><td>16</td><td>28</td><td>0.40</td><td>40%</td></tr>
+                            <tr><td>C</td><td>12</td><td><strong>?</strong></td><td>0.30</td><td>30%</td></tr>
+                        </table>
+                        </div>
+                        <p>¿Cuál es el valor acumulado $F_3$ correspondientes a la última categoría?</p>`,
+                    a: ["F3 = 28", "F3 = 40", "F3 = 30", "F3 = 100"],
+                    c: 1,
+                    explanation: "La frecuencia absoluta acumulada $F_3 = F_2 + f_3 = 28 + 12 = 40$ (que coincide con el total de datos $n = 40$)."
+                }
+            ],
+            sturges: [
+                {
+                    type: "mcq",
+                    q: "Para un conjunto de $n = 50$ datos, calcule el número adecuado de intervalos o clases ($k$) aplicando la Regla de Sturges ($k = 1 + 3.322 \\log_{10}(n)$):",
+                    a: ["k = 5", "k = 7", "k = 6", "k = 8"],
+                    c: 1,
+                    explanation: "$k = 1 + 3.322 \\cdot \\log_{10}(50) \\approx 1 + 3.322 \\cdot (1.6989) \\approx 6.64$. Redondeando al entero más cercano, $k = 7$."
+                }
+            ],
+            grafica_cualitativa: [
+                {
+                    type: "chart_mcq",
+                    q: "Se encuestaron 100 personas sobre su preferencia de marca (A: 40%, B: 35%, C: 25%). Seleccione la gráfica de sectores que representa correctamente la frecuencia porcentual ($\%_i$):",
+                    c: 0,
+                    explanation: "La opción A representa de forma proporcional la distribución cualitativa dada (A: 40%, B: 35%, C: 25%).",
+                    charts: [
+                        { type: 'pie', labels: ['A', 'B', 'C'], values: [40, 35, 25], title: 'Opción A' },
+                        { type: 'pie', labels: ['A', 'B', 'C'], values: [10, 10, 80], title: 'Opción B' },
+                        { type: 'pie', labels: ['A', 'B', 'C'], values: [33, 33, 34], title: 'Opción C' },
+                        { type: 'pie', labels: ['A', 'B', 'C'], values: [60, 20, 20], title: 'Opción D' }
+                    ]
+                }
+            ],
+            grafica_cuantitativa: [
+                {
+                    type: "chart_mcq",
+                    q: "Dada la distribución de frecuencias continuas ($f_1=6, f_2=15, f_3=22, f_4=14, f_5=7$), identifique el <strong>histograma de frecuencias absolutas ($f_i$)</strong> correcto:",
+                    c: 0,
+                    explanation: "El histograma adecuado debe mantener el orden consecutivo de los intervalos con las alturas de barra proporcionales a las frecuencias absolutas $f_i$: [6, 15, 22, 14, 7].",
+                    charts: [
+                        { type: 'bar', x: ['150-158', '158-166', '166-174', '174-182', '182-190'], y: [6, 15, 22, 14, 7], title: 'Opción A', gap: 0 },
+                        { type: 'bar', x: ['150-158', '158-166', '166-174', '174-182', '182-190'], y: [22, 15, 14, 7, 6], title: 'Opción B', gap: 0 },
+                        { type: 'bar', x: ['150-158', '158-166', '166-174', '174-182', '182-190'], y: [7, 14, 22, 15, 6], title: 'Opción C', gap: 0 },
+                        { type: 'bar', x: ['150-158', '158-166', '166-174', '174-182', '182-190'], y: [10, 10, 10, 10, 10], title: 'Opción D', gap: 0 }
+                    ]
+                }
+            ]
+        };
+
+        let currentExam = [];
+        let userAnswers = {};
+
+        function generateExam() {
+            currentExam = [
+                questionBank.poblacion_muestra[0],
+                questionBank.tamano_muestra_poblacion[0],
+                questionBank.tipo_variable_def[0],
+                questionBank.clasificar_variable[0],
+                questionBank.tabla_frecuencias[0],
+                questionBank.sturges[0],
+                questionBank.grafica_cualitativa[0],
+                questionBank.grafica_cuantitativa[0]
+            ];
+
+            userAnswers = {};
+            document.getElementById('results-container').style.display = 'none';
+            renderQuestions();
+            renderNavigation();
+            updateProgress();
+        }
+
+        function renderQuestions() {
+            const container = document.getElementById('questions-container');
+            container.innerHTML = '';
+
+            currentExam.forEach((q, idx) => {
+                const card = document.createElement('div');
+                card.className = 'question-card';
+                card.id = `question-${idx}`;
+
+                let html = `
+                    <div class="question-header">
+                        <div class="question-number">${idx + 1}</div>
+                    </div>
+                    <div class="question-text">${q.q}</div>
+                `;
+
+                if (q.type === "matching") {
+                    html += `<div class="matching-container">`;
+                    q.pairs.forEach(pair => {
+                        html += `
+                            <div class="match-row">
+                                <div>${pair.label} <span style="font-size:0.9em; color:#555;">${pair.prompt}</span></div>
+                                <select class="match-select" data-qid="${idx}" data-pairid="${pair.id}" onchange="selectMatch(${idx}, '${pair.id}', this.value)">
+                                    ${q.options.map(opt => `<option value="${opt.val}">${opt.text}</option>`).join('')}
+                                </select>
+                            </div>
+                        `;
+                    });
+                    html += `</div>`;
+                } else if (q.type === "mcq") {
+                    html += `<div class="options-container">`;
+                    q.a.forEach((opt, optIdx) => {
+                        html += `
+                            <div class="option" id="opt-${idx}-${optIdx}" onclick="selectOption(${idx}, ${optIdx})">
+                                <strong>${String.fromCharCode(65 + optIdx)}.</strong>&nbsp; ${opt}
+                            </div>
+                        `;
+                    });
+                    html += `</div>`;
+                } else if (q.type === "chart_mcq") {
+                    html += `<div class="options-grid-charts">`;
+                    q.charts.forEach((chart, optIdx) => {
+                        html += `
+                            <div class="option option-chart-card" id="opt-${idx}-${optIdx}" onclick="selectOption(${idx}, ${optIdx})">
+                                <strong>Opción ${String.fromCharCode(65 + optIdx)}</strong>
+                                <div id="chart-container-${idx}-${optIdx}" class="chart-box"></div>
+                            </div>
+                        `;
+                    });
+                    html += `</div>`;
+                }
+
+                html += `<div id="explanation-${idx}" class="explanation" style="display:none;"></div>`;
+                card.innerHTML = html;
+                container.appendChild(card);
+
+                if (q.type === "chart_mcq") {
+                    setTimeout(() => renderChartsForQuestion(q, idx), 50);
+                }
+            });
+
+            if (window.MathJax) {
+                MathJax.typesetPromise();
+            }
+        }
+
+        function renderChartsForQuestion(q, qIdx) {
+            q.charts.forEach((c, optIdx) => {
+                const targetId = `chart-container-${qIdx}-${optIdx}`;
+                let data = [];
+                let layout = {
+                    title: { text: c.title, font: { size: 12 } },
+                    margin: { l: 30, r: 20, t: 30, b: 30 },
+                    autosize: true
+                };
+
+                if (c.type === 'pie') {
+                    data = [{ labels: c.labels, values: c.values, type: 'pie', textinfo: 'label+percent' }];
+                } else if (c.type === 'bar') {
+                    data = [{ x: c.x, y: c.y, type: 'bar', marker: { color: '#3498db' } }];
+                    if (c.gap === 0) {
+                        layout.bargap = 0.05;
+                    }
+                }
+                Plotly.newPlot(targetId, data, layout, { responsive: true, displayModeBar: false });
+            });
+        }
+
+        function selectOption(qIdx, optIdx) {
+            userAnswers[qIdx] = optIdx;
+            const card = document.getElementById(`question-${qIdx}`);
+            const options = card.querySelectorAll('.option');
+            options.forEach((opt, i) => {
+                if (i === optIdx) opt.classList.add('selected');
+                else opt.classList.remove('selected');
+            });
+            updateProgress();
+        }
+
+        function selectMatch(qIdx, pairId, value) {
+            if (!userAnswers[qIdx]) userAnswers[qIdx] = {};
+            userAnswers[qIdx][pairId] = value;
+            updateProgress();
+        }
+
+        function updateProgress() {
+            const answered = Object.keys(userAnswers).filter(k => {
+                if (typeof userAnswers[k] === 'object') {
+                    return Object.keys(userAnswers[k]).length === 4 && Object.values(userAnswers[k]).every(v => v !== "");
+                }
+                return userAnswers[k] !== undefined;
+            }).length;
+
+            document.getElementById('answered-count').innerText = answered;
+
+            currentExam.forEach((_, idx) => {
+                const navItem = document.getElementById(`nav-item-${idx}`);
+                if (navItem) {
+                    const statusDot = navItem.querySelector('.topic-status');
+                    if (userAnswers[idx] !== undefined) {
+                        statusDot.className = 'topic-status answered';
+                    } else {
+                        statusDot.className = 'topic-status unanswered';
+                    }
+                }
+            });
+        }
+
+        function renderNavigation() {
+            const list = document.getElementById('topics-list');
+            list.innerHTML = '';
+            const labels = ["Conceptos y Notación", "Muestra vs Población", "Tipo de Variable", "Clasificar Variable", "Tabla Frecuencias", "Regla de Sturges", "Gráfica Cualitativa", "Gráfica Cuantitativa"];
+
+            labels.forEach((label, idx) => {
+                const item = document.createElement('div');
+                item.className = 'topic-item';
+                item.id = `nav-item-${idx}`;
+                item.onclick = () => {
+                    document.getElementById(`question-${idx}`).scrollIntoView({ behavior: 'smooth' });
+                };
+                item.innerHTML = `
+                    <span class="topic-name">${idx + 1}. ${label}</span>
+                    <span class="topic-status unanswered"></span>
+                `;
+                list.appendChild(item);
+            });
+        }
+
+        function submitExam() {
+            let correctCount = 0;
+
+            currentExam.forEach((q, idx) => {
+                const card = document.getElementById(`question-${idx}`);
+                const expDiv = document.getElementById(`explanation-${idx}`);
+                let isCorrect = false;
+
+                if (q.type === "matching") {
+                    const userPairs = userAnswers[idx] || {};
+                    let matchesAll = true;
+                    q.pairs.forEach(pair => {
+                        if (userPairs[pair.id] !== pair.correct) matchesAll = false;
+                    });
+                    isCorrect = matchesAll;
+                } else {
+                    isCorrect = (userAnswers[idx] === q.c);
+                    const options = card.querySelectorAll('.option');
+                    options.forEach((opt, optIdx) => {
+                        if (optIdx === q.c) opt.classList.add('correct');
+                        else if (optIdx === userAnswers[idx]) opt.classList.add('incorrect');
+                    });
+                }
+
+                if (isCorrect) correctCount++;
+
+                expDiv.innerHTML = `<strong>Explicación:</strong> ${q.explanation}`;
+                expDiv.style.display = 'block';
+
+                const navItem = document.getElementById(`nav-item-${idx}`);
+                if (navItem) {
+                    const statusDot = navItem.querySelector('.topic-status');
+                    statusDot.className = `topic-status ${isCorrect ? 'correct' : 'incorrect'}`;
+                }
+            });
+
+            if (window.MathJax) {
+                MathJax.typesetPromise();
+            }
+
+            const score = (correctCount / 8) * 5;
+            const percentage = (correctCount / 8) * 100;
+
+            const resultBox = document.getElementById('results-container');
+            const scoreCircle = document.getElementById('final-score');
+
+            scoreCircle.innerText = score.toFixed(1);
+            scoreCircle.className = `score-circle ${score >= 4 ? 'high' : score >= 3 ? 'medium' : 'low'}`;
+
+            document.getElementById('correct-count').innerText = correctCount;
+            document.getElementById('incorrect-count').innerText = 8 - correctCount;
+            document.getElementById('percentage-score').innerText = `${percentage.toFixed(1)}%`;
+
+            resultBox.style.display = 'block';
+            resultBox.scrollIntoView({ behavior: 'smooth' });
+        }
+
+        document.getElementById('submit-btn').addEventListener('click', submitExam);
+        document.getElementById('new-exam-btn').addEventListener('click', generateExam);
+        document.getElementById('restart-btn').addEventListener('click', generateExam);
+        document.getElementById('review-btn').addEventListener('click', () => {
+            document.querySelector('.questions-section').scrollIntoView({ behavior: 'smooth' });
+        });
+
+        document.addEventListener('DOMContentLoaded', generateExam);
+    </script>
+</body>
+</html>
