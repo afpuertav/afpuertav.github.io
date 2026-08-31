@@ -51,7 +51,19 @@
         <h1 class="page-title" data-i18n="mop.heading">Operational Mathematics</h1>
         <p class="page-intro">CBASBL011 · UNIMINUTO — <span data-i18n="mop.subtitle">Class slides, week by week</span></p>
 
-        <section aria-labelledby="files-title">
+        <section aria-labelledby="simulators-title">
+            <h2 class="section-heading" id="simulators-title" data-i18n="stats.simulators">Midterm simulators</h2>
+            <div class="card-grid">
+                <a class="card" href="primerParcial.html">
+                    <span class="card-code">1&deg;</span>
+                    <h3 id="sim-p1-title">First midterm</h3>
+                    <p id="sim-p1-desc">Number sets, integers, rationals, set theory, ratios and percentages.</p>
+                    <span class="card-cta" data-i18n="stats.openSimulator">Open simulator</span>
+                </a>
+            </div>
+        </section>
+
+        <section aria-labelledby="files-title" style="margin-top:2rem">
             <h2 class="section-heading" id="files-title" data-i18n="course.slides">Class slides</h2>
             <div class="file-list" id="course-files"></div>
         </section>
@@ -144,6 +156,29 @@
                 });
 
                 container.innerHTML = html;
+            }
+
+            document.addEventListener("DOMContentLoaded", render);
+            document.addEventListener("afp:languagechange", render);
+        })();
+    </script>
+    <script>
+        /* Textos de las tarjetas de simulador (no dependen de claves de i18n). */
+        (function () {
+            var SIMS = {
+                "sim-p1-title": { es: "Primer parcial", en: "First midterm" },
+                "sim-p1-desc": {
+                    es: "Conjuntos numéricos, enteros, racionales, teoría de conjuntos, razones y porcentajes.",
+                    en: "Number sets, integers, rationals, set theory, ratios and percentages."
+                }
+            };
+
+            function render() {
+                var lang = (window.I18N && window.I18N.lang) || "es";
+                Object.keys(SIMS).forEach(function (id) {
+                    var el = document.getElementById(id);
+                    if (el) el.textContent = SIMS[id][lang] || SIMS[id].es;
+                });
             }
 
             document.addEventListener("DOMContentLoaded", render);

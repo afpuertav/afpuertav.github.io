@@ -1,0 +1,1117 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simulador del Primer Parcial - Estadística Inferencial</title>
+
+    <script src="https://cdn.plot.ly/plotly-2.27.0.min.js"></script>
+
+    <script>
+        window.MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                displayMath: [['$$', '$$'], ['\\[', '\\]']],
+                processEscapes: true
+            },
+            svg: { fontCache: 'global' },
+            startup: { pageReady: () => MathJax.typesetPromise().catch(err => console.log(err)) }
+        };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
+
+    <style>
+        :root {
+            --primary-color: #2c3e50;
+            --secondary-color: #3498db;
+            --accent-color: #e74c3c;
+            --light-color: #ecf0f1;
+            --success-color: #27ae60;
+            --warning-color: #f39c12;
+            --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: #f5f7fa;
+            color: #333;
+            line-height: 1.6;
+            padding: 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding: 20px;
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: var(--shadow);
+        }
+
+        h1 {
+            color: var(--primary-color);
+            margin-bottom: 10px;
+            font-size: 2.2rem;
+        }
+
+        .subtitle {
+            color: var(--secondary-color);
+            font-size: 1.1rem;
+            margin-bottom: 20px;
+        }
+
+        .instructions {
+            background-color: var(--light-color);
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 25px;
+            border-left: 5px solid var(--secondary-color);
+        }
+
+        .instructions h3 {
+            color: var(--primary-color);
+            margin-bottom: 10px;
+        }
+
+        .exam-container {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 25px;
+        }
+
+        .questions-section {
+            background-color: white;
+            padding: 25px;
+            border-radius: 10px;
+            box-shadow: var(--shadow);
+        }
+
+        .control-panel {
+            background-color: white;
+            padding: 25px;
+            border-radius: 10px;
+            box-shadow: var(--shadow);
+            height: fit-content;
+            position: sticky;
+            top: 20px;
+        }
+
+        .question-card {
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid #eee;
+            scroll-margin-top: 20px;
+        }
+
+        .question-card:last-child {
+            border-bottom: none;
+        }
+
+        .question-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .question-number {
+            background-color: var(--primary-color);
+            color: white;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+        }
+
+        .question-text {
+            margin-bottom: 20px;
+            font-size: 1.1rem;
+            line-height: 1.5;
+        }
+
+        .question-text p + p { margin-top: 10px; }
+
+        .table-container {
+            margin: 15px 0;
+            padding: 15px;
+            background-color: #f9f9f9;
+            border-radius: 8px;
+            overflow-x: auto;
+        }
+
+        table { width: 100%; border-collapse: collapse; margin: 10px 0; font-size: 0.95em; }
+        th { background-color: var(--primary-color); color: white; padding: 10px; text-align: center; border: 1px solid #ddd; }
+        td { padding: 8px; text-align: center; border: 1px solid #ddd; }
+        tr:nth-child(even) { background-color: #f2f2f2; }
+
+        .options-container {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .options-grid-charts {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+
+        .option {
+            padding: 12px 15px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+        }
+
+        .option-chart-card {
+            flex-direction: column;
+            align-items: flex-start;
+            padding: 10px;
+        }
+
+        .option:hover {
+            background-color: #f0f8ff;
+            border-color: var(--secondary-color);
+        }
+
+        .option.selected {
+            background-color: #e1f0ff;
+            border-color: var(--secondary-color);
+            font-weight: 600;
+        }
+
+        .option.correct {
+            background-color: #d4edda;
+            border-color: var(--success-color);
+            color: #155724;
+        }
+
+        .option.incorrect {
+            background-color: #f8d7da;
+            border-color: var(--accent-color);
+            color: #721c24;
+        }
+
+        .chart-box {
+            width: 100%;
+            height: 300px;
+            margin-top: 5px;
+        }
+
+        .match-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 12px;
+            padding: 10px;
+            background-color: #f8f9fa;
+            border-radius: 6px;
+            border: 1px solid #e9ecef;
+        }
+
+        .match-select {
+            padding: 8px;
+            border-radius: 6px;
+            border: 1px solid #ccc;
+            font-size: 0.95rem;
+            width: 55%;
+        }
+
+        .explanation {
+            margin-top: 20px;
+            padding: 15px;
+            background-color: #fff3cd;
+            border-left: 5px solid #ffc107;
+            border-radius: 5px;
+            font-size: 0.95rem;
+        }
+
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s;
+            font-size: 1rem;
+            margin-right: 10px;
+            margin-bottom: 10px;
+        }
+
+        .btn-primary { background-color: var(--secondary-color); color: white; }
+        .btn-primary:hover { background-color: #2980b9; }
+        .btn-secondary { background-color: var(--light-color); color: var(--primary-color); border: 1px solid #ddd; }
+        .btn-secondary:hover { background-color: #d5dbdb; }
+
+        .results-container {
+            margin-top: 25px;
+            padding: 20px;
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: var(--shadow);
+            display: none;
+        }
+
+        .score-display { text-align: center; margin-bottom: 20px; }
+        .score-circle {
+            width: 120px; height: 120px; border-radius: 50%;
+            background-color: var(--light-color); display: flex;
+            justify-content: center; align-items: center;
+            margin: 0 auto 20px; font-size: 2.5rem; font-weight: bold;
+            color: var(--primary-color); border: 5px solid var(--secondary-color);
+        }
+
+        .score-circle.low { border-color: var(--accent-color); color: var(--accent-color); }
+        .score-circle.medium { border-color: var(--warning-color); color: var(--warning-color); }
+        .score-circle.high { border-color: var(--success-color); color: var(--success-color); }
+
+        .stats { display: flex; justify-content: space-between; margin-top: 20px; }
+        .stat-box { flex: 1; text-align: center; padding: 15px; background-color: var(--light-color); border-radius: 8px; margin: 0 5px; }
+        .stat-value { font-size: 2rem; font-weight: bold; color: var(--primary-color); }
+        .stat-label { font-size: 0.9rem; color: #7f8c8d; }
+
+        .topic-progress { margin-top: 20px; }
+        .topic-item { display: flex; justify-content: space-between; align-items: center; padding: 8px 0; border-bottom: 1px solid #eee; cursor: pointer; }
+        .topic-item:hover { background-color: #f5f5f5; padding-left: 5px; }
+        .topic-name { flex: 1; font-size: 0.9em; }
+        .topic-status { width: 12px; height: 12px; border-radius: 50%; margin-left: 10px; }
+        .topic-status.correct { background-color: var(--success-color); }
+        .topic-status.incorrect { background-color: var(--accent-color); }
+        .topic-status.unanswered { background-color: #ddd; }
+        .topic-status.answered { background-color: var(--secondary-color); }
+
+        footer { text-align: center; margin-top: 30px; padding: 20px; color: #7f8c8d; font-size: 0.9rem; }
+
+        @media (max-width: 900px) {
+            .exam-container { grid-template-columns: 1fr; }
+            .options-grid-charts { grid-template-columns: 1fr; }
+            .match-row { flex-direction: column; align-items: stretch; gap: 8px; }
+            .match-select { width: 100%; }
+        }
+    </style>
+</head>
+<body>
+    <p style="margin:0;padding:0.6rem 1rem;background:#1553AD;font:0.95rem/1.4 'Segoe UI',Arial,sans-serif"><a href="index.html" style="color:#fff;text-decoration:none">&larr; Estadística Inferencial</a></p>
+    <header>
+        <h1>Simulador del Primer Parcial - Estadística Inferencial</h1>
+        <p class="subtitle">CBASBL061 · UNIMINUTO — Unidad 1: probabilidad y muestreo (sesiones 1 a 5)</p>
+    </header>
+
+    <div class="instructions">
+        <h3>Instrucciones</h3>
+        <p>Este simulador cubre la Unidad 1 completa: conjuntos y eventos, reglas de conteo, probabilidad y sus axiomas, probabilidad condicional e independencia, y muestreo. Son 10 preguntas y la calificación es sobre 5.0. Cada vez que pulses <em>Nuevo Examen Aleatorio</em> el simulador sortea una pregunta distinta de cada tema y baraja el orden de las opciones, así que puedes practicar varias veces sin memorizar respuestas. Al calificar verás la explicación de cada punto.</p>
+    </div>
+
+    <div class="exam-container">
+        <section class="questions-section">
+            <h2>Preguntas del Parcial</h2>
+            <div id="questions-container"></div>
+
+            <div class="button-group" style="margin-top:20px;">
+                <button id="submit-btn" class="btn btn-primary">Calificar Examen</button>
+                <button id="new-exam-btn" class="btn btn-secondary">Nuevo Examen Aleatorio</button>
+            </div>
+        </section>
+
+        <section class="control-panel">
+            <h3>Progreso</h3>
+            <div class="stats">
+                <div class="stat-box">
+                    <div class="stat-value" id="answered-count">0</div>
+                    <div class="stat-label">Respondidas</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-value" id="total-count">10</div>
+                    <div class="stat-label">Total</div>
+                </div>
+            </div>
+
+            <div class="topic-progress">
+                <h4>Navegación:</h4>
+                <div id="topics-list"></div>
+            </div>
+        </section>
+    </div>
+
+    <div class="results-container" id="results-container">
+        <h2>Resultados del Parcial</h2>
+
+        <div class="score-display">
+            <div class="score-circle" id="final-score">0.0</div>
+            <h3>Calificación Final</h3>
+            <p id="score-text">Sobre 5.0 puntos</p>
+        </div>
+
+        <div class="stats">
+            <div class="stat-box">
+                <div class="stat-value" id="correct-count">0</div>
+                <div class="stat-label">Correctas</div>
+            </div>
+            <div class="stat-box">
+                <div class="stat-value" id="incorrect-count">0</div>
+                <div class="stat-label">Incorrectas</div>
+            </div>
+            <div class="stat-box">
+                <div class="stat-value" id="percentage-score">0%</div>
+                <div class="stat-label">Porcentaje</div>
+            </div>
+        </div>
+
+        <div style="text-align: center; margin-top: 20px;">
+            <button id="review-btn" class="btn btn-secondary">Revisar Respuestas</button>
+            <button id="restart-btn" class="btn btn-primary">Intentar Otro Examen</button>
+        </div>
+    </div>
+
+    <footer>
+        <p>Simulador del Primer Parcial de Estadística Inferencial</p>
+    </footer>
+
+    <script>
+        /* ------------------------------------------------------------------
+           Banco de preguntas. Un objeto por tema; cada tema tiene varias
+           variantes y el simulador sortea una. Las explicaciones nunca
+           nombran la opción por su letra, porque el orden se baraja.
+           ------------------------------------------------------------------ */
+        const TEMAS = [
+            {
+                nav: "Vocabulario del curso",
+                variants: [
+                    {
+                        type: "matching",
+                        q: `<p>Relacione cada definición con el concepto que le corresponde. <em>Tenga en cuenta:</em> el menú incluye una opción adicional que no corresponde a ninguna de las definiciones.</p>`,
+                        pairs: [
+                            { id: "p1", correct: "pob", prompt: "Conjunto completo de elementos sobre los que se quiere concluir. Casi nunca se observa entero." },
+                            { id: "p2", correct: "mue", prompt: "Subconjunto que sí se observa y sobre el que se hacen los cálculos." },
+                            { id: "p3", correct: "par", prompt: "Número que describe al conjunto completo, como $\\mu$, $\\sigma$ o $p$. Es fijo y desconocido." },
+                            { id: "p4", correct: "est", prompt: "Número calculado con los datos observados, como $\\bar{x}$, $s$ o $\\hat{p}$. Cambia de una observación a otra." }
+                        ],
+                        options: [
+                            { val: "", text: "-- Seleccionar concepto --" },
+                            { val: "pob", text: "Población" },
+                            { val: "mue", text: "Muestra" },
+                            { val: "par", text: "Parámetro" },
+                            { val: "est", text: "Estadístico" },
+                            { val: "mar", text: "Marco muestral" }
+                        ],
+                        explanation: "Ésta es la distinción central del curso: el <strong>parámetro</strong> ($\\mu$, $\\sigma$, $p$) describe a la <strong>población</strong> y es fijo pero desconocido; el <strong>estadístico</strong> ($\\bar{x}$, $s$, $\\hat{p}$) se calcula con la <strong>muestra</strong> y es aleatorio, porque cambia con cada muestra que se tome. El <strong>marco muestral</strong> era el distractor: no es un conjunto ni un número, sino la lista de la que se extrae la muestra (una base de datos, un registro, un censo)."
+                    },
+                    {
+                        type: "matching",
+                        q: `<p>Relacione cada definición con el concepto que le corresponde. <em>Tenga en cuenta:</em> el menú incluye una opción adicional que no corresponde a ninguna de las definiciones.</p>`,
+                        pairs: [
+                            { id: "p1", correct: "exp", prompt: "Proceso que se puede repetir en las mismas condiciones y del que se conocen todos los resultados posibles, pero no cuál de ellos ocurrirá." },
+                            { id: "p2", correct: "esp", prompt: "Conjunto de todos los resultados posibles de ese proceso. Se denota $\\Omega$." },
+                            { id: "p3", correct: "eve", prompt: "Cualquier subconjunto del conjunto anterior. Ocurre si el resultado observado le pertenece." },
+                            { id: "p4", correct: "imp", prompt: "Subconjunto que no contiene ningún resultado, de modo que nunca llega a ocurrir." }
+                        ],
+                        options: [
+                            { val: "", text: "-- Seleccionar concepto --" },
+                            { val: "exp", text: "Experimento aleatorio" },
+                            { val: "esp", text: "Espacio muestral" },
+                            { val: "eve", text: "Evento" },
+                            { val: "imp", text: "Evento imposible" },
+                            { val: "seg", text: "Evento seguro" }
+                        ],
+                        explanation: "Todo problema de probabilidad empieza por escribir $\\Omega$, el <strong>espacio muestral</strong> del <strong>experimento aleatorio</strong>; cualquier subconjunto suyo es un <strong>evento</strong>. El conjunto vacío $\\emptyset$ es el <strong>evento imposible</strong> y $\\Omega$ mismo es el <strong>evento seguro</strong>, que era el distractor: siempre ocurre, en vez de no ocurrir nunca. Ambos son eventos legítimos, aunque uno sea todo y el otro nada."
+                    }
+                ]
+            },
+            {
+                nav: "Eventos y afirmaciones",
+                variants: [
+                    {
+                        type: "mcq",
+                        q: "De las siguientes cuatro afirmaciones sobre un estudio, ¿cuál es de naturaleza inferencial?",
+                        a: [
+                            "«Con 95 % de confianza, el gasto promedio de todos los clientes está entre 215 y 239 mil pesos.»",
+                            "«De los 200 clientes encuestados, 130 se declararon satisfechos.»",
+                            "«El gasto promedio de los clientes encuestados fue de 227 mil pesos.»",
+                            "«En la muestra revisada, 45 de los 60 pedidos llegaron a tiempo.»"
+                        ],
+                        c: 0,
+                        explanation: "La señal que las distingue: si la frase habla solo de los casos que se midieron, es <strong>descripción</strong>; si habla de casos que no se midieron, es <strong>inferencia</strong>, y entonces tiene que venir acompañada de una medida de incertidumbre. Las otras tres se limitan a resumir lo observado; solo la del intervalo se atreve a hablar de <em>todos</em> los clientes, y por eso declara su nivel de confianza."
+                    },
+                    {
+                        type: "mcq",
+                        q: "Se lanza un dado corriente una vez, de modo que $\\Omega = \\{1,2,3,4,5,6\\}$. Se definen los eventos $A = \\{2,4,6\\}$ y $B = \\{4,5,6\\}$. ¿Cuál es el resultado de $A \\cap B^c$?",
+                        a: ["$\\{2\\}$", "$\\{4,6\\}$", "$\\{5\\}$", "$\\{2,4,5,6\\}$"],
+                        c: 0,
+                        explanation: "El complemento es todo lo que no está en $B$: $B^c = \\{1,2,3\\}$. Al intersecarlo con $A = \\{2,4,6\\}$ queda únicamente el 2. Es la diferencia $A \\setminus B$, que ocurre cuando pasa $A$ pero no $B$: en efecto, $A \\setminus B = A \\cap B^c$. Los otros resultados corresponden a $A \\cap B = \\{4,6\\}$, a $B \\setminus A = \\{5\\}$ y a $A \\cup B = \\{2,4,5,6\\}$."
+                    },
+                    {
+                        type: "mcq",
+                        q: "Se lanzan dos dados corrientes y se observa el par de resultados obtenido. ¿Cuántos elementos tiene el espacio muestral $\\Omega$?",
+                        a: ["36", "11", "12", "21"],
+                        c: 0,
+                        explanation: "Cada dado tiene 6 resultados y los dos lanzamientos son etapas sucesivas, así que por el principio de la multiplicación $\\#\\Omega = 6 \\times 6 = 36$ pares ordenados. Cuidado con el 11: ése es el número de valores distintos que puede tomar <em>la suma</em> (de 2 a 12), pero esos once resultados no son igualmente probables y por eso no sirven como espacio muestral para aplicar Laplace."
+                    }
+                ]
+            },
+            {
+                nav: "Conteo por etapas",
+                variants: [
+                    {
+                        type: "mcq",
+                        q: "Una empresa asigna códigos de inventario formados por 2 letras (alfabeto de 26) seguidas de 3 dígitos (del 0 al 9). Se permite repetir tanto letras como dígitos. ¿Cuántos códigos distintos existen?",
+                        a: ["676 000", "650 000", "17 576 000", "1 000"],
+                        c: 0,
+                        explanation: "El código se arma en cinco etapas sucesivas y las etapas se multiplican: $26 \\times 26 \\times 10 \\times 10 \\times 10 = 26^2 \\cdot 10^3 = 676\\,000$. Como se permite repetir, cada etapa conserva todas sus opciones; si las dos letras tuvieran que ser distintas la segunda tendría solo 25 y el resultado sería 650 000."
+                    },
+                    {
+                        type: "mcq",
+                        q: "Un restaurante ofrece 3 entradas, 4 platos fuertes y 2 postres. ¿Cuántas comidas distintas de tres tiempos se pueden armar eligiendo uno de cada grupo?",
+                        a: ["24", "9", "12", "48"],
+                        c: 0,
+                        explanation: "Se elige una entrada <em>y</em> un plato fuerte <em>y</em> un postre: son etapas sucesivas de una misma tarea, así que se multiplican: $3 \\times 4 \\times 2 = 24$. El 9 sale de sumar (3 + 4 + 2), que es lo que correspondería si las opciones fueran alternativas excluyentes en vez de etapas."
+                    },
+                    {
+                        type: "mcq",
+                        q: "Para desplazarse al trabajo, un empleado puede tomar el bus (4 rutas posibles) o el metro (2 líneas posibles), pero nunca ambos en el mismo viaje. ¿De cuántas maneras distintas puede hacer el desplazamiento?",
+                        a: ["6", "8", "4", "2"],
+                        c: 0,
+                        explanation: "Aquí no hay etapas sucesivas sino <strong>alternativas excluyentes</strong>: se va en bus <em>o</em> en metro, nunca ambos. Por eso se aplica la regla de la suma, $4 + 2 = 6$, y no la de la multiplicación, que daría 8 y correspondería a una situación en la que se usaran los dos medios en el mismo viaje."
+                    }
+                ]
+            },
+            {
+                nav: "Permutación o combinación",
+                variants: [
+                    {
+                        type: "mcq",
+                        q: "Un área de una empresa tiene 8 empleados y se quiere formar un comité de 3 personas con los cargos de presidente, secretario y tesorero. ¿De cuántas maneras distintas se puede conformar?",
+                        a: ["336", "56", "512", "40 320"],
+                        c: 0,
+                        explanation: "Como los tres puestos son cargos distintos, cambiar el orden produce un comité diferente y por lo tanto el orden importa: $P(8,3) = \\dfrac{8!}{5!} = 8 \\cdot 7 \\cdot 6 = 336$. El 56 es $C(8,3)$, que sería la respuesta si el comité no tuviera cargos; de hecho $336 = 56 \\times 3!$, porque los mismos tres nombres producen $3! = 6$ comités distintos según quién ocupe cada puesto."
+                    },
+                    {
+                        type: "mcq",
+                        q: "Un área de una empresa tiene 8 empleados y se quiere elegir a 3 de ellos para un comité en el que no hay cargos definidos: los tres cumplen la misma función. ¿De cuántas maneras distintas se puede conformar?",
+                        a: ["56", "336", "24", "120"],
+                        c: 0,
+                        explanation: "Sin cargos, intercambiar dos nombres no produce un comité nuevo, así que el orden no importa: $C(8,3) = \\dfrac{8!}{3!\\,5!} = 56$. El 336 es $P(8,3)$, el conteo que corresponde cuando sí hay cargos; la relación entre ambos es $C(n,r) = P(n,r)/r!$."
+                    },
+                    {
+                        type: "mcq",
+                        q: "¿En cuál de las siguientes situaciones el orden <strong>no</strong> importa, de modo que el conteo debe hacerse con combinaciones?",
+                        a: [
+                            "Los tres números ganadores de una lotería, que se anuncian sin distinguir cuál salió primero",
+                            "El podio de una competencia: primer, segundo y tercer lugar",
+                            "Una clave de acceso de cuatro dígitos",
+                            "Los cargos de presidente y secretario de un comité"
+                        ],
+                        c: 0,
+                        explanation: "El criterio es siempre el mismo: <em>¿cambiar el orden produce un resultado diferente?</em> En la lotería los mismos tres números son el mismo resultado sin importar en qué orden salieron, así que se cuenta con $C(n,r)$. En el podio, en la clave y en los cargos el orden sí distingue resultados, y por eso corresponden a $P(n,r)$ o, si además se permite repetir como en la clave, a $n^r$."
+                    },
+                    {
+                        type: "mcq",
+                        q: "¿Cuántas palabras distintas (con o sin sentido) se pueden formar reordenando todas las letras de la palabra <strong>BANANA</strong>?",
+                        a: ["60", "720", "120", "30"],
+                        c: 0,
+                        explanation: "Son 6 letras, pero con repeticiones: 3 letras A, 2 letras N y 1 letra B. Los ordenamientos distinguibles son $\\dfrac{6!}{3!\\,2!\\,1!} = \\dfrac{720}{12} = 60$. El 720 es $6!$, que sería la respuesta si las seis letras fueran distintas; se divide entre los factoriales de los repetidos porque intercambiar dos letras A no produce una palabra nueva."
+                    }
+                ]
+            },
+            {
+                nav: "Regla de Laplace",
+                variants: [
+                    {
+                        type: "mcq",
+                        q: "Se extrae una carta al azar de una baraja inglesa de 52 cartas, que tiene 4 ases. ¿Cuál es la probabilidad de que la carta extraída sea un as?",
+                        a: ["0,0769", "0,2500", "0,3077", "0,0192"],
+                        c: 0,
+                        explanation: "Todas las cartas tienen la misma probabilidad de salir, así que aplica la regla de Laplace: $P(A) = \\dfrac{\\#A}{\\#\\Omega} = \\dfrac{4}{52} = \\dfrac{1}{13} = 0{,}0769$. El 0,2500 corresponde a sacar un corazón (13 de 52) y el 0,0192 a una carta específica (1 de 52)."
+                    },
+                    {
+                        type: "mcq",
+                        q: "Se lanzan dos dados corrientes y se suman los puntos obtenidos. ¿Cuál es la probabilidad de que la suma sea exactamente 7?",
+                        a: ["0,1667", "0,0909", "0,0278", "0,1944"],
+                        c: 0,
+                        explanation: "Hay que trabajar con los 36 pares ordenados, que sí son equiprobables. La suma 7 se obtiene con $\\{(1,6),(2,5),(3,4),(4,3),(5,2),(6,1)\\}$, es decir 6 casos favorables: $P = 6/36 = 0{,}1667$. El 0,0909 es la trampa clásica: viene de contar los 11 valores posibles de la suma (de 2 a 12) y hacer $1/11$, pero esos once resultados <strong>no</strong> son igualmente probables, así que Laplace no se puede aplicar sobre ellos."
+                    },
+                    {
+                        type: "mcq",
+                        q: "Se lanza una moneda corriente tres veces seguidas. ¿Cuál es la probabilidad de obtener exactamente dos caras?",
+                        a: ["0,3750", "0,5000", "0,1250", "0,6667"],
+                        c: 0,
+                        explanation: "El espacio muestral tiene $2^3 = 8$ secuencias igualmente probables. Las que tienen exactamente dos caras son $C(3,2) = 3$: CCS, CSC y SCC. Por lo tanto $P = 3/8 = 0{,}3750$. El 0,1250 corresponde a una secuencia concreta ($1/8$) y el 0,5000 a la probabilidad de cara en un solo lanzamiento."
+                    }
+                ]
+            },
+            {
+                nav: "Suma y complemento",
+                variants: [
+                    {
+                        type: "mcq",
+                        q: "Se extrae una carta al azar de una baraja inglesa de 52 cartas: hay 4 ases y 13 corazones. ¿Cuál es la probabilidad de que la carta sea un as o un corazón?",
+                        a: ["0,3077", "0,3269", "0,2500", "0,0769"],
+                        c: 0,
+                        explanation: "Los dos eventos no son excluyentes, porque el as de corazones pertenece a ambos. Hay que descontar la intersección: $P(\\text{As} \\cup \\heartsuit) = \\dfrac{4}{52} + \\dfrac{13}{52} - \\dfrac{1}{52} = \\dfrac{16}{52} = 0{,}3077$. El 0,3269 es $17/52$, el resultado de sumar sin restar, que cuenta dos veces el as de corazones."
+                    },
+                    {
+                        type: "mcq",
+                        q: "Se lanzan dos dados corrientes, de modo que $\\#\\Omega = 36$. ¿Cuál es la probabilidad de que aparezca al menos un 6?",
+                        a: ["0,3056", "0,1667", "0,2778", "0,6944"],
+                        c: 0,
+                        explanation: "El camino corto es el complemento: «ningún 6» significa que ambos dados caen en $\\{1,\\dots,5\\}$, y eso ocurre en $5 \\times 5 = 25$ de los 36 pares. Entonces $P(\\text{al menos un } 6) = 1 - \\dfrac{25}{36} = \\dfrac{11}{36} = 0{,}3056$. El 0,6944 es justamente $25/36$, es decir el complemento sin invertir; el 0,2778 sale de sumar $6/36 + 6/36$ sin descontar el par $(6,6)$, que se contaría dos veces."
+                    },
+                    {
+                        type: "mcq",
+                        q: "En un estudio se sabe que la probabilidad de que un pedido llegue tarde es 0,30. ¿Cuál es la probabilidad de que un pedido <strong>no</strong> llegue tarde?",
+                        a: ["0,70", "0,30", "0,60", "1,30"],
+                        c: 0,
+                        explanation: "Por la regla del complemento, $P(A^c) = 1 - P(A) = 1 - 0{,}30 = 0{,}70$. Un evento y su complemento forman siempre una partición del espacio muestral, así que sus probabilidades tienen que sumar exactamente 1; por eso 1,30 es imposible, ya que ninguna probabilidad puede pasar de 1."
+                    },
+                    {
+                        type: "mcq",
+                        q: "Un estudiante calcula la probabilidad de cuatro eventos distintos y obtiene los valores que se listan a continuación. ¿Cuál de ellos indica con certeza que hubo un error de cálculo?",
+                        a: ["$P(A) = -0{,}15$", "$P(A) = 0$", "$P(A) = 1$", "$P(A) = 0{,}999$"],
+                        c: 0,
+                        explanation: "El primer axioma de Kolmogórov es la no negatividad: $P(A) \\ge 0$ para todo evento, y de los axiomas se deduce que $0 \\le P(A) \\le 1$. Una probabilidad negativa es imposible. Los otros tres valores son perfectamente válidos: 0 corresponde al evento imposible, 1 al evento seguro y 0,999 a un evento muy probable pero no seguro."
+                    }
+                ]
+            },
+            {
+                nav: "Probabilidad condicional",
+                variants: [
+                    {
+                        type: "mcq",
+                        q: `<p>Una empresa tiene 500 empleados, distribuidos así según su área y según si recibieron o no la capacitación:</p>
+                            <div class="table-container">
+                            <table>
+                                <tr><th>&nbsp;</th><th>Capacitado</th><th>No capacitado</th><th>Total</th></tr>
+                                <tr><td>Ventas</td><td>90</td><td>110</td><td>200</td></tr>
+                                <tr><td>Operaciones</td><td>90</td><td>210</td><td>300</td></tr>
+                                <tr><td><strong>Total</strong></td><td><strong>180</strong></td><td><strong>320</strong></td><td><strong>500</strong></td></tr>
+                            </table>
+                            </div>
+                            <p>Sean $V$ = «el empleado es del área de Ventas» y $C$ = «el empleado está capacitado». Se elige un empleado al azar y resulta ser de Ventas. ¿Cuál es la probabilidad de que esté capacitado?</p>`,
+                        a: ["0,4500", "0,1800", "0,5000", "0,3600"],
+                        c: 0,
+                        explanation: "Se pide $P(C \\mid V)$: condicionar es reducir el espacio muestral, de modo que ya no se mira a los 500 empleados sino solo a los 200 de Ventas. De ellos, 90 están capacitados: $P(C \\mid V) = \\dfrac{90}{200} = 0{,}4500$. El 0,1800 es la conjunta $P(V \\cap C) = 90/500$ (sin reducir el espacio) y el 0,5000 es $P(V \\mid C) = 90/180$, que invierte el condicionamiento."
+                    },
+                    {
+                        type: "mcq",
+                        q: `<p>Una empresa tiene 500 empleados, distribuidos así según su área y según si recibieron o no la capacitación:</p>
+                            <div class="table-container">
+                            <table>
+                                <tr><th>&nbsp;</th><th>Capacitado</th><th>No capacitado</th><th>Total</th></tr>
+                                <tr><td>Ventas</td><td>90</td><td>110</td><td>200</td></tr>
+                                <tr><td>Operaciones</td><td>90</td><td>210</td><td>300</td></tr>
+                                <tr><td><strong>Total</strong></td><td><strong>180</strong></td><td><strong>320</strong></td><td><strong>500</strong></td></tr>
+                            </table>
+                            </div>
+                            <p>Sean $V$ = «el empleado es del área de Ventas» y $C$ = «el empleado está capacitado». Se elige un empleado al azar entre los que sí recibieron la capacitación. ¿Cuál es la probabilidad de que sea del área de Ventas?</p>`,
+                        a: ["0,5000", "0,4500", "0,1800", "0,4000"],
+                        c: 0,
+                        explanation: "Ahora el espacio muestral se reduce a los 180 capacitados, de los cuales 90 son de Ventas: $P(V \\mid C) = \\dfrac{90}{180} = 0{,}5000$. Compárelo con $P(C \\mid V) = 90/200 = 0{,}4500$: son cantidades distintas aunque compartan el mismo numerador. Invertir el condicionamiento es uno de los errores más frecuentes de la unidad."
+                    },
+                    {
+                        type: "mcq",
+                        q: "En una urna hay 10 bolas: 6 blancas y 4 negras. Se extraen dos bolas, una tras otra y <strong>sin devolver</strong> la primera a la urna. Si la primera bola extraída resultó blanca, ¿cuál es la probabilidad de que la segunda también lo sea?",
+                        a: ["0,5556", "0,6000", "0,3333", "0,4444"],
+                        c: 0,
+                        explanation: "Después de sacar una blanca quedan 9 bolas en la urna, de las cuales 5 son blancas: $P(B_2 \\mid B_1) = \\dfrac{5}{9} = 0{,}5556$. El 0,6000 es $P(B_1) = 6/10$, la probabilidad <em>antes</em> de la primera extracción; que ambos valores sean distintos es precisamente la prueba de que, sin reemplazo, las extracciones no son independientes."
+                    },
+                    {
+                        type: "mcq",
+                        q: "En una caja hay 12 productos, de los cuales 4 son defectuosos. Se extraen 2 productos uno tras otro, sin devolver el primero a la caja. ¿Cuál es la probabilidad de que los dos resulten defectuosos?",
+                        a: ["0,0909", "0,1111", "0,3333", "0,0606"],
+                        c: 0,
+                        explanation: "Por la regla de la multiplicación, $P(A \\cap B) = P(A)\\,P(B \\mid A) = \\dfrac{4}{12} \\times \\dfrac{3}{11} = \\dfrac{12}{132} = 0{,}0909$. La segunda fracción ya está condicionada: después de sacar un defectuoso quedan 11 productos y solo 3 defectuosos. El 0,1111 sale de tratar las extracciones como independientes, $(4/12)^2$, que sería el resultado <em>con</em> reemplazo; sin reemplazo las extracciones son dependientes."
+                    },
+                    {
+                        type: "mcq",
+                        q: "En una urna hay 10 bolas: 6 blancas y 4 negras. Se extraen dos bolas sin reemplazo. ¿Cuál es la probabilidad de que <strong>al menos una</strong> sea blanca?",
+                        a: ["0,8667", "0,3333", "0,5333", "0,6000"],
+                        c: 0,
+                        explanation: "El camino corto es el complemento: «al menos una blanca» es lo contrario de «ninguna blanca», es decir de que las dos sean negras. Como $P(NN) = \\dfrac{4}{10} \\times \\dfrac{3}{9} = 0{,}1333$, resulta $P(\\text{al menos una blanca}) = 1 - 0{,}1333 = 0{,}8667$. El 0,3333 es $P(BB)$ y el 0,5333 es la probabilidad de sacar una de cada color; esos tres casos son excluyentes y sus probabilidades suman 1."
+                    }
+                ]
+            },
+            {
+                nav: "Independencia",
+                variants: [
+                    {
+                        type: "mcq",
+                        q: "En una empresa de 500 empleados se sabe que $P(V) = 0{,}40$ para el área de Ventas y $P(C) = 0{,}36$ para haber recibido la capacitación, mientras que la probabilidad conjunta es $P(V \\cap C) = 0{,}18$. ¿Qué se concluye sobre estos dos eventos?",
+                        a: [
+                            "No son independientes, porque $P(V)\\,P(C) = 0{,}144$ y ese valor no coincide con $P(V \\cap C) = 0{,}18$",
+                            "Son independientes, porque los dos eventos pueden ocurrir a la vez",
+                            "Son mutuamente excluyentes, porque $P(V \\cap C)$ es distinta de cero",
+                            "Son independientes, porque $P(V \\cap C)$ resulta menor que $P(V)$"
+                        ],
+                        c: 0,
+                        explanation: "La independencia se verifica comparando el producto de las probabilidades con la conjunta: $P(V)\\,P(C) = 0{,}40 \\times 0{,}36 = 0{,}144$, que no es igual a 0,18. Como la conjunta observada es mayor que la esperada bajo independencia, en Ventas se capacita más de lo que correspondería por azar. Y no pueden ser excluyentes: precisamente porque $P(V \\cap C) \\neq 0$, sí ocurren a la vez."
+                    },
+                    {
+                        type: "mcq",
+                        q: "Dos eventos $A$ y $B$, ambos con probabilidad mayor que cero, son mutuamente excluyentes. ¿Qué se puede afirmar sobre ellos?",
+                        a: [
+                            "No son independientes: saber que ocurrió uno descarta por completo al otro, así que sí cambia su probabilidad",
+                            "Son independientes, porque no tienen ningún elemento en común",
+                            "Son independientes solo si además $P(A) = P(B)$",
+                            "Cumplen que $P(A \\cup B) = P(A) + P(B) - P(A)\\,P(B)$"
+                        ],
+                        c: 0,
+                        explanation: "Excluyente e independiente son ideas opuestas, no sinónimas. Si $A$ y $B$ son excluyentes, entonces $P(A \\mid B) = 0$, que es distinto de $P(A)$ porque $P(A) > 0$: saber que ocurrió $B$ cambia radicalmente la probabilidad de $A$. De hecho, dos eventos con probabilidad positiva no pueden ser excluyentes e independientes a la vez. Además, al ser excluyentes $P(A \\cap B) = 0$ y la regla de la suma se reduce a $P(A \\cup B) = P(A) + P(B)$."
+                    },
+                    {
+                        type: "mcq",
+                        q: "Una prueba de control de calidad detecta el 92 % de las piezas defectuosas y marca como defectuosa al 6 % de las piezas buenas. Sabiendo que el 5 % de la producción sale defectuosa, el teorema de Bayes arroja $P(D \\mid T^+) = 0{,}4466$. ¿Cómo se interpreta correctamente ese resultado?",
+                        a: [
+                            "De cada 100 piezas que la prueba marca como defectuosas, cerca de 45 lo son realmente",
+                            "De cada 100 piezas defectuosas, cerca de 45 son detectadas por la prueba",
+                            "El 44,66 % de las piezas producidas por la empresa salen defectuosas",
+                            "La prueba acierta en el 44,66 % de todas las piezas que examina"
+                        ],
+                        c: 0,
+                        explanation: "$P(D \\mid T^+)$ se lee «probabilidad de que la pieza sea defectuosa <em>dado que</em> la prueba dio positiva», así que el conjunto de referencia son las piezas marcadas por la prueba. La segunda opción invierte el condicionamiento: ésa sería $P(T^+ \\mid D) = 0{,}92$, la sensibilidad de la prueba, un número muy distinto. La tercera confunde el resultado con la tasa base, que es 5 %."
+                    },
+                    {
+                        type: "mcq",
+                        q: "Una prueba de control de calidad detecta el 92 % de las piezas defectuosas, pero al aplicar el teorema de Bayes resulta que solo el 44,66 % de las piezas que marca como defectuosas lo son de verdad. ¿A qué se debe esa diferencia?",
+                        a: [
+                            "A que las piezas buenas son muchas más, de modo que sus falsas alarmas (57 por cada 1 000) superan a las detecciones correctas (46 por cada 1 000)",
+                            "A que la prueba tiene un error de calibración cercano al 48 %",
+                            "A que $P(D \\mid T^+)$ y $P(T^+ \\mid D)$ son la misma cantidad, así que uno de los dos cálculos está mal",
+                            "A que en el cálculo no se tuvo en cuenta que el 5 % de la producción es defectuosa"
+                        ],
+                        c: 0,
+                        explanation: "Es la trampa de la tasa base. Solo el 5 % de la producción es defectuosa, así que por cada 1 000 piezas hay 50 defectuosas (de las que la prueba detecta 46) y 950 buenas (de las que marca por error 57). Como las falsas alarmas superan a las detecciones correctas, menos de la mitad de las alarmas son reales. La tasa base sí entró en el cálculo: es justamente lo que explica el resultado."
+                    }
+                ]
+            },
+            {
+                nav: "Técnicas de muestreo",
+                variants: [
+                    {
+                        type: "mcq",
+                        q: "Una cadena con 40 sucursales repartidas por todo el país sortea 8 de esas sucursales y encuesta a <strong>todos</strong> los clientes que atienden ese día en las 8 elegidas. ¿Qué técnica de muestreo se está aplicando?",
+                        a: ["Muestreo por conglomerados", "Muestreo estratificado", "Muestreo aleatorio simple", "Muestreo sistemático"],
+                        c: 0,
+                        explanation: "En el muestreo <strong>por conglomerados</strong> se divide la población en grupos, se sortean algunos grupos completos y se observan enteros. Es lo que abarata el trabajo cuando la población está dispersa geográficamente. La confusión habitual es con el estratificado, pero allí se toma una parte <em>de cada</em> grupo, no algunos grupos completos."
+                    },
+                    {
+                        type: "mcq",
+                        q: "Los 4 500 empleados de una empresa se dividen en Operaciones, Administración y Dirección, y se selecciona una parte de cada área, en proporción al tamaño de cada una. ¿Qué técnica de muestreo se está aplicando?",
+                        a: ["Muestreo estratificado", "Muestreo por conglomerados", "Muestreo por cuotas", "Muestreo sistemático"],
+                        c: 0,
+                        explanation: "Es muestreo <strong>estratificado</strong> con afijación proporcional: los estratos son homogéneos por dentro y distintos entre sí, y se toma una parte de cada uno. Así se garantiza que Dirección quede representada, cosa que un aleatorio simple no asegura, ya que es apenas el 10 % de la nómina. No es por cuotas, porque allí la selección dentro de cada grupo la hace el encuestador como pueda, sin probabilidad conocida."
+                    },
+                    {
+                        type: "mcq",
+                        q: "Para un estudio se encuesta a las personas que van pasando por la entrada de un centro comercial, hasta completar el número de respuestas deseado. ¿Qué técnica de muestreo se está aplicando?",
+                        a: ["Muestreo por conveniencia", "Muestreo aleatorio simple", "Muestreo sistemático", "Muestreo estratificado"],
+                        c: 0,
+                        explanation: "Se toma lo que está a la mano, así que es muestreo <strong>por conveniencia</strong>, una técnica no probabilística: no se conoce la probabilidad que tiene cada persona de ser seleccionada y por eso no se puede calcular el error muestral ni generalizar con rigor. No es aleatorio simple, porque quien no pase por esa entrada tiene probabilidad cero de ser encuestado."
+                    },
+                    {
+                        type: "mcq",
+                        q: "Un estudio sobre una población difícil de ubicar pide a cada participante que refiera a otras personas que podrían participar, y así sucesivamente. ¿Qué técnica de muestreo se está aplicando?",
+                        a: ["Muestreo de bola de nieve", "Muestreo por conglomerados", "Muestreo por juicio o intencional", "Muestreo aleatorio simple"],
+                        c: 0,
+                        explanation: "Es el muestreo de <strong>bola de nieve</strong>, otra técnica no probabilística, y resulta útil justamente cuando no existe un marco muestral: se llega a los participantes a través de los ya contactados. En el muestreo por juicio, en cambio, es el investigador quien decide directamente qué casos incluir por considerarlos representativos."
+                    },
+                    {
+                        type: "mcq",
+                        q: "Un estudio publica sus resultados afirmando que tiene «un margen de error del 3 %», pero en la ficha técnica se lee que la muestra se obtuvo encuestando a quienes aceptaron responder un formulario en línea. ¿Qué se puede decir de ese margen?",
+                        a: [
+                            "No significa nada: si la probabilidad de selección es desconocida, el error muestral no se puede calcular",
+                            "Es válido siempre que la muestra haya sido suficientemente grande",
+                            "Es válido, pero debe multiplicarse por dos para compensar el sesgo",
+                            "Solo sería inválido si la población fuera finita"
+                        ],
+                        c: 0,
+                        explanation: "El margen de error solo tiene sentido en el muestreo probabilístico, donde cada elemento tiene una probabilidad conocida y mayor que cero de ser seleccionado. Un formulario que responde quien quiere es muestreo por conveniencia, y allí no hay forma de calcular el error. Aumentar el tamaño tampoco lo arregla: una muestra grande mal elegida es peor que una pequeña bien elegida, porque el tamaño reduce el error aleatorio pero no corrige el sesgo."
+                    },
+                    {
+                        type: "mcq",
+                        q: `<p>Los 4 500 empleados de una empresa se reparten así, y se quiere tomar una muestra estratificada de $n = 300$ con afijación proporcional:</p>
+                            <div class="table-container">
+                            <table>
+                                <tr><th>Área</th><th>Empleados</th></tr>
+                                <tr><td>Operaciones</td><td>2 700</td></tr>
+                                <tr><td>Administración</td><td>1 350</td></tr>
+                                <tr><td>Dirección</td><td>450</td></tr>
+                                <tr><td><strong>Total</strong></td><td><strong>4 500</strong></td></tr>
+                            </table>
+                            </div>
+                            <p>¿Cuántos empleados del área de Dirección deben quedar en la muestra?</p>`,
+                        a: ["30", "100", "45", "10"],
+                        c: 0,
+                        explanation: "La afijación proporcional reparte la muestra según el peso de cada estrato: $n_i = n \\cdot \\dfrac{N_i}{N} = 300 \\cdot \\dfrac{450}{4\\,500} = 30$. El reparto completo queda en 180, 90 y 30 empleados, que suman los 300 de la muestra. El 100 saldría de repartir la muestra en partes iguales entre las tres áreas, lo que sobrerrepresentaría a Dirección."
+                    },
+                    {
+                        type: "mcq",
+                        q: "Se quiere tomar una muestra de $n = 200$ registros de una base de $N = 2\\,000$ que ya está ordenada en una lista. Se elige al azar un punto de arranque y a partir de él se toma un registro cada $k$. ¿Cuánto vale $k$ y de qué técnica se trata?",
+                        a: [
+                            "$k = 10$, muestreo sistemático",
+                            "$k = 10$, muestreo aleatorio simple",
+                            "$k = 200$, muestreo sistemático",
+                            "$k = 4$, muestreo por conglomerados"
+                        ],
+                        c: 0,
+                        explanation: "En el muestreo <strong>sistemático</strong> el salto se calcula como $k = N/n = 2\\,000/200 = 10$: se sortea un arranque entre 1 y 10 y a partir de ahí se toma uno de cada diez. Es la técnica indicada para listas ordenadas y líneas de producción. No es aleatorio simple, porque una vez fijado el arranque toda la muestra queda determinada, y no es por conglomerados, porque no se observan grupos completos."
+                    }
+                ]
+            },
+            {
+                nav: "Tamaño de la muestra",
+                variants: [
+                    {
+                        type: "mcq",
+                        q: "Se quiere estimar la proporción de clientes satisfechos de una cadena con un nivel de confianza del 95 % ($z = 1{,}96$) y un error máximo admitido del 5 %. No hay estudios previos, así que se toma $p = 0{,}5$, y la población es tan grande que se considera infinita. ¿Cuántas encuestas se deben aplicar?",
+                        a: ["385", "384", "271", "1 068"],
+                        c: 0,
+                        explanation: "El cálculo da $\\dfrac{(1{,}96)^2 (0{,}5)(0{,}5)}{(0{,}05)^2} = \\dfrac{0{,}9604}{0{,}0025} = 384{,}16$. Como no se puede encuestar a una fracción de persona y quedarse corto aumentaría el error por encima del 5 %, el tamaño de muestra <strong>siempre se redondea hacia arriba</strong>: 385 encuestas. El 271 corresponde al 90 % de confianza y el 1 068 a un error del 3 %."
+                    },
+                    {
+                        type: "mcq",
+                        q: "Se quiere estimar la proporción de satisfechos entre los 150 usuarios de un servicio, con 95 % de confianza ($z = 1{,}96$), $p = 0{,}5$ y un error máximo admitido del 5 %. ¿Cuántos usuarios se deben encuestar?",
+                        a: ["109", "385", "108", "150"],
+                        c: 0,
+                        explanation: "Como la población es pequeña hay que usar la fórmula con corrección por población finita: $n = \\dfrac{N z^2 p q}{e^2(N-1) + z^2 p q} = \\dfrac{150(0{,}9604)}{0{,}0025(149) + 0{,}9604} = \\dfrac{144{,}06}{1{,}3329} = 108{,}09$, que redondeando hacia arriba da 109 usuarios. El 385 es el error típico de aplicar la fórmula de población infinita: daría un tamaño de muestra mayor que la población entera, lo cual es imposible y es la señal de que se escogió la fórmula equivocada."
+                    },
+                    {
+                        type: "mcq",
+                        q: "Un estudio calculó su tamaño de muestra con un error máximo admitido del 5 %. Ahora se decide exigir el doble de precisión, es decir un error del 2,5 %, manteniendo iguales el nivel de confianza y el valor de $p$. ¿Qué le ocurre al tamaño de muestra?",
+                        a: ["Se multiplica por 4", "Se duplica", "Se reduce a la mitad", "No cambia"],
+                        c: 0,
+                        explanation: "El tamaño de muestra depende de $1/e^2$, de modo que al dividir el error entre 2 el denominador se divide entre 4 y la muestra se cuadruplica. Exigir el doble de precisión cuesta cuatro veces más encuestas: por eso se pasa de 385 a más de 1 500. Es la razón de que casi todos los estudios se queden en un error del 3 % al 5 %."
+                    },
+                    {
+                        type: "mcq",
+                        q: "Al calcular un tamaño de muestra para estimar una proporción, cuando no se tiene ninguna información previa sobre ella se acostumbra tomar $p = 0{,}5$. ¿Por qué?",
+                        a: [
+                            "Porque el producto $p\\,q$ alcanza su máximo en $p = 0{,}5$, de modo que se obtiene el mayor tamaño posible y la estimación queda del lado seguro",
+                            "Porque 0,5 es el promedio entre los valores extremos 0 y 1 que puede tomar una proporción",
+                            "Porque al reemplazar $p = 0{,}5$ la fórmula se simplifica y el valor de $z$ se cancela",
+                            "Porque garantiza que la muestra quede repartida por igual entre hombres y mujeres"
+                        ],
+                        c: 0,
+                        explanation: "El producto $p\\,q = p(1-p)$ vale 0,25 en $p = 0{,}5$ y disminuye hacia los extremos: con $p = 0{,}30$ vale 0,21 y con $p = 0{,}80$ vale 0,16. Como ese producto está en el numerador, tomarlo en su máximo produce el tamaño de muestra más grande y, por tanto, el más conservador: si la proporción real resulta ser otra, el error acabará siendo menor que el prometido, nunca mayor."
+                    },
+                    {
+                        type: "chart_mcq",
+                        q: "Con un nivel de confianza del 95 % y $p = 0{,}5$ sobre una población muy grande, ¿cuál de los siguientes gráficos representa correctamente el tamaño de muestra $n$ que se necesita según el error máximo admitido $e$?",
+                        c: 0,
+                        explanation: "Cuanto menor sea el error que se admite, mayor tiene que ser la muestra, y el crecimiento no es proporcional sino mucho más brusco, porque $n$ depende de $1/e^2$. Los valores correctos son 385 encuestas para un error del 5 %, 1 068 para el 3 % y 2 401 para el 2 %: al reducir el error a menos de la mitad la muestra se multiplica por más de seis.",
+                        charts: [
+                            { type: 'bar', x: ['e = 5 %', 'e = 3 %', 'e = 2 %'], y: [385, 1068, 2401], gap: 0 },
+                            { type: 'bar', x: ['e = 5 %', 'e = 3 %', 'e = 2 %'], y: [2401, 1068, 385], gap: 0 },
+                            { type: 'bar', x: ['e = 5 %', 'e = 3 %', 'e = 2 %'], y: [385, 642, 963], gap: 0 },
+                            { type: 'bar', x: ['e = 5 %', 'e = 3 %', 'e = 2 %'], y: [1000, 1000, 1000], gap: 0 }
+                        ]
+                    },
+                    {
+                        type: "mcq",
+                        q: "Se repite un estudio de proporción con $p = 0{,}5$, un error máximo del 5 % y una población muy grande, pero ahora se exige un nivel de confianza del 99 % ($z = 2{,}576$) en lugar del 95 %. ¿Cuántas encuestas se necesitan?",
+                        a: ["664", "385", "271", "1 068"],
+                        c: 0,
+                        explanation: "El cálculo da $\\dfrac{(2{,}576)^2 (0{,}5)(0{,}5)}{(0{,}05)^2} = \\dfrac{1{,}6590}{0{,}0025} = 663{,}58$, que redondeado hacia arriba son 664 encuestas. Exigir más confianza obliga a una muestra mayor: al 95 % bastaban 385 y al 90 % ($z = 1{,}645$) solo 271. La confianza y la precisión se pagan las dos con tamaño de muestra."
+                    }
+                ]
+            }
+        ];
+
+        let currentExam = [];
+        let userAnswers = {};
+
+        /* ---------------- utilidades ---------------- */
+
+        function shuffle(arr) {
+            for (let i = arr.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [arr[i], arr[j]] = [arr[j], arr[i]];
+            }
+            return arr;
+        }
+
+        function pickOne(arr) {
+            return arr[Math.floor(Math.random() * arr.length)];
+        }
+
+        /* Devuelve una copia de la variante con las opciones barajadas. */
+        function prepare(variant) {
+            const q = JSON.parse(JSON.stringify(variant));
+
+            if (q.type === "mcq") {
+                const correcta = q.a[q.c];
+                q.a = shuffle(q.a.slice());
+                q.c = q.a.indexOf(correcta);
+            } else if (q.type === "chart_mcq") {
+                const correcta = q.charts[q.c];
+                q.charts = shuffle(q.charts.slice());
+                q.c = q.charts.indexOf(correcta);
+                q.charts.forEach((ch, i) => { ch.title = 'Opción ' + String.fromCharCode(65 + i); });
+            } else if (q.type === "matching") {
+                q.pairs = shuffle(q.pairs.slice());
+                const encabezado = q.options[0];
+                q.options = [encabezado].concat(shuffle(q.options.slice(1)));
+            }
+            return q;
+        }
+
+        /* ---------------- construcción del examen ---------------- */
+
+        function generateExam() {
+            currentExam = TEMAS.map(tema => prepare(pickOne(tema.variants)));
+
+            userAnswers = {};
+            document.getElementById('results-container').style.display = 'none';
+            document.getElementById('total-count').innerText = currentExam.length;
+            renderQuestions();
+            renderNavigation();
+            updateProgress();
+        }
+
+        function renderQuestions() {
+            const container = document.getElementById('questions-container');
+            container.innerHTML = '';
+
+            currentExam.forEach((q, idx) => {
+                const card = document.createElement('div');
+                card.className = 'question-card';
+                card.id = `question-${idx}`;
+
+                let html = `
+                    <div class="question-header">
+                        <div class="question-number">${idx + 1}</div>
+                    </div>
+                    <div class="question-text">${q.q}</div>
+                `;
+
+                if (q.type === "matching") {
+                    html += `<div class="matching-container">`;
+                    q.pairs.forEach(pair => {
+                        html += `
+                            <div class="match-row">
+                                <div style="width:42%; font-size:0.95em; color:#333;">${pair.prompt}</div>
+                                <select class="match-select" data-qid="${idx}" data-pairid="${pair.id}" onchange="selectMatch(${idx}, '${pair.id}', this.value)">
+                                    ${q.options.map(opt => `<option value="${opt.val}">${opt.text}</option>`).join('')}
+                                </select>
+                            </div>
+                        `;
+                    });
+                    html += `</div>`;
+                } else if (q.type === "mcq") {
+                    html += `<div class="options-container">`;
+                    q.a.forEach((opt, optIdx) => {
+                        html += `
+                            <div class="option" id="opt-${idx}-${optIdx}" onclick="selectOption(${idx}, ${optIdx})">
+                                <strong>${String.fromCharCode(65 + optIdx)}.</strong>&nbsp;<span>${opt}</span>
+                            </div>
+                        `;
+                    });
+                    html += `</div>`;
+                } else if (q.type === "chart_mcq") {
+                    html += `<div class="options-grid-charts">`;
+                    q.charts.forEach((chart, optIdx) => {
+                        html += `
+                            <div class="option option-chart-card" id="opt-${idx}-${optIdx}" onclick="selectOption(${idx}, ${optIdx})">
+                                <strong>Opción ${String.fromCharCode(65 + optIdx)}</strong>
+                                <div id="chart-container-${idx}-${optIdx}" class="chart-box"></div>
+                            </div>
+                        `;
+                    });
+                    html += `</div>`;
+                }
+
+                html += `<div id="explanation-${idx}" class="explanation" style="display:none;"></div>`;
+                card.innerHTML = html;
+                container.appendChild(card);
+
+                if (q.type === "chart_mcq") {
+                    setTimeout(() => renderChartsForQuestion(q, idx), 50);
+                }
+            });
+
+            if (window.MathJax && MathJax.typesetPromise) {
+                MathJax.typesetPromise();
+            }
+        }
+
+        function renderChartsForQuestion(q, qIdx) {
+            q.charts.forEach((c, optIdx) => {
+                const targetId = `chart-container-${qIdx}-${optIdx}`;
+                let data = [];
+                let layout = {
+                    title: { text: c.title, font: { size: 12 } },
+                    margin: { l: 30, r: 20, t: 30, b: 30 },
+                    autosize: true
+                };
+
+                if (c.type === 'pie') {
+                    data = [{ labels: c.labels, values: c.values, type: 'pie', textinfo: 'label+percent' }];
+                } else if (c.type === 'bar') {
+                    data = [{ x: c.x, y: c.y, type: 'bar', marker: { color: '#3498db' } }];
+                    layout.xaxis = { tickangle: -45, automargin: true, tickfont: { size: 10 } };
+                    layout.yaxis = { automargin: true };
+                    if (c.gap === 0) {
+                        layout.bargap = 0.05;
+                    }
+                }
+                Plotly.newPlot(targetId, data, layout, { responsive: true, displayModeBar: false });
+            });
+        }
+
+        /* ---------------- interacción ---------------- */
+
+        function selectOption(qIdx, optIdx) {
+            userAnswers[qIdx] = optIdx;
+            const card = document.getElementById(`question-${qIdx}`);
+            const options = card.querySelectorAll('.option');
+            options.forEach((opt, i) => {
+                if (i === optIdx) opt.classList.add('selected');
+                else opt.classList.remove('selected');
+            });
+            updateProgress();
+        }
+
+        function selectMatch(qIdx, pairId, value) {
+            if (!userAnswers[qIdx]) userAnswers[qIdx] = {};
+            userAnswers[qIdx][pairId] = value;
+            updateProgress();
+        }
+
+        function isAnswered(idx) {
+            const respuesta = userAnswers[idx];
+            if (respuesta === undefined) return false;
+            if (currentExam[idx].type === "matching") {
+                const total = currentExam[idx].pairs.length;
+                return Object.keys(respuesta).length === total &&
+                       Object.values(respuesta).every(v => v !== "");
+            }
+            return true;
+        }
+
+        function updateProgress() {
+            let answered = 0;
+
+            currentExam.forEach((_, idx) => {
+                const completa = isAnswered(idx);
+                if (completa) answered++;
+
+                const navItem = document.getElementById(`nav-item-${idx}`);
+                if (navItem) {
+                    const statusDot = navItem.querySelector('.topic-status');
+                    statusDot.className = `topic-status ${completa ? 'answered' : 'unanswered'}`;
+                }
+            });
+
+            document.getElementById('answered-count').innerText = answered;
+        }
+
+        function renderNavigation() {
+            const list = document.getElementById('topics-list');
+            list.innerHTML = '';
+
+            TEMAS.forEach((tema, idx) => {
+                const item = document.createElement('div');
+                item.className = 'topic-item';
+                item.id = `nav-item-${idx}`;
+                item.onclick = () => {
+                    document.getElementById(`question-${idx}`).scrollIntoView({ behavior: 'smooth' });
+                };
+                item.innerHTML = `
+                    <span class="topic-name">${idx + 1}. ${tema.nav}</span>
+                    <span class="topic-status unanswered"></span>
+                `;
+                list.appendChild(item);
+            });
+        }
+
+        /* ---------------- calificación ---------------- */
+
+        function submitExam() {
+            let correctCount = 0;
+            const total = currentExam.length;
+
+            currentExam.forEach((q, idx) => {
+                const card = document.getElementById(`question-${idx}`);
+                const expDiv = document.getElementById(`explanation-${idx}`);
+                let isCorrect = false;
+
+                if (q.type === "matching") {
+                    const userPairs = userAnswers[idx] || {};
+                    isCorrect = q.pairs.every(pair => userPairs[pair.id] === pair.correct);
+
+                    card.querySelectorAll('.match-select').forEach(sel => {
+                        const pair = q.pairs.find(p => p.id === sel.dataset.pairid);
+                        const fila = sel.closest('.match-row');
+                        if (sel.value === pair.correct) {
+                            fila.style.borderColor = 'var(--success-color)';
+                            fila.style.backgroundColor = '#d4edda';
+                        } else {
+                            fila.style.borderColor = 'var(--accent-color)';
+                            fila.style.backgroundColor = '#f8d7da';
+                        }
+                    });
+                } else {
+                    isCorrect = (userAnswers[idx] === q.c);
+                    const options = card.querySelectorAll('.option');
+                    options.forEach((opt, optIdx) => {
+                        if (optIdx === q.c) opt.classList.add('correct');
+                        else if (optIdx === userAnswers[idx]) opt.classList.add('incorrect');
+                    });
+                }
+
+                if (isCorrect) correctCount++;
+
+                expDiv.innerHTML = `<strong>Explicación:</strong> ${q.explanation}`;
+                expDiv.style.display = 'block';
+
+                const navItem = document.getElementById(`nav-item-${idx}`);
+                if (navItem) {
+                    const statusDot = navItem.querySelector('.topic-status');
+                    statusDot.className = `topic-status ${isCorrect ? 'correct' : 'incorrect'}`;
+                }
+            });
+
+            if (window.MathJax && MathJax.typesetPromise) {
+                MathJax.typesetPromise();
+            }
+
+            const score = (correctCount / total) * 5;
+            const percentage = (correctCount / total) * 100;
+
+            const resultBox = document.getElementById('results-container');
+            const scoreCircle = document.getElementById('final-score');
+
+            scoreCircle.innerText = score.toFixed(1);
+            scoreCircle.className = `score-circle ${score >= 4 ? 'high' : score >= 3 ? 'medium' : 'low'}`;
+
+            document.getElementById('correct-count').innerText = correctCount;
+            document.getElementById('incorrect-count').innerText = total - correctCount;
+            document.getElementById('percentage-score').innerText = `${percentage.toFixed(1)}%`;
+
+            resultBox.style.display = 'block';
+            resultBox.scrollIntoView({ behavior: 'smooth' });
+        }
+
+        document.getElementById('submit-btn').addEventListener('click', submitExam);
+        document.getElementById('new-exam-btn').addEventListener('click', generateExam);
+        document.getElementById('restart-btn').addEventListener('click', generateExam);
+        document.getElementById('review-btn').addEventListener('click', () => {
+            document.querySelector('.questions-section').scrollIntoView({ behavior: 'smooth' });
+        });
+
+        document.addEventListener('DOMContentLoaded', generateExam);
+    </script>
+</body>
+</html>

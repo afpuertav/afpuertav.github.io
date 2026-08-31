@@ -1,0 +1,1224 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simulador del Primer Parcial - Matemáticas Operativas</title>
+
+    <script>
+        window.MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                displayMath: [['$$', '$$'], ['\\[', '\\]']],
+                processEscapes: true
+            },
+            svg: { fontCache: 'global' },
+            startup: { pageReady: () => MathJax.typesetPromise().catch(err => console.log(err)) }
+        };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
+
+    <style>
+        :root {
+            --primary-color: #2c3e50;
+            --secondary-color: #3498db;
+            --accent-color: #e74c3c;
+            --light-color: #ecf0f1;
+            --success-color: #27ae60;
+            --warning-color: #f39c12;
+            --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: #f5f7fa;
+            color: #333;
+            line-height: 1.6;
+            padding: 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding: 20px;
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: var(--shadow);
+        }
+
+        h1 {
+            color: var(--primary-color);
+            margin-bottom: 10px;
+            font-size: 2.2rem;
+        }
+
+        .subtitle {
+            color: var(--secondary-color);
+            font-size: 1.1rem;
+            margin-bottom: 20px;
+        }
+
+        .instructions {
+            background-color: var(--light-color);
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 25px;
+            border-left: 5px solid var(--secondary-color);
+        }
+
+        .instructions h3 {
+            color: var(--primary-color);
+            margin-bottom: 10px;
+        }
+
+        .exam-container {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 25px;
+        }
+
+        .questions-section {
+            background-color: white;
+            padding: 25px;
+            border-radius: 10px;
+            box-shadow: var(--shadow);
+        }
+
+        .control-panel {
+            background-color: white;
+            padding: 25px;
+            border-radius: 10px;
+            box-shadow: var(--shadow);
+            height: fit-content;
+            position: sticky;
+            top: 20px;
+        }
+
+        .question-card {
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid #eee;
+            scroll-margin-top: 20px;
+        }
+
+        .question-card:last-child {
+            border-bottom: none;
+        }
+
+        .question-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .question-number {
+            background-color: var(--primary-color);
+            color: white;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+        }
+
+        .question-text {
+            margin-bottom: 20px;
+            font-size: 1.1rem;
+            line-height: 1.5;
+        }
+
+        .question-text p + p { margin-top: 10px; }
+
+        .table-container {
+            margin: 15px 0;
+            padding: 15px;
+            background-color: #f9f9f9;
+            border-radius: 8px;
+            overflow-x: auto;
+        }
+
+        table { width: 100%; border-collapse: collapse; margin: 10px 0; font-size: 0.95em; }
+        th { background-color: var(--primary-color); color: white; padding: 10px; text-align: center; border: 1px solid #ddd; }
+        td { padding: 8px; text-align: center; border: 1px solid #ddd; }
+        tr:nth-child(even) { background-color: #f2f2f2; }
+
+        .options-container {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .options-grid-charts {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+
+        .option {
+            padding: 12px 15px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+        }
+
+        .option-chart-card {
+            flex-direction: column;
+            align-items: flex-start;
+            padding: 10px;
+        }
+
+        .option:hover {
+            background-color: #f0f8ff;
+            border-color: var(--secondary-color);
+        }
+
+        .option.selected {
+            background-color: #e1f0ff;
+            border-color: var(--secondary-color);
+            font-weight: 600;
+        }
+
+        .option.correct {
+            background-color: #d4edda;
+            border-color: var(--success-color);
+            color: #155724;
+        }
+
+        .option.incorrect {
+            background-color: #f8d7da;
+            border-color: var(--accent-color);
+            color: #721c24;
+        }
+
+        .chart-box {
+            width: 100%;
+            height: 300px;
+            margin-top: 5px;
+        }
+
+        .match-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 12px;
+            padding: 10px;
+            background-color: #f8f9fa;
+            border-radius: 6px;
+            border: 1px solid #e9ecef;
+        }
+
+        .match-select {
+            padding: 8px;
+            border-radius: 6px;
+            border: 1px solid #ccc;
+            font-size: 0.95rem;
+            width: 55%;
+        }
+
+        .explanation {
+            margin-top: 20px;
+            padding: 15px;
+            background-color: #fff3cd;
+            border-left: 5px solid #ffc107;
+            border-radius: 5px;
+            font-size: 0.95rem;
+        }
+
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s;
+            font-size: 1rem;
+            margin-right: 10px;
+            margin-bottom: 10px;
+        }
+
+        .btn-primary { background-color: var(--secondary-color); color: white; }
+        .btn-primary:hover { background-color: #2980b9; }
+        .btn-secondary { background-color: var(--light-color); color: var(--primary-color); border: 1px solid #ddd; }
+        .btn-secondary:hover { background-color: #d5dbdb; }
+
+        .results-container {
+            margin-top: 25px;
+            padding: 20px;
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: var(--shadow);
+            display: none;
+        }
+
+        .score-display { text-align: center; margin-bottom: 20px; }
+        .score-circle {
+            width: 120px; height: 120px; border-radius: 50%;
+            background-color: var(--light-color); display: flex;
+            justify-content: center; align-items: center;
+            margin: 0 auto 20px; font-size: 2.5rem; font-weight: bold;
+            color: var(--primary-color); border: 5px solid var(--secondary-color);
+        }
+
+        .score-circle.low { border-color: var(--accent-color); color: var(--accent-color); }
+        .score-circle.medium { border-color: var(--warning-color); color: var(--warning-color); }
+        .score-circle.high { border-color: var(--success-color); color: var(--success-color); }
+
+        .stats { display: flex; justify-content: space-between; margin-top: 20px; }
+        .stat-box { flex: 1; text-align: center; padding: 15px; background-color: var(--light-color); border-radius: 8px; margin: 0 5px; }
+        .stat-value { font-size: 2rem; font-weight: bold; color: var(--primary-color); }
+        .stat-label { font-size: 0.9rem; color: #7f8c8d; }
+
+        .topic-progress { margin-top: 20px; }
+        .topic-item { display: flex; justify-content: space-between; align-items: center; padding: 8px 0; border-bottom: 1px solid #eee; cursor: pointer; }
+        .topic-item:hover { background-color: #f5f5f5; padding-left: 5px; }
+        .topic-name { flex: 1; font-size: 0.9em; }
+        .topic-status { width: 12px; height: 12px; border-radius: 50%; margin-left: 10px; }
+        .topic-status.correct { background-color: var(--success-color); }
+        .topic-status.incorrect { background-color: var(--accent-color); }
+        .topic-status.unanswered { background-color: #ddd; }
+        .topic-status.answered { background-color: var(--secondary-color); }
+
+        footer { text-align: center; margin-top: 30px; padding: 20px; color: #7f8c8d; font-size: 0.9rem; }
+
+        @media (max-width: 900px) {
+            .exam-container { grid-template-columns: 1fr; }
+            .options-grid-charts { grid-template-columns: 1fr; }
+            .match-row { flex-direction: column; align-items: stretch; gap: 8px; }
+            .match-select { width: 100%; }
+        }
+    </style>
+</head>
+<body>
+    <p style="margin:0;padding:0.6rem 1rem;background:#1553AD;font:0.95rem/1.4 'Segoe UI',Arial,sans-serif"><a href="index.html" style="color:#fff;text-decoration:none">&larr; Matemáticas Operativas</a></p>
+    <header>
+        <h1>Simulador del Primer Parcial - Matemáticas Operativas</h1>
+        <p class="subtitle">CBASBL011 · UNIMINUTO — Unidad 1: campos numéricos (sesiones 1 a 5)</p>
+    </header>
+
+    <div class="instructions">
+        <h3>Instrucciones</h3>
+        <p>Este simulador cubre la Unidad 1 completa: conjuntos numéricos, operaciones con enteros, operaciones con racionales, teoría de conjuntos, y razones, proporciones y porcentajes. Son 10 preguntas, dos por cada sesión, y la calificación es sobre 5.0. Cada vez que pulses <em>Nuevo Examen Aleatorio</em> el simulador sortea una pregunta distinta de cada tema y baraja el orden de las opciones, así que puedes practicar varias veces sin memorizar respuestas. Al calificar verás la explicación punto por punto.</p>
+    </div>
+
+    <div class="exam-container">
+        <section class="questions-section">
+            <h2>Preguntas del Parcial</h2>
+            <div id="questions-container"></div>
+
+            <div class="button-group" style="margin-top:20px;">
+                <button id="submit-btn" class="btn btn-primary">Calificar Examen</button>
+                <button id="new-exam-btn" class="btn btn-secondary">Nuevo Examen Aleatorio</button>
+            </div>
+        </section>
+
+        <section class="control-panel">
+            <h3>Progreso</h3>
+            <div class="stats">
+                <div class="stat-box">
+                    <div class="stat-value" id="answered-count">0</div>
+                    <div class="stat-label">Respondidas</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-value" id="total-count">10</div>
+                    <div class="stat-label">Total</div>
+                </div>
+            </div>
+
+            <div class="topic-progress">
+                <h4>Navegación:</h4>
+                <div id="topics-list"></div>
+            </div>
+        </section>
+    </div>
+
+    <div class="results-container" id="results-container">
+        <h2>Resultados del Parcial</h2>
+
+        <div class="score-display">
+            <div class="score-circle" id="final-score">0.0</div>
+            <h3>Calificación Final</h3>
+            <p id="score-text">Sobre 5.0 puntos</p>
+        </div>
+
+        <div class="stats">
+            <div class="stat-box">
+                <div class="stat-value" id="correct-count">0</div>
+                <div class="stat-label">Correctas</div>
+            </div>
+            <div class="stat-box">
+                <div class="stat-value" id="incorrect-count">0</div>
+                <div class="stat-label">Incorrectas</div>
+            </div>
+            <div class="stat-box">
+                <div class="stat-value" id="percentage-score">0%</div>
+                <div class="stat-label">Porcentaje</div>
+            </div>
+        </div>
+
+        <div style="text-align: center; margin-top: 20px;">
+            <button id="review-btn" class="btn btn-secondary">Revisar Respuestas</button>
+            <button id="restart-btn" class="btn btn-primary">Intentar Otro Examen</button>
+        </div>
+    </div>
+
+    <footer>
+        <p>Simulador del Primer Parcial de Matemáticas Operativas</p>
+    </footer>
+
+    <script>
+        /* ------------------------------------------------------------------
+           Banco de preguntas. Un objeto por tema; cada tema tiene varias
+           variantes y el simulador sortea una. Las explicaciones nunca
+           nombran la opción por su letra, porque el orden se baraja.
+           ------------------------------------------------------------------ */
+        const TEMAS = [
+            {
+                nav: "Conjuntos numéricos",
+                variants: [
+                    {
+                        type: "mcq",
+                        q: "¿A qué conjuntos numéricos pertenece el número $121/11$?",
+                        a: [
+                            "A los naturales, los enteros y los racionales",
+                            "Solo a los racionales, porque está escrito como una fracción",
+                            "A los irracionales, porque la división no da un resultado exacto",
+                            "Solo a los enteros y los racionales"
+                        ],
+                        c: 0,
+                        explanation: "Antes de clasificar hay que operar: $121/11 = 11$. La forma en que está escrito un número no dice a qué conjunto pertenece. Al ser 11 un número natural, también es entero y racional, porque los conjuntos están anidados: los naturales están dentro de los enteros, y éstos dentro de los racionales."
+                    },
+                    {
+                        type: "mcq",
+                        q: "¿A qué conjuntos numéricos pertenece el número $-\\sqrt{64}$?",
+                        a: [
+                            "A los enteros y los racionales",
+                            "A los naturales, los enteros y los racionales",
+                            "Solo a los irracionales, porque lleva raíz",
+                            "Solo a los racionales"
+                        ],
+                        c: 0,
+                        explanation: "$-\\sqrt{64} = -8$. Es entero y, por lo tanto, racional (todo entero se puede escribir como fracción: $-8 = -8/1$). No es natural porque es negativo. Y no es irracional: llevar el símbolo de raíz no basta, lo que importa es el resultado, y aquí el radicando es un cuadrado perfecto."
+                    },
+                    {
+                        type: "mcq",
+                        q: "¿A qué conjuntos numéricos pertenece el número $\\sqrt{50}$?",
+                        a: [
+                            "Solo a los irracionales",
+                            "A los naturales y los enteros",
+                            "A los racionales, porque su valor es 7,07",
+                            "A los enteros y los racionales"
+                        ],
+                        c: 0,
+                        explanation: "50 no es un cuadrado perfecto, así que $\\sqrt{50} = 5\\sqrt{2} = 7{,}0710678\\ldots$: un decimal infinito en el que no se repite ningún bloque. Ésa es exactamente la definición de número irracional. El 7,07 que muestra la calculadora es solo una aproximación redondeada, no el número."
+                    },
+                    {
+                        type: "mcq",
+                        q: "¿A qué conjuntos numéricos pertenece el resultado de la operación $\\pi - \\pi$?",
+                        a: [
+                            "A los enteros y los racionales",
+                            "Solo a los irracionales, porque interviene el número $\\pi$",
+                            "A los naturales, los enteros y los racionales",
+                            "A ninguno: la operación no está definida"
+                        ],
+                        c: 0,
+                        explanation: "$\\pi - \\pi = 0$, y el cero es entero y racional. Que en la expresión aparezca un irracional no significa que el resultado lo sea. Recuerde además que en este curso el cero no se cuenta entre los naturales, que empiezan en 1."
+                    },
+                    {
+                        type: "mcq",
+                        q: "Un número tiene la expresión decimal $1{,}0100100010000\\ldots$, en la que la cantidad de ceros aumenta y ningún bloque llega a repetirse. ¿Cómo se clasifica?",
+                        a: [
+                            "Es irracional, porque su decimal es infinito y no periódico",
+                            "Es racional, porque se aprecia un patrón en sus cifras",
+                            "Es racional, porque todo decimal se puede escribir como fracción",
+                            "Es natural, porque está formado solo por ceros y unos"
+                        ],
+                        c: 0,
+                        explanation: "La única prueba que hay que aplicar es ésta: un número es racional si y solo si su decimal es finito o infinito periódico. Aquí el decimal es infinito y, aunque siga una regla de formación, no hay ningún bloque de cifras que se repita indefinidamente, así que el número es irracional. Tener un patrón no es lo mismo que tener un periodo."
+                    }
+                ]
+            },
+            {
+                nav: "Propiedades, orden y valor absoluto",
+                variants: [
+                    {
+                        type: "mcq",
+                        q: "Convierta el decimal periódico $0{,}\\overline{27}$ a fracción y simplifique el resultado:",
+                        a: ["$3/11$", "$27/100$", "$27/90$", "$27/10$"],
+                        c: 0,
+                        explanation: "Se llama $x = 0{,}272727\\ldots$ Como el periodo tiene dos cifras, se multiplica por 100: $100x = 27{,}272727\\ldots$ Al restar, la parte decimal se cancela: $99x = 27$, de donde $x = 27/99 = 3/11$. Verificación: $3 \\div 11 = 0{,}2727\\ldots$"
+                    },
+                    {
+                        type: "mcq",
+                        q: "Ordene de menor a mayor los números $-7/2$, $-3{,}4$, $-1/4$ y $0{,}3$:",
+                        a: [
+                            "$-7/2 < -3{,}4 < -1/4 < 0{,}3$",
+                            "$-1/4 < -3{,}4 < -7/2 < 0{,}3$",
+                            "$-3{,}4 < -7/2 < -1/4 < 0{,}3$",
+                            "$0{,}3 < -1/4 < -3{,}4 < -7/2$"
+                        ],
+                        c: 0,
+                        explanation: "Conviene pasarlo todo a decimal antes de comparar: $-7/2 = -3{,}5$; $-3{,}4$; $-1/4 = -0{,}25$; $0{,}3$. Con números negativos, más cifras no significa mayor: $-3{,}5$ es menor que $-3{,}4$ porque está más a la izquierda en la recta numérica. Éste es el punto que más se falla del examen."
+                    },
+                    {
+                        type: "mcq",
+                        q: "Un requisito pide «un puntaje de al menos 60 y menos de 90». ¿Cómo se escribe ese conjunto en notación de intervalo?",
+                        a: ["$[60,\\,90)$", "$(60,\\,90]$", "$[60,\\,90]$", "$(60,\\,90)$"],
+                        c: 0,
+                        explanation: "«Al menos 60» significa que el 60 sí cumple, de modo que ese extremo va cerrado con corchete. «Menos de 90» significa que el 90 no cumple, así que ese extremo va abierto con paréntesis. El resultado es el intervalo semiabierto $[60,\\,90)$, que corresponde a la desigualdad $60 \\le x < 90$."
+                    },
+                    {
+                        type: "mcq",
+                        q: "Calcule $|4-11| + |-3| - |0-5|$:",
+                        a: ["5", "15", "$-1$", "9"],
+                        c: 0,
+                        explanation: "Primero se opera dentro de cada par de barras y solo después se toma el valor absoluto: $|-7| + 3 - |-5| = 7 + 3 - 5 = 5$. El 15 sale de tratar $|0-5|$ como $-5$ y convertir así la resta en suma; el $-1$ y el 9, de perder el signo de alguno de los términos. El valor absoluto es una distancia: se aplica al resultado de lo que hay dentro de las barras, nunca a cada número por separado."
+                    },
+                    {
+                        type: "mcq",
+                        q: "Un termómetro marcó $-4$ °C en la madrugada y 19 °C al mediodía. ¿Cuál fue la variación de temperatura entre los dos momentos?",
+                        a: ["23 °C", "15 °C", "$-23$ °C", "19 °C"],
+                        c: 0,
+                        explanation: "La variación es una distancia entre dos valores, y por eso se calcula con valor absoluto: $|19 - (-4)| = |19 + 4| = |23| = 23$ °C. El 15 sale de restar sin tener en cuenta el signo del valor inicial, un error frecuente cuando se trabaja con temperaturas bajo cero."
+                    },
+                    {
+                        type: "mcq",
+                        q: "Para calcular $98 \\cdot 7$ mentalmente se escribe $(100-2)\\cdot 7 = 700 - 14 = 686$. ¿Qué propiedad de los números reales justifica ese paso?",
+                        a: [
+                            "La propiedad distributiva",
+                            "La propiedad conmutativa del producto",
+                            "La propiedad asociativa de la suma",
+                            "La existencia del elemento neutro"
+                        ],
+                        c: 0,
+                        explanation: "La distributiva dice que $a(b+c) = ab + ac$, y es la que permite descomponer un factor incómodo en uno cómodo más un ajuste. Es la propiedad más rentable de todas: sirve para calcular mentalmente y más adelante es la que permite factorizar. La conmutativa y la asociativa se usan en cambio en $25 \\cdot 17 \\cdot 4 = (25\\cdot 4)\\cdot 17 = 1\\,700$, donde solo se reordenan y reagrupan los factores."
+                    },
+                    {
+                        type: "mcq",
+                        q: "¿Por qué la división entre cero no está definida?",
+                        a: [
+                            "Porque el cero no tiene inverso multiplicativo: no existe ningún número que multiplicado por 0 dé 1",
+                            "Porque el resultado es infinito, y el infinito no es un número",
+                            "Porque el cero no se cuenta entre los números naturales",
+                            "Porque el cero es el elemento neutro de la suma"
+                        ],
+                        c: 0,
+                        explanation: "No es una prohibición caprichosa. Todo número distinto de cero tiene inverso multiplicativo, es decir un $1/a$ que cumple $a \\cdot 1/a = 1$; el cero es el único que no lo tiene, porque cualquier número multiplicado por 0 da 0 y nunca 1. Decir que «da infinito» es justamente el error frecuente: no da infinito, sencillamente no está definida."
+                    }
+                ]
+            },
+            {
+                nav: "Signos y potencias",
+                variants: [
+                    {
+                        type: "mcq",
+                        q: "Calcule $(-4)^2 - (-4)^3$:",
+                        a: ["80", "$-48$", "48", "$-80$"],
+                        c: 0,
+                        explanation: "Con la base negativa entre paréntesis, el exponente par da positivo y el impar da negativo: $(-4)^2 = 16$ y $(-4)^3 = -64$. Entonces $16 - (-64) = 16 + 64 = 80$. El error típico es olvidar que restar un número negativo equivale a sumarlo."
+                    },
+                    {
+                        type: "mcq",
+                        q: "Calcule $-2^4 + (-2)^4$:",
+                        a: ["0", "32", "$-32$", "16"],
+                        c: 0,
+                        explanation: "Las dos expresiones no son iguales. En $-2^4$ la base es 2 y el signo menos queda fuera de la potencia: se lee «el opuesto de $2^4$», es decir $-16$. En $(-2)^4$ la base es $-2$ y, al ser el exponente par, el resultado es $+16$. Por eso los dos términos se cancelan y la suma vale 0."
+                    },
+                    {
+                        type: "mcq",
+                        q: "Calcule $-20 + 6 - (-14)$:",
+                        a: ["0", "$-28$", "$-40$", "12"],
+                        c: 0,
+                        explanation: "Restar es sumar el opuesto: $-20 + 6 + 14 = 0$. Dos signos menos seguidos dan más, y tiene sentido en la vida real: si le condonan una deuda, su saldo sube. El $-28$ sale de tratar $-(-14)$ como si siguiera restando."
+                    },
+                    {
+                        type: "mcq",
+                        q: "Calcule el producto $(-5)(-3)(-2)$:",
+                        a: ["$-30$", "30", "$-10$", "10"],
+                        c: 0,
+                        explanation: "Con varios factores basta contar los negativos: si son una cantidad par el resultado es positivo, y si son impar es negativo. Aquí hay tres factores negativos, una cantidad impar, así que el resultado es negativo: $-30$. Cuidado con aplicar «menos por menos da más» de a pares y olvidar el tercer factor."
+                    },
+                    {
+                        type: "mcq",
+                        q: "Calcule $-5^2 - (-5)^2$:",
+                        a: ["$-50$", "0", "50", "$-25$"],
+                        c: 0,
+                        explanation: "$-5^2 = -25$, porque sin paréntesis el signo menos no se eleva; y $(-5)^2 = 25$, porque la base negativa con exponente par da positivo. Entonces $-25 - 25 = -50$. Quien responde 0 está suponiendo que las dos expresiones son iguales, que es precisamente el error que este punto busca detectar."
+                    },
+                    {
+                        type: "mcq",
+                        q: "Una cuenta bancaria arranca el mes con un saldo de $-\\$120\\,000$ por sobregiro. Entra una consignación de $\\$450\\,000$ y sale un cargo de $\\$85\\,000$. ¿Cuál es el saldo final?",
+                        a: ["$\\$245\\,000$", "$\\$485\\,000$", "$-\\$245\\,000$", "$\\$415\\,000$"],
+                        c: 0,
+                        explanation: "El signo codifica el sentido de cada movimiento: el saldo inicial es negativo, la consignación suma y el cargo resta. Entonces $-120\\,000 + 450\\,000 - 85\\,000 = 245\\,000$. El $\\$485\\,000$ sale de sumar el cargo en vez de restarlo y el $\\$415\\,000$ de tomar el saldo inicial como positivo. Un saldo, una temperatura o una profundidad avisan solos cuando el signo salió mal."
+                    }
+                ]
+            },
+            {
+                nav: "Jerarquía, MCD y mcm",
+                variants: [
+                    {
+                        type: "mcq",
+                        q: "Calcule $-3 + 2\\cdot(-4)^2 - 10 \\div (-5)$:",
+                        a: ["31", "$-35$", "27", "29"],
+                        c: 0,
+                        explanation: "Se sigue la jerarquía. Primero la potencia: $(-4)^2 = 16$. Luego el producto y el cociente: $2 \\cdot 16 = 32$ y $10 \\div (-5) = -2$. Queda $-3 + 32 - (-2) = -3 + 32 + 2 = 31$. Los dos resultados erróneos habituales vienen de elevar $-4$ sin paréntesis, o de olvidar que restar $-2$ es sumar 2."
+                    },
+                    {
+                        type: "mcq",
+                        q: "Calcule $\\{12 - [5 - (8-11)]\\}\\cdot(-2)$:",
+                        a: ["$-8$", "8", "$-28$", "20"],
+                        c: 0,
+                        explanation: "Los signos de agrupación se resuelven del más interno al más externo. Paréntesis: $8-11 = -3$. Corchete: $5 - (-3) = 8$. Llave: $12 - 8 = 4$. Finalmente $4 \\cdot (-2) = -8$. Conviene reescribir la expresión completa en cada paso: los errores aparecen cuando se hacen dos pasos mentalmente a la vez."
+                    },
+                    {
+                        type: "mcq",
+                        q: "Calcule $12 \\div 3 \\cdot 2$:",
+                        a: ["8", "2", "18", "4"],
+                        c: 0,
+                        explanation: "La multiplicación y la división están en el mismo nivel de la jerarquía, así que se resuelven de izquierda a derecha, en el orden en que aparecen: $12 \\div 3 = 4$ y luego $4 \\cdot 2 = 8$. El 2 sale de multiplicar primero ($3 \\cdot 2 = 6$) y dividir después, un error muy común: multiplicar no tiene prioridad sobre dividir."
+                    },
+                    {
+                        type: "mcq",
+                        q: "Se tienen dos rollos de cinta, uno de 90 cm y otro de 126 cm. Se quieren cortar en trozos iguales, lo más largos posible y sin que sobre cinta. ¿Cuánto debe medir cada trozo?",
+                        a: ["18 cm", "630 cm", "9 cm", "36 cm"],
+                        c: 0,
+                        explanation: "Como hay que repartir en partes iguales, se usa el máximo común divisor. Factorizando: $90 = 2\\cdot 3^2\\cdot 5$ y $126 = 2\\cdot 3^2\\cdot 7$; los factores comunes con el menor exponente dan $2\\cdot 3^2 = 18$ cm. El 630 es el mínimo común múltiplo, que respondería a una pregunta distinta: cuándo vuelven a coincidir dos ciclos. Regla práctica: si la respuesta debe ser menor que los datos, es MCD."
+                    },
+                    {
+                        type: "mcq",
+                        q: "Una bodega tiene dos rutas de reparto: una sale cada 8 días y la otra cada 12 días. Si hoy salieron las dos, ¿dentro de cuántos días vuelven a coincidir?",
+                        a: ["24 días", "4 días", "96 días", "20 días"],
+                        c: 0,
+                        explanation: "Se pregunta cuándo vuelven a coincidir dos ciclos, así que se usa el mínimo común múltiplo. Factorizando: $8 = 2^3$ y $12 = 2^2\\cdot 3$; se toman todos los factores con el mayor exponente: $2^3\\cdot 3 = 24$ días. El 4 es el MCD, que serviría para repartir; el 96 es el producto de los dos números, que también es múltiplo común pero no el mínimo."
+                    },
+                    {
+                        type: "mcq",
+                        q: "Halle el máximo común divisor y el mínimo común múltiplo de 180 y 300:",
+                        a: [
+                            "MCD = 60 y mcm = 900",
+                            "MCD = 900 y mcm = 60",
+                            "MCD = 30 y mcm = 900",
+                            "MCD = 60 y mcm = 1 500"
+                        ],
+                        c: 0,
+                        explanation: "Factorizando: $180 = 2^2\\cdot 3^2\\cdot 5$ y $300 = 2^2\\cdot 3\\cdot 5^2$. El MCD toma los factores comunes con el menor exponente: $2^2\\cdot 3\\cdot 5 = 60$. El mcm toma todos los factores con el mayor exponente: $2^2\\cdot 3^2\\cdot 5^2 = 900$. Hay dos comprobaciones que conviene hacer siempre. La primera: MCD por mcm debe dar el producto de los dos números, y en efecto $60 \\cdot 900 = 54\\,000 = 180 \\cdot 300$; eso descarta las opciones con 30 y con 1 500. La segunda: el MCD nunca puede ser mayor que los números dados ni el mcm menor, así que la opción que intercambia los dos valores se cae sola."
+                    },
+                    {
+                        type: "mcq",
+                        q: "Aplicando los criterios de divisibilidad, y sin hacer ninguna división, ¿cuál de estas afirmaciones sobre el número 504 es correcta?",
+                        a: [
+                            "Es divisible entre 2, entre 3 y entre 9, pero no entre 5",
+                            "Es divisible entre 2 y entre 5, pero no entre 3",
+                            "Es divisible entre 3 pero no entre 9, aunque sus cifras sumen 9",
+                            "No es divisible entre 3, porque no termina en 3, 6 ni 9"
+                        ],
+                        c: 0,
+                        explanation: "Los criterios se aplican mirando el número, no dividiendo: termina en cifra par, así que es divisible entre 2; sus cifras suman $5+0+4 = 9$, que es múltiplo de 3 y de 9, así que lo es entre ambos; y no termina en 0 ni en 5, así que no lo es entre 5. La factorización lo confirma: $504 = 2^3\\cdot 3^2\\cdot 7$. Cuidado: el criterio del 3 mira la suma de las cifras, nunca la última cifra."
+                    }
+                ]
+            },
+            {
+                nav: "Operaciones con fracciones",
+                variants: [
+                    {
+                        type: "mcq",
+                        q: "Calcule $3/4 + 5/6$ y simplifique:",
+                        a: ["$19/12$", "$8/10$", "$15/24$", "$19/24$"],
+                        c: 0,
+                        explanation: "Se busca el mínimo común denominador de 4 y 6, que es 12, se amplifica cada fracción y se suman solo los numeradores: $9/12 + 10/12 = 19/12$. El $8/10$ es el error que hay que erradicar: los denominadores no se suman. El $19/24$ es su variante disimulada: se lleva bien a denominador común pero después se suman también los denominadores. Compruébelo con decimales: $0{,}75 + 0{,}8333\\ldots = 1{,}5833\\ldots$, que es $19/12$, mientras que $8/10 = 0{,}8$."
+                    },
+                    {
+                        type: "mcq",
+                        q: "Calcule $5/8 - 7/12 + 1/6$ y simplifique:",
+                        a: ["$5/24$", "$-1/8$", "$13/26$", "$33/24$"],
+                        c: 0,
+                        explanation: "El mínimo común denominador de 8, 12 y 6 es 24. Amplificando: $15/24 - 14/24 + 4/24 = 5/24$. Conviene hacer las tres conversiones antes de operar y respetar los signos: el $-1/8$ aparece cuando se resta también el último término en vez de sumarlo, el $33/24$ cuando se suman los tres sin atender a la resta, y el $13/26$ de sumar numeradores y denominadores por separado."
+                    },
+                    {
+                        type: "mcq",
+                        q: "Calcule $-3/8 \\div (-9/16)$ y simplifique:",
+                        a: ["$2/3$", "$-2/3$", "$27/128$", "$3/2$"],
+                        c: 0,
+                        explanation: "Para dividir se invierte la segunda fracción y se multiplica: $-3/8 \\cdot (-16/9) = 48/72 = 2/3$. El resultado es positivo porque los dos factores son negativos: la ley de los signos no desaparece porque haya fracciones. El $3/2$ aparece cuando se invierte la primera fracción en lugar de la segunda."
+                    },
+                    {
+                        type: "mcq",
+                        q: "Simplifique la fracción $210/315$ hasta su mínima expresión:",
+                        a: ["$2/3$", "$3/2$", "$7/9$", "$42/63$"],
+                        c: 0,
+                        explanation: "La forma directa es dividir numerador y denominador entre su máximo común divisor, que es 105: $210 \\div 105 = 2$ y $315 \\div 105 = 3$, de donde $2/3$. También se puede llegar simplificando por pasos, pero entonces hay que seguir hasta el final: $42/63$ todavía admite dividir entre 21."
+                    },
+                    {
+                        type: "mcq",
+                        q: "Calcule $(-2/5)^3$:",
+                        a: ["$-8/125$", "$8/125$", "$-6/15$", "$-8/15$"],
+                        c: 0,
+                        explanation: "El exponente afecta al numerador y al denominador por igual: $(-2)^3 = -8$ y $5^3 = 125$. El resultado es negativo porque el exponente es impar. El $-6/15$ sale de multiplicar por 3 en lugar de elevar al cubo, y el $-8/15$ de elevar solo el numerador."
+                    }
+                ]
+            },
+            {
+                nav: "Jerarquía con fracciones",
+                variants: [
+                    {
+                        type: "mcq",
+                        q: "Calcule $7/8 + 1/6 \\cdot 3/2$ y simplifique:",
+                        a: ["$9/8$", "$25/16$", "$8/7$", "$3/2$"],
+                        c: 0,
+                        explanation: "El producto va antes que la suma: $1/6 \\cdot 3/2 = 3/12 = 1/4$, y luego $7/8 + 2/8 = 9/8$. El $25/16$ es el resultado de sumar primero, es decir de resolver $(7/8 + 1/6)\\cdot 3/2$: los mismos tres números dan respuestas distintas según haya o no paréntesis."
+                    },
+                    {
+                        type: "mcq",
+                        q: "Calcule $(3/4 - 1/6) \\div (1/2 + 1/3)$ y simplifique:",
+                        a: ["$7/10$", "$10/7$", "$35/72$", "$7/12$"],
+                        c: 0,
+                        explanation: "En una fracción compleja se resuelve primero cada piso por separado y solo al final se divide. Arriba: $9/12 - 2/12 = 7/12$. Abajo: $3/6 + 2/6 = 5/6$. Entonces $7/12 \\div 5/6 = 7/12 \\cdot 6/5 = 42/60 = 7/10$. Nunca se cancela término a término entre los dos pisos antes de haberlos convertido en una sola fracción."
+                    },
+                    {
+                        type: "mcq",
+                        q: "Un tanque está lleno hasta $3/4$ de su capacidad y se consume $2/5$ de lo que hay. ¿Qué fracción de la capacidad total queda en el tanque?",
+                        a: ["$9/20$", "$7/20$", "$3/10$", "$11/20$"],
+                        c: 0,
+                        explanation: "La palabra «de» significa multiplicar, y aquí el $2/5$ se aplica a lo que hay, no al tanque completo. Si se consume $2/5$ de lo que hay, queda $3/5$ de lo que había: $3/4 \\cdot 3/5 = 9/20$. El $7/20$ es lo que resulta de aplicar el $2/5$ al total, que es el error que este punto busca detectar."
+                    },
+                    {
+                        type: "mcq",
+                        q: "Un presupuesto destina $2/5$ a personal y $1/3$ a insumos. ¿Qué fracción del presupuesto queda sin destinar?",
+                        a: ["$4/15$", "$3/8$", "$11/15$", "$1/15$"],
+                        c: 0,
+                        explanation: "El presupuesto completo es 1, así que lo que queda es $1 - 2/5 - 1/3$. Con denominador común 15: $(15 - 6 - 5)/15 = 4/15$. El $3/8$ sale de sumar numeradores y denominadores por separado, que no es como se suman fracciones."
+                    },
+                    {
+                        type: "mcq",
+                        q: "De un presupuesto se gasta primero $1/4$ y después $2/3$ del resto. ¿Qué fracción del presupuesto queda?",
+                        a: ["$1/4$", "$1/12$", "$5/12$", "$1/3$"],
+                        c: 0,
+                        explanation: "Tras el primer gasto queda $1 - 1/4 = 3/4$. El segundo gasto es $2/3$ de ese resto, así que de él sobrevive $1/3$: $3/4 \\cdot 1/3 = 1/4$. Si el $2/3$ se hubiera aplicado al total, el resultado sería otro: dos palabras del enunciado, «del resto», cambian por completo la respuesta."
+                    }
+                ]
+            },
+            {
+                nav: "Operaciones con conjuntos",
+                variants: [
+                    {
+                        type: "mcq",
+                        q: "Sean $U = \\{1,2,\\ldots,10\\}$, $A = \\{1,3,5,7,9\\}$ y $B = \\{2,3,5,7\\}$. ¿Cuál es $A \\cup B$?",
+                        a: [
+                            "$\\{1,2,3,5,7,9\\}$",
+                            "$\\{3,5,7\\}$",
+                            "$\\{1,9\\}$",
+                            "$\\{1,2,3,3,5,5,7,7,9\\}$"
+                        ],
+                        c: 0,
+                        explanation: "La unión reúne los elementos que están en $A$, en $B$ o en ambos, y cada elemento se escribe una sola vez aunque aparezca en los dos conjuntos. El resultado es $\\{1,2,3,5,7,9\\}$. El $\\{3,5,7\\}$ es la intersección y el $\\{1,9\\}$ es la diferencia $A \\setminus B$."
+                    },
+                    {
+                        type: "mcq",
+                        q: "Sean $U = \\{1,2,\\ldots,10\\}$, $A = \\{1,3,5,7,9\\}$ y $B = \\{2,3,5,7\\}$. ¿Cuál es la diferencia $A \\setminus B$?",
+                        a: [
+                            "$\\{1,9\\}$",
+                            "$\\{2\\}$",
+                            "$\\{3,5,7\\}$",
+                            "$\\{1,2,9\\}$"
+                        ],
+                        c: 0,
+                        explanation: "La diferencia $A \\setminus B$ recoge los elementos de $A$ que no están en $B$: de $\\{1,3,5,7,9\\}$ se quitan el 3, el 5 y el 7, y quedan el 1 y el 9. Cuidado: la diferencia no es conmutativa, porque $B \\setminus A = \\{2\\}$, que es un conjunto distinto."
+                    },
+                    {
+                        type: "mcq",
+                        q: "Sean $U = \\{1,2,\\ldots,10\\}$ y $A = \\{1,3,5,7,9\\}$. ¿Cuál es el complemento $A^c$?",
+                        a: [
+                            "$\\{2,4,6,8,10\\}$",
+                            "$\\{1,3,5,7,9\\}$",
+                            "$\\{-1,-3,-5,-7,-9\\}$",
+                            "$\\emptyset$"
+                        ],
+                        c: 0,
+                        explanation: "El complemento reúne los elementos del conjunto universal que no están en $A$; como $A$ son los impares hasta el 9, su complemento son los pares del 2 al 10. Note que el complemento depende siempre del universo elegido: sin decir cuál es $U$, la expresión $A^c$ no significa nada, y no tiene relación con cambiar el signo de los elementos."
+                    },
+                    {
+                        type: "mcq",
+                        q: "¿Cuántos subconjuntos distintos tiene un conjunto de 4 elementos, contando el conjunto vacío y el conjunto completo?",
+                        a: ["16", "8", "4", "24"],
+                        c: 0,
+                        explanation: "Un conjunto de $n$ elementos tiene $2^n$ subconjuntos, porque cada elemento tiene dos posibilidades: entrar o no entrar. Con 4 elementos son $2^4 = 16$. El 8 corresponde a un conjunto de 3 elementos y el 24 es $4!$, que cuenta ordenamientos y no subconjuntos."
+                    },
+                    {
+                        type: "mcq",
+                        q: "Sea $A = \\{1,2,3\\}$. ¿Cuál de las siguientes afirmaciones está correctamente escrita?",
+                        a: [
+                            "$\\{2\\} \\subseteq A$",
+                            "$2 \\subseteq A$",
+                            "$\\{2\\} \\in A$",
+                            "$A \\in 2$"
+                        ],
+                        c: 0,
+                        explanation: "El símbolo $\\in$ relaciona un elemento con un conjunto y el símbolo $\\subseteq$ relaciona un conjunto con otro conjunto. Como $\\{2\\}$ es un conjunto, lo correcto es escribir $\\{2\\} \\subseteq A$. También sería correcto escribir $2 \\in A$, porque el 2 sí es un elemento; lo que no se puede es cruzar los símbolos, que es lo que hacen las otras tres opciones."
+                    },
+                    {
+                        type: "mcq",
+                        q: "Con $U = \\{1, 2, \\ldots, 12\\}$, el conjunto $A = \\{x \\in U : x$ es múltiplo de $4\\}$, escrito por extensión, es:",
+                        a: [
+                            "$\\{4, 8, 12\\}$",
+                            "$\\{1, 2, 4\\}$",
+                            "$\\{4, 8\\}$",
+                            "$\\{0, 4, 8, 12\\}$"
+                        ],
+                        c: 0,
+                        explanation: "El conjunto viene dado por comprensión, es decir por la propiedad que caracteriza a sus elementos, y los dos puntos se leen «tal que». Escribirlo por extensión es listar sus elementos entre llaves: los múltiplos de 4 que hay en el universo son 4, 8 y 12. El $\\{1, 2, 4\\}$ son los divisores de 4, no sus múltiplos, y el 0 no aparece porque no pertenece al universo."
+                    }
+                ]
+            },
+            {
+                nav: "Conteo con conjuntos",
+                variants: [
+                    {
+                        type: "mcq",
+                        q: "En un grupo de 40 estudiantes, 25 usan transporte público, 18 van a pie y 9 hacen ambas cosas según el día. ¿Cuántos no usan ninguna de las dos formas de desplazamiento?",
+                        a: ["6", "3", "34", "2"],
+                        c: 0,
+                        explanation: "Primero se cuenta a los que hacen al menos una de las dos cosas, descontando la intersección para no contar dos veces a quienes están en ambos grupos: $25 + 18 - 9 = 34$. Los que no hacen ninguna son el resto: $40 - 34 = 6$. Si se suma $25 + 18 = 43$ sin restar, se obtiene un número mayor que el grupo entero, señal inmediata de que hay un error."
+                    },
+                    {
+                        type: "mcq",
+                        q: "De 80 personas encuestadas, 45 leen prensa, 38 oyen radio y 20 hacen las dos cosas. ¿Cuántas hacen al menos una de las dos?",
+                        a: ["63", "83", "43", "17"],
+                        c: 0,
+                        explanation: "Se aplica el principio de inclusión-exclusión: los que hacen al menos una son $45 + 38 - 20 = 63$. Se resta la intersección porque, al sumar los dos grupos, las 20 personas que hacen ambas cosas quedaron contadas dos veces. El 83 es el resultado de sumar sin restar, y el 17 corresponde a quienes no hacen ninguna."
+                    },
+                    {
+                        type: "mcq",
+                        q: "De 60 clientes, 30 compran en línea, 25 compran en tienda y 12 compran por los dos canales. ¿Cuántos compran <strong>solo</strong> en tienda?",
+                        a: ["13", "25", "18", "12"],
+                        c: 0,
+                        explanation: "De los 25 que compran en tienda hay que descontar a los 12 que también compran en línea, porque ésos no compran «solo» en tienda: $25 - 12 = 13$. El 25 es el total de compradores en tienda, que incluye a quienes usan los dos canales, y el 18 corresponde a quienes compran solo en línea."
+                    },
+                    {
+                        type: "mcq",
+                        q: "Si $\\#A = 14$, $\\#B = 9$ y $\\#(A \\cup B) = 20$, ¿cuánto vale $\\#(A \\cap B)$?",
+                        a: ["3", "5", "23", "43"],
+                        c: 0,
+                        explanation: "De la relación $\\#(A \\cup B) = \\#A + \\#B - \\#(A \\cap B)$ se despeja la intersección: $\\#(A \\cap B) = 14 + 9 - 20 = 3$. Tiene sentido comprobar que el resultado sea menor o igual que el menor de los dos cardinales: una intersección nunca puede tener más elementos que cualquiera de los conjuntos que la forman."
+                    },
+                    {
+                        type: "mcq",
+                        q: "En una encuesta a 120 personas sobre tres servicios de un centro de atención: 62 usaron el servicio A, 54 el B y 48 el C; 22 usaron A y B, 18 usaron A y C, 16 usaron B y C, y 8 usaron los tres. ¿Cuántas personas usaron al menos uno de los tres servicios?",
+                        a: ["116", "164", "4", "108"],
+                        c: 0,
+                        explanation: "Con tres conjuntos se suman los individuales, se restan los cruces de a dos y se vuelve a sumar el triple: $62 + 54 + 48 - 22 - 18 - 16 + 8 = 116$. Se devuelve la intersección triple porque, al restar los tres cruces, esas 8 personas quedaron descontadas de más. El 164 es la suma sin corregir y el 4 corresponde a quienes no usaron ninguno."
+                    }
+                ]
+            },
+            {
+                nav: "Proporciones y regla de tres",
+                variants: [
+                    {
+                        type: "mcq",
+                        q: "Halle el valor de $x$ en la proporción $3/5 = x/45$:",
+                        a: ["$x = 27$", "$x = 75$", "$x = 15$", "$x = 9$"],
+                        c: 0,
+                        explanation: "En toda proporción el producto cruzado de sus términos es igual: $3 \\cdot 45 = 5 \\cdot x$, de donde $135 = 5x$ y $x = 27$. La verificación es inmediata: $27/45$ se simplifica dividiendo entre 9 y da $3/5$."
+                    },
+                    {
+                        type: "mcq",
+                        q: "Si 8 kg de un insumo cuestan $\\$36\\,000$, ¿cuánto cuestan 14 kg del mismo insumo?",
+                        a: ["$\\$63\\,000$", "$\\$20\\,571$", "$\\$50\\,400$", "$\\$72\\,000$"],
+                        c: 0,
+                        explanation: "Más kilos cuestan más dinero, así que las magnitudes son directamente proporcionales y se multiplica en cruz: $8/36\\,000 = 14/x$, de donde $x = (36\\,000 \\cdot 14)/8 = 63\\,000$. Control de sentido común: como 14 kg es casi el doble de 8 kg, el precio tiene que estar cerca del doble de $\\$36\\,000$."
+                    },
+                    {
+                        type: "mcq",
+                        q: "Si 6 operarios tardan 15 días en terminar una tarea, ¿cuánto tardarían 10 operarios trabajando al mismo ritmo?",
+                        a: ["9 días", "25 días", "12 días", "6 días"],
+                        c: 0,
+                        explanation: "Más operarios significa menos días, de modo que la proporcionalidad es inversa y lo que permanece constante es el producto: $6 \\cdot 15 = 10 \\cdot x$, de donde $x = 90/10 = 9$ días. El control de sentido común es infalible aquí: si aumentan los operarios y le da más de 15 días, aplicó la regla equivocada."
+                    },
+                    {
+                        type: "mcq",
+                        q: "Reparta $\\$4\\,200$ en la razón $2 : 3 : 5$. ¿Cuánto le corresponde a cada parte?",
+                        a: [
+                            "$\\$840$, $\\$1\\,260$ y $\\$2\\,100$",
+                            "$\\$1\\,400$, $\\$1\\,400$ y $\\$1\\,400$",
+                            "$\\$420$, $\\$1\\,260$ y $\\$2\\,520$",
+                            "$\\$800$, $\\$1\\,200$ y $\\$2\\,200$"
+                        ],
+                        c: 0,
+                        explanation: "Se suman las partes de la razón: $2 + 3 + 5 = 10$. El valor de una parte es $4\\,200 \\div 10 = 420$. Multiplicando: $2 \\cdot 420 = 840$, $3 \\cdot 420 = 1\\,260$ y $5 \\cdot 420 = 2\\,100$. La verificación es obligatoria y gratis, pero tiene que ser doble: los tres valores deben sumar el total <em>y</em> estar en la razón pedida. Dividiendo $840 : 1\\,260 : 2\\,100$ entre 420 se obtiene $2 : 3 : 5$. Los otros repartos también suman $\\$4\\,200$, pero están en las razones $1:1:1$, $1:3:6$ y $4:6:11$."
+                    },
+                    {
+                        type: "mcq",
+                        q: "En un grupo hay 18 mujeres y 12 hombres. ¿Cuál es la razón de mujeres a hombres, expresada en su forma más simple?",
+                        a: ["$3 : 2$", "$2 : 3$", "$3 : 5$", "$18 : 12$"],
+                        c: 0,
+                        explanation: "La razón compara por división, no por resta: $18/12 = 3/2$, es decir 3 mujeres por cada 2 hombres. El $2 : 3$ invierte el orden que pide el enunciado y el $3 : 5$ confunde la razón con la fracción del total, que sí sería $18/30 = 3/5$. Una razón no es una fracción del total."
+                    }
+                ]
+            },
+            {
+                nav: "Porcentajes",
+                variants: [
+                    {
+                        type: "mcq",
+                        q: "Un precio de $\\$120\\,000$ recibe un descuento del 15 % y, sobre el valor ya rebajado, otro descuento del 10 %. ¿Cuál es el precio final y cuál el descuento total?",
+                        a: [
+                            "$\\$91\\,800$, con un descuento total del 23,5 %",
+                            "$\\$90\\,000$, con un descuento total del 25 %",
+                            "$\\$91\\,800$, con un descuento total del 25 %",
+                            "$\\$102\\,000$, con un descuento total del 15 %"
+                        ],
+                        c: 0,
+                        explanation: "Descontar un 15 % es multiplicar por 0,85 y descontar un 10 % es multiplicar por 0,90: $120\\,000 \\cdot 0{,}85 \\cdot 0{,}90 = 91\\,800$. Como se paga el $0{,}85 \\cdot 0{,}90 = 0{,}765$, es decir el 76,5 % del precio, el descuento total es del 23,5 % y no del 25 %. Los porcentajes encadenados se multiplican, nunca se suman, porque el segundo se aplica sobre lo ya rebajado."
+                    },
+                    {
+                        type: "mcq",
+                        q: "Un artículo pasa de costar $\\$45\\,000$ a costar $\\$63\\,000$. ¿En qué porcentaje varió su precio?",
+                        a: ["Aumentó 40 %", "Aumentó 28,6 %", "Aumentó 18 %", "Aumentó 140 %"],
+                        c: 0,
+                        explanation: "La variación porcentual se calcula sobre el valor inicial: $\\frac{63\\,000 - 45\\,000}{45\\,000} \\cdot 100 = \\frac{18\\,000}{45\\,000} \\cdot 100 = 40$ %. El 28,6 % sale de dividir entre el valor final en lugar del inicial, y el 140 % es la proporción que representa el precio nuevo respecto del viejo, no su aumento."
+                    },
+                    {
+                        type: "mcq",
+                        q: "El precio de un producto con IVA del 19 % incluido es $\\$95\\,200$. ¿Cuál era el precio antes del impuesto?",
+                        a: ["$\\$80\\,000$", "$\\$77\\,112$", "$\\$113\\,288$", "$\\$76\\,160$"],
+                        c: 0,
+                        explanation: "Añadir un 19 % es multiplicar por 1,19, así que para deshacerlo hay que dividir: $95\\,200 \\div 1{,}19 = 80\\,000$. El error clásico es restarle el 19 % al precio con impuesto, que da $\\$77\\,112$: ese 19 % estaría calculado sobre una base mayor de la que corresponde. Verificación: $80\\,000 \\cdot 1{,}19 = 95\\,200$."
+                    },
+                    {
+                        type: "mcq",
+                        q: "Un valor aumenta un 20 % y, sobre el resultado, disminuye un 20 %. ¿Qué ocurre con el valor original?",
+                        a: [
+                            "Queda un 4 % por debajo del original",
+                            "Vuelve exactamente al valor original",
+                            "Queda un 4 % por encima del original",
+                            "Queda un 40 % por encima del original"
+                        ],
+                        c: 0,
+                        explanation: "Aumentar un 20 % es multiplicar por 1,20 y disminuir un 20 % es multiplicar por 0,80: $1{,}20 \\cdot 0{,}80 = 0{,}96$, es decir queda el 96 % del valor original, un 4 % menos. No se vuelve al punto de partida porque la bajada se calcula sobre una base mayor que la subida."
+                    },
+                    {
+                        type: "mcq",
+                        q: "¿Qué porcentaje representa 63 de un total de 180?",
+                        a: ["35 %", "285,7 %", "117 %", "65 %"],
+                        c: 0,
+                        explanation: "Para saber qué porcentaje es una cantidad de un total se divide la parte entre el total y se multiplica por 100: $(63/180) \\cdot 100 = 35$ %. El 285,7 % resulta de invertir la división y calcular $180/63$; el 117 % de restar las dos cantidades en lugar de dividirlas; y el 65 % es el porcentaje que representa el resto, no los 63."
+                    },
+                    {
+                        type: "mcq",
+                        q: "Una cantidad baja de 80 a 68 unidades. ¿Cuál es la variación porcentual?",
+                        a: ["$-15$ %", "$-17{,}6$ %", "$-12$ %", "$-20$ %"],
+                        c: 0,
+                        explanation: "El denominador de una variación es siempre el valor inicial: $\\frac{68 - 80}{80} \\cdot 100 = \\frac{-12}{80} \\cdot 100 = -15$ %. El $-17{,}6$ % sale de dividir entre 68, el valor final, que es el error más común del tema; el $-12$ % confunde la diferencia absoluta con el porcentaje."
+                    },
+                    {
+                        type: "mcq",
+                        q: "¿Cuánto es el 35 % de 640?",
+                        a: ["224", "1 828,6", "22,4", "605"],
+                        c: 0,
+                        explanation: "El $p$ % de una cantidad $N$ se calcula como $N \\cdot p/100$, es decir $640 \\cdot 0{,}35 = 224$. El 1 828,6 sale de dividir entre 0,35 en lugar de multiplicar; el 22,4 de usar 0,035, es decir de confundir el 35 % con el 3,5 %; y el 605 de restarle 35 unidades al total, que no es lo mismo que quitarle el 35 %."
+                    }
+                ]
+            }
+        ];
+
+        let currentExam = [];
+        let userAnswers = {};
+
+        /* ---------------- utilidades ---------------- */
+
+        function shuffle(arr) {
+            for (let i = arr.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [arr[i], arr[j]] = [arr[j], arr[i]];
+            }
+            return arr;
+        }
+
+        function pickOne(arr) {
+            return arr[Math.floor(Math.random() * arr.length)];
+        }
+
+        /* Devuelve una copia de la variante con las opciones barajadas. */
+        function prepare(variant) {
+            const q = JSON.parse(JSON.stringify(variant));
+
+            if (q.type === "mcq") {
+                const correcta = q.a[q.c];
+                q.a = shuffle(q.a.slice());
+                q.c = q.a.indexOf(correcta);
+            } else if (q.type === "chart_mcq") {
+                const correcta = q.charts[q.c];
+                q.charts = shuffle(q.charts.slice());
+                q.c = q.charts.indexOf(correcta);
+                q.charts.forEach((ch, i) => { ch.title = 'Opción ' + String.fromCharCode(65 + i); });
+            } else if (q.type === "matching") {
+                q.pairs = shuffle(q.pairs.slice());
+                const encabezado = q.options[0];
+                q.options = [encabezado].concat(shuffle(q.options.slice(1)));
+            }
+            return q;
+        }
+
+        /* ---------------- construcción del examen ---------------- */
+
+        function generateExam() {
+            currentExam = TEMAS.map(tema => prepare(pickOne(tema.variants)));
+
+            userAnswers = {};
+            document.getElementById('results-container').style.display = 'none';
+            document.getElementById('total-count').innerText = currentExam.length;
+            renderQuestions();
+            renderNavigation();
+            updateProgress();
+        }
+
+        function renderQuestions() {
+            const container = document.getElementById('questions-container');
+            container.innerHTML = '';
+
+            currentExam.forEach((q, idx) => {
+                const card = document.createElement('div');
+                card.className = 'question-card';
+                card.id = `question-${idx}`;
+
+                let html = `
+                    <div class="question-header">
+                        <div class="question-number">${idx + 1}</div>
+                    </div>
+                    <div class="question-text">${q.q}</div>
+                `;
+
+                if (q.type === "matching") {
+                    html += `<div class="matching-container">`;
+                    q.pairs.forEach(pair => {
+                        html += `
+                            <div class="match-row">
+                                <div style="width:42%; font-size:0.95em; color:#333;">${pair.prompt}</div>
+                                <select class="match-select" data-qid="${idx}" data-pairid="${pair.id}" onchange="selectMatch(${idx}, '${pair.id}', this.value)">
+                                    ${q.options.map(opt => `<option value="${opt.val}">${opt.text}</option>`).join('')}
+                                </select>
+                            </div>
+                        `;
+                    });
+                    html += `</div>`;
+                } else if (q.type === "mcq") {
+                    html += `<div class="options-container">`;
+                    q.a.forEach((opt, optIdx) => {
+                        html += `
+                            <div class="option" id="opt-${idx}-${optIdx}" onclick="selectOption(${idx}, ${optIdx})">
+                                <strong>${String.fromCharCode(65 + optIdx)}.</strong>&nbsp;<span>${opt}</span>
+                            </div>
+                        `;
+                    });
+                    html += `</div>`;
+                } else if (q.type === "chart_mcq") {
+                    html += `<div class="options-grid-charts">`;
+                    q.charts.forEach((chart, optIdx) => {
+                        html += `
+                            <div class="option option-chart-card" id="opt-${idx}-${optIdx}" onclick="selectOption(${idx}, ${optIdx})">
+                                <strong>Opción ${String.fromCharCode(65 + optIdx)}</strong>
+                                <div id="chart-container-${idx}-${optIdx}" class="chart-box"></div>
+                            </div>
+                        `;
+                    });
+                    html += `</div>`;
+                }
+
+                html += `<div id="explanation-${idx}" class="explanation" style="display:none;"></div>`;
+                card.innerHTML = html;
+                container.appendChild(card);
+
+                if (q.type === "chart_mcq") {
+                    setTimeout(() => renderChartsForQuestion(q, idx), 50);
+                }
+            });
+
+            if (window.MathJax && MathJax.typesetPromise) {
+                MathJax.typesetPromise();
+            }
+        }
+
+        /* Este simulador no usa preguntas con gráfico. Si se agrega alguna,
+           hay que volver a incluir el script de Plotly en el encabezado del archivo. */
+        function renderChartsForQuestion(q, qIdx) {
+            q.charts.forEach((c, optIdx) => {
+                const targetId = `chart-container-${qIdx}-${optIdx}`;
+                let data = [];
+                let layout = {
+                    title: { text: c.title, font: { size: 12 } },
+                    margin: { l: 30, r: 20, t: 30, b: 30 },
+                    autosize: true
+                };
+
+                if (c.type === 'pie') {
+                    data = [{ labels: c.labels, values: c.values, type: 'pie', textinfo: 'label+percent' }];
+                } else if (c.type === 'bar') {
+                    data = [{ x: c.x, y: c.y, type: 'bar', marker: { color: '#3498db' } }];
+                    layout.xaxis = { tickangle: -45, automargin: true, tickfont: { size: 10 } };
+                    layout.yaxis = { automargin: true };
+                    if (c.gap === 0) {
+                        layout.bargap = 0.05;
+                    }
+                }
+                Plotly.newPlot(targetId, data, layout, { responsive: true, displayModeBar: false });
+            });
+        }
+
+        /* ---------------- interacción ---------------- */
+
+        function selectOption(qIdx, optIdx) {
+            userAnswers[qIdx] = optIdx;
+            const card = document.getElementById(`question-${qIdx}`);
+            const options = card.querySelectorAll('.option');
+            options.forEach((opt, i) => {
+                if (i === optIdx) opt.classList.add('selected');
+                else opt.classList.remove('selected');
+            });
+            updateProgress();
+        }
+
+        function selectMatch(qIdx, pairId, value) {
+            if (!userAnswers[qIdx]) userAnswers[qIdx] = {};
+            userAnswers[qIdx][pairId] = value;
+            updateProgress();
+        }
+
+        function isAnswered(idx) {
+            const respuesta = userAnswers[idx];
+            if (respuesta === undefined) return false;
+            if (currentExam[idx].type === "matching") {
+                const total = currentExam[idx].pairs.length;
+                return Object.keys(respuesta).length === total &&
+                       Object.values(respuesta).every(v => v !== "");
+            }
+            return true;
+        }
+
+        function updateProgress() {
+            let answered = 0;
+
+            currentExam.forEach((_, idx) => {
+                const completa = isAnswered(idx);
+                if (completa) answered++;
+
+                const navItem = document.getElementById(`nav-item-${idx}`);
+                if (navItem) {
+                    const statusDot = navItem.querySelector('.topic-status');
+                    statusDot.className = `topic-status ${completa ? 'answered' : 'unanswered'}`;
+                }
+            });
+
+            document.getElementById('answered-count').innerText = answered;
+        }
+
+        function renderNavigation() {
+            const list = document.getElementById('topics-list');
+            list.innerHTML = '';
+
+            TEMAS.forEach((tema, idx) => {
+                const item = document.createElement('div');
+                item.className = 'topic-item';
+                item.id = `nav-item-${idx}`;
+                item.onclick = () => {
+                    document.getElementById(`question-${idx}`).scrollIntoView({ behavior: 'smooth' });
+                };
+                item.innerHTML = `
+                    <span class="topic-name">${idx + 1}. ${tema.nav}</span>
+                    <span class="topic-status unanswered"></span>
+                `;
+                list.appendChild(item);
+            });
+        }
+
+        /* ---------------- calificación ---------------- */
+
+        function submitExam() {
+            let correctCount = 0;
+            const total = currentExam.length;
+
+            currentExam.forEach((q, idx) => {
+                const card = document.getElementById(`question-${idx}`);
+                const expDiv = document.getElementById(`explanation-${idx}`);
+                let isCorrect = false;
+
+                if (q.type === "matching") {
+                    const userPairs = userAnswers[idx] || {};
+                    isCorrect = q.pairs.every(pair => userPairs[pair.id] === pair.correct);
+
+                    card.querySelectorAll('.match-select').forEach(sel => {
+                        const pair = q.pairs.find(p => p.id === sel.dataset.pairid);
+                        const fila = sel.closest('.match-row');
+                        if (sel.value === pair.correct) {
+                            fila.style.borderColor = 'var(--success-color)';
+                            fila.style.backgroundColor = '#d4edda';
+                        } else {
+                            fila.style.borderColor = 'var(--accent-color)';
+                            fila.style.backgroundColor = '#f8d7da';
+                        }
+                    });
+                } else {
+                    isCorrect = (userAnswers[idx] === q.c);
+                    const options = card.querySelectorAll('.option');
+                    options.forEach((opt, optIdx) => {
+                        if (optIdx === q.c) opt.classList.add('correct');
+                        else if (optIdx === userAnswers[idx]) opt.classList.add('incorrect');
+                    });
+                }
+
+                if (isCorrect) correctCount++;
+
+                expDiv.innerHTML = `<strong>Explicación:</strong> ${q.explanation}`;
+                expDiv.style.display = 'block';
+
+                const navItem = document.getElementById(`nav-item-${idx}`);
+                if (navItem) {
+                    const statusDot = navItem.querySelector('.topic-status');
+                    statusDot.className = `topic-status ${isCorrect ? 'correct' : 'incorrect'}`;
+                }
+            });
+
+            if (window.MathJax && MathJax.typesetPromise) {
+                MathJax.typesetPromise();
+            }
+
+            const score = (correctCount / total) * 5;
+            const percentage = (correctCount / total) * 100;
+
+            const resultBox = document.getElementById('results-container');
+            const scoreCircle = document.getElementById('final-score');
+
+            scoreCircle.innerText = score.toFixed(1);
+            scoreCircle.className = `score-circle ${score >= 4 ? 'high' : score >= 3 ? 'medium' : 'low'}`;
+
+            document.getElementById('correct-count').innerText = correctCount;
+            document.getElementById('incorrect-count').innerText = total - correctCount;
+            document.getElementById('percentage-score').innerText = `${percentage.toFixed(1)}%`;
+
+            resultBox.style.display = 'block';
+            resultBox.scrollIntoView({ behavior: 'smooth' });
+        }
+
+        document.getElementById('submit-btn').addEventListener('click', submitExam);
+        document.getElementById('new-exam-btn').addEventListener('click', generateExam);
+        document.getElementById('restart-btn').addEventListener('click', generateExam);
+        document.getElementById('review-btn').addEventListener('click', () => {
+            document.querySelector('.questions-section').scrollIntoView({ behavior: 'smooth' });
+        });
+
+        document.addEventListener('DOMContentLoaded', generateExam);
+    </script>
+</body>
+</html>

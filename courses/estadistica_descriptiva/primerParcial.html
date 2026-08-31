@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Simulador del Primer Parcial - Estadística General</title>
+    <title>Simulador del Primer Parcial - Estadística Descriptiva</title>
 
     <script src="https://cdn.plot.ly/plotly-2.27.0.min.js"></script>
 
@@ -140,6 +140,8 @@
             line-height: 1.5;
         }
 
+        .question-text p + p { margin-top: 10px; }
+
         .table-container {
             margin: 15px 0;
             padding: 15px;
@@ -206,7 +208,7 @@
 
         .chart-box {
             width: 100%;
-            height: 250px;
+            height: 300px;
             margin-top: 5px;
         }
 
@@ -297,19 +299,21 @@
         @media (max-width: 900px) {
             .exam-container { grid-template-columns: 1fr; }
             .options-grid-charts { grid-template-columns: 1fr; }
+            .match-row { flex-direction: column; align-items: stretch; gap: 8px; }
+            .match-select { width: 100%; }
         }
     </style>
 </head>
 <body>
-    <p style="margin:0;padding:0.6rem 1rem;background:#1553AD;font:0.95rem/1.4 'Segoe UI',Arial,sans-serif"><a href="index.html" style="color:#fff;text-decoration:none">&larr; Estadística General</a></p>
+    <p style="margin:0;padding:0.6rem 1rem;background:#1553AD;font:0.95rem/1.4 'Segoe UI',Arial,sans-serif"><a href="index.html" style="color:#fff;text-decoration:none">&larr; Estadística Descriptiva</a></p>
     <header>
-        <h1>Simulador del Primer Parcial - Estadística General</h1>
-        <p class="subtitle">Estadística Descriptiva · Notación ($f_i, F_i, h_i, H_i, \%_i$) y Gráficos Interactivos</p>
+        <h1>Simulador del Primer Parcial - Estadística Descriptiva</h1>
+        <p class="subtitle">CBASBL031 · UNIMINUTO — Unidad 1: población y muestra, tipos de variable, tablas de frecuencia y métodos gráficos</p>
     </header>
 
     <div class="instructions">
         <h3>Instrucciones</h3>
-        <p>Este simulador evalúa los conceptos principales del primer parcial. Utiliza los menús desplegables para emparejar adecuadamente las definiciones conceptuales e identifica visualmente la gráfica correcta observando las representaciones interactivas generadas.</p>
+        <p>Este simulador evalúa los contenidos de la Unidad 1 del curso: población y muestra, tipos de variable, tablas de frecuencia y métodos gráficos. Son 8 preguntas y la calificación es sobre 5.0. Cada vez que pulses <em>Nuevo Examen Aleatorio</em> el simulador sortea una pregunta distinta de cada tema y baraja el orden de las opciones, así que puedes practicar varias veces sin memorizar respuestas. Lee cada enunciado con cuidado: tendrás que reconocer por ti mismo de qué concepto se trata, qué notación corresponde a cada cantidad y qué fórmula aplicar. Al calificar verás la explicación punto por punto.</p>
     </div>
 
     <div class="exam-container">
@@ -374,132 +378,605 @@
     </div>
 
     <footer>
-        <p>Simulador del Primer Parcial de Estadística General</p>
+        <p>Simulador del Primer Parcial de Estadística Descriptiva</p>
     </footer>
 
     <script>
-        const questionBank = {
-            poblacion_muestra: [
-                {
-                    type: "matching",
-                    q: `<p>Seleccione en el menú desplegable el concepto que corresponde a cada definición según la notación y fundamentación de clase:</p>`,
-                    pairs: [
-                        { id: "p1", label: "<strong>Población:</strong>", correct: "b", prompt: "Conjunto de todos los elementos u objetos que poseen una característica en común." },
-                        { id: "p2", label: "<strong>Muestra:</strong>", correct: "c", prompt: "Subconjunto representativo de la población sobre el cual se recolectan los datos." },
-                        { id: "p3", label: "<strong>Variable y Frecuencia ($f_i$):</strong>", correct: "d", prompt: "Característica medible u observable y el número de veces que se repite cada valor." },
-                        { id: "p4", label: "<strong>Dato:</strong>", correct: "a", prompt: "Valor específico cuantitativo o cualitativo que toma la variable en una observación." }
-                    ],
-                    options: [
-                        { val: "", text: "-- Seleccionar concepto --" },
-                        { val: "b", text: "Población" },
-                        { val: "c", text: "Muestra" },
-                        { val: "d", text: "Variable y Frecuencia (fi)" },
-                        { val: "a", text: "Dato" }
-                    ],
-                    explanation: "El flujo estadístico parte de definir la <strong>población</strong> (b), extraer una <strong>muestra</strong> (c), medir la <strong>variable</strong> registrando su frecuencia absoluta ($f_i$) (d) y obtener cada <strong>dato</strong> concreto (a)."
-                }
-            ],
-            tamano_muestra_poblacion: [
-                {
-                    type: "mcq",
-                    q: "Un estudio analiza 10.500 estudiantes universitarios ($N$). Tras aplicar una encuesta en línea se obtuvieron 543 respuestas completas. Determine el tamaño de la muestra ($n$) y de la población ($N$):",
-                    a: ["N = 543", "n = 10.500", "No se puede determinar", "n = 543, N = 10.500"],
-                    c: 3,
-                    explanation: "El tamaño de la muestra se denota con $n$ minúscula ($n = 543$) y la población total con $N$ mayúscula ($N = 10.500$)."
-                }
-            ],
-            tipo_variable_def: [
-                {
-                    type: "mcq",
-                    q: "Tipo de variable cuantitativa que resulta de un proceso de conteo directo, expresada mediante la frecuencia absoluta $f_i$ de valores enteros:",
-                    a: ["Cuantitativa continua", "Cualitativa nominal", "Cuantitativa discreta", "Cualitativa ordinal"],
-                    c: 2,
-                    explanation: "Las variables discretas provienen de conteos de unidades enteras sin valores intermedios."
-                }
-            ],
-            clasificar_variable: [
-                {
-                    type: "mcq",
-                    q: "Clasifique el tipo de variable según su naturaleza: <strong>'Nivel de satisfacción (Bajo, Medio, Alto)'</strong>:",
-                    a: ["Cuantitativa discreta", "Cualitativa ordinal", "Cualitativa nominal", "Cuantitativa continua"],
-                    c: 1,
-                    explanation: "Es cualitativa porque expresa una cualidad y es ordinal porque guarda un orden o jerarquía implícita."
-                }
-            ],
-            tabla_frecuencias: [
-                {
-                    type: "mcq",
-                    q: `<p>Dada la siguiente tabla de frecuencias parcial con la notación del curso ($f_i$, $F_i$, $h_i$, $H_i$, $\%_i$):</p>
-                        <div class="table-container">
-                        <table>
-                            <tr><th>Categoría</th><th>$f_i$</th><th>$F_i$</th><th>$h_i$</th><th>$\%_i$</th></tr>
-                            <tr><td>A</td><td>12</td><td>12</td><td>0.30</td><td>30%</td></tr>
-                            <tr><td>B</td><td>16</td><td>28</td><td>0.40</td><td>40%</td></tr>
-                            <tr><td>C</td><td>12</td><td><strong>?</strong></td><td>0.30</td><td>30%</td></tr>
-                        </table>
-                        </div>
-                        <p>¿Cuál es el valor acumulado $F_3$ correspondientes a la última categoría?</p>`,
-                    a: ["F3 = 28", "F3 = 40", "F3 = 30", "F3 = 100"],
-                    c: 1,
-                    explanation: "La frecuencia absoluta acumulada $F_3 = F_2 + f_3 = 28 + 12 = 40$ (que coincide con el total de datos $n = 40$)."
-                }
-            ],
-            sturges: [
-                {
-                    type: "mcq",
-                    q: "Para un conjunto de $n = 50$ datos, calcule el número adecuado de intervalos o clases ($k$) aplicando la Regla de Sturges ($k = 1 + 3.322 \\log_{10}(n)$):",
-                    a: ["k = 5", "k = 7", "k = 6", "k = 8"],
-                    c: 1,
-                    explanation: "$k = 1 + 3.322 \\cdot \\log_{10}(50) \\approx 1 + 3.322 \\cdot (1.6989) \\approx 6.64$. Redondeando al entero más cercano, $k = 7$."
-                }
-            ],
-            grafica_cualitativa: [
-                {
-                    type: "chart_mcq",
-                    q: "Se encuestaron 100 personas sobre su preferencia de marca (A: 40%, B: 35%, C: 25%). Seleccione la gráfica de sectores que representa correctamente la frecuencia porcentual ($\%_i$):",
-                    c: 0,
-                    explanation: "La opción A representa de forma proporcional la distribución cualitativa dada (A: 40%, B: 35%, C: 25%).",
-                    charts: [
-                        { type: 'pie', labels: ['A', 'B', 'C'], values: [40, 35, 25], title: 'Opción A' },
-                        { type: 'pie', labels: ['A', 'B', 'C'], values: [10, 10, 80], title: 'Opción B' },
-                        { type: 'pie', labels: ['A', 'B', 'C'], values: [33, 33, 34], title: 'Opción C' },
-                        { type: 'pie', labels: ['A', 'B', 'C'], values: [60, 20, 20], title: 'Opción D' }
-                    ]
-                }
-            ],
-            grafica_cuantitativa: [
-                {
-                    type: "chart_mcq",
-                    q: "Dada la distribución de frecuencias continuas ($f_1=6, f_2=15, f_3=22, f_4=14, f_5=7$), identifique el <strong>histograma de frecuencias absolutas ($f_i$)</strong> correcto:",
-                    c: 0,
-                    explanation: "El histograma adecuado debe mantener el orden consecutivo de los intervalos con las alturas de barra proporcionales a las frecuencias absolutas $f_i$: [6, 15, 22, 14, 7].",
-                    charts: [
-                        { type: 'bar', x: ['150-158', '158-166', '166-174', '174-182', '182-190'], y: [6, 15, 22, 14, 7], title: 'Opción A', gap: 0 },
-                        { type: 'bar', x: ['150-158', '158-166', '166-174', '174-182', '182-190'], y: [22, 15, 14, 7, 6], title: 'Opción B', gap: 0 },
-                        { type: 'bar', x: ['150-158', '158-166', '166-174', '174-182', '182-190'], y: [7, 14, 22, 15, 6], title: 'Opción C', gap: 0 },
-                        { type: 'bar', x: ['150-158', '158-166', '166-174', '174-182', '182-190'], y: [10, 10, 10, 10, 10], title: 'Opción D', gap: 0 }
-                    ]
-                }
-            ]
-        };
+        /* ------------------------------------------------------------------
+           Banco de preguntas. Un objeto por tema; cada tema tiene varias
+           variantes y el simulador sortea una. Las explicaciones nunca
+           nombran la opción por su letra, porque el orden se baraja.
+           ------------------------------------------------------------------ */
+        const TEMAS = [
+            {
+                nav: "Conceptos básicos",
+                variants: [
+                    {
+                        type: "matching",
+                        q: `<p>Relacione cada definición con el concepto que le corresponde.</p>`,
+                        pairs: [
+                            { id: "p1", correct: "pob", prompt: "Conjunto de todos los elementos, individuos u objetos que poseen una característica en común y que son objeto de estudio." },
+                            { id: "p2", correct: "mue", prompt: "Subconjunto representativo de la población, seleccionado mediante algún método, a partir del cual se obtiene la información del estudio." },
+                            { id: "p3", correct: "var", prompt: "Característica o atributo que puede ser medido, contado u observado en cada elemento de la población o muestra, y que puede tomar distintos valores." },
+                            { id: "p4", correct: "dat", prompt: "Valor específico que toma una variable al ser medida u observada en un elemento particular." }
+                        ],
+                        options: [
+                            { val: "", text: "-- Seleccionar concepto --" },
+                            { val: "pob", text: "Población" },
+                            { val: "mue", text: "Muestra" },
+                            { val: "var", text: "Variable" },
+                            { val: "dat", text: "Dato" }
+                        ],
+                        explanation: "La <strong>población</strong> es el conjunto completo de interés; la <strong>muestra</strong> es la parte de esa población que realmente se estudia; la <strong>variable</strong> es la característica que se va a medir; y el <strong>dato</strong> es el resultado concreto que arroja esa medición en un elemento específico. El orden lógico es siempre el mismo: primero se define la población, luego se extrae una muestra, en ella se mide una variable, y cada medición produce un dato."
+                    }
+                ]
+            },
+            {
+                nav: "Tamaños del estudio",
+                variants: [
+                    {
+                        type: "mcq",
+                        q: "Un estudiante de la Corporación Universitaria Minuto de Dios realiza un estudio para determinar qué variables psicoemocionales se asocian con un mejor rendimiento académico en los <strong>10.500 estudiantes universitarios</strong> de la institución. Para ello comparte un formulario que solo se puede diligenciar a través del correo institucional, con el fin de que circule entre amigos y compañeros. Al cerrar la encuesta logró reunir <strong>543 formularios diligenciados</strong>. Determine cuál es el tamaño de la muestra:",
+                        a: ["$n = 543$", "$N = 543$", "$n = 10.500$", "No se puede concluir porque el encuestador no determinó su tamaño"],
+                        c: 0,
+                        explanation: "Los 10.500 estudiantes son la población, porque son el total de individuos sobre los que se quiere concluir, y se denotan con $N$ mayúscula. Los 543 formularios efectivamente diligenciados son la parte que realmente se usó para el análisis, es decir la muestra, que se denota con <strong>$n$ minúscula</strong>: $n = 543$. La opción que usa $N = 543$ tiene el número correcto pero el símbolo equivocado, y por eso no sirve."
+                    },
+                    {
+                        type: "mcq",
+                        q: "Una empresa de tecnología cuenta con <strong>8.200 empleados</strong> a nivel nacional. El área de talento humano desea conocer el nivel de satisfacción laboral y para ello selecciona aleatoriamente a <strong>350 empleados</strong> de distintas sedes para aplicarles una encuesta. Determine cuál es el tamaño de la población:",
+                        a: ["$N = 8.200$", "$n = 350$", "$N = 350$", "No es posible determinarlo porque la selección fue aleatoria"],
+                        c: 0,
+                        explanation: "La población es el total de elementos sobre los que se quiere obtener conclusiones, en este caso todos los empleados de la empresa: 8.200. Ese valor se representa con <strong>$N$ mayúscula</strong>. Los 350 empleados seleccionados aleatoriamente son la muestra ($n = 350$), no la población; por eso las opciones que mezclan el número 350 con la letra $N$, o que usan $n$, quedan descartadas."
+                    },
+                    {
+                        type: "mcq",
+                        q: "En un municipio con <strong>25.000 habitantes</strong>, la alcaldía quiere conocer la percepción ciudadana sobre un nuevo proyecto vial. Por limitaciones de tiempo y presupuesto, se aplican encuestas telefónicas a <strong>412 personas</strong> escogidas al azar de la base de datos del municipio. Determine cuál es el tamaño de la muestra:",
+                        a: ["$n = 412$", "$N = 25.000$", "$n = 25.000$", "No se puede determinar porque la encuesta fue telefónica"],
+                        c: 0,
+                        explanation: "El municipio completo (25.000 habitantes) es la población, mientras que las 412 personas efectivamente encuestadas son el subconjunto que se usó para el estudio, es decir la muestra. Al ser la muestra se representa con <strong>$n$ minúscula</strong>: $n = 412$. El medio por el que se aplicó la encuesta no cambia en nada esa definición."
+                    },
+                    {
+                        type: "mcq",
+                        q: "Un colegio tiene matriculados <strong>1.320 estudiantes</strong> en todos sus grados. El departamento de psicología quiere estudiar los niveles de ansiedad escolar y aplica el instrumento a <strong>todos los estudiantes de grado 11</strong>, que corresponden a <strong>95 estudiantes</strong>. Determine cuál es el tamaño de la población:",
+                        a: ["$N = 1.320$", "$N = 95$", "$n = 95$", "No se puede determinar porque solo se tomó un grado"],
+                        c: 0,
+                        explanation: "La población es el total de elementos que interesan al estudio: el colegio completo, con 1.320 estudiantes matriculados, de modo que $N = 1.320$. Los 95 estudiantes de grado 11 son la muestra ($n = 95$), porque son el subconjunto realmente evaluado. Que la muestra provenga de un solo grado afecta su representatividad, pero no cambia el tamaño de la población."
+                    },
+                    {
+                        type: "mcq",
+                        q: "Un hospital atiende en promedio <strong>6.800 pacientes</strong> al mes en su servicio de urgencias. Para evaluar la calidad del servicio se seleccionan de forma aleatoria <strong>200 historias clínicas</strong> del último mes para su análisis. Determine cuál es el tamaño de la muestra:",
+                        a: ["$n = 200$", "$N = 6.800$", "$n = 6.800$", "No se puede concluir porque no se conoce el método exacto de selección"],
+                        c: 0,
+                        explanation: "Los 6.800 pacientes atendidos en el mes son la población ($N = 6.800$), pues representan el total de casos posibles. Las 200 historias clínicas seleccionadas al azar para el análisis son la muestra, así que $n = 200$. Conocer o no el método exacto de selección no impide identificar el tamaño, porque el enunciado lo da de forma explícita."
+                    }
+                ]
+            },
+            {
+                nav: "Definición de variable",
+                variants: [
+                    {
+                        type: "mcq",
+                        q: "Es un tipo de dato numérico que toma valores enteros, independientes, separados por espacios definidos, y que se obtiene mediante conteos. No acepta valores intermedios decimales entre un número y el siguiente.",
+                        a: ["Cuantitativa discreta", "Cualitativa nominal", "Cuantitativa continua", "Cualitativa ordinal"],
+                        c: 0,
+                        explanation: "La clave está en dos palabras: «numérico» y «conteo». Lo primero descarta de inmediato las opciones cualitativas, que describen categorías y no números. Entre las cuantitativas, la continua admite decimales (por ejemplo 1,5 kg), mientras que la discreta solo admite valores enteros que provienen de contar (0, 1, 2, 3…). Como el enunciado dice que no acepta valores intermedios, corresponde a <strong>cuantitativa discreta</strong>."
+                    },
+                    {
+                        type: "mcq",
+                        q: "Es un tipo de dato numérico que puede tomar cualquier valor dentro de un intervalo, incluyendo decimales, y que se obtiene generalmente mediante procesos de medición y no de conteo.",
+                        a: ["Cuantitativa continua", "Cuantitativa discreta", "Cualitativa ordinal", "Cualitativa nominal"],
+                        c: 0,
+                        explanation: "De nuevo, «numérico» descarta las opciones cualitativas. Las palabras clave aquí son «medición» y «cualquier valor dentro de un intervalo, incluyendo decimales»: eso es exactamente lo que caracteriza a una variable <strong>cuantitativa continua</strong> (estatura, peso, tiempo), a diferencia de la discreta, que solo permite valores enteros obtenidos por conteo."
+                    },
+                    {
+                        type: "mcq",
+                        q: "Es un tipo de variable cuyas categorías representan cualidades o atributos que no admiten un orden natural ni una jerarquía entre ellas; solo permiten clasificar a los elementos en grupos diferentes.",
+                        a: ["Cualitativa nominal", "Cualitativa ordinal", "Cuantitativa discreta", "Cuantitativa continua"],
+                        c: 0,
+                        explanation: "Al hablar de «categorías» y de «cualidades o atributos» se descartan las opciones cuantitativas, que trabajan con números. Entre las cualitativas, la ordinal sí tiene orden o jerarquía (bajo, medio, alto), mientras que la nominal no admite ningún orden lógico entre sus categorías (color de cabello, ciudad de nacimiento). Como el enunciado dice que no admiten orden natural, la respuesta es <strong>cualitativa nominal</strong>."
+                    },
+                    {
+                        type: "mcq",
+                        q: "Es un tipo de variable cuyas categorías representan cualidades que sí admiten un orden o jerarquía entre ellas, pero en las que no es posible determinar la magnitud exacta de la diferencia entre una categoría y otra.",
+                        a: ["Cualitativa ordinal", "Cuantitativa continua", "Cualitativa nominal", "Cuantitativa discreta"],
+                        c: 0,
+                        explanation: "Al mencionar «categorías» se descartan las opciones cuantitativas. La frase clave es «sí admiten un orden o jerarquía», que es lo que distingue a la variable <strong>ordinal</strong> de la nominal. Ejemplos típicos son el nivel educativo o el estrato socioeconómico: se sabe que una categoría es mayor que otra, pero no se puede calcular numéricamente cuánto más."
+                    },
+                    {
+                        type: "mcq",
+                        q: "Es un tipo de dato numérico que resulta de un proceso de conteo, por lo que solo puede tomar valores dentro de un conjunto finito o infinito numerable (0, 1, 2, 3…), sin admitir fracciones entre dos valores consecutivos.",
+                        a: ["Cuantitativa discreta", "Cualitativa ordinal", "Cuantitativa continua", "Cualitativa nominal"],
+                        c: 0,
+                        explanation: "«Numérico» y «proceso de conteo» descartan las opciones cualitativas. La frase «sin admitir fracciones entre dos valores consecutivos» es la característica distintiva de la variable <strong>discreta</strong> frente a la continua, que sí admite cualquier valor decimal dentro de un rango."
+                    }
+                ]
+            },
+            {
+                nav: "Clasificar variable",
+                variants: [
+                    {
+                        type: "mcq",
+                        q: "Identifique el tipo de variable: <strong>«Edad»</strong>",
+                        a: ["Cuantitativa continua", "Cualitativa ordinal", "Cuantitativa discreta", "Cualitativa nominal"],
+                        c: 0,
+                        explanation: "La edad es un valor numérico que en principio puede tomar cualquier valor dentro de un rango (25 años, 25,5 años si se mide en meses o días), porque proviene de una medición continua del tiempo transcurrido y no de un conteo de unidades. Por eso se clasifica como <strong>cuantitativa continua</strong>, aunque en la práctica se acostumbre redondearla a años cumplidos."
+                    },
+                    {
+                        type: "mcq",
+                        q: "Identifique el tipo de variable: <strong>«Número de hijos»</strong>",
+                        a: ["Cuantitativa discreta", "Cuantitativa continua", "Cualitativa nominal", "Cualitativa ordinal"],
+                        c: 0,
+                        explanation: "El número de hijos se obtiene <strong>contando</strong> (0, 1, 2, 3…) y no admite valores decimales: no existen «2,5 hijos». Al ser numérica y resultar de un conteo con valores enteros, corresponde a <strong>cuantitativa discreta</strong>."
+                    },
+                    {
+                        type: "mcq",
+                        q: "Identifique el tipo de variable: <strong>«Nivel educativo (primaria, secundaria, pregrado, posgrado)»</strong>",
+                        a: ["Cualitativa ordinal", "Cualitativa nominal", "Cuantitativa discreta", "Cuantitativa continua"],
+                        c: 0,
+                        explanation: "El nivel educativo es una cualidad y no un número, lo que descarta las opciones cuantitativas. Además, sus categorías tienen un orden claro: primaria, secundaria, pregrado y posgrado forman una jerarquía. Por tener categorías ordenadas es <strong>cualitativa ordinal</strong> y no nominal."
+                    },
+                    {
+                        type: "mcq",
+                        q: "Identifique el tipo de variable: <strong>«Color de ojos»</strong>",
+                        a: ["Cualitativa nominal", "Cualitativa ordinal", "Cuantitativa discreta", "Cuantitativa continua"],
+                        c: 0,
+                        explanation: "El color de ojos es una cualidad, así que se descartan las opciones cuantitativas. Entre las categorías (café, verde, azul, negro) no existe ningún orden o jerarquía lógica: ningún color es mayor o menor que otro. Por eso corresponde a <strong>cualitativa nominal</strong>."
+                    },
+                    {
+                        type: "mcq",
+                        q: "Identifique el tipo de variable: <strong>«Estatura de una persona, medida en metros»</strong>",
+                        a: ["Cuantitativa continua", "Cualitativa ordinal", "Cuantitativa discreta", "Cualitativa nominal"],
+                        c: 0,
+                        explanation: "La estatura es un valor numérico que se obtiene mediante medición y puede tomar cualquier valor decimal dentro de un rango (1,65 m; 1,732 m), sin límite en la cantidad de decimales. Por tratarse de una medición, y no de un conteo, que admite valores intermedios, es <strong>cuantitativa continua</strong>."
+                    }
+                ]
+            },
+            {
+                nav: "Tabla de frecuencias",
+                variants: [
+                    {
+                        type: "mcq",
+                        q: `<p>Se registró el canal de compra utilizado por 40 clientes, con la codificación T = Tienda física, A = App móvil, W = Web, F = Teléfono. Estos son los datos recogidos:</p>
+                            <p style="font-family:Consolas,monospace; font-size:0.9em; background:#f4f6f8; padding:10px; border-radius:6px;">T A W T F A W T A T W A F T W A T A W T T W A T F A W T A T W A T W A T F A T A</p>
+                            <div class="table-container">
+                            <table>
+                                <tr><th>Canal</th><th>$f_i$</th><th>$h_i$</th></tr>
+                                <tr><td>Tienda física (T)</td><td>14</td><td>0,350</td></tr>
+                                <tr><td>App móvil (A)</td><td>13</td><td>0,325</td></tr>
+                                <tr><td>Web (W)</td><td>9</td><td>0,225</td></tr>
+                                <tr><td>Teléfono (F)</td><td><strong>?</strong></td><td><strong>?</strong></td></tr>
+                                <tr><td><strong>Total</strong></td><td><strong>40</strong></td><td><strong>1,000</strong></td></tr>
+                            </table>
+                            </div>
+                            <p>¿Cuál es el valor que falta en la casilla de frecuencia absoluta $f_i$ de «Teléfono»?</p>`,
+                        a: ["4", "3", "5", "6"],
+                        c: 0,
+                        explanation: "En una tabla de frecuencias la suma de todas las $f_i$ tiene que ser igual al total de datos, $n = 40$. Sumando las frecuencias conocidas: $14 + 13 + 9 = 36$, de modo que la frecuencia faltante es $40 - 36 = 4$. Se puede verificar contando directamente las letras F en la lista de datos: aparecen 4 veces."
+                    },
+                    {
+                        type: "mcq",
+                        q: `<p>Se registró el método de pago utilizado por 50 clientes:</p>
+                            <div class="table-container">
+                            <table>
+                                <tr><th>Método de pago</th><th>$f_i$</th><th>$h_i$</th></tr>
+                                <tr><td>Efectivo</td><td>18</td><td>0,36</td></tr>
+                                <tr><td>Tarjeta</td><td><strong>?</strong></td><td><strong>?</strong></td></tr>
+                                <tr><td>Transferencia</td><td>7</td><td>0,14</td></tr>
+                                <tr><td>Otro</td><td>3</td><td>0,06</td></tr>
+                                <tr><td><strong>Total</strong></td><td><strong>50</strong></td><td><strong>1,00</strong></td></tr>
+                            </table>
+                            </div>
+                            <p>¿Cuál es el valor que falta en la casilla de frecuencia absoluta $f_i$ de «Tarjeta»?</p>`,
+                        a: ["22", "20", "24", "18"],
+                        c: 0,
+                        explanation: "La suma de las frecuencias absolutas debe ser igual a $n = 50$. Sumando las conocidas: $18 + 7 + 3 = 28$, así que la frecuencia faltante es $50 - 28 = 22$. También se puede llegar por la columna de frecuencia relativa: $1{,}00 - 0{,}36 - 0{,}14 - 0{,}06 = 0{,}44$, y $0{,}44 \\times 50 = 22$."
+                    },
+                    {
+                        type: "mcq",
+                        q: `<p>Se registró el medio de transporte usado por 35 empleados:</p>
+                            <div class="table-container">
+                            <table>
+                                <tr><th>Medio de transporte</th><th>$f_i$</th><th>$h_i$</th></tr>
+                                <tr><td>Carro</td><td>12</td><td>0,343</td></tr>
+                                <tr><td>Moto</td><td>9</td><td>0,257</td></tr>
+                                <tr><td>Bus</td><td><strong>?</strong></td><td><strong>?</strong></td></tr>
+                                <tr><td>Bicicleta</td><td>4</td><td>0,114</td></tr>
+                                <tr><td><strong>Total</strong></td><td><strong>35</strong></td><td><strong>1,000</strong></td></tr>
+                            </table>
+                            </div>
+                            <p>¿Cuál es el valor que falta en la casilla de frecuencia absoluta $f_i$ de «Bus»?</p>`,
+                        a: ["10", "8", "11", "9"],
+                        c: 0,
+                        explanation: "La suma de las $f_i$ debe ser igual a $n = 35$. Sumando las conocidas: $12 + 9 + 4 = 25$, de modo que la frecuencia faltante es $35 - 25 = 10$."
+                    },
+                    {
+                        type: "mcq",
+                        q: `<p>Se registró la marca preferida por 60 consumidores:</p>
+                            <div class="table-container">
+                            <table>
+                                <tr><th>Marca</th><th>$f_i$</th><th>Porcentaje</th></tr>
+                                <tr><td>Marca X</td><td>25</td><td>41,7 %</td></tr>
+                                <tr><td>Marca Y</td><td>18</td><td>30,0 %</td></tr>
+                                <tr><td>Marca Z</td><td>11</td><td><strong>?</strong></td></tr>
+                                <tr><td>Otras</td><td>6</td><td>10,0 %</td></tr>
+                                <tr><td><strong>Total</strong></td><td><strong>60</strong></td><td><strong>100 %</strong></td></tr>
+                            </table>
+                            </div>
+                            <p>¿Cuál es el valor que falta en la casilla de frecuencia porcentual de «Marca Z»?</p>`,
+                        a: ["18,3 %", "16,7 %", "15,0 %", "20,0 %"],
+                        c: 0,
+                        explanation: "La frecuencia porcentual se obtiene dividiendo la frecuencia absoluta de la categoría entre el total de datos y multiplicando por 100: $\\dfrac{11}{60} \\times 100 = 18{,}33$, es decir 18,3 %. También se puede verificar que los cuatro porcentajes deben sumar 100: $41{,}7 + 30{,}0 + 18{,}3 + 10{,}0 = 100$."
+                    },
+                    {
+                        type: "mcq",
+                        q: `<p>Se registró el nivel de satisfacción de 45 clientes:</p>
+                            <div class="table-container">
+                            <table>
+                                <tr><th>Nivel de satisfacción</th><th>$f_i$</th><th>$h_i$</th></tr>
+                                <tr><td>Muy satisfecho</td><td>15</td><td>0,333</td></tr>
+                                <tr><td>Satisfecho</td><td><strong>?</strong></td><td><strong>?</strong></td></tr>
+                                <tr><td>Insatisfecho</td><td>7</td><td>0,156</td></tr>
+                                <tr><td>Muy insatisfecho</td><td>3</td><td>0,067</td></tr>
+                                <tr><td><strong>Total</strong></td><td><strong>45</strong></td><td><strong>1,000</strong></td></tr>
+                            </table>
+                            </div>
+                            <p>¿Cuál es el valor que falta en la casilla de frecuencia absoluta $f_i$ de «Satisfecho»?</p>`,
+                        a: ["20", "18", "22", "25"],
+                        c: 0,
+                        explanation: "La suma de las $f_i$ debe ser igual a $n = 45$. Sumando las conocidas: $15 + 7 + 3 = 25$, así que la frecuencia faltante es $45 - 25 = 20$."
+                    }
+                ]
+            },
+            {
+                nav: "Datos agrupados",
+                variants: [
+                    {
+                        type: "mcq",
+                        q: `<p>Se tiene el gasto mensual, en miles de pesos, de 40 clientes, ya ordenado de menor a mayor:</p>
+                            <p style="font-family:Consolas,monospace; font-size:0.85em; background:#f4f6f8; padding:10px; border-radius:6px;">112 127 138 149 153 158 165 171 178 184 190 195 199 203 208 212 215 219 222 226 229 231 234 238 241 245 249 253 258 264 269 275 281 288 295 302 309 318 331 352</p>
+                            <p>Determine el rango, el número de clases y la amplitud de clase que se deben usar para agrupar estos datos:</p>`,
+                        a: [
+                            "Rango = 240, $k$ = 6, amplitud = 40",
+                            "Rango = 240, $k$ = 7, amplitud = 34",
+                            "Rango = 230, $k$ = 6, amplitud = 38",
+                            "Rango = 240, $k$ = 5, amplitud = 48"
+                        ],
+                        c: 0,
+                        explanation: "El rango es la diferencia entre el valor máximo y el mínimo: $352 - 112 = 240$. El número de clases sale de la Regla de Sturges: $k = 1 + 3{,}322 \\cdot \\log_{10}(40) = 1 + 3{,}322 \\cdot 1{,}602 = 6{,}32$, que redondeado al entero más cercano da $k = 6$. La amplitud es el rango dividido entre el número de clases: $240 / 6 = 40$, un valor exacto que no requiere redondeo."
+                    },
+                    {
+                        type: "mcq",
+                        q: "Se tiene el tiempo semanal dedicado al ejercicio, en minutos, de 30 personas. El valor mínimo registrado fue 45 y el máximo 210. Determine el rango, el número de clases y la amplitud de clase que se deben usar para agrupar estos datos:",
+                        a: [
+                            "Rango = 165, $k$ = 6, amplitud = 28",
+                            "Rango = 165, $k$ = 5, amplitud = 33",
+                            "Rango = 155, $k$ = 6, amplitud = 26",
+                            "Rango = 165, $k$ = 7, amplitud = 24"
+                        ],
+                        c: 0,
+                        explanation: "El rango es $210 - 45 = 165$. Por la Regla de Sturges, $k = 1 + 3{,}322 \\cdot \\log_{10}(30) = 1 + 3{,}322 \\cdot 1{,}477 = 5{,}91$, que redondeado da $k = 6$. La amplitud es $165 / 6 = 27{,}5$, y se redondea hacia arriba a 28 para que la última clase alcance a cubrir el valor máximo."
+                    },
+                    {
+                        type: "mcq",
+                        q: "Se tiene el tiempo de espera, en minutos, de 50 usuarios de una entidad bancaria. El valor mínimo registrado fue 2 y el máximo 68. Determine el rango, el número de clases y la amplitud de clase que se deben usar para agrupar estos datos:",
+                        a: [
+                            "Rango = 66, $k$ = 7, amplitud = 10",
+                            "Rango = 66, $k$ = 6, amplitud = 11",
+                            "Rango = 68, $k$ = 7, amplitud = 10",
+                            "Rango = 66, $k$ = 8, amplitud = 9"
+                        ],
+                        c: 0,
+                        explanation: "El rango es $68 - 2 = 66$; cuidado con tomar directamente el valor máximo como rango. Por la Regla de Sturges, $k = 1 + 3{,}322 \\cdot \\log_{10}(50) = 1 + 3{,}322 \\cdot 1{,}699 = 6{,}64$, que redondeado da $k = 7$. La amplitud es $66 / 7 = 9{,}43$, que se redondea hacia arriba a 10."
+                    },
+                    {
+                        type: "mcq",
+                        q: "Se tiene el peso, en kilogramos, de 36 pacientes. El valor mínimo registrado fue 48 y el máximo 95. Determine el rango, el número de clases y la amplitud de clase que se deben usar para agrupar estos datos:",
+                        a: [
+                            "Rango = 47, $k$ = 6, amplitud = 8",
+                            "Rango = 47, $k$ = 5, amplitud = 9",
+                            "Rango = 47, $k$ = 6, amplitud = 7",
+                            "Rango = 47, $k$ = 7, amplitud = 7"
+                        ],
+                        c: 0,
+                        explanation: "El rango es $95 - 48 = 47$. Por la Regla de Sturges, $k = 1 + 3{,}322 \\cdot \\log_{10}(36) = 1 + 3{,}322 \\cdot 1{,}556 = 6{,}17$, que redondeado da $k = 6$. La amplitud es $47 / 6 = 7{,}83$, que se redondea hacia arriba a 8: con amplitud 7 las seis clases solo cubrirían 42 unidades y el valor máximo quedaría por fuera."
+                    },
+                    {
+                        type: "mcq",
+                        q: "Se tiene la edad, en años, de 64 personas encuestadas. El valor mínimo registrado fue 18 y el máximo 75. Determine el rango, el número de clases y la amplitud de clase que se deben usar para agrupar estos datos:",
+                        a: [
+                            "Rango = 57, $k$ = 7, amplitud = 9",
+                            "Rango = 57, $k$ = 6, amplitud = 10",
+                            "Rango = 57, $k$ = 8, amplitud = 8",
+                            "Rango = 57, $k$ = 7, amplitud = 8"
+                        ],
+                        c: 0,
+                        explanation: "El rango es $75 - 18 = 57$. Por la Regla de Sturges, $k = 1 + 3{,}322 \\cdot \\log_{10}(64) = 1 + 3{,}322 \\cdot 1{,}806 = 7{,}00$, de modo que $k = 7$. La amplitud es $57 / 7 = 8{,}14$, que se redondea hacia arriba a 9."
+                    }
+                ]
+            },
+            {
+                nav: "Representación gráfica I",
+                variants: [
+                    {
+                        type: "chart_mcq",
+                        q: `<p>Se registró el canal de compra de 40 clientes:</p>
+                            <div class="table-container">
+                            <table>
+                                <tr><th>Canal</th><th>$f_i$</th></tr>
+                                <tr><td>Tienda física</td><td>14</td></tr>
+                                <tr><td>App móvil</td><td>13</td></tr>
+                                <tr><td>Web</td><td>9</td></tr>
+                                <tr><td>Teléfono</td><td>4</td></tr>
+                            </table>
+                            </div>
+                            <p>¿Cuál gráfico representa correctamente la información de la tabla?</p>`,
+                        c: 0,
+                        explanation: "El canal de compra es una variable <strong>cualitativa</strong>, así que lo apropiado es un diagrama de barras o uno circular, nunca un gráfico de líneas, que se reserva para series de tiempo y no para categorías independientes. El gráfico correcto debe además asignar a cada categoría su propia frecuencia: Tienda física 14, App móvil 13, Web 9 y Teléfono 4. Uno de los distractores inventa frecuencias iguales que no están en la tabla, y otro intercambia los valores, dándole la barra más alta justamente a la categoría de menor frecuencia.",
+                        charts: [
+                            { type: 'bar', x: ['Tienda física', 'App móvil', 'Web', 'Teléfono'], y: [14, 13, 9, 4] },
+                            { type: 'bar', x: ['Tienda física', 'App móvil', 'Web', 'Teléfono'], y: [10, 10, 10, 10] },
+                            { type: 'bar', x: ['Tienda física', 'App móvil', 'Web', 'Teléfono'], y: [4, 9, 13, 14] },
+                            { type: 'line', x: ['Tienda física', 'App móvil', 'Web', 'Teléfono'], y: [14, 13, 9, 4] }
+                        ]
+                    },
+                    {
+                        type: "chart_mcq",
+                        q: `<p>Se registró el estado civil de 80 personas:</p>
+                            <div class="table-container">
+                            <table>
+                                <tr><th>Estado civil</th><th>$f_i$</th></tr>
+                                <tr><td>Soltero</td><td>32</td></tr>
+                                <tr><td>Casado</td><td>28</td></tr>
+                                <tr><td>Unión libre</td><td>14</td></tr>
+                                <tr><td>Divorciado</td><td>6</td></tr>
+                            </table>
+                            </div>
+                            <p>¿Cuál gráfico representa correctamente la información de la tabla?</p>`,
+                        c: 0,
+                        explanation: "Primero se convierten las frecuencias absolutas a porcentajes dividiendo entre el total de 80: Soltero 40 %, Casado 35 %, Unión libre 17,5 % y Divorciado 7,5 %. El histograma queda descartado porque el estado civil es una variable cualitativa y no una variable numérica agrupada en clases. De los diagramas circulares, uno reparte el 100 % en partes iguales sin usar los datos y otro tiene los porcentajes correctos pero asignados a la categoría equivocada.",
+                        charts: [
+                            { type: 'pie', labels: ['Soltero', 'Casado', 'Unión libre', 'Divorciado'], values: [32, 28, 14, 6] },
+                            { type: 'pie', labels: ['Soltero', 'Casado', 'Unión libre', 'Divorciado'], values: [20, 20, 20, 20] },
+                            { type: 'pie', labels: ['Soltero', 'Casado', 'Unión libre', 'Divorciado'], values: [6, 14, 28, 32] },
+                            { type: 'bar', x: ['0 - 20', '20 - 40', '40 - 60', '60 - 80'], y: [32, 28, 14, 6], gap: 0 }
+                        ]
+                    },
+                    {
+                        type: "chart_mcq",
+                        q: `<p>Se registró el tipo de mascota preferida por 60 estudiantes:</p>
+                            <div class="table-container">
+                            <table>
+                                <tr><th>Mascota</th><th>$f_i$</th></tr>
+                                <tr><td>Perro</td><td>30</td></tr>
+                                <tr><td>Gato</td><td>18</td></tr>
+                                <tr><td>Ave</td><td>8</td></tr>
+                                <tr><td>Otro</td><td>4</td></tr>
+                            </table>
+                            </div>
+                            <p>¿Cuál gráfico representa correctamente la información de la tabla?</p>`,
+                        c: 0,
+                        explanation: "El polígono de frecuencias y el diagrama de dispersión se descartan de inmediato, porque ambos son para variables cuantitativas: el primero necesita clases numéricas y el segundo pares de valores. Entre los diagramas de barras horizontales, el correcto es el que asigna cada longitud a su categoría real: Perro 30, Gato 18, Ave 8 y Otro 4. El otro invierte los valores y le da la barra más corta a la categoría con mayor frecuencia.",
+                        charts: [
+                            { type: 'barh', y: ['Perro', 'Gato', 'Ave', 'Otro'], x: [30, 18, 8, 4] },
+                            { type: 'barh', y: ['Perro', 'Gato', 'Ave', 'Otro'], x: [4, 8, 18, 30] },
+                            { type: 'line', x: [15, 25, 35, 45], y: [30, 18, 8, 4] },
+                            { type: 'scatter', n: 60 }
+                        ]
+                    },
+                    {
+                        type: "chart_mcq",
+                        q: `<p>Se registró el nivel de satisfacción con un servicio en 50 encuestados:</p>
+                            <div class="table-container">
+                            <table>
+                                <tr><th>Nivel</th><th>$f_i$</th></tr>
+                                <tr><td>Muy satisfecho</td><td>20</td></tr>
+                                <tr><td>Satisfecho</td><td>18</td></tr>
+                                <tr><td>Insatisfecho</td><td>8</td></tr>
+                                <tr><td>Muy insatisfecho</td><td>4</td></tr>
+                            </table>
+                            </div>
+                            <p>¿Cuál gráfico representa correctamente la información de la tabla?</p>`,
+                        c: 0,
+                        explanation: "El nivel de satisfacción es una variable cualitativa ordinal, así que lo natural es un diagrama de barras que respete ese orden y no un histograma, que corresponde a variables cuantitativas agrupadas en clases. El diagrama circular con sectores iguales queda descartado porque no usa los datos reales, y el diagrama de barras invertido tiene las alturas correctas pero en el orden equivocado: le asigna el valor más bajo a «Muy satisfecho», que en realidad es la categoría con mayor frecuencia.",
+                        charts: [
+                            { type: 'bar', x: ['Muy satisf.', 'Satisfecho', 'Insatisf.', 'Muy insatisf.'], y: [20, 18, 8, 4] },
+                            { type: 'bar', x: ['Muy satisf.', 'Satisfecho', 'Insatisf.', 'Muy insatisf.'], y: [4, 8, 18, 20] },
+                            { type: 'bar', x: ['0 - 12,5', '12,5 - 25', '25 - 37,5', '37,5 - 50'], y: [20, 18, 8, 4], gap: 0 },
+                            { type: 'pie', labels: ['Muy satisf.', 'Satisfecho', 'Insatisf.', 'Muy insatisf.'], values: [25, 25, 25, 25] }
+                        ]
+                    },
+                    {
+                        type: "chart_mcq",
+                        q: `<p>Se registró la red social más usada por 45 jóvenes:</p>
+                            <div class="table-container">
+                            <table>
+                                <tr><th>Red social</th><th>$f_i$</th></tr>
+                                <tr><td>Instagram</td><td>20</td></tr>
+                                <tr><td>TikTok</td><td>15</td></tr>
+                                <tr><td>Facebook</td><td>6</td></tr>
+                                <tr><td>X</td><td>4</td></tr>
+                            </table>
+                            </div>
+                            <p>¿Cuál gráfico representa correctamente la información de la tabla?</p>`,
+                        c: 0,
+                        explanation: "Se convierten las frecuencias a porcentajes sobre el total de 45: Instagram 44,4 %, TikTok 33,3 %, Facebook 13,3 % y X 8,9 %. El histograma no aplica, porque la red social es una variable cualitativa nominal y no una variable numérica agrupada en clases. De los otros dos diagramas circulares, uno reparte el 100 % en partes iguales sin usar los datos y el otro tiene los porcentajes correctos pero mal asignados a cada categoría.",
+                        charts: [
+                            { type: 'pie', labels: ['Instagram', 'TikTok', 'Facebook', 'X'], values: [20, 15, 6, 4] },
+                            { type: 'pie', labels: ['Instagram', 'TikTok', 'Facebook', 'X'], values: [25, 25, 25, 25] },
+                            { type: 'pie', labels: ['Instagram', 'TikTok', 'Facebook', 'X'], values: [6, 4, 20, 15] },
+                            { type: 'bar', x: ['0 - 5', '5 - 10', '10 - 15', '15 - 20'], y: [20, 15, 6, 4], gap: 0 }
+                        ]
+                    }
+                ]
+            },
+            {
+                nav: "Representación gráfica II",
+                variants: [
+                    {
+                        type: "chart_mcq",
+                        q: `<p>Se agruparon en clases las edades de 50 clientes:</p>
+                            <div class="table-container">
+                            <table>
+                                <tr><th>Clase (edad)</th><th>$f_i$</th></tr>
+                                <tr><td>18 - 27</td><td>8</td></tr>
+                                <tr><td>28 - 37</td><td>15</td></tr>
+                                <tr><td>38 - 47</td><td>14</td></tr>
+                                <tr><td>48 - 57</td><td>9</td></tr>
+                                <tr><td>58 - 67</td><td>4</td></tr>
+                            </table>
+                            </div>
+                            <p>¿Cuál gráfico representa correctamente la información de la tabla?</p>`,
+                        c: 0,
+                        explanation: "Como la edad agrupada en clases es una variable cuantitativa, la representación adecuada es el <strong>histograma</strong>, con las barras pegadas entre sí porque las clases son consecutivas y cubren todo el recorrido sin huecos. Eso descarta el diagrama de barras separadas, que trataría las clases como si fueran categorías cualitativas, y también el diagrama circular, que no sirve para mostrar la forma de una distribución. El histograma de alturas iguales simplemente no corresponde a los datos de la tabla.",
+                        charts: [
+                            { type: 'bar', x: ['18-27', '28-37', '38-47', '48-57', '58-67'], y: [8, 15, 14, 9, 4], gap: 0 },
+                            { type: 'bar', x: ['18-27', '28-37', '38-47', '48-57', '58-67'], y: [8, 15, 14, 9, 4] },
+                            { type: 'bar', x: ['18-27', '28-37', '38-47', '48-57', '58-67'], y: [10, 10, 10, 10, 10], gap: 0 },
+                            { type: 'pie', labels: ['18-27', '28-37', '38-47', '48-57', '58-67'], values: [8, 15, 14, 9, 4] }
+                        ]
+                    },
+                    {
+                        type: "chart_mcq",
+                        q: `<p>Se agrupó en clases el gasto mensual, en miles de pesos, de 40 hogares:</p>
+                            <div class="table-container">
+                            <table>
+                                <tr><th>Clase (gasto)</th><th>$f_i$</th></tr>
+                                <tr><td>$[100,\\;160)$</td><td>6</td></tr>
+                                <tr><td>$[160,\\;220)$</td><td>13</td></tr>
+                                <tr><td>$[220,\\;280)$</td><td>12</td></tr>
+                                <tr><td>$[280,\\;340)$</td><td>7</td></tr>
+                                <tr><td>$[340,\\;400]$</td><td>2</td></tr>
+                            </table>
+                            </div>
+                            <p>¿Cuál de los siguientes gráficos es el <strong>polígono de frecuencias</strong> que corresponde a esta tabla?</p>`,
+                        c: 0,
+                        explanation: "El polígono de frecuencias se construye ubicando en el eje horizontal la <strong>marca de clase</strong>, es decir el punto medio de cada intervalo, y en el eje vertical su frecuencia, uniendo luego esos puntos con segmentos. Las marcas de clase son 130, 190, 250, 310 y 370, con alturas 6, 13, 12, 7 y 2. El diagrama circular y el de barras separadas no sirven para representar la forma de una distribución continua, y el polígono con las alturas invertidas distorsiona por completo esa forma.",
+                        charts: [
+                            { type: 'line', x: [130, 190, 250, 310, 370], y: [6, 13, 12, 7, 2] },
+                            { type: 'line', x: [130, 190, 250, 310, 370], y: [2, 7, 12, 13, 6] },
+                            { type: 'pie', labels: ['130', '190', '250', '310', '370'], values: [6, 13, 12, 7, 2] },
+                            { type: 'bar', x: ['130', '190', '250', '310', '370'], y: [6, 13, 12, 7, 2] }
+                        ]
+                    },
+                    {
+                        type: "chart_mcq",
+                        q: `<p>Se agrupó en clases el peso, en kilogramos, de 36 pacientes:</p>
+                            <div class="table-container">
+                            <table>
+                                <tr><th>Clase (peso)</th><th>$f_i$</th><th>$F_i$</th></tr>
+                                <tr><td>$[48,\\;56)$</td><td>5</td><td>5</td></tr>
+                                <tr><td>$[56,\\;64)$</td><td>9</td><td>14</td></tr>
+                                <tr><td>$[64,\\;72)$</td><td>11</td><td>25</td></tr>
+                                <tr><td>$[72,\\;80)$</td><td>7</td><td>32</td></tr>
+                                <tr><td>$[80,\\;88]$</td><td>4</td><td>36</td></tr>
+                            </table>
+                            </div>
+                            <p>¿Cuál de los siguientes gráficos representa correctamente la <strong>frecuencia acumulada</strong> de la tabla?</p>`,
+                        c: 0,
+                        explanation: "La ojiva se construye ubicando en el eje horizontal el <strong>límite superior</strong> de cada clase (56, 64, 72, 80 y 88) y en el eje vertical la frecuencia acumulada correspondiente (5, 14, 25, 32 y 36), uniendo los puntos con una línea que siempre es creciente, porque una frecuencia acumulada nunca puede disminuir. Por eso queda descartada la curva decreciente. El histograma usa las frecuencias sin acumular y el diagrama circular no muestra acumulación progresiva.",
+                        charts: [
+                            { type: 'line', x: [56, 64, 72, 80, 88], y: [5, 14, 25, 32, 36] },
+                            { type: 'line', x: [56, 64, 72, 80, 88], y: [36, 32, 25, 14, 5] },
+                            { type: 'bar', x: ['[48,56)', '[56,64)', '[64,72)', '[72,80)', '[80,88]'], y: [5, 9, 11, 7, 4], gap: 0 },
+                            { type: 'pie', labels: ['56', '64', '72', '80', '88'], values: [5, 14, 25, 32, 36] }
+                        ]
+                    },
+                    {
+                        type: "chart_mcq",
+                        q: `<p>Se agrupó en clases el tiempo de espera, en minutos, de 50 usuarios:</p>
+                            <div class="table-container">
+                            <table>
+                                <tr><th>Clase (tiempo)</th><th>$f_i$</th></tr>
+                                <tr><td>$[2,\\;12)$</td><td>10</td></tr>
+                                <tr><td>$[12,\\;22)$</td><td>16</td></tr>
+                                <tr><td>$[22,\\;32)$</td><td>13</td></tr>
+                                <tr><td>$[32,\\;42)$</td><td>8</td></tr>
+                                <tr><td>$[42,\\;52]$</td><td>3</td></tr>
+                            </table>
+                            </div>
+                            <p>¿Cuál gráfico representa correctamente la información de la tabla?</p>`,
+                        c: 0,
+                        explanation: "Al tratarse de una variable cuantitativa continua agrupada en clases corresponde un histograma con las barras contiguas, lo que descarta el que las separa. El diagrama circular no sirve para representar clases numéricas consecutivas. El histograma con las alturas invertidas tiene las frecuencias correctas pero en el orden equivocado, y eso altera la forma real de la distribución, cuyo punto más alto está en la segunda clase y no en la última.",
+                        charts: [
+                            { type: 'bar', x: ['[2,12)', '[12,22)', '[22,32)', '[32,42)', '[42,52]'], y: [10, 16, 13, 8, 3], gap: 0 },
+                            { type: 'bar', x: ['[2,12)', '[12,22)', '[22,32)', '[32,42)', '[42,52]'], y: [10, 16, 13, 8, 3] },
+                            { type: 'bar', x: ['[2,12)', '[12,22)', '[22,32)', '[32,42)', '[42,52]'], y: [3, 8, 13, 16, 10], gap: 0 },
+                            { type: 'pie', labels: ['[2,12)', '[12,22)', '[22,32)', '[32,42)', '[42,52]'], values: [10, 16, 13, 8, 3] }
+                        ]
+                    },
+                    {
+                        type: "chart_mcq",
+                        q: `<p>Se agrupó en clases la estatura, en centímetros, de 64 personas:</p>
+                            <div class="table-container">
+                            <table>
+                                <tr><th>Clase (estatura)</th><th>$f_i$</th></tr>
+                                <tr><td>$[150,\\;158)$</td><td>6</td></tr>
+                                <tr><td>$[158,\\;166)$</td><td>15</td></tr>
+                                <tr><td>$[166,\\;174)$</td><td>22</td></tr>
+                                <tr><td>$[174,\\;182)$</td><td>14</td></tr>
+                                <tr><td>$[182,\\;190]$</td><td>7</td></tr>
+                            </table>
+                            </div>
+                            <p>¿Cuál gráfico representa correctamente la información de la tabla?</p>`,
+                        c: 0,
+                        explanation: "Al ser una variable cuantitativa continua, el histograma debe tener las barras contiguas y respetar el orden natural de las clases, de menor a mayor estatura. Eso descarta el diagrama de barras separadas, que trataría las clases como categorías cualitativas, y el circular, que no aplica para distribuciones en clases. El histograma con las frecuencias reordenadas de menor a mayor destruye la forma real de la distribución, que aquí es aproximadamente simétrica y tiene su pico en la clase central.",
+                        charts: [
+                            { type: 'bar', x: ['[150,158)', '[158,166)', '[166,174)', '[174,182)', '[182,190]'], y: [6, 15, 22, 14, 7], gap: 0 },
+                            { type: 'bar', x: ['[150,158)', '[158,166)', '[166,174)', '[174,182)', '[182,190]'], y: [6, 7, 14, 15, 22], gap: 0 },
+                            { type: 'bar', x: ['[150,158)', '[158,166)', '[166,174)', '[174,182)', '[182,190]'], y: [6, 15, 22, 14, 7] },
+                            { type: 'pie', labels: ['[150,158)', '[158,166)', '[166,174)', '[174,182)', '[182,190]'], values: [6, 15, 22, 14, 7] }
+                        ]
+                    }
+                ]
+            }
+        ];
 
         let currentExam = [];
         let userAnswers = {};
 
+        /* ---------------- utilidades ---------------- */
+
+        function shuffle(arr) {
+            for (let i = arr.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [arr[i], arr[j]] = [arr[j], arr[i]];
+            }
+            return arr;
+        }
+
+        function pickOne(arr) {
+            return arr[Math.floor(Math.random() * arr.length)];
+        }
+
+        /* Devuelve una copia de la variante con las opciones barajadas. */
+        function prepare(variant) {
+            const q = JSON.parse(JSON.stringify(variant));
+
+            if (q.type === "mcq") {
+                const correcta = q.a[q.c];
+                q.a = shuffle(q.a.slice());
+                q.c = q.a.indexOf(correcta);
+            } else if (q.type === "chart_mcq") {
+                const correcta = q.charts[q.c];
+                q.charts = shuffle(q.charts.slice());
+                q.c = q.charts.indexOf(correcta);
+                q.charts.forEach((ch, i) => { ch.title = 'Opción ' + String.fromCharCode(65 + i); });
+            } else if (q.type === "matching") {
+                q.pairs = shuffle(q.pairs.slice());
+                const encabezado = q.options[0];
+                q.options = [encabezado].concat(shuffle(q.options.slice(1)));
+            }
+            return q;
+        }
+
+        /* ---------------- construcción del examen ---------------- */
+
         function generateExam() {
-            currentExam = [
-                questionBank.poblacion_muestra[0],
-                questionBank.tamano_muestra_poblacion[0],
-                questionBank.tipo_variable_def[0],
-                questionBank.clasificar_variable[0],
-                questionBank.tabla_frecuencias[0],
-                questionBank.sturges[0],
-                questionBank.grafica_cualitativa[0],
-                questionBank.grafica_cuantitativa[0]
-            ];
+            currentExam = TEMAS.map(tema => prepare(pickOne(tema.variants)));
 
             userAnswers = {};
             document.getElementById('results-container').style.display = 'none';
+            document.getElementById('total-count').innerText = currentExam.length;
             renderQuestions();
             renderNavigation();
             updateProgress();
@@ -526,7 +1003,7 @@
                     q.pairs.forEach(pair => {
                         html += `
                             <div class="match-row">
-                                <div>${pair.label} <span style="font-size:0.9em; color:#555;">${pair.prompt}</span></div>
+                                <div style="width:42%; font-size:0.95em; color:#333;">${pair.prompt}</div>
                                 <select class="match-select" data-qid="${idx}" data-pairid="${pair.id}" onchange="selectMatch(${idx}, '${pair.id}', this.value)">
                                     ${q.options.map(opt => `<option value="${opt.val}">${opt.text}</option>`).join('')}
                                 </select>
@@ -539,7 +1016,7 @@
                     q.a.forEach((opt, optIdx) => {
                         html += `
                             <div class="option" id="opt-${idx}-${optIdx}" onclick="selectOption(${idx}, ${optIdx})">
-                                <strong>${String.fromCharCode(65 + optIdx)}.</strong>&nbsp; ${opt}
+                                <strong>${String.fromCharCode(65 + optIdx)}.</strong>&nbsp;<span>${opt}</span>
                             </div>
                         `;
                     });
@@ -566,7 +1043,7 @@
                 }
             });
 
-            if (window.MathJax) {
+            if (window.MathJax && MathJax.typesetPromise) {
                 MathJax.typesetPromise();
             }
         }
@@ -580,18 +1057,39 @@
                     margin: { l: 30, r: 20, t: 30, b: 30 },
                     autosize: true
                 };
+                const ejeX = { automargin: true, tickfont: { size: 9 } };
+                const ejeY = { automargin: true, tickfont: { size: 9 } };
 
                 if (c.type === 'pie') {
                     data = [{ labels: c.labels, values: c.values, type: 'pie', textinfo: 'label+percent' }];
                 } else if (c.type === 'bar') {
                     data = [{ x: c.x, y: c.y, type: 'bar', marker: { color: '#3498db' } }];
-                    if (c.gap === 0) {
-                        layout.bargap = 0.05;
-                    }
+                    layout.bargap = (c.gap === 0) ? 0.02 : 0.45;
+                    layout.xaxis = Object.assign({ tickangle: -45 }, ejeX);
+                    layout.yaxis = ejeY;
+                } else if (c.type === 'barh') {
+                    data = [{ x: c.x, y: c.y, type: 'bar', orientation: 'h', marker: { color: '#3498db' } }];
+                    layout.bargap = 0.45;
+                    layout.xaxis = ejeX;
+                    layout.yaxis = Object.assign({ autorange: 'reversed' }, ejeY);
+                } else if (c.type === 'line') {
+                    data = [{ x: c.x, y: c.y, type: 'scatter', mode: 'lines+markers',
+                              marker: { color: '#3498db', size: 7 }, line: { color: '#3498db', width: 2 } }];
+                    layout.xaxis = Object.assign({ tickangle: -45, tickmode: 'array', tickvals: c.x }, ejeX);
+                    layout.yaxis = ejeY;
+                } else if (c.type === 'scatter') {
+                    const total = c.n || 40;
+                    const xs = [], ys = [];
+                    for (let i = 0; i < total; i++) { xs.push(Math.random() * 10); ys.push(Math.random() * 10); }
+                    data = [{ x: xs, y: ys, type: 'scatter', mode: 'markers', marker: { color: '#3498db', size: 6 } }];
+                    layout.xaxis = ejeX;
+                    layout.yaxis = ejeY;
                 }
                 Plotly.newPlot(targetId, data, layout, { responsive: true, displayModeBar: false });
             });
         }
+
+        /* ---------------- interacción ---------------- */
 
         function selectOption(qIdx, optIdx) {
             userAnswers[qIdx] = optIdx;
@@ -610,35 +1108,39 @@
             updateProgress();
         }
 
-        function updateProgress() {
-            const answered = Object.keys(userAnswers).filter(k => {
-                if (typeof userAnswers[k] === 'object') {
-                    return Object.keys(userAnswers[k]).length === 4 && Object.values(userAnswers[k]).every(v => v !== "");
-                }
-                return userAnswers[k] !== undefined;
-            }).length;
+        function isAnswered(idx) {
+            const respuesta = userAnswers[idx];
+            if (respuesta === undefined) return false;
+            if (currentExam[idx].type === "matching") {
+                const total = currentExam[idx].pairs.length;
+                return Object.keys(respuesta).length === total &&
+                       Object.values(respuesta).every(v => v !== "");
+            }
+            return true;
+        }
 
-            document.getElementById('answered-count').innerText = answered;
+        function updateProgress() {
+            let answered = 0;
 
             currentExam.forEach((_, idx) => {
+                const completa = isAnswered(idx);
+                if (completa) answered++;
+
                 const navItem = document.getElementById(`nav-item-${idx}`);
                 if (navItem) {
                     const statusDot = navItem.querySelector('.topic-status');
-                    if (userAnswers[idx] !== undefined) {
-                        statusDot.className = 'topic-status answered';
-                    } else {
-                        statusDot.className = 'topic-status unanswered';
-                    }
+                    statusDot.className = `topic-status ${completa ? 'answered' : 'unanswered'}`;
                 }
             });
+
+            document.getElementById('answered-count').innerText = answered;
         }
 
         function renderNavigation() {
             const list = document.getElementById('topics-list');
             list.innerHTML = '';
-            const labels = ["Conceptos y Notación", "Muestra vs Población", "Tipo de Variable", "Clasificar Variable", "Tabla Frecuencias", "Regla de Sturges", "Gráfica Cualitativa", "Gráfica Cuantitativa"];
 
-            labels.forEach((label, idx) => {
+            TEMAS.forEach((tema, idx) => {
                 const item = document.createElement('div');
                 item.className = 'topic-item';
                 item.id = `nav-item-${idx}`;
@@ -646,15 +1148,18 @@
                     document.getElementById(`question-${idx}`).scrollIntoView({ behavior: 'smooth' });
                 };
                 item.innerHTML = `
-                    <span class="topic-name">${idx + 1}. ${label}</span>
+                    <span class="topic-name">${idx + 1}. ${tema.nav}</span>
                     <span class="topic-status unanswered"></span>
                 `;
                 list.appendChild(item);
             });
         }
 
+        /* ---------------- calificación ---------------- */
+
         function submitExam() {
             let correctCount = 0;
+            const total = currentExam.length;
 
             currentExam.forEach((q, idx) => {
                 const card = document.getElementById(`question-${idx}`);
@@ -663,11 +1168,19 @@
 
                 if (q.type === "matching") {
                     const userPairs = userAnswers[idx] || {};
-                    let matchesAll = true;
-                    q.pairs.forEach(pair => {
-                        if (userPairs[pair.id] !== pair.correct) matchesAll = false;
+                    isCorrect = q.pairs.every(pair => userPairs[pair.id] === pair.correct);
+
+                    card.querySelectorAll('.match-select').forEach(sel => {
+                        const pair = q.pairs.find(p => p.id === sel.dataset.pairid);
+                        const fila = sel.closest('.match-row');
+                        if (sel.value === pair.correct) {
+                            fila.style.borderColor = 'var(--success-color)';
+                            fila.style.backgroundColor = '#d4edda';
+                        } else {
+                            fila.style.borderColor = 'var(--accent-color)';
+                            fila.style.backgroundColor = '#f8d7da';
+                        }
                     });
-                    isCorrect = matchesAll;
                 } else {
                     isCorrect = (userAnswers[idx] === q.c);
                     const options = card.querySelectorAll('.option');
@@ -689,12 +1202,12 @@
                 }
             });
 
-            if (window.MathJax) {
+            if (window.MathJax && MathJax.typesetPromise) {
                 MathJax.typesetPromise();
             }
 
-            const score = (correctCount / 8) * 5;
-            const percentage = (correctCount / 8) * 100;
+            const score = (correctCount / total) * 5;
+            const percentage = (correctCount / total) * 100;
 
             const resultBox = document.getElementById('results-container');
             const scoreCircle = document.getElementById('final-score');
@@ -703,7 +1216,7 @@
             scoreCircle.className = `score-circle ${score >= 4 ? 'high' : score >= 3 ? 'medium' : 'low'}`;
 
             document.getElementById('correct-count').innerText = correctCount;
-            document.getElementById('incorrect-count').innerText = 8 - correctCount;
+            document.getElementById('incorrect-count').innerText = total - correctCount;
             document.getElementById('percentage-score').innerText = `${percentage.toFixed(1)}%`;
 
             resultBox.style.display = 'block';
