@@ -1,0 +1,1365 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simulador del Segundo Parcial - Estadística Inferencial</title>
+
+    <script src="https://cdn.plot.ly/plotly-2.27.0.min.js"></script>
+
+    <script>
+        window.MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                displayMath: [['$$', '$$'], ['\\[', '\\]']],
+                processEscapes: true
+            },
+            svg: { fontCache: 'global' },
+            startup: { pageReady: () => MathJax.typesetPromise().catch(err => console.log(err)) }
+        };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
+
+    <style>
+        :root {
+            --primary-color: #2c3e50;
+            --secondary-color: #3498db;
+            --accent-color: #e74c3c;
+            --light-color: #ecf0f1;
+            --success-color: #27ae60;
+            --warning-color: #f39c12;
+            --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: #f5f7fa;
+            color: #333;
+            line-height: 1.6;
+            padding: 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding: 20px;
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: var(--shadow);
+        }
+
+        h1 {
+            color: var(--primary-color);
+            margin-bottom: 10px;
+            font-size: 2.2rem;
+        }
+
+        .subtitle {
+            color: var(--secondary-color);
+            font-size: 1.1rem;
+            margin-bottom: 20px;
+        }
+
+        .instructions {
+            background-color: var(--light-color);
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 25px;
+            border-left: 5px solid var(--secondary-color);
+        }
+
+        .instructions h3 {
+            color: var(--primary-color);
+            margin-bottom: 10px;
+        }
+
+        .exam-container {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 25px;
+        }
+
+        .questions-section {
+            background-color: white;
+            padding: 25px;
+            border-radius: 10px;
+            box-shadow: var(--shadow);
+        }
+
+        .control-panel {
+            background-color: white;
+            padding: 25px;
+            border-radius: 10px;
+            box-shadow: var(--shadow);
+            height: fit-content;
+            position: sticky;
+            top: 20px;
+        }
+
+        .question-card {
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid #eee;
+            scroll-margin-top: 20px;
+        }
+
+        .question-card:last-child {
+            border-bottom: none;
+        }
+
+        .question-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .question-number {
+            background-color: var(--primary-color);
+            color: white;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+        }
+
+        .question-text {
+            margin-bottom: 20px;
+            font-size: 1.1rem;
+            line-height: 1.5;
+        }
+
+        .question-text p + p { margin-top: 10px; }
+
+        .table-container {
+            margin: 15px 0;
+            padding: 15px;
+            background-color: #f9f9f9;
+            border-radius: 8px;
+            overflow-x: auto;
+        }
+
+        table { width: 100%; border-collapse: collapse; margin: 10px 0; font-size: 0.95em; }
+        th { background-color: var(--primary-color); color: white; padding: 10px; text-align: center; border: 1px solid #ddd; }
+        td { padding: 8px; text-align: center; border: 1px solid #ddd; }
+        tr:nth-child(even) { background-color: #f2f2f2; }
+
+        .options-container {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .options-grid-charts {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+
+        .option {
+            padding: 12px 15px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+        }
+
+        .option-chart-card {
+            flex-direction: column;
+            align-items: flex-start;
+            padding: 10px;
+        }
+
+        .option:hover {
+            background-color: #f0f8ff;
+            border-color: var(--secondary-color);
+        }
+
+        .option.selected {
+            background-color: #e1f0ff;
+            border-color: var(--secondary-color);
+            font-weight: 600;
+        }
+
+        .option.correct {
+            background-color: #d4edda;
+            border-color: var(--success-color);
+            color: #155724;
+        }
+
+        .option.incorrect {
+            background-color: #f8d7da;
+            border-color: var(--accent-color);
+            color: #721c24;
+        }
+
+        .chart-box {
+            width: 100%;
+            height: 300px;
+            margin-top: 5px;
+        }
+
+        .match-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 12px;
+            padding: 10px;
+            background-color: #f8f9fa;
+            border-radius: 6px;
+            border: 1px solid #e9ecef;
+        }
+
+        .match-select {
+            padding: 8px;
+            border-radius: 6px;
+            border: 1px solid #ccc;
+            font-size: 0.95rem;
+            width: 55%;
+        }
+
+        .explanation {
+            margin-top: 20px;
+            padding: 15px;
+            background-color: #fff3cd;
+            border-left: 5px solid #ffc107;
+            border-radius: 5px;
+            font-size: 0.95rem;
+        }
+
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s;
+            font-size: 1rem;
+            margin-right: 10px;
+            margin-bottom: 10px;
+        }
+
+        .btn-primary { background-color: var(--secondary-color); color: white; }
+        .btn-primary:hover { background-color: #2980b9; }
+        .btn-secondary { background-color: var(--light-color); color: var(--primary-color); border: 1px solid #ddd; }
+        .btn-secondary:hover { background-color: #d5dbdb; }
+
+        .results-container {
+            margin-top: 25px;
+            padding: 20px;
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: var(--shadow);
+            display: none;
+        }
+
+        .score-display { text-align: center; margin-bottom: 20px; }
+        .score-circle {
+            width: 120px; height: 120px; border-radius: 50%;
+            background-color: var(--light-color); display: flex;
+            justify-content: center; align-items: center;
+            margin: 0 auto 20px; font-size: 2.5rem; font-weight: bold;
+            color: var(--primary-color); border: 5px solid var(--secondary-color);
+        }
+
+        .score-circle.low { border-color: var(--accent-color); color: var(--accent-color); }
+        .score-circle.medium { border-color: var(--warning-color); color: var(--warning-color); }
+        .score-circle.high { border-color: var(--success-color); color: var(--success-color); }
+
+        .stats { display: flex; justify-content: space-between; margin-top: 20px; }
+        .stat-box { flex: 1; text-align: center; padding: 15px; background-color: var(--light-color); border-radius: 8px; margin: 0 5px; }
+        .stat-value { font-size: 2rem; font-weight: bold; color: var(--primary-color); }
+        .stat-label { font-size: 0.9rem; color: #7f8c8d; }
+
+        .topic-progress { margin-top: 20px; }
+        .topic-item { display: flex; justify-content: space-between; align-items: center; padding: 8px 0; border-bottom: 1px solid #eee; cursor: pointer; }
+        .topic-item:hover { background-color: #f5f5f5; padding-left: 5px; }
+        .topic-name { flex: 1; font-size: 0.9em; }
+        .topic-status { width: 12px; height: 12px; border-radius: 50%; margin-left: 10px; }
+        .topic-status.correct { background-color: var(--success-color); }
+        .topic-status.incorrect { background-color: var(--accent-color); }
+        .topic-status.unanswered { background-color: #ddd; }
+        .topic-status.answered { background-color: var(--secondary-color); }
+
+        footer { text-align: center; margin-top: 30px; padding: 20px; color: #7f8c8d; font-size: 0.9rem; }
+
+        @media (max-width: 900px) {
+            .exam-container { grid-template-columns: 1fr; }
+            .options-grid-charts { grid-template-columns: 1fr; }
+            .match-row { flex-direction: column; align-items: stretch; gap: 8px; }
+            .match-select { width: 100%; }
+        }
+    </style>
+</head>
+<body>
+    <p style="margin:0;padding:0.6rem 1rem;background:#1553AD;font:0.95rem/1.4 'Segoe UI',Arial,sans-serif"><a href="index.html" style="color:#fff;text-decoration:none">&larr; Estadística Inferencial</a></p>
+    <header>
+        <h1>Simulador del Segundo Parcial - Estadística Inferencial</h1>
+        <p class="subtitle">CBASBL061 · UNIMINUTO — Sesiones 5 a 9: muestreo y tamaño de muestra, binomial, Poisson, normal, distribución muestral y t de Student</p>
+    </header>
+
+    <div class="instructions">
+        <h3>Instrucciones</h3>
+        <p>Este simulador cubre muestreo y tamaño de muestra (sesión 5), distribuciones binomial y de Poisson (sesión 7), distribución normal (sesión 8), distribución de la media muestral, Teorema del Límite Central y distribución $t$ de Student (sesión 9). Los ejercicios están contextualizados en situaciones de Administración de Empresas. Son 10 preguntas y la calificación es sobre 5.0. Cada vez que pulses <em>Nuevo Examen Aleatorio</em> el simulador sortea una pregunta distinta de cada tema y baraja el orden de las opciones, así que puedes practicar varias veces sin memorizar respuestas. Al calificar verás la explicación de cada punto.</p>
+        <p style="margin-top:10px;"><strong>Convenciones del curso.</strong> Con la tabla de la normal estándar se redondea $z$ a dos decimales y las probabilidades a cuatro. El tamaño de muestra se redondea siempre hacia arriba. Si el enunciado da $s$ (desviación de la muestra) se usa $t$ con $n-1$ grados de libertad; si da $\sigma$ (poblacional), se usa $Z$. Cuando la pregunta es sobre un promedio, el error estándar es $\sigma/\sqrt{n}$.</p>
+    </div>
+
+    <div class="exam-container">
+        <section class="questions-section">
+            <h2>Preguntas del Parcial</h2>
+            <div id="questions-container"></div>
+
+            <div class="button-group" style="margin-top:20px;">
+                <button id="submit-btn" class="btn btn-primary">Calificar Examen</button>
+                <button id="new-exam-btn" class="btn btn-secondary">Nuevo Examen Aleatorio</button>
+            </div>
+        </section>
+
+        <section class="control-panel">
+            <h3>Progreso</h3>
+            <div class="stats">
+                <div class="stat-box">
+                    <div class="stat-value" id="answered-count">0</div>
+                    <div class="stat-label">Respondidas</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-value" id="total-count">10</div>
+                    <div class="stat-label">Total</div>
+                </div>
+            </div>
+
+            <div class="topic-progress">
+                <h4>Navegación:</h4>
+                <div id="topics-list"></div>
+            </div>
+        </section>
+    </div>
+
+    <div class="results-container" id="results-container">
+        <h2>Resultados del Parcial</h2>
+
+        <div class="score-display">
+            <div class="score-circle" id="final-score">0.0</div>
+            <h3>Calificación Final</h3>
+            <p id="score-text">Sobre 5.0 puntos</p>
+        </div>
+
+        <div class="stats">
+            <div class="stat-box">
+                <div class="stat-value" id="correct-count">0</div>
+                <div class="stat-label">Correctas</div>
+            </div>
+            <div class="stat-box">
+                <div class="stat-value" id="incorrect-count">0</div>
+                <div class="stat-label">Incorrectas</div>
+            </div>
+            <div class="stat-box">
+                <div class="stat-value" id="percentage-score">0%</div>
+                <div class="stat-label">Porcentaje</div>
+            </div>
+        </div>
+
+        <div style="text-align: center; margin-top: 20px;">
+            <button id="review-btn" class="btn btn-secondary">Revisar Respuestas</button>
+            <button id="restart-btn" class="btn btn-primary">Intentar Otro Examen</button>
+        </div>
+    </div>
+
+    <footer>
+        <p>Simulador del Segundo Parcial de Estadística Inferencial</p>
+    </footer>
+
+    <script>
+        /* ------------------------------------------------------------------
+           Banco de preguntas. Un objeto por tema; cada tema tiene varias
+           variantes y el simulador sortea una. Las explicaciones nunca
+           nombran la opción por su letra, porque el orden se baraja.
+           ------------------------------------------------------------------ */
+        const TEMAS = [
+            {
+                "nav": "Técnicas de muestreo y afijación",
+                "variants": [
+                    {
+                        "type": "mcq",
+                        "q": "Un banco con 60 oficinas en todo el país sortea 6 oficinas y revisa la satisfacción de <strong>todos</strong> los clientes atendidos en ellas durante un día. ¿Qué técnica de muestreo se aplica?",
+                        "a": [
+                            "Muestreo por conglomerados",
+                            "Muestreo estratificado",
+                            "Muestreo aleatorio simple",
+                            "Muestreo por cuotas"
+                        ],
+                        "c": 0,
+                        "explanation": "Se dividió la población en grupos (las oficinas), se sortearon algunos grupos completos y se observó a todos sus elementos: es muestreo <strong>por conglomerados</strong>. Es útil cuando la población está dispersa geográficamente, porque abarata el trabajo de campo. En el estratificado, en cambio, se tomaría una parte de <em>cada</em> grupo."
+                    },
+                    {
+                        "type": "mcq",
+                        "q": "De una lista de 1 200 facturas ordenadas por fecha se elige al azar un número entre 1 y 10 y, a partir de él, se revisa una de cada 10 facturas. ¿Qué técnica de muestreo se aplica?",
+                        "a": [
+                            "Muestreo sistemático",
+                            "Muestreo estratificado",
+                            "Muestreo por conglomerados",
+                            "Muestreo por conveniencia"
+                        ],
+                        "c": 0,
+                        "explanation": "Hay un arranque al azar y luego un salto fijo $k=N/n=1\\,200/120=10$: eso define el muestreo <strong>sistemático</strong>. Conviene con listas ordenadas, como facturas, inventarios o líneas de producción."
+                    },
+                    {
+                        "type": "mcq",
+                        "q": "Una empresa de comercio divide a sus clientes en tres grupos (nuevos, frecuentes y VIP) y selecciona al azar una parte de cada grupo para una encuesta. ¿Qué técnica de muestreo se aplica?",
+                        "a": [
+                            "Muestreo estratificado",
+                            "Muestreo por conglomerados",
+                            "Muestreo sistemático",
+                            "Muestreo por conveniencia"
+                        ],
+                        "c": 0,
+                        "explanation": "Los grupos son homogéneos por dentro y distintos entre sí, y se toma una parte de <em>cada</em> uno: es muestreo <strong>estratificado</strong>. Garantiza que todos los tipos de cliente queden representados, cosa que el aleatorio simple no asegura si algún grupo es pequeño."
+                    },
+                    {
+                        "type": "mcq",
+                        "q": "Una emprendedora entrevista a un cliente satisfecho y le pide que le recomiende a otro cliente dispuesto a ser entrevistado, y así sucesivamente. ¿Qué técnica de muestreo usa?",
+                        "a": [
+                            "Muestreo de bola de nieve",
+                            "Muestreo estratificado",
+                            "Muestreo sistemático",
+                            "Muestreo aleatorio simple"
+                        ],
+                        "c": 0,
+                        "explanation": "Cada participante refiere al siguiente: es el muestreo <strong>de bola de nieve</strong>, una técnica <em>no probabilística</em> útil con poblaciones difíciles de ubicar. Como no se conoce la probabilidad de selección, no permite calcular el error muestral."
+                    },
+                    {
+                        "type": "mcq",
+                        "q": "Una empresa tiene 2 000 empleados: 1 200 en Ventas, 500 en Producción y 300 en Administración. Se hará una encuesta de clima con $n=100$ y afijación proporcional. ¿Cuántos empleados de Producción deben encuestarse?",
+                        "a": [
+                            "$25$",
+                            "$33$",
+                            "$30$",
+                            "$20$"
+                        ],
+                        "c": 0,
+                        "explanation": "En la afijación proporcional, $n_i=n\\cdot\\dfrac{N_i}{N}$. Para Producción: $100\\cdot\\dfrac{500}{2\\,000}=25$. Por área corresponden $60$ de Ventas, $25$ de Producción y $15$ de Administración, que suman 100. Repartir en partes iguales (33 por área) ignoraría el tamaño de cada grupo."
+                    },
+                    {
+                        "type": "mcq",
+                        "q": "Para un estudio, se invita por correo a todos los clientes y se analizan solo las respuestas de quienes contestan voluntariamente. ¿Qué se puede afirmar?",
+                        "a": [
+                            "Es muestreo no probabilístico (por conveniencia): no permite calcular un margen de error con rigor",
+                            "Es muestreo estratificado, porque se divide a los clientes en grupos",
+                            "Es muestreo aleatorio simple, porque todos fueron invitados",
+                            "Es muestreo probabilístico, porque cada cliente tuvo la misma probabilidad de responder"
+                        ],
+                        "c": 0,
+                        "explanation": "Responden quienes quieren hacerlo (los más motivados o los más inconformes): la probabilidad de selección es desconocida y el resultado queda sesgado. Es un muestreo <strong>por conveniencia</strong>, no probabilístico, y por eso no se puede calcular el error muestral ni generalizar con rigor. Que todos hayan sido <em>invitados</em> no equivale a que todos tengan la misma probabilidad de ser <em>observados</em>."
+                    }
+                ]
+            },
+            {
+                "nav": "Tamaño de la muestra",
+                "variants": [
+                    {
+                        "type": "mcq",
+                        "q": "Una empresa quiere estimar la proporción de clientes que renovarán su contrato, con 95 % de confianza ($z=1{,}96$), un error máximo del 4 % y sin información previa ($p=0{,}5$). Población muy grande. ¿Cuántos clientes debe encuestar?",
+                        "a": [
+                            "$601$",
+                            "$600$",
+                            "$385$",
+                            "$1\\,068$"
+                        ],
+                        "c": 0,
+                        "explanation": "$n=\\dfrac{z^{2}pq}{e^{2}}=\\dfrac{(1{,}96)^{2}(0{,}5)(0{,}5)}{(0{,}04)^{2}}=\\dfrac{0{,}9604}{0{,}0016}=600{,}25$. Se redondea <strong>siempre hacia arriba</strong>: $601$, porque con 600 el error superaría el 4 %. Usar 385 corresponde a un error del 5 %, no del 4 %."
+                    },
+                    {
+                        "type": "mcq",
+                        "q": "Se desea estimar la proporción de pedidos entregados a tiempo con 99 % de confianza ($z=2{,}576$), error máximo del 3 % y $p=0{,}5$. Población muy grande. ¿Cuál es el tamaño de muestra mínimo?",
+                        "a": [
+                            "$1\\,844$",
+                            "$1\\,843$",
+                            "$1\\,068$",
+                            "$664$"
+                        ],
+                        "c": 0,
+                        "explanation": "$n=\\dfrac{(2{,}576)^{2}(0{,}5)(0{,}5)}{(0{,}03)^{2}}=\\dfrac{1{,}658944}{0{,}0009}=1\\,843{,}27$, que se redondea hacia arriba a $1\\,844$. Más confianza (99 % en vez de 95 %) exige más muestra: con 95 % y el mismo error serían $1\\,068$."
+                    },
+                    {
+                        "type": "mcq",
+                        "q": "Un área de cobranza sabe por estudios previos que aproximadamente el 30 % de sus clientes paga con retraso. Para estimar esa proporción con 95 % de confianza ($z=1{,}96$) y un error máximo del 4 %, ¿cuántos clientes debe revisar? (Población muy grande.)",
+                        "a": [
+                            "$505$",
+                            "$504$",
+                            "$601$",
+                            "$323$"
+                        ],
+                        "c": 0,
+                        "explanation": "Con información previa se usa $p=0{,}30$ y $q=0{,}70$: $n=\\dfrac{(1{,}96)^{2}(0{,}30)(0{,}70)}{(0{,}04)^{2}}=\\dfrac{0{,}806736}{0{,}0016}=504{,}21$, que se redondea a $505$. Con $p=0{,}5$ (el caso más conservador) saldrían $601$, más de lo necesario."
+                    },
+                    {
+                        "type": "mcq",
+                        "q": "Una pyme tiene $N=500$ clientes y quiere estimar la proporción de satisfechos con 95 % de confianza ($z=1{,}96$), error máximo del 5 % y $p=0{,}5$. ¿Cuántos clientes debe encuestar?",
+                        "a": [
+                            "$218$",
+                            "$217$",
+                            "$385$",
+                            "$500$"
+                        ],
+                        "c": 0,
+                        "explanation": "Como la población es pequeña, se usa la fórmula con corrección: $n=\\dfrac{Nz^{2}pq}{e^{2}(N-1)+z^{2}pq}=\\dfrac{500(0{,}9604)}{0{,}0025(499)+0{,}9604}=\\dfrac{480{,}2}{2{,}2079}=217{,}49$, es decir, $218$. La fórmula de población infinita daría $385$, que es innecesariamente alto aquí."
+                    },
+                    {
+                        "type": "mcq",
+                        "q": "Para $N=1\\,200$ clientes, 95 % de confianza ($z=1{,}96$), $p=0{,}5$ y error máximo del 5 %, el tamaño de muestra es $n=292$. Si se aplica muestreo sistemático, ¿cada cuántos clientes de la lista debe tomarse uno?",
+                        "a": [
+                            "$4$",
+                            "$292$",
+                            "$1\\,200$",
+                            "$5$"
+                        ],
+                        "c": 0,
+                        "explanation": "El salto es $k=N/n=1\\,200/292\\approx 4{,}1$, que se toma como $4$: se elige un arranque al azar entre 1 y 4 y luego uno de cada 4. Con ese salto se recorre toda la lista y se completa aproximadamente la muestra."
+                    },
+                    {
+                        "type": "mcq",
+                        "q": "Un analista decide reducir el error máximo admitido de 6 % a 3 %, manteniendo la confianza y $p$ constantes. ¿Qué ocurre con el tamaño de muestra requerido?",
+                        "a": [
+                            "Se multiplica por 4",
+                            "Se multiplica por 2",
+                            "Se reduce a la mitad",
+                            "No cambia, porque depende solo de la confianza"
+                        ],
+                        "c": 0,
+                        "explanation": "El tamaño de muestra depende de $1/e^{2}$. Si $e$ pasa a la mitad, $\\dfrac{1}{(e/2)^{2}}=4\\cdot\\dfrac{1}{e^{2}}$: $n$ se <strong>cuadruplica</strong>. Exigir el doble de precisión cuesta cuatro veces más muestra."
+                    }
+                ]
+            },
+            {
+                "nav": "Distribución binomial: probabilidades",
+                "variants": [
+                    {
+                        "type": "mcq",
+                        "q": "El 15 % de los pedidos de una tienda en línea termina en devolución, de forma independiente. Se toman 10 pedidos al azar. ¿Cuál es la probabilidad de que <strong>exactamente 2</strong> sean devueltos?",
+                        "a": [
+                            "$0{,}2759$",
+                            "$0{,}8202$",
+                            "$0{,}1298$",
+                            "$0{,}7241$"
+                        ],
+                        "c": 0,
+                        "explanation": "Es binomial con $n=10$ y $p=0{,}15$: $P(X=2)=\\dbinom{10}{2}(0{,}15)^{2}(0{,}85)^{8}=45(0{,}0225)(0{,}2725)=0{,}2759$. La opción acumulada $P(X\\le 2)$ incluye también 0 y 1 devoluciones, y no es lo que se pide."
+                    },
+                    {
+                        "type": "mcq",
+                        "q": "El 25 % de las personas que visitan una página de ventas termina comprando. Si llegan 6 visitantes independientes, ¿cuál es la probabilidad de que <strong>al menos uno</strong> compre?",
+                        "a": [
+                            "$0{,}8220$",
+                            "$0{,}1780$",
+                            "$0{,}3560$",
+                            "$1{,}5000$"
+                        ],
+                        "c": 0,
+                        "explanation": "Es más fácil usar el complemento: $P(X\\ge 1)=1-P(X=0)=1-(0{,}75)^{6}=1-0{,}1780=0{,}8220$. El valor $0{,}1780$ es la probabilidad de que <em>nadie</em> compre."
+                    },
+                    {
+                        "type": "mcq",
+                        "q": "El 8 % de las facturas emitidas por una empresa tiene algún error. Se revisan 12 facturas al azar. ¿Cuál es la probabilidad de que <strong>como máximo una</strong> tenga error?",
+                        "a": [
+                            "$0{,}7513$",
+                            "$0{,}3837$",
+                            "$0{,}2487$",
+                            "$0{,}3677$"
+                        ],
+                        "c": 0,
+                        "explanation": "$P(X\\le 1)=P(X=0)+P(X=1)=(0{,}92)^{12}+12(0{,}08)(0{,}92)^{11}=0{,}3677+0{,}3837=0{,}7513$. Hay que sumar ambos casos: usar solo $P(X=1)$ olvida el caso en que ninguna factura tiene error."
+                    },
+                    {
+                        "type": "mcq",
+                        "q": "El 60 % de los clientes de una empresa paga sus facturas a tiempo, de forma independiente. Si se eligen 5 clientes, ¿cuál es la probabilidad de que <strong>exactamente 4</strong> paguen a tiempo?",
+                        "a": [
+                            "$0{,}2592$",
+                            "$0{,}0768$",
+                            "$0{,}3370$",
+                            "$0{,}3456$"
+                        ],
+                        "c": 0,
+                        "explanation": "$P(X=4)=\\dbinom{5}{4}(0{,}6)^{4}(0{,}4)^{1}=5(0{,}1296)(0{,}4)=0{,}2592$. El factor $\\dbinom{5}{4}=5$ cuenta en cuál de los 5 clientes ocurre el incumplimiento; omitirlo da $0{,}0518$."
+                    },
+                    {
+                        "type": "mcq",
+                        "q": "En una semana, el equipo comercial envía 8 cotizaciones independientes y cada una termina en venta con probabilidad $0{,}35$. ¿Cuál es la probabilidad de que <strong>exactamente 3</strong> terminen en venta?",
+                        "a": [
+                            "$0{,}2786$",
+                            "$0{,}7064$",
+                            "$0{,}0808$",
+                            "$0{,}1875$"
+                        ],
+                        "c": 0,
+                        "explanation": "$P(X=3)=\\dbinom{8}{3}(0{,}35)^{3}(0{,}65)^{5}=56(0{,}042875)(0{,}116029)=0{,}2786$. Cuidado con invertir los papeles de $p$ y $q$: $(0{,}65)^{3}(0{,}35)^{5}$ daría otro valor."
+                    }
+                ]
+            },
+            {
+                "nav": "Binomial: media, varianza y elección del modelo",
+                "variants": [
+                    {
+                        "type": "mcq",
+                        "q": "El 5 % de los pedidos de una bodega sale con algún error. En un lote de 200 pedidos independientes, sea $X$ el número de pedidos con error. ¿Cuáles son $E(X)$ y la desviación estándar $\\sigma$?",
+                        "a": [
+                            "$E(X)=10$ y $\\sigma=3{,}08$",
+                            "$E(X)=10$ y $\\sigma=9{,}50$",
+                            "$E(X)=190$ y $\\sigma=3{,}08$",
+                            "$E(X)=5$ y $\\sigma=3{,}08$"
+                        ],
+                        "c": 0,
+                        "explanation": "En una binomial, $E(X)=np=200(0{,}05)=10$ pedidos y $V(X)=np(1-p)=200(0{,}05)(0{,}95)=9{,}5$. La desviación estándar es la <em>raíz</em> de la varianza: $\\sigma=\\sqrt{9{,}5}=3{,}08$. El valor $9{,}50$ es la varianza, no la desviación."
+                    },
+                    {
+                        "type": "mcq",
+                        "q": "Se llama a 40 clientes para ofrecerles un producto; cada uno acepta con probabilidad $0{,}25$, de forma independiente. ¿Cuál es la varianza del número de clientes que aceptan?",
+                        "a": [
+                            "$7{,}5$",
+                            "$10$",
+                            "$2{,}74$",
+                            "$30$"
+                        ],
+                        "c": 0,
+                        "explanation": "$V(X)=np(1-p)=40(0{,}25)(0{,}75)=7{,}5$. El valor $10$ es la media $np$, y $2{,}74$ es la desviación estándar $\\sqrt{7{,}5}$: es importante distinguir las tres cantidades."
+                    },
+                    {
+                        "type": "mcq",
+                        "q": "Un gerente cuenta cuántos de 50 empleados, elegidos al azar, tienen más de 5 años en la empresa, sabiendo que el 12 % de los empleados cumple esa condición. ¿Cuántos se esperan en promedio?",
+                        "a": [
+                            "$6$",
+                            "$5{,}28$",
+                            "$44$",
+                            "$2{,}30$"
+                        ],
+                        "c": 0,
+                        "explanation": "Es binomial con $n=50$ y $p=0{,}12$, y el valor esperado es $E(X)=np=50(0{,}12)=6$ empleados. Es un promedio a la larga, no necesariamente un resultado exacto de una muestra concreta. $5{,}28$ es la varianza y $2{,}30$ la desviación estándar."
+                    },
+                    {
+                        "type": "mcq",
+                        "q": "Se cuenta el número de reclamos que llegan a un servicio al cliente en una hora, con un promedio de 3 por hora, ocurriendo de manera independiente. ¿Qué modelo es el más adecuado para esa variable?",
+                        "a": [
+                            "Poisson, porque cuenta ocurrencias en un intervalo con tasa media constante",
+                            "Binomial, porque cada reclamo es éxito o fracaso",
+                            "Normal, porque es una variable continua",
+                            "t de Student, porque se desconoce la desviación"
+                        ],
+                        "c": 0,
+                        "explanation": "Cuando se cuentan eventos en un intervalo de tiempo con tasa media $\\lambda$ constante, y sin un número fijo de ensayos, el modelo es <strong>Poisson</strong> con $\\lambda=3$. La binomial exige un número fijo $n$ de ensayos, cosa que aquí no existe; la normal y la $t$ son para variables continuas."
+                    },
+                    {
+                        "type": "mcq",
+                        "q": "De 20 clientes contactados, se cuenta cuántos aceptan una oferta que cada uno acepta con probabilidad $0{,}3$, de manera independiente. ¿Qué modelo es el más adecuado?",
+                        "a": [
+                            "Binomial con $n=20$ y $p=0{,}3$",
+                            "Poisson con $\\lambda=0{,}3$",
+                            "Normal con $\\mu=0{,}3$",
+                            "Binomial con $n=0{,}3$ y $p=20$"
+                        ],
+                        "c": 0,
+                        "explanation": "Se cumplen las cuatro condiciones de la binomial: número fijo de ensayos ($n=20$), dos resultados por ensayo (acepta o no), probabilidad constante ($p=0{,}3$) e independencia. Es una <strong>binomial</strong> con $n=20$ y $p=0{,}3$, y $E(X)=np=6$."
+                    }
+                ]
+            },
+            {
+                "nav": "Distribución de Poisson",
+                "variants": [
+                    {
+                        "type": "mcq",
+                        "q": "A una oficina llegan, en promedio, 6 pedidos por hora, de forma independiente. ¿Cuál es la probabilidad de que en una hora lleguen exactamente 4 pedidos?",
+                        "a": [
+                            "$0{,}1339$",
+                            "$0{,}2851$",
+                            "$0{,}1606$",
+                            "$0{,}1042$"
+                        ],
+                        "c": 0,
+                        "explanation": "Es Poisson con $\\lambda=6$: $P(X=4)=\\dfrac{e^{-6}6^{4}}{4!}=\\dfrac{0{,}002479\\cdot 1\\,296}{24}=0{,}1339$. Cuidado con confundir $\\lambda$ con $k$: $\\dfrac{e^{-4}4^{6}}{6!}$ responde a otra pregunta."
+                    },
+                    {
+                        "type": "mcq",
+                        "q": "En un centro de atención llegan en promedio 2,5 reclamos por día, de manera independiente. ¿Cuál es la probabilidad de que un día no llegue <strong>ningún</strong> reclamo?",
+                        "a": [
+                            "$0{,}0821$",
+                            "$0{,}9179$",
+                            "$0{,}2052$",
+                            "$0{,}2565$"
+                        ],
+                        "c": 0,
+                        "explanation": "$P(X=0)=\\dfrac{e^{-2{,}5}(2{,}5)^{0}}{0!}=e^{-2{,}5}=0{,}0821$. Como $\\lambda^{0}=1$ y $0!=1$, solo queda el factor exponencial."
+                    },
+                    {
+                        "type": "mcq",
+                        "q": "A una sucursal llegan en promedio 8 clientes por hora, de forma independiente. ¿Cuál es la probabilidad de que en <strong>15 minutos</strong> no llegue ningún cliente?",
+                        "a": [
+                            "$0{,}1353$",
+                            "$0{,}0003$",
+                            "$0{,}0183$",
+                            "$0{,}2707$"
+                        ],
+                        "c": 0,
+                        "explanation": "Como $\\lambda$ debe corresponder al mismo intervalo de la pregunta, en 15 minutos $\\lambda=8\\cdot\\dfrac{15}{60}=2$. Entonces $P(X=0)=e^{-2}=0{,}1353$. Dejar $\\lambda=8$ y luego ajustar la probabilidad es el error más frecuente: el ajuste va en $\\lambda$."
+                    },
+                    {
+                        "type": "mcq",
+                        "q": "El área de soporte recibe en promedio 1,5 incidentes por turno. ¿Cuál es la probabilidad de que en un turno ocurran <strong>al menos 2</strong> incidentes?",
+                        "a": [
+                            "$0{,}4422$",
+                            "$0{,}2510$",
+                            "$0{,}7769$",
+                            "$0{,}5578$"
+                        ],
+                        "c": 0,
+                        "explanation": "Se usa el complemento: $P(X\\ge 2)=1-P(X=0)-P(X=1)=1-e^{-1{,}5}-1{,}5\\,e^{-1{,}5}=1-0{,}2231-0{,}3347=0{,}4422$. Calcular solo $P(X=2)$ ignoraría los casos de 3, 4, ... incidentes."
+                    },
+                    {
+                        "type": "mcq",
+                        "q": "En una línea de producción se registran, en promedio, 2 paradas por semana, de forma independiente. ¿Cuál es la probabilidad de que en una semana haya <strong>a lo sumo 2</strong> paradas?",
+                        "a": [
+                            "$0{,}6767$",
+                            "$0{,}2707$",
+                            "$0{,}3233$",
+                            "$0{,}4060$"
+                        ],
+                        "c": 0,
+                        "explanation": "$P(X\\le 2)=e^{-2}\\left(1+2+\\dfrac{2^{2}}{2}\\right)=0{,}1353+0{,}2707+0{,}2707=0{,}6767$. Hay que sumar los tres casos: 0, 1 y 2 paradas."
+                    }
+                ]
+            },
+            {
+                "nav": "Normal: probabilidad de un valor",
+                "variants": [
+                    {
+                        "type": "mcq",
+                        "q": "El tiempo de atención en una ventanilla se distribuye normal con $\\mu=12$ minutos y $\\sigma=3$ minutos. ¿Cuál es $P(X\\lt 15)$?",
+                        "a": [
+                            "$0{,}8413$",
+                            "$0{,}1587$",
+                            "$1{,}0000$",
+                            "$0{,}6915$"
+                        ],
+                        "c": 0,
+                        "explanation": "Se estandariza: $z=\\dfrac{15-12}{3}=1{,}00$. La tabla da el área a la izquierda: $P(X\\lt 15)=P(Z\\lt 1{,}00)=0{,}8413$. El valor $0{,}1587$ sería la cola derecha, $P(X\\gt 15)$."
+                    },
+                    {
+                        "type": "mcq",
+                        "q": "Con la misma variable ($\\mu=12$, $\\sigma=3$ minutos), ¿cuál es la probabilidad de que una atención dure más de 18 minutos?",
+                        "a": [
+                            "$0{,}0228$",
+                            "$0{,}9772$",
+                            "$0{,}8413$",
+                            "$0{,}1587$"
+                        ],
+                        "c": 0,
+                        "explanation": "$z=\\dfrac{18-12}{3}=2{,}00$. Como la tabla da el área a la izquierda, la cola derecha se obtiene por complemento: $P(X\\gt 18)=1-P(Z\\lt 2{,}00)=1-0{,}9772=0{,}0228$. El valor $0{,}9772$ es $P(X\\lt 18)$."
+                    },
+                    {
+                        "type": "mcq",
+                        "q": "El ingreso mensual de los clientes de un banco (en miles de pesos) se distribuye normal con $\\mu=3\\,200$ y $\\sigma=400$. ¿Cuál es la probabilidad de que un cliente gane entre $2\\,800$ y $3\\,600$?",
+                        "a": [
+                            "$0{,}6826$",
+                            "$0{,}8413$",
+                            "$0{,}9545$",
+                            "$0{,}9973$"
+                        ],
+                        "c": 0,
+                        "explanation": "Los extremos están a una desviación de la media: $z=\\dfrac{2\\,800-3\\,200}{400}=-1$ y $z=\\dfrac{3\\,600-3\\,200}{400}=1$. Entonces $P(-1\\lt Z\\lt 1)=0{,}8413-0{,}1587=0{,}6826$, la conocida regla empírica del $68\\%$. Es un resultado de <em>intervalo</em>: hay que restar las dos áreas acumuladas."
+                    },
+                    {
+                        "type": "mcq",
+                        "q": "Las ventas diarias de una tienda (en miles de pesos) se distribuyen normal con $\\mu=850$ y $\\sigma=120$. ¿Cuál es la probabilidad de vender más de $1\\,000$ en un día?",
+                        "a": [
+                            "$0{,}1056$",
+                            "$0{,}8944$",
+                            "$0{,}6056$",
+                            "$0{,}4960$"
+                        ],
+                        "c": 0,
+                        "explanation": "$z=\\dfrac{1\\,000-850}{120}=1{,}25$ y $P(Z\\lt 1{,}25)=0{,}8944$. La cola derecha es el complemento: $P(X\\gt 1\\,000)=1-0{,}8944=0{,}1056$, cerca del $10{,}6\\%$ de los días."
+                    },
+                    {
+                        "type": "mcq",
+                        "q": "El peso de un producto empacado se distribuye normal con $\\mu=500$ g y $\\sigma=20$ g. La norma exige que cada empaque tenga al menos 460 g. ¿Qué proporción de empaques incumple la norma?",
+                        "a": [
+                            "$0{,}0228$",
+                            "$0{,}9772$",
+                            "$0{,}8413$",
+                            "$0{,}3085$"
+                        ],
+                        "c": 0,
+                        "explanation": "$z=\\dfrac{460-500}{20}=-2{,}00$. Incumplen los que pesan menos de 460 g: $P(X\\lt 460)=P(Z\\lt -2)=1-0{,}9772=0{,}0228$, es decir, el $2{,}28\\%$. Por simetría, $P(Z\\lt -z)=1-P(Z\\lt z)$."
+                    }
+                ]
+            },
+            {
+                "nav": "Normal: problema inverso (percentiles)",
+                "variants": [
+                    {
+                        "type": "mcq",
+                        "q": "El tiempo de respuesta de un servicio (en minutos) se distribuye normal con $\\mu=60$ y $\\sigma=8$. ¿Por debajo de qué tiempo está el 95 % de las respuestas? (Use $z=1{,}645$.)",
+                        "a": [
+                            "$73{,}16$",
+                            "$46{,}84$",
+                            "$165{,}28$",
+                            "$13{,}16$"
+                        ],
+                        "c": 0,
+                        "explanation": "Es un problema inverso: se entra a la tabla por el área ($0{,}95$) y se sale con $z=1{,}645$. Luego $x=\\mu+z\\sigma=60+1{,}645(8)=73{,}16$ minutos. El valor $46{,}84$ resulta de restar en vez de sumar, y $z=1{,}96$ corresponde al $97{,}5\\%$, no al $95\\%$."
+                    },
+                    {
+                        "type": "mcq",
+                        "q": "El ingreso mensual de los clientes de una cooperativa (en miles de pesos) es normal con $\\mu=3\\,000$ y $\\sigma=500$. ¿Por debajo de qué ingreso se encuentra el 10 % de clientes con menores ingresos? (Use $z=-1{,}28$.)",
+                        "a": [
+                            "$2\\,360$",
+                            "$3\\,640$",
+                            "$-317\\,000$",
+                            "$2\\,178$"
+                        ],
+                        "c": 0,
+                        "explanation": "El área $0{,}10$ queda en la cola izquierda, así que $z=-1{,}28$. Entonces $x=\\mu+z\\sigma=3\\,000+(-1{,}28)(500)=2\\,360$. Un valor mayor que la media (3 640) sería la respuesta para el 10 % <em>más alto</em>, no para el más bajo."
+                    },
+                    {
+                        "type": "mcq",
+                        "q": "El tiempo de entrega de una empresa de domicilios es normal con $\\mu=40$ minutos y $\\sigma=6$ minutos. La empresa quiere identificar el 2,5 % de entregas más lentas. ¿A partir de qué tiempo una entrega entra en ese grupo? (Use $z=1{,}96$.)",
+                        "a": [
+                            "$51{,}76$",
+                            "$28{,}24$",
+                            "$49{,}87$",
+                            "$55{,}46$"
+                        ],
+                        "c": 0,
+                        "explanation": "El 2,5 % más lento deja a su izquierda el $97{,}5\\%$ del área, y el $z$ correspondiente es $1{,}96$. Entonces $x=40+1{,}96(6)=51{,}76$ minutos. Las entregas que tardan más de 51,76 minutos forman ese 2,5 %."
+                    },
+                    {
+                        "type": "mcq",
+                        "q": "Las calificaciones de un examen de selección son normales con $\\mu=500$ y $\\sigma=100$. Se admite al 25 % con mayor puntaje. ¿Cuál es el puntaje mínimo de admisión? (Use $z=0{,}67$.)",
+                        "a": [
+                            "$567$",
+                            "$433$",
+                            "$664$",
+                            "$7200$"
+                        ],
+                        "c": 0,
+                        "explanation": "El 25 % superior deja el $75\\%$ a su izquierda, con $z=0{,}67$. Entonces $x=500+0{,}67(100)=567$. El puntaje mínimo de admisión es 567."
+                    },
+                    {
+                        "type": "mcq",
+                        "q": "El tiempo de producción de un lote es normal con $\\mu=40$ horas y $\\sigma=6$ horas. ¿Qué plazo debe ofrecerse para cumplir con el 99 % de los lotes? (Use $z=2{,}33$.)",
+                        "a": [
+                            "$53{,}98$ horas",
+                            "$26{,}02$ horas",
+                            "$49{,}87$ horas",
+                            "$123{,}88$ horas"
+                        ],
+                        "c": 0,
+                        "explanation": "Se busca $x$ con $P(X\\lt x)=0{,}99$, que corresponde a $z=2{,}33$. Entonces $x=\\mu+z\\sigma=40+2{,}33(6)=53{,}98$ horas. Con ese plazo se cumple en el 99 % de los lotes."
+                    }
+                ]
+            },
+            {
+                "nav": "Media muestral: error estándar y Teorema del Límite Central",
+                "variants": [
+                    {
+                        "type": "mcq",
+                        "q": "El gasto mensual de los clientes de una tienda tiene $\\mu=500$ y $\\sigma=90$ (miles de pesos). Se toma una muestra aleatoria de $n=36$ clientes. ¿Cuál es el error estándar de la media muestral $\\bar{X}$?",
+                        "a": [
+                            "$15$",
+                            "$90$",
+                            "$2{,}5$",
+                            "$225$"
+                        ],
+                        "c": 0,
+                        "explanation": "El error estándar es $\\sigma_{\\bar{X}}=\\dfrac{\\sigma}{\\sqrt{n}}=\\dfrac{90}{\\sqrt{36}}=\\dfrac{90}{6}=15$. Es seis veces menor que la desviación de un cliente individual: promediar suaviza la variabilidad. Olvidar la raíz y dejar $\\sigma=90$ es el error más frecuente."
+                    },
+                    {
+                        "type": "mcq",
+                        "q": "Una gerente tiene $\\sigma=80$ para el tiempo de resolución de casos. Quiere reducir a la mitad el error estándar de la media muestral. ¿Qué debe hacer con el tamaño de muestra $n$?",
+                        "a": [
+                            "Multiplicarlo por 4",
+                            "Multiplicarlo por 2",
+                            "Dividirlo entre 2",
+                            "Multiplicarlo por 8"
+                        ],
+                        "c": 0,
+                        "explanation": "Como $\\sigma_{\\bar{X}}=\\dfrac{\\sigma}{\\sqrt{n}}$, para que el error se divida entre 2 la raíz de $n$ debe duplicarse, lo que exige $n$ cuatro veces mayor: $\\dfrac{\\sigma}{\\sqrt{4n}}=\\dfrac{\\sigma}{2\\sqrt{n}}$."
+                    },
+                    {
+                        "type": "mcq",
+                        "q": "Los montos de las facturas de una empresa tienen una distribución muy asimétrica, con $\\mu=200$ y $\\sigma=150$ (miles de pesos). Se toman muestras de $n=100$ facturas. ¿Cómo se distribuye aproximadamente la media muestral $\\bar{X}$?",
+                        "a": [
+                            "Aproximadamente normal con media $200$ y desviación estándar $15$",
+                            "Con la misma forma asimétrica de la población, con media 200 y desviación 150",
+                            "Aproximadamente normal con media 200 y desviación 150",
+                            "Aproximadamente normal con media 20 y desviación 15"
+                        ],
+                        "c": 0,
+                        "explanation": "Por el Teorema del Límite Central, con $n\\ge 30$ la media muestral es aproximadamente normal, <em>sin importar</em> la forma de la población: $\\bar{X}\\sim N\\left(\\mu,\\ \\sigma/\\sqrt{n}\\right)=N(200,\\ 150/10)=N(200,\\ 15)$. La media de $\\bar{X}$ es $\\mu$ y su desviación es el error estándar, no $\\sigma$."
+                    },
+                    {
+                        "type": "mcq",
+                        "q": "Si $\\mu=800$ y $\\sigma=120$, ¿cuál es el error estándar de $\\bar{X}$ cuando $n=144$?",
+                        "a": [
+                            "$10$",
+                            "$120$",
+                            "$0{,}83$",
+                            "$5$"
+                        ],
+                        "c": 0,
+                        "explanation": "$\\sigma_{\\bar{X}}=\\dfrac{120}{\\sqrt{144}}=\\dfrac{120}{12}=10$. Con $n=36$ el error estándar sería 20: al cuadruplicar la muestra se reduce a la mitad."
+                    },
+                    {
+                        "type": "mcq",
+                        "q": "¿Cuál de las siguientes afirmaciones sobre la media muestral $\\bar{X}$ es correcta?",
+                        "a": [
+                            "$E(\\bar{X})=\\mu$: la media muestral es un estimador insesgado de la media poblacional",
+                            "$E(\\bar{X})=\\mu/\\sqrt{n}$",
+                            "$\\bar{X}$ tiene siempre la misma distribución que la población",
+                            "$\\sigma_{\\bar{X}}$ aumenta cuando aumenta $n$"
+                        ],
+                        "c": 0,
+                        "explanation": "El promedio de los promedios 'da en el blanco': $E(\\bar{X})=\\mu$, es decir, $\\bar{X}$ es un estimador <strong>insesgado</strong> de $\\mu$. Lo que se divide entre $\\sqrt{n}$ es la <em>desviación</em> ($\\sigma_{\\bar{X}}=\\sigma/\\sqrt{n}$), no la media, y esa desviación <em>disminuye</em> al crecer $n$."
+                    }
+                ]
+            },
+            {
+                "nav": "Probabilidades de la media y la proporción muestral",
+                "variants": [
+                    {
+                        "type": "mcq",
+                        "q": "El gasto mensual de los clientes de una tienda tiene $\\mu=500$ y $\\sigma=90$ (miles de pesos). Con una muestra de $n=36$ clientes, ¿cuál es $P(\\bar{X}\\gt 515)$?",
+                        "a": [
+                            "$0{,}1587$",
+                            "$0{,}8413$",
+                            "$0{,}4325$",
+                            "$0{,}6587$"
+                        ],
+                        "c": 0,
+                        "explanation": "El error estándar es $\\dfrac{90}{\\sqrt{36}}=15$ y $z=\\dfrac{515-500}{15}=1{,}00$. Entonces $P(\\bar{X}\\gt 515)=1-P(Z\\lt 1)=1-0{,}8413=0{,}1587$. Si se usara $\\sigma=90$ en lugar de $\\sigma/\\sqrt{n}$ se obtendría $z=0{,}17$, que es una probabilidad de un cliente individual, no de un promedio."
+                    },
+                    {
+                        "type": "mcq",
+                        "q": "El tiempo de resolución de casos tiene $\\mu=60$ minutos y $\\sigma=16$ minutos. Se toma una muestra de $n=64$ casos. ¿Cuál es $P(57\\lt \\bar{X}\\lt 63)$?",
+                        "a": [
+                            "$0{,}8664$",
+                            "$0{,}9332$",
+                            "$0{,}1506$",
+                            "$0{,}9545$"
+                        ],
+                        "c": 0,
+                        "explanation": "El error estándar es $\\dfrac{16}{\\sqrt{64}}=2$. Los extremos son $z=\\dfrac{57-60}{2}=-1{,}50$ y $z=\\dfrac{63-60}{2}=1{,}50$. Entonces $P(-1{,}5\\lt Z\\lt 1{,}5)=0{,}9332-0{,}0668=0{,}8664$."
+                    },
+                    {
+                        "type": "mcq",
+                        "q": "El 30 % de los clientes de una empresa usa su aplicación móvil. Se toma una muestra de $n=100$ clientes. ¿Cuál es la probabilidad de que la proporción muestral $\\hat{p}$ supere $0{,}35$? (Use $\\sigma_{\\hat{p}}=\\sqrt{p(1-p)/n}$ y redondee $z$ a 2 decimales.)",
+                        "a": [
+                            "$0{,}1379$",
+                            "$0{,}8621$",
+                            "$0{,}4325$",
+                            "$0{,}2389$"
+                        ],
+                        "c": 0,
+                        "explanation": "Se comprueba la aproximación normal: $np=30\\ge 5$ y $n(1-p)=70\\ge 5$. El error estándar es $\\sigma_{\\hat{p}}=\\sqrt{\\dfrac{0{,}30(0{,}70)}{100}}=0{,}0458$ y $z=\\dfrac{0{,}35-0{,}30}{0{,}0458}=1{,}09$. Entonces $P(\\hat{p}\\gt 0{,}35)=1-P(Z\\lt 1{,}09)=1-0{,}8621=0{,}1379$."
+                    },
+                    {
+                        "type": "mcq",
+                        "q": "Se sabe que el 60 % de los pedidos de una empresa se entrega en menos de 24 horas. En una muestra de $n=150$ pedidos, ¿cuál es la probabilidad de que la proporción muestral de entregas rápidas sea menor que $0{,}55$? (Redondee $z$ a 2 decimales.)",
+                        "a": [
+                            "$0{,}1056$",
+                            "$0{,}8944$",
+                            "$0{,}4681$",
+                            "$0{,}4522$"
+                        ],
+                        "c": 0,
+                        "explanation": "$\\sigma_{\\hat{p}}=\\sqrt{\\dfrac{0{,}6(0{,}4)}{150}}=0{,}0400$ y $z=\\dfrac{0{,}55-0{,}60}{0{,}04}=-1{,}25$. Como se pide el área a la izquierda, $P(\\hat{p}\\lt 0{,}55)=P(Z\\lt -1{,}25)=1-0{,}8944=0{,}1056$. Verificación de la aproximación: $np=90\\ge 5$ y $n(1-p)=60\\ge 5$."
+                    },
+                    {
+                        "type": "mcq",
+                        "q": "El peso de las cajas de un proveedor tiene $\\mu=25$ kg y $\\sigma=4$ kg. Se toman 64 cajas. ¿Cuál es la probabilidad de que el peso promedio de la muestra sea menor que $26$ kg?",
+                        "a": [
+                            "$0{,}9772$",
+                            "$0{,}5987$",
+                            "$0{,}0228$",
+                            "$0{,}6915$"
+                        ],
+                        "c": 0,
+                        "explanation": "El error estándar es $\\dfrac{4}{\\sqrt{64}}=0{,}5$ y $z=\\dfrac{26-25}{0{,}5}=2{,}00$. Luego $P(\\bar{X}\\lt 26)=P(Z\\lt 2)=0{,}9772$. Para una sola caja, el mismo cálculo daría $z=0{,}25$: el promedio de 64 cajas es mucho más estable."
+                    }
+                ]
+            },
+            {
+                "nav": "Distribución $t$ de Student: cuándo usarla",
+                "variants": [
+                    {
+                        "type": "mcq",
+                        "q": "Una analista tiene una muestra de $n=12$ tiempos de respuesta de una población normal. Solo conoce la desviación estándar de la muestra, $s=5$. ¿Qué distribución debe usar para la media muestral y con cuántos grados de libertad?",
+                        "a": [
+                            "Distribución $t$ con $11$ grados de libertad",
+                            "Distribución $t$ con $12$ grados de libertad",
+                            "Distribución normal estándar $Z$",
+                            "Distribución $t$ con $5$ grados de libertad"
+                        ],
+                        "c": 0,
+                        "explanation": "Como se usa $s$ (muestral) en lugar de $\\sigma$ (poblacional), la distribución es <strong>$t$ de Student</strong> con $gl=n-1=12-1=11$. Regla de bolsillo: si en el enunciado aparece $s$, se usa $t$; si aparece $\\sigma$, se usa $Z$."
+                    },
+                    {
+                        "type": "mcq",
+                        "q": "Una empresa conoce la desviación estándar poblacional $\\sigma=14$ de los tiempos de entrega, que no son normales. Toma una muestra de $n=60$ pedidos. ¿Qué distribución usa para la media muestral?",
+                        "a": [
+                            "Normal $Z$, por el Teorema del Límite Central ($n\\ge 30$)",
+                            "$t$ con 59 grados de libertad, porque $n$ es grande",
+                            "$t$ con 60 grados de libertad",
+                            "Ninguna: no se puede, porque la población no es normal"
+                        ],
+                        "c": 0,
+                        "explanation": "La desviación poblacional $\\sigma$ es conocida y $n\\ge 30$, así que el Teorema del Límite Central asegura que $\\bar{X}$ es aproximadamente normal: se usa $Z=\\dfrac{\\bar{X}-\\mu}{\\sigma/\\sqrt{n}}$. La $t$ se usa cuando se conoce $s$ y no $\\sigma$."
+                    },
+                    {
+                        "type": "mcq",
+                        "q": "Se toma una muestra de $n=25$ clientes de una población normal y se calcula su desviación estándar muestral $s$. ¿Cuántos grados de libertad tiene la distribución $t$ correspondiente?",
+                        "a": [
+                            "$24$",
+                            "$25$",
+                            "$26$",
+                            "$5$"
+                        ],
+                        "c": 0,
+                        "explanation": "Los grados de libertad son $gl=n-1=25-1=24$."
+                    },
+                    {
+                        "type": "mcq",
+                        "q": "Para una muestra de $n=20$ de una población normal con $\\sigma$ desconocida, ¿cuál es el valor crítico $t$ bilateral para el 95 % de confianza?",
+                        "a": [
+                            "$2{,}093$",
+                            "$1{,}960$",
+                            "$2{,}086$",
+                            "$2{,}262$"
+                        ],
+                        "c": 0,
+                        "explanation": "Con $gl=n-1=19$ y 95 % bilateral (0,025 en cada cola), la tabla $t$ da $2{,}093$. El valor $1{,}960$ es el de la normal: la $t$ tiene colas más pesadas, y por eso su valor crítico es mayor, sobre todo con pocos grados de libertad."
+                    },
+                    {
+                        "type": "mcq",
+                        "q": "Una muestra de $n=8$ proviene de una población normal con desviación estándar poblacional conocida, $\\sigma=5$. ¿Qué distribución se usa para la media muestral?",
+                        "a": [
+                            "Normal $Z$, porque la población es normal y se conoce $\\sigma$",
+                            "$t$ con 7 grados de libertad, porque $n$ es pequeño",
+                            "$t$ con 8 grados de libertad",
+                            "Ninguna, porque $n\\lt 30$"
+                        ],
+                        "c": 0,
+                        "explanation": "Aunque $n$ sea pequeño, la población es normal y $\\sigma$ es conocida: $Z=\\dfrac{\\bar{X}-\\mu}{\\sigma/\\sqrt{n}}$ sigue exactamente una normal estándar. Lo que decide es si el dato de dispersión es $\\sigma$ (se usa $Z$) o $s$ (se usa $t$)."
+                    },
+                    {
+                        "type": "mcq",
+                        "q": "¿Qué ocurre con la distribución $t$ de Student cuando aumentan los grados de libertad?",
+                        "a": [
+                            "Se aproxima a la distribución normal estándar",
+                            "Se vuelve más asimétrica",
+                            "Sus colas se hacen más pesadas",
+                            "Su centro se aleja de 0"
+                        ],
+                        "c": 0,
+                        "explanation": "La $t$ es simétrica y centrada en 0, con colas más pesadas que la normal. A medida que $gl$ crece, esas colas se adelgazan y la $t$ <strong>converge a la normal estándar</strong>: por ejemplo, el valor crítico bilateral al 95 % baja de $2{,}262$ ($gl=9$) a $2{,}045$ ($gl=29$) y tiende a $1{,}960$."
+                    }
+                ]
+            }
+        ];
+
+        let currentExam = [];
+        let userAnswers = {};
+
+        /* ---------------- utilidades ---------------- */
+
+        function shuffle(arr) {
+            for (let i = arr.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [arr[i], arr[j]] = [arr[j], arr[i]];
+            }
+            return arr;
+        }
+
+        function pickOne(arr) {
+            return arr[Math.floor(Math.random() * arr.length)];
+        }
+
+        /* Devuelve una copia de la variante con las opciones barajadas. */
+        function prepare(variant) {
+            const q = JSON.parse(JSON.stringify(variant));
+
+            if (q.type === "mcq") {
+                const correcta = q.a[q.c];
+                q.a = shuffle(q.a.slice());
+                q.c = q.a.indexOf(correcta);
+            } else if (q.type === "chart_mcq") {
+                const correcta = q.charts[q.c];
+                q.charts = shuffle(q.charts.slice());
+                q.c = q.charts.indexOf(correcta);
+                q.charts.forEach((ch, i) => { ch.title = 'Opción ' + String.fromCharCode(65 + i); });
+            } else if (q.type === "matching") {
+                q.pairs = shuffle(q.pairs.slice());
+                const encabezado = q.options[0];
+                q.options = [encabezado].concat(shuffle(q.options.slice(1)));
+            }
+            return q;
+        }
+
+        /* ---------------- construcción del examen ---------------- */
+
+        function generateExam() {
+            currentExam = TEMAS.map(tema => prepare(pickOne(tema.variants)));
+
+            userAnswers = {};
+            document.getElementById('results-container').style.display = 'none';
+            document.getElementById('total-count').innerText = currentExam.length;
+            renderQuestions();
+            renderNavigation();
+            updateProgress();
+        }
+
+        function renderQuestions() {
+            const container = document.getElementById('questions-container');
+            container.innerHTML = '';
+
+            currentExam.forEach((q, idx) => {
+                const card = document.createElement('div');
+                card.className = 'question-card';
+                card.id = `question-${idx}`;
+
+                let html = `
+                    <div class="question-header">
+                        <div class="question-number">${idx + 1}</div>
+                    </div>
+                    <div class="question-text">${q.q}</div>
+                `;
+
+                if (q.type === "matching") {
+                    html += `<div class="matching-container">`;
+                    q.pairs.forEach(pair => {
+                        html += `
+                            <div class="match-row">
+                                <div style="width:42%; font-size:0.95em; color:#333;">${pair.prompt}</div>
+                                <select class="match-select" data-qid="${idx}" data-pairid="${pair.id}" onchange="selectMatch(${idx}, '${pair.id}', this.value)">
+                                    ${q.options.map(opt => `<option value="${opt.val}">${opt.text}</option>`).join('')}
+                                </select>
+                            </div>
+                        `;
+                    });
+                    html += `</div>`;
+                } else if (q.type === "mcq") {
+                    html += `<div class="options-container">`;
+                    q.a.forEach((opt, optIdx) => {
+                        html += `
+                            <div class="option" id="opt-${idx}-${optIdx}" onclick="selectOption(${idx}, ${optIdx})">
+                                <strong>${String.fromCharCode(65 + optIdx)}.</strong>&nbsp;<span>${opt}</span>
+                            </div>
+                        `;
+                    });
+                    html += `</div>`;
+                } else if (q.type === "chart_mcq") {
+                    html += `<div class="options-grid-charts">`;
+                    q.charts.forEach((chart, optIdx) => {
+                        html += `
+                            <div class="option option-chart-card" id="opt-${idx}-${optIdx}" onclick="selectOption(${idx}, ${optIdx})">
+                                <strong>Opción ${String.fromCharCode(65 + optIdx)}</strong>
+                                <div id="chart-container-${idx}-${optIdx}" class="chart-box"></div>
+                            </div>
+                        `;
+                    });
+                    html += `</div>`;
+                }
+
+                html += `<div id="explanation-${idx}" class="explanation" style="display:none;"></div>`;
+                card.innerHTML = html;
+                container.appendChild(card);
+
+                if (q.type === "chart_mcq") {
+                    setTimeout(() => renderChartsForQuestion(q, idx), 50);
+                }
+            });
+
+            if (window.MathJax && MathJax.typesetPromise) {
+                MathJax.typesetPromise();
+            }
+        }
+
+        function renderChartsForQuestion(q, qIdx) {
+            q.charts.forEach((c, optIdx) => {
+                const targetId = `chart-container-${qIdx}-${optIdx}`;
+                let data = [];
+                let layout = {
+                    title: { text: c.title, font: { size: 12 } },
+                    margin: { l: 30, r: 20, t: 30, b: 30 },
+                    autosize: true
+                };
+
+                if (c.type === 'pie') {
+                    data = [{ labels: c.labels, values: c.values, type: 'pie', textinfo: 'label+percent' }];
+                } else if (c.type === 'bar') {
+                    data = [{ x: c.x, y: c.y, type: 'bar', marker: { color: '#3498db' } }];
+                    layout.xaxis = { tickangle: -45, automargin: true, tickfont: { size: 10 } };
+                    layout.yaxis = { automargin: true };
+                    if (c.gap === 0) {
+                        layout.bargap = 0.05;
+                    }
+                }
+                Plotly.newPlot(targetId, data, layout, { responsive: true, displayModeBar: false });
+            });
+        }
+
+        /* ---------------- interacción ---------------- */
+
+        function selectOption(qIdx, optIdx) {
+            userAnswers[qIdx] = optIdx;
+            const card = document.getElementById(`question-${qIdx}`);
+            const options = card.querySelectorAll('.option');
+            options.forEach((opt, i) => {
+                if (i === optIdx) opt.classList.add('selected');
+                else opt.classList.remove('selected');
+            });
+            updateProgress();
+        }
+
+        function selectMatch(qIdx, pairId, value) {
+            if (!userAnswers[qIdx]) userAnswers[qIdx] = {};
+            userAnswers[qIdx][pairId] = value;
+            updateProgress();
+        }
+
+        function isAnswered(idx) {
+            const respuesta = userAnswers[idx];
+            if (respuesta === undefined) return false;
+            if (currentExam[idx].type === "matching") {
+                const total = currentExam[idx].pairs.length;
+                return Object.keys(respuesta).length === total &&
+                       Object.values(respuesta).every(v => v !== "");
+            }
+            return true;
+        }
+
+        function updateProgress() {
+            let answered = 0;
+
+            currentExam.forEach((_, idx) => {
+                const completa = isAnswered(idx);
+                if (completa) answered++;
+
+                const navItem = document.getElementById(`nav-item-${idx}`);
+                if (navItem) {
+                    const statusDot = navItem.querySelector('.topic-status');
+                    statusDot.className = `topic-status ${completa ? 'answered' : 'unanswered'}`;
+                }
+            });
+
+            document.getElementById('answered-count').innerText = answered;
+        }
+
+        function renderNavigation() {
+            const list = document.getElementById('topics-list');
+            list.innerHTML = '';
+
+            TEMAS.forEach((tema, idx) => {
+                const item = document.createElement('div');
+                item.className = 'topic-item';
+                item.id = `nav-item-${idx}`;
+                item.onclick = () => {
+                    document.getElementById(`question-${idx}`).scrollIntoView({ behavior: 'smooth' });
+                };
+                item.innerHTML = `
+                    <span class="topic-name">${idx + 1}. ${tema.nav}</span>
+                    <span class="topic-status unanswered"></span>
+                `;
+                list.appendChild(item);
+            });
+        }
+
+        /* ---------------- calificación ---------------- */
+
+        function submitExam() {
+            let correctCount = 0;
+            const total = currentExam.length;
+
+            currentExam.forEach((q, idx) => {
+                const card = document.getElementById(`question-${idx}`);
+                const expDiv = document.getElementById(`explanation-${idx}`);
+                let isCorrect = false;
+
+                if (q.type === "matching") {
+                    const userPairs = userAnswers[idx] || {};
+                    isCorrect = q.pairs.every(pair => userPairs[pair.id] === pair.correct);
+
+                    card.querySelectorAll('.match-select').forEach(sel => {
+                        const pair = q.pairs.find(p => p.id === sel.dataset.pairid);
+                        const fila = sel.closest('.match-row');
+                        if (sel.value === pair.correct) {
+                            fila.style.borderColor = 'var(--success-color)';
+                            fila.style.backgroundColor = '#d4edda';
+                        } else {
+                            fila.style.borderColor = 'var(--accent-color)';
+                            fila.style.backgroundColor = '#f8d7da';
+                        }
+                    });
+                } else {
+                    isCorrect = (userAnswers[idx] === q.c);
+                    const options = card.querySelectorAll('.option');
+                    options.forEach((opt, optIdx) => {
+                        if (optIdx === q.c) opt.classList.add('correct');
+                        else if (optIdx === userAnswers[idx]) opt.classList.add('incorrect');
+                    });
+                }
+
+                if (isCorrect) correctCount++;
+
+                expDiv.innerHTML = `<strong>Explicación:</strong> ${q.explanation}`;
+                expDiv.style.display = 'block';
+
+                const navItem = document.getElementById(`nav-item-${idx}`);
+                if (navItem) {
+                    const statusDot = navItem.querySelector('.topic-status');
+                    statusDot.className = `topic-status ${isCorrect ? 'correct' : 'incorrect'}`;
+                }
+            });
+
+            if (window.MathJax && MathJax.typesetPromise) {
+                MathJax.typesetPromise();
+            }
+
+            const score = (correctCount / total) * 5;
+            const percentage = (correctCount / total) * 100;
+
+            const resultBox = document.getElementById('results-container');
+            const scoreCircle = document.getElementById('final-score');
+
+            scoreCircle.innerText = score.toFixed(1);
+            scoreCircle.className = `score-circle ${score >= 4 ? 'high' : score >= 3 ? 'medium' : 'low'}`;
+
+            document.getElementById('correct-count').innerText = correctCount;
+            document.getElementById('incorrect-count').innerText = total - correctCount;
+            document.getElementById('percentage-score').innerText = `${percentage.toFixed(1)}%`;
+
+            resultBox.style.display = 'block';
+            resultBox.scrollIntoView({ behavior: 'smooth' });
+        }
+
+        document.getElementById('submit-btn').addEventListener('click', submitExam);
+        document.getElementById('new-exam-btn').addEventListener('click', generateExam);
+        document.getElementById('restart-btn').addEventListener('click', generateExam);
+        document.getElementById('review-btn').addEventListener('click', () => {
+            document.querySelector('.questions-section').scrollIntoView({ behavior: 'smooth' });
+        });
+
+        document.addEventListener('DOMContentLoaded', generateExam);
+    </script>
+</body>
+</html>

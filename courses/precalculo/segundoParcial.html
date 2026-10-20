@@ -1,0 +1,1424 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simulador del Segundo Parcial - Precálculo</title>
+
+    <script>
+        window.MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                displayMath: [['$$', '$$'], ['\\[', '\\]']],
+                processEscapes: true
+            },
+            svg: { fontCache: 'global' },
+            startup: { pageReady: () => MathJax.typesetPromise().catch(err => console.log(err)) }
+        };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
+
+    <style>
+        :root {
+            --primary-color: #2c3e50;
+            --secondary-color: #3498db;
+            --accent-color: #e74c3c;
+            --light-color: #ecf0f1;
+            --success-color: #27ae60;
+            --warning-color: #f39c12;
+            --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: #f5f7fa;
+            color: #333;
+            line-height: 1.6;
+            padding: 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding: 20px;
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: var(--shadow);
+        }
+
+        h1 {
+            color: var(--primary-color);
+            margin-bottom: 10px;
+            font-size: 2.2rem;
+        }
+
+        .subtitle {
+            color: var(--secondary-color);
+            font-size: 1.1rem;
+            margin-bottom: 20px;
+        }
+
+        .instructions {
+            background-color: var(--light-color);
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 25px;
+            border-left: 5px solid var(--secondary-color);
+        }
+
+        .instructions h3 {
+            color: var(--primary-color);
+            margin-bottom: 10px;
+        }
+
+        .exam-container {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 25px;
+        }
+
+        .questions-section {
+            background-color: white;
+            padding: 25px;
+            border-radius: 10px;
+            box-shadow: var(--shadow);
+        }
+
+        .control-panel {
+            background-color: white;
+            padding: 25px;
+            border-radius: 10px;
+            box-shadow: var(--shadow);
+            height: fit-content;
+            position: sticky;
+            top: 20px;
+        }
+
+        .question-card {
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid #eee;
+            scroll-margin-top: 20px;
+        }
+
+        .question-card:last-child {
+            border-bottom: none;
+        }
+
+        .question-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .question-number {
+            background-color: var(--primary-color);
+            color: white;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+        }
+
+        .question-text {
+            margin-bottom: 20px;
+            font-size: 1.1rem;
+            line-height: 1.5;
+        }
+
+        .question-text p + p { margin-top: 10px; }
+
+        .table-container {
+            margin: 15px 0;
+            padding: 15px;
+            background-color: #f9f9f9;
+            border-radius: 8px;
+            overflow-x: auto;
+        }
+
+        table { width: 100%; border-collapse: collapse; margin: 10px 0; font-size: 0.95em; }
+        th { background-color: var(--primary-color); color: white; padding: 10px; text-align: center; border: 1px solid #ddd; }
+        td { padding: 8px; text-align: center; border: 1px solid #ddd; }
+        tr:nth-child(even) { background-color: #f2f2f2; }
+
+        .options-container {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .options-grid-charts {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+
+        .option {
+            padding: 12px 15px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+        }
+
+        .option-chart-card {
+            flex-direction: column;
+            align-items: flex-start;
+            padding: 10px;
+        }
+
+        .option:hover {
+            background-color: #f0f8ff;
+            border-color: var(--secondary-color);
+        }
+
+        .option.selected {
+            background-color: #e1f0ff;
+            border-color: var(--secondary-color);
+            font-weight: 600;
+        }
+
+        .option.correct {
+            background-color: #d4edda;
+            border-color: var(--success-color);
+            color: #155724;
+        }
+
+        .option.incorrect {
+            background-color: #f8d7da;
+            border-color: var(--accent-color);
+            color: #721c24;
+        }
+
+        .chart-box {
+            width: 100%;
+            height: 300px;
+            margin-top: 5px;
+        }
+
+        .match-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 12px;
+            padding: 10px;
+            background-color: #f8f9fa;
+            border-radius: 6px;
+            border: 1px solid #e9ecef;
+        }
+
+        .match-select {
+            padding: 8px;
+            border-radius: 6px;
+            border: 1px solid #ccc;
+            font-size: 0.95rem;
+            width: 55%;
+        }
+
+        .explanation {
+            margin-top: 20px;
+            padding: 15px;
+            background-color: #fff3cd;
+            border-left: 5px solid #ffc107;
+            border-radius: 5px;
+            font-size: 0.95rem;
+        }
+
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s;
+            font-size: 1rem;
+            margin-right: 10px;
+            margin-bottom: 10px;
+        }
+
+        .btn-primary { background-color: var(--secondary-color); color: white; }
+        .btn-primary:hover { background-color: #2980b9; }
+        .btn-secondary { background-color: var(--light-color); color: var(--primary-color); border: 1px solid #ddd; }
+        .btn-secondary:hover { background-color: #d5dbdb; }
+
+        .results-container {
+            margin-top: 25px;
+            padding: 20px;
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: var(--shadow);
+            display: none;
+        }
+
+        .score-display { text-align: center; margin-bottom: 20px; }
+        .score-circle {
+            width: 120px; height: 120px; border-radius: 50%;
+            background-color: var(--light-color); display: flex;
+            justify-content: center; align-items: center;
+            margin: 0 auto 20px; font-size: 2.5rem; font-weight: bold;
+            color: var(--primary-color); border: 5px solid var(--secondary-color);
+        }
+
+        .score-circle.low { border-color: var(--accent-color); color: var(--accent-color); }
+        .score-circle.medium { border-color: var(--warning-color); color: var(--warning-color); }
+        .score-circle.high { border-color: var(--success-color); color: var(--success-color); }
+
+        .stats { display: flex; justify-content: space-between; margin-top: 20px; }
+        .stat-box { flex: 1; text-align: center; padding: 15px; background-color: var(--light-color); border-radius: 8px; margin: 0 5px; }
+        .stat-value { font-size: 2rem; font-weight: bold; color: var(--primary-color); }
+        .stat-label { font-size: 0.9rem; color: #7f8c8d; }
+
+        .topic-progress { margin-top: 20px; }
+        .topic-item { display: flex; justify-content: space-between; align-items: center; padding: 8px 0; border-bottom: 1px solid #eee; cursor: pointer; }
+        .topic-item:hover { background-color: #f5f5f5; padding-left: 5px; }
+        .topic-name { flex: 1; font-size: 0.9em; }
+        .topic-status { width: 12px; height: 12px; border-radius: 50%; margin-left: 10px; }
+        .topic-status.correct { background-color: var(--success-color); }
+        .topic-status.incorrect { background-color: var(--accent-color); }
+        .topic-status.unanswered { background-color: #ddd; }
+        .topic-status.answered { background-color: var(--secondary-color); }
+
+        footer { text-align: center; margin-top: 30px; padding: 20px; color: #7f8c8d; font-size: 0.9rem; }
+
+        @media (max-width: 900px) {
+            .exam-container { grid-template-columns: 1fr; }
+            .options-grid-charts { grid-template-columns: 1fr; }
+            .match-row { flex-direction: column; align-items: stretch; gap: 8px; }
+            .match-select { width: 100%; }
+        }
+    </style>
+</head>
+<body>
+    <p style="margin:0;padding:0.6rem 1rem;background:#1553AD;font:0.95rem/1.4 'Segoe UI',Arial,sans-serif"><a href="index.html" style="color:#fff;text-decoration:none">&larr; Precálculo</a></p>
+    <header>
+        <h1>Simulador del Segundo Parcial - Precálculo</h1>
+        <p class="subtitle">MATE1161 · UNIMINUTO — Razones y proporciones (sesión 5) y Unidad 2: potenciación, radicación, racionalización y logaritmos (sesiones 7 a 11)</p>
+    </header>
+
+    <div class="instructions">
+        <h3>Instrucciones</h3>
+        <p>Este simulador cubre razones, proporciones y regla de tres (sesión 5) y toda la Unidad 2: potenciación y notación científica (sesión 7), radicación (sesión 8), racionalización (sesión 9), logaritmos y ecuaciones exponenciales (sesión 10) y propiedades de los logaritmos, cambio de base y ecuaciones logarítmicas (sesión 11). Varios ejercicios están contextualizados en situaciones de Ingeniería de Software. Son 10 preguntas y la calificación es sobre 5.0. Cada vez que pulses <em>Nuevo Examen Aleatorio</em> el simulador sortea una pregunta distinta de cada tema y baraja el orden de las opciones, así que puedes practicar varias veces sin memorizar respuestas. Al calificar verás la explicación punto por punto.</p>
+    </div>
+
+    <div class="exam-container">
+        <section class="questions-section">
+            <h2>Preguntas del Parcial</h2>
+            <div id="questions-container"></div>
+
+            <div class="button-group" style="margin-top:20px;">
+                <button id="submit-btn" class="btn btn-primary">Calificar Examen</button>
+                <button id="new-exam-btn" class="btn btn-secondary">Nuevo Examen Aleatorio</button>
+            </div>
+        </section>
+
+        <section class="control-panel">
+            <h3>Progreso</h3>
+            <div class="stats">
+                <div class="stat-box">
+                    <div class="stat-value" id="answered-count">0</div>
+                    <div class="stat-label">Respondidas</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-value" id="total-count">10</div>
+                    <div class="stat-label">Total</div>
+                </div>
+            </div>
+
+            <div class="topic-progress">
+                <h4>Navegación:</h4>
+                <div id="topics-list"></div>
+            </div>
+        </section>
+    </div>
+
+    <div class="results-container" id="results-container">
+        <h2>Resultados del Parcial</h2>
+
+        <div class="score-display">
+            <div class="score-circle" id="final-score">0.0</div>
+            <h3>Calificación Final</h3>
+            <p id="score-text">Sobre 5.0 puntos</p>
+        </div>
+
+        <div class="stats">
+            <div class="stat-box">
+                <div class="stat-value" id="correct-count">0</div>
+                <div class="stat-label">Correctas</div>
+            </div>
+            <div class="stat-box">
+                <div class="stat-value" id="incorrect-count">0</div>
+                <div class="stat-label">Incorrectas</div>
+            </div>
+            <div class="stat-box">
+                <div class="stat-value" id="percentage-score">0%</div>
+                <div class="stat-label">Porcentaje</div>
+            </div>
+        </div>
+
+        <div style="text-align: center; margin-top: 20px;">
+            <button id="review-btn" class="btn btn-secondary">Revisar Respuestas</button>
+            <button id="restart-btn" class="btn btn-primary">Intentar Otro Examen</button>
+        </div>
+    </div>
+
+    <footer>
+        <p>Simulador del Segundo Parcial de Precálculo</p>
+    </footer>
+
+    <script>
+        /* ------------------------------------------------------------------
+           Banco de preguntas. Un objeto por tema; cada tema tiene varias
+           variantes y el simulador sortea una. Las explicaciones nunca
+           nombran la opción por su letra, porque el orden se baraja.
+           ------------------------------------------------------------------ */
+        const TEMAS = [
+            {
+                "nav": "Razones, proporciones y regla de tres",
+                "variants": [
+                    {
+                        "type": "mcq",
+                        "q": "Seis servidores procesan 1 800 peticiones por segundo. Si todos rinden igual, ¿cuántas peticiones por segundo procesarán 10 servidores?",
+                        "a": [
+                            "$3\\,000$",
+                            "$1\\,080$",
+                            "$2\\,400$",
+                            "$3\\,600$"
+                        ],
+                        "c": 0,
+                        "explanation": "Más servidores procesan más peticiones: la relación es <strong>directa</strong> y el cociente se conserva. $\\dfrac{1\\,800}{6}=\\dfrac{x}{10}$, luego $6x = 18\\,000$ y $x = 3\\,000$. Cada servidor procesa $300$ peticiones por segundo, y $10\\cdot 300 = 3\\,000$. El valor $1\\,080$ sale de plantear la relación como si fuera inversa."
+                    },
+                    {
+                        "type": "mcq",
+                        "q": "Seis desarrolladores terminan un módulo en 12 días. Si el equipo se amplía a 9 desarrolladores con el mismo ritmo, ¿en cuántos días lo terminan?",
+                        "a": [
+                            "$8$ días",
+                            "$18$ días",
+                            "$6$ días",
+                            "$3$ días"
+                        ],
+                        "c": 0,
+                        "explanation": "Más personas ⇒ menos días: la relación es <strong>inversa</strong> y lo que se conserva es el producto (el trabajo total): $6\\cdot 12 = 9\\cdot x$, de donde $72 = 9x$ y $x = 8$ días. Resultado coherente: con más gente debe tardar menos de 12 días; $18$ sale de aplicar una regla directa por error."
+                    },
+                    {
+                        "type": "mcq",
+                        "q": "En una startup la razón de desarrolladores a diseñadores es $7:3$. Si el equipo completo tiene 40 personas, ¿cuántos desarrolladores hay?",
+                        "a": [
+                            "$28$",
+                            "$12$",
+                            "$24$",
+                            "$16$"
+                        ],
+                        "c": 0,
+                        "explanation": "La razón $7:3$ reparte el equipo en $7+3=10$ partes. Cada parte vale $40/10 = 4$ personas, así que hay $7\\cdot 4 = 28$ desarrolladores y $3\\cdot 4 = 12$ diseñadores. Verificación: $28+12=40$ y $28:12 = 7:3$. Cuidado: $7:3$ no significa que $7/3$ del equipo sean desarrolladores."
+                    },
+                    {
+                        "type": "mcq",
+                        "q": "Encuentre la media proporcional entre 4 y 25, es decir, el valor $x$ que cumple $\\dfrac{4}{x}=\\dfrac{x}{25}$:",
+                        "a": [
+                            "$10$",
+                            "$14$",
+                            "$100$",
+                            "$21$"
+                        ],
+                        "c": 0,
+                        "explanation": "Con los medios iguales, el producto cruzado da $x^{2}=4\\cdot 25=100$, luego $x=\\sqrt{100}=10$ (la media geométrica). Comprobación: $\\dfrac{4}{10}=\\dfrac{10}{25}=0{,}4$. El valor $14$ sería la media aritmética aproximada, que no es lo que se pide."
+                    },
+                    {
+                        "type": "mcq",
+                        "q": "Un archivo de 36 MB se descarga en 24 segundos a velocidad constante. ¿Cuántos MB se descargan en 60 segundos?",
+                        "a": [
+                            "$90$ MB",
+                            "$72$ MB",
+                            "$14{,}4$ MB",
+                            "$60$ MB"
+                        ],
+                        "c": 0,
+                        "explanation": "A velocidad constante, más tiempo significa más datos: relación directa. $\\dfrac{36}{24}=\\dfrac{x}{60}$ da $24x = 2\\,160$ y $x = 90$ MB. Otra forma: la velocidad es $36/24 = 1{,}5$ MB/s y $1{,}5\\cdot 60 = 90$. El resultado $14{,}4$ aparece si se invierte la relación."
+                    },
+                    {
+                        "type": "mcq",
+                        "q": "Si $\\dfrac{a}{b}=\\dfrac{3}{5}$ y además $a+b=64$, ¿cuánto vale $a$?",
+                        "a": [
+                            "$24$",
+                            "$40$",
+                            "$38$",
+                            "$32$"
+                        ],
+                        "c": 0,
+                        "explanation": "Se usa la propiedad $\\dfrac{a+b}{b}=\\dfrac{3+5}{5}$, o bien se reparte 64 en $3+5=8$ partes de $64/8=8$ cada una: $a = 3\\cdot 8 = 24$ y $b = 5\\cdot 8 = 40$. Verificación: $24+40=64$ y $24/40=3/5$. El valor $40$ es $b$, no $a$."
+                    }
+                ]
+            },
+            {
+                "nav": "Regla de tres compuesta, repartos y escalas",
+                "variants": [
+                    {
+                        "type": "mcq",
+                        "q": "Cinco ingenieros prueban un sistema en 8 días trabajando 6 horas diarias. ¿En cuántos días lo harían 4 ingenieros trabajando 10 horas diarias?",
+                        "a": [
+                            "$6$ días",
+                            "$10$ días",
+                            "$12$ días",
+                            "$4$ días"
+                        ],
+                        "c": 0,
+                        "explanation": "Se calcula el trabajo total en horas-persona, que no cambia: $5\\cdot 8\\cdot 6 = 240$. Con la nueva configuración, $4\\cdot d\\cdot 10 = 240$, luego $40d = 240$ y $d = 6$ días. Si se ignoraran las horas diarias se obtendría $5\\cdot 8/4 = 10$ días, que es incorrecto."
+                    },
+                    {
+                        "type": "mcq",
+                        "q": "Un costo de nube de $\\$4\\,200\\,000$ se reparte entre tres equipos en razón $2:3:5$ según su uso. ¿Cuánto paga el equipo que corresponde al número 3?",
+                        "a": [
+                            "$\\$1\\,260\\,000$",
+                            "$\\$1\\,400\\,000$",
+                            "$\\$840\\,000$",
+                            "$\\$2\\,100\\,000$"
+                        ],
+                        "c": 0,
+                        "explanation": "Las partes totales son $2+3+5=10$ y cada parte vale $4\\,200\\,000/10 = 420\\,000$. El equipo de la parte 3 paga $3\\cdot 420\\,000 = 1\\,260\\,000$. Verificación: $840\\,000+1\\,260\\,000+2\\,100\\,000 = 4\\,200\\,000$. Un reparto en partes iguales daría $1\\,400\\,000$ a cada uno, pero la razón dice otra cosa."
+                    },
+                    {
+                        "type": "mcq",
+                        "q": "En el plano de una interfaz con escala $1:50$, un cable mide $8{,}4$ cm. ¿Cuál es su longitud real?",
+                        "a": [
+                            "$4{,}2$ m",
+                            "$0{,}168$ m",
+                            "$42$ m",
+                            "$4{,}2$ cm"
+                        ],
+                        "c": 0,
+                        "explanation": "La escala $1:50$ significa que 1 cm del plano equivale a 50 cm reales: $8{,}4\\cdot 50 = 420$ cm $= 4{,}2$ m. El valor $0{,}168$ m resulta de <em>dividir</em> entre 50 en lugar de multiplicar."
+                    },
+                    {
+                        "type": "mcq",
+                        "q": "Un clúster de 6 servidores procesa 18 000 registros en 3 horas. ¿Cuántos registros procesarán 9 servidores en 4 horas, con el mismo rendimiento?",
+                        "a": [
+                            "$36\\,000$",
+                            "$27\\,000$",
+                            "$24\\,000$",
+                            "$13\\,500$"
+                        ],
+                        "c": 0,
+                        "explanation": "El rendimiento por servidor y por hora es $\\dfrac{18\\,000}{6\\cdot 3}=1\\,000$ registros. Con 9 servidores durante 4 horas: $9\\cdot 4\\cdot 1\\,000 = 36\\,000$. Las dos magnitudes (servidores y horas) son directas respecto a los registros; tener en cuenta solo una de ellas da $27\\,000$ o $24\\,000$."
+                    },
+                    {
+                        "type": "mcq",
+                        "q": "El pago de un proyecto de $\\$7\\,200\\,000$ se reparte entre tres programadores en razón $3:4:5$. ¿Cuánto recibe quien lleva la mayor parte?",
+                        "a": [
+                            "$\\$3\\,000\\,000$",
+                            "$\\$2\\,400\\,000$",
+                            "$\\$1\\,800\\,000$",
+                            "$\\$3\\,600\\,000$"
+                        ],
+                        "c": 0,
+                        "explanation": "Las partes son $3+4+5=12$ y cada una vale $7\\,200\\,000/12 = 600\\,000$. La mayor parte corresponde al 5: $5\\cdot 600\\,000 = 3\\,000\\,000$. Control: $1\\,800\\,000 + 2\\,400\\,000 + 3\\,000\\,000 = 7\\,200\\,000$."
+                    }
+                ]
+            },
+            {
+                "nav": "Propiedades de la potenciación",
+                "variants": [
+                    {
+                        "type": "mcq",
+                        "q": "Simplifique $\\dfrac{x^{5}\\cdot x^{-2}}{x^{4}}$ (con $x\\neq 0$):",
+                        "a": [
+                            "$\\dfrac{1}{x}$",
+                            "$x$",
+                            "$x^{3}$",
+                            "$x^{7}$"
+                        ],
+                        "c": 0,
+                        "explanation": "Se suman los exponentes en el producto y se restan en el cociente: $x^{5+(-2)-4}=x^{-1}=\\dfrac{1}{x}$. Un exponente negativo invierte la base. Si se pierde el signo de $-2$ se obtiene $x^{5+2-4}=x^{3}$."
+                    },
+                    {
+                        "type": "mcq",
+                        "q": "Simplifique $\\left(3a^{2}b^{-1}\\right)^{2}$ con exponentes positivos:",
+                        "a": [
+                            "$\\dfrac{9a^{4}}{b^{2}}$",
+                            "$\\dfrac{6a^{4}}{b^{2}}$",
+                            "$9a^{4}b^{2}$",
+                            "$\\dfrac{9a^{2}}{b}$"
+                        ],
+                        "c": 0,
+                        "explanation": "La potencia se reparte entre todos los factores: $3^{2}\\cdot(a^{2})^{2}\\cdot(b^{-1})^{2}=9a^{4}b^{-2}=\\dfrac{9a^{4}}{b^{2}}$. El coeficiente se <em>eleva</em> al cuadrado ($3^2=9$), no se multiplica por 2."
+                    },
+                    {
+                        "type": "mcq",
+                        "q": "Calcule $\\left(\\dfrac{3}{2}\\right)^{-2}$:",
+                        "a": [
+                            "$\\dfrac{4}{9}$",
+                            "$\\dfrac{9}{4}$",
+                            "$-\\dfrac{4}{9}$",
+                            "$-\\dfrac{9}{4}$"
+                        ],
+                        "c": 0,
+                        "explanation": "El exponente negativo invierte la fracción: $\\left(\\dfrac{3}{2}\\right)^{-2}=\\left(\\dfrac{2}{3}\\right)^{2}=\\dfrac{4}{9}$. El signo del exponente no cambia el signo del resultado, que sigue siendo positivo."
+                    },
+                    {
+                        "type": "mcq",
+                        "q": "Calcule $2^{-3}+4^{0}+\\left(\\dfrac{1}{2}\\right)^{-2}$:",
+                        "a": [
+                            "$\\dfrac{41}{8}$",
+                            "$\\dfrac{33}{8}$",
+                            "$-1$",
+                            "$\\dfrac{11}{8}$"
+                        ],
+                        "c": 0,
+                        "explanation": "Cada término se evalúa por separado: $2^{-3}=\\dfrac{1}{8}$, $4^{0}=1$ y $\\left(\\dfrac{1}{2}\\right)^{-2}=2^{2}=4$. Suma: $\\dfrac{1}{8}+1+4=\\dfrac{41}{8}$. Tomar $4^{0}=0$ daría $\\dfrac{33}{8}$: toda base distinta de cero elevada a 0 vale 1."
+                    },
+                    {
+                        "type": "mcq",
+                        "q": "Un kibibyte (KiB) son $2^{10}$ bytes y un gibibyte (GiB) son $2^{30}$ bytes. ¿Cuántos KiB hay en 1 GiB?",
+                        "a": [
+                            "$2^{20}$",
+                            "$2^{40}$",
+                            "$2^{3}$",
+                            "$2^{10}$"
+                        ],
+                        "c": 0,
+                        "explanation": "El número de KiB es el cociente de las dos cantidades: $\\dfrac{2^{30}}{2^{10}}=2^{30-10}=2^{20}=1\\,048\\,576$. En el cociente de potencias de igual base se <em>restan</em> los exponentes; sumarlos ($2^{40}$) corresponde a un producto."
+                    },
+                    {
+                        "type": "mcq",
+                        "q": "Simplifique $\\left(\\dfrac{a^{-2}b^{3}}{a^{3}b^{-1}}\\right)^{2}$ con exponentes positivos:",
+                        "a": [
+                            "$\\dfrac{b^{8}}{a^{10}}$",
+                            "$\\dfrac{b^{6}}{a^{6}}$",
+                            "$\\dfrac{a^{10}}{b^{8}}$",
+                            "$\\dfrac{b^{8}}{a^{2}}$"
+                        ],
+                        "c": 0,
+                        "explanation": "Primero se simplifica dentro del paréntesis restando exponentes de cada base: $a^{-2-3}b^{3-(-1)}=a^{-5}b^{4}$. Luego se eleva al cuadrado: $a^{-10}b^{8}=\\dfrac{b^{8}}{a^{10}}$."
+                    }
+                ]
+            },
+            {
+                "nav": "Exponente fraccionario y notación científica",
+                "variants": [
+                    {
+                        "type": "mcq",
+                        "q": "Calcule $27^{-2/3}$:",
+                        "a": [
+                            "$\\dfrac{1}{9}$",
+                            "$9$",
+                            "$-9$",
+                            "$-\\dfrac{1}{9}$"
+                        ],
+                        "c": 0,
+                        "explanation": "El signo menos invierte la base y el exponente $\\tfrac{2}{3}$ indica raíz cúbica y cuadrado: $27^{-2/3}=\\dfrac{1}{27^{2/3}}=\\dfrac{1}{\\left(\\sqrt[3]{27}\\right)^{2}}=\\dfrac{1}{3^{2}}=\\dfrac{1}{9}$."
+                    },
+                    {
+                        "type": "mcq",
+                        "q": "Calcule $\\left(\\dfrac{1}{16}\\right)^{-3/4}$:",
+                        "a": [
+                            "$8$",
+                            "$\\dfrac{1}{8}$",
+                            "$12$",
+                            "$-8$"
+                        ],
+                        "c": 0,
+                        "explanation": "Se invierte la fracción para volver positivo el exponente: $\\left(\\dfrac{1}{16}\\right)^{-3/4}=16^{3/4}=\\left(\\sqrt[4]{16}\\right)^{3}=2^{3}=8$."
+                    },
+                    {
+                        "type": "mcq",
+                        "q": "Una CPU ejecuta $3{,}2\\times 10^{9}$ operaciones por segundo. ¿Cuántas operaciones ejecuta en $5\\times 10^{2}$ segundos? Exprese el resultado en notación científica.",
+                        "a": [
+                            "$1{,}6\\times 10^{12}$",
+                            "$1{,}6\\times 10^{11}$",
+                            "$16\\times 10^{11}$",
+                            "$1{,}6\\times 10^{7}$"
+                        ],
+                        "c": 0,
+                        "explanation": "Se multiplican los coeficientes y se suman los exponentes: $(3{,}2\\cdot 5)\\times 10^{9+2}=16\\times 10^{11}$. Como $16$ no está entre 1 y 10, se normaliza: $16\\times 10^{11}=1{,}6\\times 10^{12}$. La opción $16\\times 10^{11}$ vale lo mismo, pero no está en notación científica."
+                    },
+                    {
+                        "type": "mcq",
+                        "q": "La latencia de una consulta es de $0{,}000045$ segundos. Escríbala en notación científica:",
+                        "a": [
+                            "$4{,}5\\times 10^{-5}$",
+                            "$4{,}5\\times 10^{-4}$",
+                            "$4{,}5\\times 10^{5}$",
+                            "$45\\times 10^{-6}$"
+                        ],
+                        "c": 0,
+                        "explanation": "La coma se corre 5 lugares hacia la derecha hasta quedar tras el primer dígito distinto de cero, y el exponente es negativo: $4{,}5\\times 10^{-5}$. La opción $45\\times 10^{-6}$ es equivalente en valor, pero su coeficiente no está entre 1 y 10."
+                    },
+                    {
+                        "type": "mcq",
+                        "q": "Una copia de seguridad de $6\\times 10^{9}$ bytes se transfiere a $2\\times 10^{3}$ bytes por segundo. ¿Cuánto tarda, en segundos?",
+                        "a": [
+                            "$3\\times 10^{6}$",
+                            "$3\\times 10^{12}$",
+                            "$3\\times 10^{3}$",
+                            "$3\\times 10^{7}$"
+                        ],
+                        "c": 0,
+                        "explanation": "El tiempo es el cociente: $\\dfrac{6\\times 10^{9}}{2\\times 10^{3}}=(6/2)\\times 10^{9-3}=3\\times 10^{6}$ segundos, que son unos 35 días. En el cociente los exponentes de 10 se restan."
+                    },
+                    {
+                        "type": "mcq",
+                        "q": "Efectúe $4{,}5\\times 10^{6}+2{,}5\\times 10^{5}$ y deje el resultado en notación científica:",
+                        "a": [
+                            "$4{,}75\\times 10^{6}$",
+                            "$7\\times 10^{11}$",
+                            "$4{,}75\\times 10^{5}$",
+                            "$7\\times 10^{6}$"
+                        ],
+                        "c": 0,
+                        "explanation": "Para sumar, los exponentes deben coincidir: $2{,}5\\times 10^{5}=0{,}25\\times 10^{6}$, y entonces $4{,}5\\times 10^{6}+0{,}25\\times 10^{6}=4{,}75\\times 10^{6}$. Comprobación: $4\\,500\\,000+250\\,000=4\\,750\\,000$."
+                    }
+                ]
+            },
+            {
+                "nav": "Radicación: simplificación y operaciones",
+                "variants": [
+                    {
+                        "type": "mcq",
+                        "q": "Simplifique $\\sqrt{48}-\\sqrt{27}+\\sqrt{12}$:",
+                        "a": [
+                            "$3\\sqrt{3}$",
+                            "$\\sqrt{33}$",
+                            "$5\\sqrt{3}$",
+                            "$9\\sqrt{3}$"
+                        ],
+                        "c": 0,
+                        "explanation": "Se simplifica cada radical para identificar los semejantes: $\\sqrt{48}=4\\sqrt{3}$, $\\sqrt{27}=3\\sqrt{3}$ y $\\sqrt{12}=2\\sqrt{3}$. Entonces $4\\sqrt{3}-3\\sqrt{3}+2\\sqrt{3}=(4-3+2)\\sqrt{3}=3\\sqrt{3}$. Los radicandos no se suman ni se restan: $\\sqrt{48}-\\sqrt{27}+\\sqrt{12}\\neq\\sqrt{33}$."
+                    },
+                    {
+                        "type": "mcq",
+                        "q": "Simplifique $\\sqrt{108}$:",
+                        "a": [
+                            "$6\\sqrt{3}$",
+                            "$9\\sqrt{3}$",
+                            "$4\\sqrt{6}$",
+                            "$36\\sqrt{3}$"
+                        ],
+                        "c": 0,
+                        "explanation": "Se busca el mayor cuadrado perfecto que divida a 108: $108=36\\cdot 3$. Entonces $\\sqrt{108}=\\sqrt{36}\\cdot\\sqrt{3}=6\\sqrt{3}$. Si se sacara el 36 sin tomar su raíz se obtendría $36\\sqrt{3}$, que es un error común."
+                    },
+                    {
+                        "type": "mcq",
+                        "q": "Una imagen cuadrada de $12$ píxeles de lado tiene una diagonal de longitud $L\\sqrt{2}$, con $L=12$. ¿Cuál es la longitud exacta de la diagonal?",
+                        "a": [
+                            "$12\\sqrt{2}$ px",
+                            "$24$ px",
+                            "$12$ px",
+                            "$6\\sqrt{2}$ px"
+                        ],
+                        "c": 0,
+                        "explanation": "Se reemplaza $L=12$: la diagonal exacta es $12\\sqrt{2}$ píxeles, que aproximadamente son $16{,}97$ px. No se puede escribir $\\sqrt{2}$ como un entero, así que la forma exacta conserva la raíz."
+                    },
+                    {
+                        "type": "mcq",
+                        "q": "Desarrolle $(2+\\sqrt{5})^{2}$:",
+                        "a": [
+                            "$9+4\\sqrt{5}$",
+                            "$9$",
+                            "$4+\\sqrt{5}$",
+                            "$9+2\\sqrt{5}$"
+                        ],
+                        "c": 0,
+                        "explanation": "Cuadrado de un binomio: $(a+b)^{2}=a^{2}+2ab+b^{2}$. Con $a=2$ y $b=\\sqrt{5}$: $4+2\\cdot 2\\sqrt{5}+5=9+4\\sqrt{5}$. No se puede omitir el término cruzado $2ab$."
+                    },
+                    {
+                        "type": "mcq",
+                        "q": "Escriba $\\sqrt{x^{3}}\\cdot\\sqrt[4]{x}$ (con $x\\gt 0$) como un solo radical:",
+                        "a": [
+                            "$\\sqrt[4]{x^{7}}$",
+                            "$\\sqrt[4]{x^{5}}$",
+                            "$\\sqrt[6]{x^{4}}$",
+                            "$\\sqrt[8]{x^{7}}$"
+                        ],
+                        "c": 0,
+                        "explanation": "Con exponentes fraccionarios: $x^{3/2}\\cdot x^{1/4}=x^{3/2+1/4}=x^{7/4}$, y $x^{7/4}=\\sqrt[4]{x^{7}}$. Para sumar $\\tfrac{3}{2}+\\tfrac{1}{4}$ se lleva a común denominador: $\\tfrac{6}{4}+\\tfrac{1}{4}=\\tfrac{7}{4}$."
+                    },
+                    {
+                        "type": "mcq",
+                        "q": "Calcule $(3\\sqrt{2})(5\\sqrt{6})$ y simplifique:",
+                        "a": [
+                            "$30\\sqrt{3}$",
+                            "$15\\sqrt{3}$",
+                            "$30\\sqrt{2}$",
+                            "$8\\sqrt{12}$"
+                        ],
+                        "c": 0,
+                        "explanation": "Los coeficientes se multiplican entre sí y los radicandos entre sí: $15\\sqrt{12}$. Como $\\sqrt{12}=2\\sqrt{3}$, el resultado es $15\\cdot 2\\sqrt{3}=30\\sqrt{3}$."
+                    }
+                ]
+            },
+            {
+                "nav": "Racionalización",
+                "variants": [
+                    {
+                        "type": "mcq",
+                        "q": "Racionalice el denominador de $\\dfrac{15}{\\sqrt{10}}$:",
+                        "a": [
+                            "$\\dfrac{3\\sqrt{10}}{2}$",
+                            "$15\\sqrt{10}$",
+                            "$\\dfrac{3\\sqrt{10}}{10}$",
+                            "$\\dfrac{15\\sqrt{10}}{100}$"
+                        ],
+                        "c": 0,
+                        "explanation": "Se multiplica por $\\sqrt{10}/\\sqrt{10}$: $\\dfrac{15\\sqrt{10}}{10}$. Al simplificar la fracción (dividiendo entre 5) queda $\\dfrac{3\\sqrt{10}}{2}$."
+                    },
+                    {
+                        "type": "mcq",
+                        "q": "Racionalice el denominador de $\\dfrac{3}{\\sqrt[3]{4}}$:",
+                        "a": [
+                            "$\\dfrac{3\\sqrt[3]{2}}{2}$",
+                            "$3\\sqrt[3]{2}$",
+                            "$\\dfrac{3\\sqrt[3]{4}}{2}$",
+                            "$\\dfrac{3\\sqrt[3]{2}}{4}$"
+                        ],
+                        "c": 0,
+                        "explanation": "Como $4=2^{2}$, para completar un cubo falta un factor 2: se multiplica por $\\sqrt[3]{2}/\\sqrt[3]{2}$. El denominador queda $\\sqrt[3]{4}\\cdot\\sqrt[3]{2}=\\sqrt[3]{8}=2$, y el numerador $3\\sqrt[3]{2}$. Resultado: $\\dfrac{3\\sqrt[3]{2}}{2}$."
+                    },
+                    {
+                        "type": "mcq",
+                        "q": "Racionalice el denominador de $\\dfrac{6}{\\sqrt{7}-2}$:",
+                        "a": [
+                            "$2\\sqrt{7}+4$",
+                            "$2\\sqrt{7}-4$",
+                            "$6\\sqrt{7}+12$",
+                            "$\\dfrac{2\\sqrt{7}+4}{3}$"
+                        ],
+                        "c": 0,
+                        "explanation": "Se multiplica por el conjugado $\\sqrt{7}+2$. Denominador: $(\\sqrt{7})^{2}-2^{2}=7-4=3$. Numerador: $6(\\sqrt{7}+2)$. Entonces $\\dfrac{6(\\sqrt{7}+2)}{3}=2(\\sqrt{7}+2)=2\\sqrt{7}+4$."
+                    },
+                    {
+                        "type": "mcq",
+                        "q": "Racionalice el denominador de $\\dfrac{\\sqrt{5}+\\sqrt{3}}{\\sqrt{5}-\\sqrt{3}}$:",
+                        "a": [
+                            "$4+\\sqrt{15}$",
+                            "$8+2\\sqrt{15}$",
+                            "$4-\\sqrt{15}$",
+                            "$\\dfrac{8+2\\sqrt{15}}{8}$"
+                        ],
+                        "c": 0,
+                        "explanation": "Se multiplica por el conjugado $\\sqrt{5}+\\sqrt{3}$. Denominador: $5-3=2$. Numerador: $(\\sqrt{5}+\\sqrt{3})^{2}=5+2\\sqrt{15}+3=8+2\\sqrt{15}$. Entonces $\\dfrac{8+2\\sqrt{15}}{2}=4+\\sqrt{15}$."
+                    },
+                    {
+                        "type": "mcq",
+                        "q": "Racionalice el denominador de $\\dfrac{2}{\\sqrt{3}+1}$:",
+                        "a": [
+                            "$\\sqrt{3}-1$",
+                            "$\\sqrt{3}+1$",
+                            "$2(\\sqrt{3}-1)$",
+                            "$\\dfrac{\\sqrt{3}-1}{4}$"
+                        ],
+                        "c": 0,
+                        "explanation": "Se multiplica por el conjugado $\\sqrt{3}-1$. Denominador: $(\\sqrt{3})^{2}-1^{2}=3-1=2$. Numerador: $2(\\sqrt{3}-1)$. Por tanto $\\dfrac{2(\\sqrt{3}-1)}{2}=\\sqrt{3}-1$."
+                    }
+                ]
+            },
+            {
+                "nav": "Logaritmos: definición y cálculo",
+                "variants": [
+                    {
+                        "type": "mcq",
+                        "q": "Un arreglo ordenado tiene $1\\,048\\,576=2^{20}$ elementos. ¿Cuántos pasos necesita, como máximo, una búsqueda binaria? (Calcule $\\log_{2}1\\,048\\,576$.)",
+                        "a": [
+                            "$20$",
+                            "$10$",
+                            "$40$",
+                            "$1\\,048\\,575$"
+                        ],
+                        "c": 0,
+                        "explanation": "La búsqueda binaria descarta la mitad de los elementos en cada paso, así que el número de pasos es $\\log_{2}n$. Como $2^{20}=1\\,048\\,576$, $\\log_{2}1\\,048\\,576=20$. Recorrer uno por uno podría tomar más de un millón de pasos: por eso se usa la búsqueda binaria."
+                    },
+                    {
+                        "type": "mcq",
+                        "q": "Calcule $\\log_{5}\\dfrac{1}{25}$:",
+                        "a": [
+                            "$-2$",
+                            "$2$",
+                            "$-\\dfrac{1}{2}$",
+                            "$\\dfrac{1}{2}$"
+                        ],
+                        "c": 0,
+                        "explanation": "Se busca $x$ con $5^{x}=\\dfrac{1}{25}$. Como $\\dfrac{1}{25}=5^{-2}$, el logaritmo vale $-2$."
+                    },
+                    {
+                        "type": "mcq",
+                        "q": "Escriba $2^{6}=64$ en forma logarítmica:",
+                        "a": [
+                            "$\\log_{2}64=6$",
+                            "$\\log_{6}64=2$",
+                            "$\\log_{64}2=6$",
+                            "$\\log_{2}6=64$"
+                        ],
+                        "c": 0,
+                        "explanation": "La igualdad $b^{y}=x$ equivale a $\\log_{b}x=y$. Aquí la base es $2$, el exponente es $6$ y el resultado de la potencia es $64$: $\\log_{2}64=6$."
+                    },
+                    {
+                        "type": "mcq",
+                        "q": "Calcule $\\log_{1/3}9$:",
+                        "a": [
+                            "$-2$",
+                            "$2$",
+                            "$-\\dfrac{1}{2}$",
+                            "$\\dfrac{1}{2}$"
+                        ],
+                        "c": 0,
+                        "explanation": "Se busca $x$ con $\\left(\\tfrac{1}{3}\\right)^{x}=9$. Como $\\tfrac{1}{3}=3^{-1}$, queda $3^{-x}=3^{2}$, luego $-x=2$ y $x=-2$."
+                    },
+                    {
+                        "type": "mcq",
+                        "q": "¿Para qué valores de $x$ está definido $\\log_{3}(x-5)$?",
+                        "a": [
+                            "$x\\gt 5$",
+                            "$x\\geq 5$",
+                            "$x\\lt 5$",
+                            "$x\\gt -5$"
+                        ],
+                        "c": 0,
+                        "explanation": "El argumento de un logaritmo debe ser estrictamente positivo: $x-5\\gt 0$, de donde $x\\gt 5$. Con $x=5$ el argumento sería 0, y $\\log_{3}0$ no existe."
+                    },
+                    {
+                        "type": "mcq",
+                        "q": "Calcule $\\ln e^{7}+\\log 1\\,000$:",
+                        "a": [
+                            "$10$",
+                            "$8$",
+                            "$7\\,000$",
+                            "$21$"
+                        ],
+                        "c": 0,
+                        "explanation": "El logaritmo natural tiene base $e$, así que $\\ln e^{7}=7$. El logaritmo decimal tiene base 10: $\\log 1\\,000=3$ porque $10^{3}=1\\,000$. Suma: $7+3=10$."
+                    }
+                ]
+            },
+            {
+                "nav": "Propiedades de los logaritmos y cambio de base",
+                "variants": [
+                    {
+                        "type": "mcq",
+                        "q": "Expanda $\\log\\dfrac{x^{3}y}{z^{2}}$:",
+                        "a": [
+                            "$3\\log x+\\log y-2\\log z$",
+                            "$3\\log x+\\log y+2\\log z$",
+                            "$\\dfrac{3\\log x\\cdot\\log y}{2\\log z}$",
+                            "$\\log(3x+y-2z)$"
+                        ],
+                        "c": 0,
+                        "explanation": "Se aplican las propiedades: el logaritmo de un cociente es una resta y el de un producto es una suma; el exponente baja multiplicando. $\\log\\dfrac{x^{3}y}{z^{2}}=\\log x^{3}+\\log y-\\log z^{2}=3\\log x+\\log y-2\\log z$."
+                    },
+                    {
+                        "type": "mcq",
+                        "q": "Condense en un solo logaritmo: $2\\log a+3\\log b-\\log c$.",
+                        "a": [
+                            "$\\log\\dfrac{a^{2}b^{3}}{c}$",
+                            "$\\log\\dfrac{a^{2}b^{3}}{c^{2}}$",
+                            "$\\log\\dfrac{2a+3b}{c}$",
+                            "$\\log\\left(a^{2}b^{3}c\\right)$"
+                        ],
+                        "c": 0,
+                        "explanation": "Primero los coeficientes suben como exponentes: $\\log a^{2}+\\log b^{3}-\\log c$. Las sumas se convierten en producto y la resta en cociente: $\\log\\dfrac{a^{2}b^{3}}{c}$."
+                    },
+                    {
+                        "type": "mcq",
+                        "q": "Con $\\log 2=0{,}3010$ y $\\log 3=0{,}4771$, calcule $\\log 12$ sin calculadora:",
+                        "a": [
+                            "$1{,}0791$",
+                            "$0{,}7781$",
+                            "$1{,}2552$",
+                            "$0{,}1761$"
+                        ],
+                        "c": 0,
+                        "explanation": "Se factoriza $12=2^{2}\\cdot 3$ y se usan las propiedades: $\\log 12=2\\log 2+\\log 3=2(0{,}3010)+0{,}4771=1{,}0791$. El valor $0{,}7781$ corresponde a $\\log 6$, que es $\\log 2+\\log 3$."
+                    },
+                    {
+                        "type": "mcq",
+                        "q": "Con $\\log 2=0{,}3010$ y $\\log 3=0{,}4771$, calcule $\\log 1{,}5$ sin calculadora:",
+                        "a": [
+                            "$0{,}1761$",
+                            "$0{,}7781$",
+                            "$0{,}1435$",
+                            "$1{,}5$"
+                        ],
+                        "c": 0,
+                        "explanation": "Se escribe $1{,}5=\\dfrac{3}{2}$ y se usa la propiedad del cociente: $\\log 1{,}5=\\log 3-\\log 2=0{,}4771-0{,}3010=0{,}1761$. Un cociente se convierte en resta, no en división de logaritmos."
+                    },
+                    {
+                        "type": "mcq",
+                        "q": "Use el cambio de base para calcular $\\log_{8}32$ (sugerencia: pase a base 2):",
+                        "a": [
+                            "$\\dfrac{5}{3}$",
+                            "$\\dfrac{3}{5}$",
+                            "$4$",
+                            "$\\dfrac{8}{32}$"
+                        ],
+                        "c": 0,
+                        "explanation": "Con la fórmula $\\log_{b}x=\\dfrac{\\log_{c}x}{\\log_{c}b}$ y $c=2$: $\\log_{8}32=\\dfrac{\\log_{2}32}{\\log_{2}8}=\\dfrac{5}{3}$. Comprobación: $8^{5/3}=(\\sqrt[3]{8})^{5}=2^{5}=32$."
+                    },
+                    {
+                        "type": "mcq",
+                        "q": "¿Cuál de las siguientes igualdades es verdadera para $a,b\\gt 0$?",
+                        "a": [
+                            "$\\log\\dfrac{a}{b}=\\log a-\\log b$",
+                            "$\\log(a+b)=\\log a+\\log b$",
+                            "$\\dfrac{\\log a}{\\log b}=\\log a-\\log b$",
+                            "$\\log a^{2}=(\\log a)^{2}$"
+                        ],
+                        "c": 0,
+                        "explanation": "La propiedad del cociente dice que $\\log\\dfrac{a}{b}=\\log a-\\log b$. Las otras son errores típicos: el logaritmo de una suma no se separa en suma de logaritmos (el que se separa es el de un <em>producto</em>), el cociente de logaritmos no es la resta, y $\\log a^{2}=2\\log a$, no $(\\log a)^{2}$. Con $a=b=10$ se comprueba: $\\log 20\\neq 2$."
+                    }
+                ]
+            },
+            {
+                "nav": "Ecuaciones exponenciales",
+                "variants": [
+                    {
+                        "type": "mcq",
+                        "q": "Resuelva $3^{x+2}=27$:",
+                        "a": [
+                            "$x=1$",
+                            "$x=3$",
+                            "$x=5$",
+                            "$x=9$"
+                        ],
+                        "c": 0,
+                        "explanation": "Como $27=3^{3}$, se igualan los exponentes: $x+2=3$, luego $x=1$. Verificación: $3^{1+2}=3^{3}=27$."
+                    },
+                    {
+                        "type": "mcq",
+                        "q": "Resuelva $4^{x}=32$:",
+                        "a": [
+                            "$x=\\dfrac{5}{2}$",
+                            "$x=8$",
+                            "$x=\\dfrac{2}{5}$",
+                            "$x=4$"
+                        ],
+                        "c": 0,
+                        "explanation": "Se escriben ambos lados en base 2: $4^{x}=(2^{2})^{x}=2^{2x}$ y $32=2^{5}$. Entonces $2x=5$ y $x=\\dfrac{5}{2}$."
+                    },
+                    {
+                        "type": "mcq",
+                        "q": "Resuelva $5^{2x-1}=125$:",
+                        "a": [
+                            "$x=2$",
+                            "$x=\\dfrac{3}{2}$",
+                            "$x=3$",
+                            "$x=\\dfrac{5}{2}$"
+                        ],
+                        "c": 0,
+                        "explanation": "Como $125=5^{3}$, se igualan los exponentes: $2x-1=3$, luego $2x=4$ y $x=2$. Verificación: $5^{2\\cdot 2-1}=5^{3}=125$."
+                    },
+                    {
+                        "type": "mcq",
+                        "q": "Un servicio duplica su número de usuarios cada mes. Si empieza con 200 usuarios, ¿en cuántos meses llegará a $12\\,800$? (Resuelva $200\\cdot 2^{t}=12\\,800$.)",
+                        "a": [
+                            "$6$",
+                            "$5$",
+                            "$7$",
+                            "$64$"
+                        ],
+                        "c": 0,
+                        "explanation": "Se despeja la potencia: $2^{t}=\\dfrac{12\\,800}{200}=64=2^{6}$, luego $t=6$ meses. Verificación: $200\\to400\\to800\\to1\\,600\\to3\\,200\\to6\\,400\\to12\\,800$, seis duplicaciones."
+                    },
+                    {
+                        "type": "mcq",
+                        "q": "Resuelva $\\left(\\dfrac{1}{2}\\right)^{x}=32$:",
+                        "a": [
+                            "$x=-5$",
+                            "$x=5$",
+                            "$x=-\\dfrac{1}{5}$",
+                            "$x=16$"
+                        ],
+                        "c": 0,
+                        "explanation": "Se escribe $\\tfrac{1}{2}=2^{-1}$, así que el lado izquierdo es $2^{-x}$. Como $32=2^{5}$, se tiene $-x=5$ y $x=-5$."
+                    },
+                    {
+                        "type": "mcq",
+                        "q": "Resuelva $2^{3x-1}=64$:",
+                        "a": [
+                            "$x=\\dfrac{7}{3}$",
+                            "$x=\\dfrac{5}{3}$",
+                            "$x=2$",
+                            "$x=7$"
+                        ],
+                        "c": 0,
+                        "explanation": "Como $64=2^{6}$, se igualan los exponentes: $3x-1=6$, luego $3x=7$ y $x=\\dfrac{7}{3}$."
+                    }
+                ]
+            },
+            {
+                "nav": "Ecuaciones logarítmicas y dominio",
+                "variants": [
+                    {
+                        "type": "mcq",
+                        "q": "Resuelva $\\log_{3}(x+2)=3$:",
+                        "a": [
+                            "$x=25$",
+                            "$x=1$",
+                            "$x=7$",
+                            "$x=29$"
+                        ],
+                        "c": 0,
+                        "explanation": "Se pasa a forma exponencial: $x+2=3^{3}=27$, luego $x=25$. Verificación: $\\log_{3}(25+2)=\\log_{3}27=3$."
+                    },
+                    {
+                        "type": "mcq",
+                        "q": "Resuelva $\\log x+\\log(x-3)=1$:",
+                        "a": [
+                            "$x=5$",
+                            "$x=-2$",
+                            "$x=5$ y $x=-2$",
+                            "$x=13$"
+                        ],
+                        "c": 0,
+                        "explanation": "Se condensa: $\\log\\left[x(x-3)\\right]=1$, es decir, $x(x-3)=10^{1}=10$. Queda $x^{2}-3x-10=0$, que se factoriza como $(x-5)(x+2)=0$. Soluciones candidatas: $x=5$ y $x=-2$. Hay que verificar el dominio: con $x=-2$ el argumento de $\\log x$ sería negativo, así que se descarta. La única solución es $x=5$."
+                    },
+                    {
+                        "type": "mcq",
+                        "q": "Resuelva $\\log_{2}x+\\log_{2}(x-6)=4$:",
+                        "a": [
+                            "$x=8$",
+                            "$x=-2$",
+                            "$x=8$ y $x=-2$",
+                            "$x=10$"
+                        ],
+                        "c": 0,
+                        "explanation": "Se condensa: $\\log_{2}\\left[x(x-6)\\right]=4$, luego $x(x-6)=2^{4}=16$ y $x^{2}-6x-16=0$, es decir, $(x-8)(x+2)=0$. Candidatas: $x=8$ y $x=-2$. Con $x=-2$ los argumentos serían negativos (no está en el dominio), así que la solución es solo $x=8$. Verificación: $\\log_{2}8+\\log_{2}2=3+1=4$."
+                    },
+                    {
+                        "type": "mcq",
+                        "q": "Resuelva $2\\log x=\\log 49$:",
+                        "a": [
+                            "$x=7$",
+                            "$x=24{,}5$",
+                            "$x=-7$",
+                            "$x=98$"
+                        ],
+                        "c": 0,
+                        "explanation": "Se pasa el coeficiente como exponente: $\\log x^{2}=\\log 49$, y como el logaritmo es inyectivo, $x^{2}=49$. Las raíces son $x=7$ y $x=-7$, pero $\\log(-7)$ no existe, así que la única solución es $x=7$."
+                    },
+                    {
+                        "type": "mcq",
+                        "q": "Resuelva $\\log_{5}x-\\log_{5}2=1$:",
+                        "a": [
+                            "$x=10$",
+                            "$x=7$",
+                            "$x=\\dfrac{5}{2}$",
+                            "$x=3$"
+                        ],
+                        "c": 0,
+                        "explanation": "Se condensa la resta en un cociente: $\\log_{5}\\dfrac{x}{2}=1$. En forma exponencial, $\\dfrac{x}{2}=5^{1}=5$ y $x=10$. Verificación: $\\log_{5}10-\\log_{5}2=\\log_{5}5=1$."
+                    },
+                    {
+                        "type": "mcq",
+                        "q": "Si se multiplica por 8 el tamaño $n$ de un arreglo ordenado, ¿cuántos pasos adicionales necesita, como máximo, la búsqueda binaria? (Compare $\\log_{2}(8n)$ con $\\log_{2}n$.)",
+                        "a": [
+                            "$3$",
+                            "$8$",
+                            "$2{,}67$",
+                            "$16$"
+                        ],
+                        "c": 0,
+                        "explanation": "Por la propiedad del producto, $\\log_{2}(8n)=\\log_{2}8+\\log_{2}n=3+\\log_{2}n$. Multiplicar por 8 el tamaño del arreglo solo agrega 3 pasos: ese es el crecimiento logarítmico."
+                    }
+                ]
+            }
+        ];
+
+        let currentExam = [];
+        let userAnswers = {};
+
+        /* ---------------- utilidades ---------------- */
+
+        function shuffle(arr) {
+            for (let i = arr.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [arr[i], arr[j]] = [arr[j], arr[i]];
+            }
+            return arr;
+        }
+
+        function pickOne(arr) {
+            return arr[Math.floor(Math.random() * arr.length)];
+        }
+
+        /* Devuelve una copia de la variante con las opciones barajadas. */
+        function prepare(variant) {
+            const q = JSON.parse(JSON.stringify(variant));
+
+            if (q.type === "mcq") {
+                const correcta = q.a[q.c];
+                q.a = shuffle(q.a.slice());
+                q.c = q.a.indexOf(correcta);
+            } else if (q.type === "chart_mcq") {
+                const correcta = q.charts[q.c];
+                q.charts = shuffle(q.charts.slice());
+                q.c = q.charts.indexOf(correcta);
+                q.charts.forEach((ch, i) => { ch.title = 'Opción ' + String.fromCharCode(65 + i); });
+            } else if (q.type === "matching") {
+                q.pairs = shuffle(q.pairs.slice());
+                const encabezado = q.options[0];
+                q.options = [encabezado].concat(shuffle(q.options.slice(1)));
+            }
+            return q;
+        }
+
+        /* ---------------- construcción del examen ---------------- */
+
+        function generateExam() {
+            currentExam = TEMAS.map(tema => prepare(pickOne(tema.variants)));
+
+            userAnswers = {};
+            document.getElementById('results-container').style.display = 'none';
+            document.getElementById('total-count').innerText = currentExam.length;
+            renderQuestions();
+            renderNavigation();
+            updateProgress();
+        }
+
+        function renderQuestions() {
+            const container = document.getElementById('questions-container');
+            container.innerHTML = '';
+
+            currentExam.forEach((q, idx) => {
+                const card = document.createElement('div');
+                card.className = 'question-card';
+                card.id = `question-${idx}`;
+
+                let html = `
+                    <div class="question-header">
+                        <div class="question-number">${idx + 1}</div>
+                    </div>
+                    <div class="question-text">${q.q}</div>
+                `;
+
+                if (q.type === "matching") {
+                    html += `<div class="matching-container">`;
+                    q.pairs.forEach(pair => {
+                        html += `
+                            <div class="match-row">
+                                <div style="width:42%; font-size:0.95em; color:#333;">${pair.prompt}</div>
+                                <select class="match-select" data-qid="${idx}" data-pairid="${pair.id}" onchange="selectMatch(${idx}, '${pair.id}', this.value)">
+                                    ${q.options.map(opt => `<option value="${opt.val}">${opt.text}</option>`).join('')}
+                                </select>
+                            </div>
+                        `;
+                    });
+                    html += `</div>`;
+                } else if (q.type === "mcq") {
+                    html += `<div class="options-container">`;
+                    q.a.forEach((opt, optIdx) => {
+                        html += `
+                            <div class="option" id="opt-${idx}-${optIdx}" onclick="selectOption(${idx}, ${optIdx})">
+                                <strong>${String.fromCharCode(65 + optIdx)}.</strong>&nbsp;<span>${opt}</span>
+                            </div>
+                        `;
+                    });
+                    html += `</div>`;
+                } else if (q.type === "chart_mcq") {
+                    html += `<div class="options-grid-charts">`;
+                    q.charts.forEach((chart, optIdx) => {
+                        html += `
+                            <div class="option option-chart-card" id="opt-${idx}-${optIdx}" onclick="selectOption(${idx}, ${optIdx})">
+                                <strong>Opción ${String.fromCharCode(65 + optIdx)}</strong>
+                                <div id="chart-container-${idx}-${optIdx}" class="chart-box"></div>
+                            </div>
+                        `;
+                    });
+                    html += `</div>`;
+                }
+
+                html += `<div id="explanation-${idx}" class="explanation" style="display:none;"></div>`;
+                card.innerHTML = html;
+                container.appendChild(card);
+
+                if (q.type === "chart_mcq") {
+                    setTimeout(() => renderChartsForQuestion(q, idx), 50);
+                }
+            });
+
+            if (window.MathJax && MathJax.typesetPromise) {
+                MathJax.typesetPromise();
+            }
+        }
+
+        /* Este simulador no usa preguntas con gráfico. Si se agrega alguna,
+           hay que volver a incluir el script de Plotly en el encabezado del archivo. */
+        function renderChartsForQuestion(q, qIdx) {
+            q.charts.forEach((c, optIdx) => {
+                const targetId = `chart-container-${qIdx}-${optIdx}`;
+                let data = [];
+                let layout = {
+                    title: { text: c.title, font: { size: 12 } },
+                    margin: { l: 30, r: 20, t: 30, b: 30 },
+                    autosize: true
+                };
+
+                if (c.type === 'pie') {
+                    data = [{ labels: c.labels, values: c.values, type: 'pie', textinfo: 'label+percent' }];
+                } else if (c.type === 'bar') {
+                    data = [{ x: c.x, y: c.y, type: 'bar', marker: { color: '#3498db' } }];
+                    layout.xaxis = { tickangle: -45, automargin: true, tickfont: { size: 10 } };
+                    layout.yaxis = { automargin: true };
+                    if (c.gap === 0) {
+                        layout.bargap = 0.05;
+                    }
+                }
+                Plotly.newPlot(targetId, data, layout, { responsive: true, displayModeBar: false });
+            });
+        }
+
+        /* ---------------- interacción ---------------- */
+
+        function selectOption(qIdx, optIdx) {
+            userAnswers[qIdx] = optIdx;
+            const card = document.getElementById(`question-${qIdx}`);
+            const options = card.querySelectorAll('.option');
+            options.forEach((opt, i) => {
+                if (i === optIdx) opt.classList.add('selected');
+                else opt.classList.remove('selected');
+            });
+            updateProgress();
+        }
+
+        function selectMatch(qIdx, pairId, value) {
+            if (!userAnswers[qIdx]) userAnswers[qIdx] = {};
+            userAnswers[qIdx][pairId] = value;
+            updateProgress();
+        }
+
+        function isAnswered(idx) {
+            const respuesta = userAnswers[idx];
+            if (respuesta === undefined) return false;
+            if (currentExam[idx].type === "matching") {
+                const total = currentExam[idx].pairs.length;
+                return Object.keys(respuesta).length === total &&
+                       Object.values(respuesta).every(v => v !== "");
+            }
+            return true;
+        }
+
+        function updateProgress() {
+            let answered = 0;
+
+            currentExam.forEach((_, idx) => {
+                const completa = isAnswered(idx);
+                if (completa) answered++;
+
+                const navItem = document.getElementById(`nav-item-${idx}`);
+                if (navItem) {
+                    const statusDot = navItem.querySelector('.topic-status');
+                    statusDot.className = `topic-status ${completa ? 'answered' : 'unanswered'}`;
+                }
+            });
+
+            document.getElementById('answered-count').innerText = answered;
+        }
+
+        function renderNavigation() {
+            const list = document.getElementById('topics-list');
+            list.innerHTML = '';
+
+            TEMAS.forEach((tema, idx) => {
+                const item = document.createElement('div');
+                item.className = 'topic-item';
+                item.id = `nav-item-${idx}`;
+                item.onclick = () => {
+                    document.getElementById(`question-${idx}`).scrollIntoView({ behavior: 'smooth' });
+                };
+                item.innerHTML = `
+                    <span class="topic-name">${idx + 1}. ${tema.nav}</span>
+                    <span class="topic-status unanswered"></span>
+                `;
+                list.appendChild(item);
+            });
+        }
+
+        /* ---------------- calificación ---------------- */
+
+        function submitExam() {
+            let correctCount = 0;
+            const total = currentExam.length;
+
+            currentExam.forEach((q, idx) => {
+                const card = document.getElementById(`question-${idx}`);
+                const expDiv = document.getElementById(`explanation-${idx}`);
+                let isCorrect = false;
+
+                if (q.type === "matching") {
+                    const userPairs = userAnswers[idx] || {};
+                    isCorrect = q.pairs.every(pair => userPairs[pair.id] === pair.correct);
+
+                    card.querySelectorAll('.match-select').forEach(sel => {
+                        const pair = q.pairs.find(p => p.id === sel.dataset.pairid);
+                        const fila = sel.closest('.match-row');
+                        if (sel.value === pair.correct) {
+                            fila.style.borderColor = 'var(--success-color)';
+                            fila.style.backgroundColor = '#d4edda';
+                        } else {
+                            fila.style.borderColor = 'var(--accent-color)';
+                            fila.style.backgroundColor = '#f8d7da';
+                        }
+                    });
+                } else {
+                    isCorrect = (userAnswers[idx] === q.c);
+                    const options = card.querySelectorAll('.option');
+                    options.forEach((opt, optIdx) => {
+                        if (optIdx === q.c) opt.classList.add('correct');
+                        else if (optIdx === userAnswers[idx]) opt.classList.add('incorrect');
+                    });
+                }
+
+                if (isCorrect) correctCount++;
+
+                expDiv.innerHTML = `<strong>Explicación:</strong> ${q.explanation}`;
+                expDiv.style.display = 'block';
+
+                const navItem = document.getElementById(`nav-item-${idx}`);
+                if (navItem) {
+                    const statusDot = navItem.querySelector('.topic-status');
+                    statusDot.className = `topic-status ${isCorrect ? 'correct' : 'incorrect'}`;
+                }
+            });
+
+            if (window.MathJax && MathJax.typesetPromise) {
+                MathJax.typesetPromise();
+            }
+
+            const score = (correctCount / total) * 5;
+            const percentage = (correctCount / total) * 100;
+
+            const resultBox = document.getElementById('results-container');
+            const scoreCircle = document.getElementById('final-score');
+
+            scoreCircle.innerText = score.toFixed(1);
+            scoreCircle.className = `score-circle ${score >= 4 ? 'high' : score >= 3 ? 'medium' : 'low'}`;
+
+            document.getElementById('correct-count').innerText = correctCount;
+            document.getElementById('incorrect-count').innerText = total - correctCount;
+            document.getElementById('percentage-score').innerText = `${percentage.toFixed(1)}%`;
+
+            resultBox.style.display = 'block';
+            resultBox.scrollIntoView({ behavior: 'smooth' });
+        }
+
+        document.getElementById('submit-btn').addEventListener('click', submitExam);
+        document.getElementById('new-exam-btn').addEventListener('click', generateExam);
+        document.getElementById('restart-btn').addEventListener('click', generateExam);
+        document.getElementById('review-btn').addEventListener('click', () => {
+            document.querySelector('.questions-section').scrollIntoView({ behavior: 'smooth' });
+        });
+
+        document.addEventListener('DOMContentLoaded', generateExam);
+    </script>
+</body>
+</html>
