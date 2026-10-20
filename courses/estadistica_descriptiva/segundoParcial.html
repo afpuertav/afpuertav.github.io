@@ -1,0 +1,1702 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simulador del Segundo Parcial - Estadística Descriptiva</title>
+
+    <script src="https://cdn.plot.ly/plotly-2.27.0.min.js"></script>
+
+    <script>
+        window.MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                displayMath: [['$$', '$$'], ['\\[', '\\]']],
+                processEscapes: true
+            },
+            svg: { fontCache: 'global' },
+            startup: { pageReady: () => MathJax.typesetPromise().catch(err => console.log(err)) }
+        };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
+
+    <style>
+        :root {
+            --primary-color: #2c3e50;
+            --secondary-color: #3498db;
+            --accent-color: #e74c3c;
+            --light-color: #ecf0f1;
+            --success-color: #27ae60;
+            --warning-color: #f39c12;
+            --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: #f5f7fa;
+            color: #333;
+            line-height: 1.6;
+            padding: 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding: 20px;
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: var(--shadow);
+        }
+
+        h1 {
+            color: var(--primary-color);
+            margin-bottom: 10px;
+            font-size: 2.2rem;
+        }
+
+        .subtitle {
+            color: var(--secondary-color);
+            font-size: 1.1rem;
+            margin-bottom: 20px;
+        }
+
+        .instructions {
+            background-color: var(--light-color);
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 25px;
+            border-left: 5px solid var(--secondary-color);
+        }
+
+        .instructions h3 {
+            color: var(--primary-color);
+            margin-bottom: 10px;
+        }
+
+        .exam-container {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 25px;
+        }
+
+        .questions-section {
+            background-color: white;
+            padding: 25px;
+            border-radius: 10px;
+            box-shadow: var(--shadow);
+        }
+
+        .control-panel {
+            background-color: white;
+            padding: 25px;
+            border-radius: 10px;
+            box-shadow: var(--shadow);
+            height: fit-content;
+            position: sticky;
+            top: 20px;
+        }
+
+        .question-card {
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid #eee;
+            scroll-margin-top: 20px;
+        }
+
+        .question-card:last-child {
+            border-bottom: none;
+        }
+
+        .question-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .question-number {
+            background-color: var(--primary-color);
+            color: white;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+        }
+
+        .question-text {
+            margin-bottom: 20px;
+            font-size: 1.1rem;
+            line-height: 1.5;
+        }
+
+        .question-text p + p { margin-top: 10px; }
+
+        .table-container {
+            margin: 15px 0;
+            padding: 15px;
+            background-color: #f9f9f9;
+            border-radius: 8px;
+            overflow-x: auto;
+        }
+
+        table { width: 100%; border-collapse: collapse; margin: 10px 0; font-size: 0.95em; }
+        th { background-color: var(--primary-color); color: white; padding: 10px; text-align: center; border: 1px solid #ddd; }
+        td { padding: 8px; text-align: center; border: 1px solid #ddd; }
+        tr:nth-child(even) { background-color: #f2f2f2; }
+
+        .options-container {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .options-grid-charts {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+
+        .option {
+            padding: 12px 15px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+        }
+
+        .option-chart-card {
+            flex-direction: column;
+            align-items: flex-start;
+            padding: 10px;
+        }
+
+        .option:hover {
+            background-color: #f0f8ff;
+            border-color: var(--secondary-color);
+        }
+
+        .option.selected {
+            background-color: #e1f0ff;
+            border-color: var(--secondary-color);
+            font-weight: 600;
+        }
+
+        .option.correct {
+            background-color: #d4edda;
+            border-color: var(--success-color);
+            color: #155724;
+        }
+
+        .option.incorrect {
+            background-color: #f8d7da;
+            border-color: var(--accent-color);
+            color: #721c24;
+        }
+
+        .chart-box {
+            width: 100%;
+            height: 300px;
+            margin-top: 5px;
+        }
+
+        .match-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 12px;
+            padding: 10px;
+            background-color: #f8f9fa;
+            border-radius: 6px;
+            border: 1px solid #e9ecef;
+        }
+
+        .match-select {
+            padding: 8px;
+            border-radius: 6px;
+            border: 1px solid #ccc;
+            font-size: 0.95rem;
+            width: 55%;
+        }
+
+        .explanation {
+            margin-top: 20px;
+            padding: 15px;
+            background-color: #fff3cd;
+            border-left: 5px solid #ffc107;
+            border-radius: 5px;
+            font-size: 0.95rem;
+        }
+
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s;
+            font-size: 1rem;
+            margin-right: 10px;
+            margin-bottom: 10px;
+        }
+
+        .btn-primary { background-color: var(--secondary-color); color: white; }
+        .btn-primary:hover { background-color: #2980b9; }
+        .btn-secondary { background-color: var(--light-color); color: var(--primary-color); border: 1px solid #ddd; }
+        .btn-secondary:hover { background-color: #d5dbdb; }
+
+        .results-container {
+            margin-top: 25px;
+            padding: 20px;
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: var(--shadow);
+            display: none;
+        }
+
+        .score-display { text-align: center; margin-bottom: 20px; }
+        .score-circle {
+            width: 120px; height: 120px; border-radius: 50%;
+            background-color: var(--light-color); display: flex;
+            justify-content: center; align-items: center;
+            margin: 0 auto 20px; font-size: 2.5rem; font-weight: bold;
+            color: var(--primary-color); border: 5px solid var(--secondary-color);
+        }
+
+        .score-circle.low { border-color: var(--accent-color); color: var(--accent-color); }
+        .score-circle.medium { border-color: var(--warning-color); color: var(--warning-color); }
+        .score-circle.high { border-color: var(--success-color); color: var(--success-color); }
+
+        .stats { display: flex; justify-content: space-between; margin-top: 20px; }
+        .stat-box { flex: 1; text-align: center; padding: 15px; background-color: var(--light-color); border-radius: 8px; margin: 0 5px; }
+        .stat-value { font-size: 2rem; font-weight: bold; color: var(--primary-color); }
+        .stat-label { font-size: 0.9rem; color: #7f8c8d; }
+
+        .topic-progress { margin-top: 20px; }
+        .topic-item { display: flex; justify-content: space-between; align-items: center; padding: 8px 0; border-bottom: 1px solid #eee; cursor: pointer; }
+        .topic-item:hover { background-color: #f5f5f5; padding-left: 5px; }
+        .topic-name { flex: 1; font-size: 0.9em; }
+        .topic-status { width: 12px; height: 12px; border-radius: 50%; margin-left: 10px; }
+        .topic-status.correct { background-color: var(--success-color); }
+        .topic-status.incorrect { background-color: var(--accent-color); }
+        .topic-status.unanswered { background-color: #ddd; }
+        .topic-status.answered { background-color: var(--secondary-color); }
+
+        footer { text-align: center; margin-top: 30px; padding: 20px; color: #7f8c8d; font-size: 0.9rem; }
+
+        .r-title { margin-top: 15px; }
+        pre.r-code { margin-top: 8px; padding: 12px; background: #1e2a38; color: #e8eef4; border-radius: 6px;
+                     overflow-x: auto; font-family: Consolas, 'Courier New', monospace; font-size: 0.85rem; line-height: 1.5; }
+        pre.r-code code { font-family: inherit; white-space: pre; }
+
+        @media (max-width: 900px) {
+            .exam-container { grid-template-columns: 1fr; }
+            .options-grid-charts { grid-template-columns: 1fr; }
+            .match-row { flex-direction: column; align-items: stretch; gap: 8px; }
+            .match-select { width: 100%; }
+        }
+    </style>
+</head>
+<body>
+    <p style="margin:0;padding:0.6rem 1rem;background:#1553AD;font:0.95rem/1.4 'Segoe UI',Arial,sans-serif"><a href="index.html" style="color:#fff;text-decoration:none">&larr; Estadística Descriptiva</a></p>
+    <header>
+        <h1>Simulador del Segundo Parcial - Estadística Descriptiva</h1>
+        <p class="subtitle">CBASBL031 · UNIMINUTO — Unidad 2: medidas de tendencia central, posición y dispersión, y diagrama de caja</p>
+    </header>
+
+    <div class="instructions">
+        <h3>Instrucciones</h3>
+        <p>Este simulador evalúa los contenidos de la Unidad 2 del curso: medidas de tendencia central (media, mediana y moda), medidas de posición (cuartiles y percentiles), medidas de dispersión (varianza y desviación estándar), diagrama de caja e interpretación de resultados. La asimetría y la curtosis no hacen parte de este parcial. Son 10 preguntas y la calificación es sobre 5.0. Cada vez que pulses <em>Nuevo Examen Aleatorio</em> el simulador sortea una pregunta distinta de cada tema y baraja el orden de las opciones, así que puedes practicar varias veces sin memorizar respuestas. Los ejercicios se pueden resolver a mano, con calculadora, o con R: al calificar verás la explicación punto por punto y el mismo proceso en R.</p>
+        <p style="margin-top:10px;"><strong>Convenciones del curso.</strong> Con datos no agrupados, los cuartiles y percentiles se ubican con la posición $\dfrac{k(n+1)}{100}$ y se interpola entre los dos datos vecinos; con datos agrupados se usa la fórmula de interpolación con $F_{i-1}$, $f_i$ y $A$. Si el enunciado habla de una <em>muestra</em>, la varianza se divide entre $n-1$; si habla de la <em>población</em>, entre $N$. En el diagrama de caja, son atípicos los datos que quedan por fuera de $Q_1 - 1{,}5\,RIC$ y $Q_3 + 1{,}5\,RIC$.</p>
+    </div>
+
+    <div class="exam-container">
+        <section class="questions-section">
+            <h2>Preguntas del Parcial</h2>
+            <div id="questions-container"></div>
+
+            <div class="button-group" style="margin-top:20px;">
+                <button id="submit-btn" class="btn btn-primary">Calificar Examen</button>
+                <button id="new-exam-btn" class="btn btn-secondary">Nuevo Examen Aleatorio</button>
+            </div>
+        </section>
+
+        <section class="control-panel">
+            <h3>Progreso</h3>
+            <div class="stats">
+                <div class="stat-box">
+                    <div class="stat-value" id="answered-count">0</div>
+                    <div class="stat-label">Respondidas</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-value" id="total-count">10</div>
+                    <div class="stat-label">Total</div>
+                </div>
+            </div>
+
+            <div class="topic-progress">
+                <h4>Navegación:</h4>
+                <div id="topics-list"></div>
+            </div>
+        </section>
+    </div>
+
+    <div class="results-container" id="results-container">
+        <h2>Resultados del Parcial</h2>
+
+        <div class="score-display">
+            <div class="score-circle" id="final-score">0.0</div>
+            <h3>Calificación Final</h3>
+            <p id="score-text">Sobre 5.0 puntos</p>
+        </div>
+
+        <div class="stats">
+            <div class="stat-box">
+                <div class="stat-value" id="correct-count">0</div>
+                <div class="stat-label">Correctas</div>
+            </div>
+            <div class="stat-box">
+                <div class="stat-value" id="incorrect-count">0</div>
+                <div class="stat-label">Incorrectas</div>
+            </div>
+            <div class="stat-box">
+                <div class="stat-value" id="percentage-score">0%</div>
+                <div class="stat-label">Porcentaje</div>
+            </div>
+        </div>
+
+        <div style="text-align: center; margin-top: 20px;">
+            <button id="review-btn" class="btn btn-secondary">Revisar Respuestas</button>
+            <button id="restart-btn" class="btn btn-primary">Intentar Otro Examen</button>
+        </div>
+    </div>
+
+    <footer>
+        <p>Simulador del Segundo Parcial de Estadística Descriptiva</p>
+    </footer>
+
+    <script>
+        /* ------------------------------------------------------------------
+           Banco de preguntas. Un objeto por tema; cada tema tiene varias
+           variantes y el simulador sortea una. Las explicaciones nunca
+           nombran la opción por su letra, porque el orden se baraja.
+           Campos opcionales: q2 (texto después de la figura) y fig (figura
+           del enunciado, p. ej. diagramas de caja paralelos).
+           La primera opción de cada variante se baraja al generar el examen.
+           ------------------------------------------------------------------ */
+        const TEMAS = [
+            {
+                "nav": "Media",
+                "variants": [
+                    {
+                        "type": "mcq",
+                        "q": "<p>En la semana de parciales, el servicio de bienestar de la universidad aplicó una escala de estrés percibido (de 0 a 40 puntos) a 8 estudiantes de Psicología. Estos son los puntajes:</p><p style=\"font-family:Consolas,monospace; font-size:0.9em; background:#f4f6f8; padding:10px; border-radius:6px;\">12  18  25  9  22  15  30  17</p><p>¿Cuál es la media aritmética de los puntajes?</p>",
+                        "a": [
+                            "18,50",
+                            "17,50",
+                            "21,14",
+                            "16,44"
+                        ],
+                        "c": 0,
+                        "explanation": "La media se obtiene sumando todos los datos y dividiendo entre cuántos son: $\\bar{x} = \\dfrac{\\sum x_i}{n} = \\dfrac{148}{8} = 18{,}50$. El valor 17,50 es la mediana, otra medida de centro que se obtiene ordenando los datos; dividir entre $n-1$ o entre $n+1$ no corresponde a la media aritmética.",
+                        "r": "x <- c(12, 18, 25, 9, 22, 15, 30, 17)\nround(mean(x), 2)"
+                    },
+                    {
+                        "type": "mcq",
+                        "q": "<p>El gerente de una tienda de ropa registró las ventas diarias, en millones de pesos, durante 40 días y las organizó en la siguiente tabla:</p><div class=\"table-container\"><table><tr><th>Ventas diarias (millones)</th><th>Marca de clase $x_i$</th><th>$f_i$</th></tr><tr><td>$[10,\\;20)$</td><td>15</td><td>4</td></tr><tr><td>$[20,\\;30)$</td><td>25</td><td>9</td></tr><tr><td>$[30,\\;40)$</td><td>35</td><td>14</td></tr><tr><td>$[40,\\;50)$</td><td>45</td><td>8</td></tr><tr><td>$[50,\\;60]$</td><td>55</td><td>5</td></tr></table></div><p>¿Cuál es la media de las ventas diarias calculada con los datos agrupados?</p>",
+                        "a": [
+                            "35,25",
+                            "35,00",
+                            "30,25",
+                            "40,25"
+                        ],
+                        "c": 0,
+                        "explanation": "Con datos agrupados cada clase se representa por su marca de clase y se pondera por su frecuencia: $\\bar{x} = \\dfrac{\\sum f_i x_i}{n} = \\dfrac{1410}{40} = 35{,}25$ millones. El promedio simple de las marcas (35,00) ignora que unas clases tienen más días que otras, y usar los límites de las clases en lugar de las marcas desplaza el resultado hacia abajo o hacia arriba.",
+                        "r": "li <- c(10, 20, 30, 40, 50)   # límites inferiores de las clases\nf  <- c(4, 9, 14, 8, 5)   # frecuencias absolutas\nA  <- 10   # amplitud\nn  <- sum(f)\nx  <- li + A / 2   # marcas de clase\nround(sum(f * x) / n, 2)"
+                    },
+                    {
+                        "type": "mcq",
+                        "q": "<p>Un equipo de trabajo social indagó cuántas horas a la semana dedican a cuidar a un familiar dependiente 30 personas cuidadoras. Los resultados se agruparon así:</p><div class=\"table-container\"><table><tr><th>Horas semanales</th><th>Marca de clase $x_i$</th><th>$f_i$</th></tr><tr><td>$[0,\\;6)$</td><td>3</td><td>3</td></tr><tr><td>$[6,\\;12)$</td><td>9</td><td>7</td></tr><tr><td>$[12,\\;18)$</td><td>15</td><td>10</td></tr><tr><td>$[18,\\;24)$</td><td>21</td><td>6</td></tr><tr><td>$[24,\\;30]$</td><td>27</td><td>4</td></tr></table></div><p>¿Cuál es el promedio de horas semanales de cuidado?</p>",
+                        "a": [
+                            "15,20",
+                            "15,00",
+                            "18,20",
+                            "12,20"
+                        ],
+                        "c": 0,
+                        "explanation": "Se agrega la columna $f_i x_i$ y se divide entre $n$: $\\bar{x} = \\dfrac{\\sum f_i x_i}{n} = \\dfrac{456}{30} = 15{,}20$ horas. El 15,00 es simplemente la marca de la clase central, y los valores 18,20 y 12,20 salen de usar los límites superiores o inferiores en lugar de las marcas de clase.",
+                        "r": "li <- c(0, 6, 12, 18, 24)   # límites inferiores de las clases\nf  <- c(3, 7, 10, 6, 4)   # frecuencias absolutas\nA  <- 6   # amplitud\nn  <- sum(f)\nx  <- li + A / 2   # marcas de clase\nround(sum(f * x) / n, 2)"
+                    },
+                    {
+                        "type": "mcq",
+                        "q": "<p>El área de talento humano de una empresa evalúa a los aspirantes a un cargo con tres componentes: entrevista (peso 50 %), prueba psicotécnica (peso 30 %) y prueba técnica (peso 20 %). Una aspirante obtuvo las siguientes notas, de 0,0 a 5,0:</p><div class=\"table-container\"><table><tr><th>Componente</th><th>Nota $x_i$</th><th>Peso $w_i$</th></tr><tr><td>Entrevista</td><td>4,8</td><td>0,50</td></tr><tr><td>Prueba psicotécnica</td><td>3,0</td><td>0,30</td></tr><tr><td>Prueba técnica</td><td>2,5</td><td>0,20</td></tr></table></div><p>¿Cuál es su calificación final, calculada como media ponderada?</p>",
+                        "a": [
+                            "3,80",
+                            "3,43",
+                            "3,11",
+                            "3,00"
+                        ],
+                        "c": 0,
+                        "explanation": "Cuando los componentes no pesan igual se usa la media ponderada: $\\bar{x}_p = \\dfrac{\\sum w_i x_i}{\\sum w_i} = 0{,}50(4{,}8) + 0{,}30(3{,}0) + 0{,}20(2{,}5) = 2{,}40 + 0{,}90 + 0{,}50 = 3{,}80$. El promedio simple (3,43) trata los tres componentes como si valieran lo mismo, y asignar los pesos en el orden contrario (3,11) castiga justo el componente que más vale.",
+                        "r": "notas  <- c(4.8, 3.0, 2.5)\npesos  <- c(0.5, 0.3, 0.2)\nround(weighted.mean(notas, pesos), 2)"
+                    }
+                ]
+            },
+            {
+                "nav": "Mediana",
+                "variants": [
+                    {
+                        "type": "mcq",
+                        "q": "<p>Un banco registró, en minutos, el tiempo de atención de 9 clientes que llegaron a una sucursal. Los datos, en el orden en que se tomaron, son:</p><p style=\"font-family:Consolas,monospace; font-size:0.9em; background:#f4f6f8; padding:10px; border-radius:6px;\">14  6  11  20  9  7  16  8  25</p><p>¿Cuál es la mediana del tiempo de atención?</p>",
+                        "a": [
+                            "11,00",
+                            "9,00",
+                            "12,89",
+                            "10,00"
+                        ],
+                        "c": 0,
+                        "explanation": "Primero hay que <strong>ordenar</strong> los datos: 6, 7, 8, 9, 11, 14, 16, 20, 25. Como $n = 9$ es impar, la posición central es $\\dfrac{n+1}{2} = 5$ y el quinto dato es 11. El 9 sale de tomar el quinto dato sin ordenar, el 12,89 es la media, y promediar dos datos centrales solo se hace cuando $n$ es par.",
+                        "r": "x <- c(14, 6, 11, 20, 9, 7, 16, 8, 25)\nmedian(x)   # R ordena los datos por dentro"
+                    },
+                    {
+                        "type": "mcq",
+                        "q": "<p>Un centro de atención psicológica registró cuántas sesiones de terapia asistió cada uno de 10 pacientes durante el año:</p><p style=\"font-family:Consolas,monospace; font-size:0.9em; background:#f4f6f8; padding:10px; border-radius:6px;\">8  3  12  5  7  15  6  4  10  20</p><p>¿Cuál es la mediana del número de sesiones?</p>",
+                        "a": [
+                            "7,5",
+                            "7,0",
+                            "8,0",
+                            "9,0"
+                        ],
+                        "c": 0,
+                        "explanation": "Ordenados, los datos quedan 3, 4, 5, 6, 7, 8, 10, 12, 15, 20. Con $n = 10$ (par) la posición es $\\dfrac{n+1}{2} = 5{,}5$, es decir, entre el quinto y el sexto dato, y la mediana es su promedio: $\\dfrac{7 + 8}{2} = 7{,}5$ sesiones. Quedarse con uno solo de los dos datos centrales (7 u 8) ignora la mitad de la regla, y el 9,0 es la media.",
+                        "r": "x <- c(8, 3, 12, 5, 7, 15, 6, 4, 10, 20)\nmedian(x)   # con n par promedia los dos datos centrales"
+                    },
+                    {
+                        "type": "mcq",
+                        "q": "<p>Una trabajadora social registró cuántos días esperó cada uno de 50 usuarios para recibir su primera cita en una comisaría de familia:</p><div class=\"table-container\"><table><tr><th>Días de espera</th><th>$f_i$</th></tr><tr><td>$[0,\\;10)$</td><td>6</td></tr><tr><td>$[10,\\;20)$</td><td>14</td></tr><tr><td>$[20,\\;30)$</td><td>18</td></tr><tr><td>$[30,\\;40)$</td><td>9</td></tr><tr><td>$[40,\\;50]$</td><td>3</td></tr></table></div><p>¿Cuál es la mediana del tiempo de espera, calculada con los datos agrupados?</p>",
+                        "a": [
+                            "22,78",
+                            "25,00",
+                            "20,28",
+                            "30,56"
+                        ],
+                        "c": 0,
+                        "explanation": "Se busca la posición $\\dfrac{n}{2} = 25$ y la primera clase cuya frecuencia acumulada llegue a 25: las acumuladas son 6, 20, 38, 47 y 50, así que la clase mediana es $[20,\\;30)$ con $F_{i-1} = 20$, $f_i = 18$ y $A = 10$. $Me = 20 + \\dfrac{25 - 20}{18}\\cdot 10 = 22{,}78$ días. Usar la marca de clase (25) no interpola, olvidar la amplitud $A$ da 20,28, y tomar la acumulada de la clase equivocada da 30,56.",
+                        "r": "li <- c(0, 10, 20, 30, 40)   # límites inferiores de las clases\nf  <- c(6, 14, 18, 9, 3)   # frecuencias absolutas\nA  <- 10   # amplitud\nn  <- sum(f)\nFa  <- cumsum(f)                   # frecuencias acumuladas\npos <- 50 * n / 100                 # posición kn/100\ni   <- which(Fa >= pos)[1]         # primera clase con Fa >= posición\nFant <- if (i == 1) 0 else Fa[i - 1]\nround(li[i] + (pos - Fant) / f[i] * A, 2)"
+                    },
+                    {
+                        "type": "mcq",
+                        "q": "<p>El área de nómina de una empresa organizó el salario mensual de sus 50 empleados, en millones de pesos, en la siguiente tabla:</p><div class=\"table-container\"><table><tr><th>Salario (millones)</th><th>$f_i$</th></tr><tr><td>$[2,\\;4)$</td><td>12</td></tr><tr><td>$[4,\\;6)$</td><td>18</td></tr><tr><td>$[6,\\;8)$</td><td>9</td></tr><tr><td>$[8,\\;10)$</td><td>7</td></tr><tr><td>$[10,\\;12]$</td><td>4</td></tr></table></div><p>¿Cuál es la mediana del salario, calculada con los datos agrupados?</p>",
+                        "a": [
+                            "5,44",
+                            "5,00",
+                            "4,72",
+                            "6,00"
+                        ],
+                        "c": 0,
+                        "explanation": "La posición es $\\dfrac{n}{2} = 25$. Las acumuladas son 12, 30, 39, 46 y 50, de modo que la clase mediana es $[4,\\;6)$ con $F_{i-1} = 12$, $f_i = 18$ y $A = 2$. $Me = 4 + \\dfrac{25 - 12}{18}\\cdot 2 = 5{,}44$ millones. El 5,00 es la marca de clase, el 6,00 es el límite superior de la clase, y el 4,72 sale de olvidar multiplicar por la amplitud.",
+                        "r": "li <- c(2, 4, 6, 8, 10)   # límites inferiores de las clases\nf  <- c(12, 18, 9, 7, 4)   # frecuencias absolutas\nA  <- 2   # amplitud\nn  <- sum(f)\nFa  <- cumsum(f)                   # frecuencias acumuladas\npos <- 50 * n / 100                 # posición kn/100\ni   <- which(Fa >= pos)[1]         # primera clase con Fa >= posición\nFant <- if (i == 1) 0 else Fa[i - 1]\nround(li[i] + (pos - Fant) / f[i] * A, 2)"
+                    }
+                ]
+            },
+            {
+                "nav": "Moda",
+                "variants": [
+                    {
+                        "type": "mcq",
+                        "q": "<p>Un equipo de trabajo social clasificó el principal motivo de consulta de 40 familias atendidas en un consultorio comunitario:</p><div class=\"table-container\"><table><tr><th>Motivo de consulta</th><th>$f_i$</th></tr><tr><td>Violencia intrafamiliar</td><td>9</td></tr><tr><td>Desempleo</td><td>14</td></tr><tr><td>Salud</td><td>8</td></tr><tr><td>Vivienda</td><td>5</td></tr><tr><td>Educación</td><td>4</td></tr></table></div><p>¿Cuál es la moda de la variable «motivo de consulta»?</p>",
+                        "a": [
+                            "Desempleo",
+                            "14",
+                            "Violencia intrafamiliar",
+                            "No existe, porque la variable no es numérica"
+                        ],
+                        "c": 0,
+                        "explanation": "La moda es el valor que más se repite, y en una variable cualitativa es la <strong>categoría</strong> con mayor frecuencia: aquí es «Desempleo», con 14 familias. El número 14 es la frecuencia de esa categoría, no la moda. Además, la moda es justamente la única medida de tendencia central válida para variables nominales.",
+                        "r": "motivos <- c(\"Violencia intrafamiliar\" = 9, \"Desempleo\" = 14, \"Salud\" = 8,\n             \"Vivienda\" = 5, \"Educación\" = 4)   # frecuencias por categoría\nnames(which.max(motivos))   # categoría con mayor frecuencia"
+                    },
+                    {
+                        "type": "mcq",
+                        "q": "<p>En la historia clínica de 12 pacientes de un consultorio psicológico se anotó el número de hermanos de cada uno:</p><p style=\"font-family:Consolas,monospace; font-size:0.9em; background:#f4f6f8; padding:10px; border-radius:6px;\">2  1  3  2  0  2  1  4  2  3  1  2</p><p>¿Cuál es la moda del número de hermanos?</p>",
+                        "a": [
+                            "2",
+                            "5",
+                            "1,92",
+                            "4"
+                        ],
+                        "c": 0,
+                        "explanation": "Se cuenta cuántas veces aparece cada valor: el 0 una vez, el 1 tres veces, el 2 cinco veces, el 3 dos veces y el 4 una vez. El valor más frecuente es <strong>2</strong>. El 5 es cuántas veces se repite, no el valor que se repite; el 1,92 es la media, y el 4 es solo el dato mayor.",
+                        "r": "x <- c(2, 1, 3, 2, 0, 2, 1, 4, 2, 3, 1, 2)\ntabla <- table(x)            # frecuencia de cada valor\nnames(tabla)[tabla == max(tabla)]   # R base no trae función de moda"
+                    },
+                    {
+                        "type": "mcq",
+                        "q": "<p>Una empresa de servicios públicos registró el tiempo que tardó en atender 60 reclamos de sus usuarios, en minutos:</p><div class=\"table-container\"><table><tr><th>Tiempo (minutos)</th><th>$f_i$</th></tr><tr><td>$[0,\\;5)$</td><td>8</td></tr><tr><td>$[5,\\;10)$</td><td>15</td></tr><tr><td>$[10,\\;15)$</td><td>21</td></tr><tr><td>$[15,\\;20)$</td><td>12</td></tr><tr><td>$[20,\\;25]$</td><td>4</td></tr></table></div><p>¿Cuál es la moda del tiempo de atención, calculada con la fórmula de Czuber?</p>",
+                        "a": [
+                            "12,00",
+                            "12,50",
+                            "13,00",
+                            "10,40"
+                        ],
+                        "c": 0,
+                        "explanation": "La clase modal es la de mayor frecuencia: $[10,\\;15)$, con $f_i = 21$. Entonces $d_1 = 21 - 15 = 6$ y $d_2 = 21 - 12 = 9$, y $Mo = L_i + \\dfrac{d_1}{d_1 + d_2}A = 10 + \\dfrac{6}{15}\\cdot 5 = 12{,}00$ minutos. Intercambiar $d_1$ y $d_2$ da 13,00, la marca de clase (12,50) no usa la fórmula, y olvidar la amplitud da 10,40.",
+                        "r": "li <- c(0, 5, 10, 15, 20)   # límites inferiores de las clases\nf  <- c(8, 15, 21, 12, 4)   # frecuencias absolutas\nA  <- 5   # amplitud\nn  <- sum(f)\ni  <- which.max(f)                 # clase modal\nd1 <- f[i] - f[i - 1]\nd2 <- f[i] - f[i + 1]\nround(li[i] + d1 / (d1 + d2) * A, 2)   # fórmula de Czuber"
+                    },
+                    {
+                        "type": "mcq",
+                        "q": "<p>Un programa municipal de apoyo a adultos mayores registró la edad de 50 de sus beneficiarios, así:</p><div class=\"table-container\"><table><tr><th>Edad (años)</th><th>$f_i$</th></tr><tr><td>$[20,\\;30)$</td><td>5</td></tr><tr><td>$[30,\\;40)$</td><td>12</td></tr><tr><td>$[40,\\;50)$</td><td>20</td></tr><tr><td>$[50,\\;60)$</td><td>9</td></tr><tr><td>$[60,\\;70]$</td><td>4</td></tr></table></div><p>¿Cuál es la moda de la edad, calculada con los datos agrupados?</p>",
+                        "a": [
+                            "44,21",
+                            "45,00",
+                            "45,79",
+                            "La clase [40, 50)"
+                        ],
+                        "c": 0,
+                        "explanation": "La clase modal es $[40,\\;50)$ ($f_i = 20$), con $d_1 = 20 - 12 = 8$ y $d_2 = 20 - 9 = 11$. $Mo = 40 + \\dfrac{8}{8 + 11}\\cdot 10 = 44{,}21$ años. Ojo con la diferencia: la <em>clase</em> modal es un intervalo, mientras que la <em>moda</em> es un valor puntual dentro de él. Intercambiar $d_1$ y $d_2$ da 45,79 y la marca de clase es 45,00.",
+                        "r": "li <- c(20, 30, 40, 50, 60)   # límites inferiores de las clases\nf  <- c(5, 12, 20, 9, 4)   # frecuencias absolutas\nA  <- 10   # amplitud\nn  <- sum(f)\ni  <- which.max(f)                 # clase modal\nd1 <- f[i] - f[i - 1]\nd2 <- f[i] - f[i + 1]\nround(li[i] + d1 / (d1 + d2) * A, 2)   # fórmula de Czuber"
+                    }
+                ]
+            },
+            {
+                "nav": "Cuartiles",
+                "variants": [
+                    {
+                        "type": "mcq",
+                        "q": "<p>En un experimento de laboratorio de Psicología se midió el tiempo de reacción, en milisegundos, de 12 participantes ante un estímulo visual:</p><p style=\"font-family:Consolas,monospace; font-size:0.9em; background:#f4f6f8; padding:10px; border-radius:6px;\">310  275  342  298  330  285  360  305  322  290  315  350</p><p>Con la posición $\\dfrac{k(n+1)}{100}$ y la interpolación vista en clase, ¿cuál es el primer cuartil $Q_1$?</p>",
+                        "a": [
+                            "292",
+                            "290",
+                            "298",
+                            "296"
+                        ],
+                        "c": 0,
+                        "explanation": "Ordenados: 275, 285, 290, 298, 305, 310, 315, 322, 330, 342, 350, 360. La posición de $Q_1$ es $\\dfrac{25(12+1)}{100} = 3{,}25$: está entre el tercer dato (290) y el cuarto (298), a 0,25 del camino. $Q_1 = 290 + 0{,}25(298 - 290) = 292$ ms. Tomar el tercer o el cuarto dato sin interpolar, o aplicar 0,75 en lugar de 0,25, da valores distintos.",
+                        "r": "x <- c(310, 275, 342, 298, 330, 285, 360, 305, 322, 290, 315, 350)\n# type = 6 usa la posición k(n+1)/100 con interpolación, la misma que se vio en clase.\n# (R usa por defecto type = 7, que da un resultado ligeramente distinto.)\nquantile(x, probs = 0.25, type = 6)"
+                    },
+                    {
+                        "type": "mcq",
+                        "q": "<p>La contadora de una librería revisó el valor, en miles de pesos, de 14 facturas de venta tomadas al azar:</p><p style=\"font-family:Consolas,monospace; font-size:0.9em; background:#f4f6f8; padding:10px; border-radius:6px;\">45  62  38  71  55  90  48  66  52  80  41  58  75  60</p><p>Con la posición $\\dfrac{k(n+1)}{100}$ y la interpolación vista en clase, ¿cuál es el tercer cuartil $Q_3$?</p>",
+                        "a": [
+                            "72,0",
+                            "71,0",
+                            "68,5",
+                            "74,0"
+                        ],
+                        "c": 0,
+                        "explanation": "Ordenados: 38, 41, 45, 48, 52, 55, 58, 60, 62, 66, 71, 75, 80, 90. La posición de $Q_3$ es $\\dfrac{75(14+1)}{100} = 11{,}25$: entre el dato 11 (71) y el dato 12 (75), a 0,25 del camino. $Q_3 = 71 + 0{,}25(75 - 71) = 72$ mil pesos. Usar $n$ en lugar de $n+1$ (posición 10,5) da 68,5, y truncar la posición da 71.",
+                        "r": "x <- c(45, 62, 38, 71, 55, 90, 48, 66, 52, 80, 41, 58, 75, 60)\n# type = 6 usa la posición k(n+1)/100 con interpolación, la misma que se vio en clase.\n# (R usa por defecto type = 7, que da un resultado ligeramente distinto.)\nquantile(x, probs = 0.75, type = 6)"
+                    },
+                    {
+                        "type": "mcq",
+                        "q": "<p>Un equipo de investigación aplicó una prueba de empatía (puntaje de 20 a 70) a 60 estudiantes de Psicología y agrupó los resultados:</p><div class=\"table-container\"><table><tr><th>Puntaje</th><th>$f_i$</th></tr><tr><td>$[20,\\;30)$</td><td>6</td></tr><tr><td>$[30,\\;40)$</td><td>14</td></tr><tr><td>$[40,\\;50)$</td><td>20</td></tr><tr><td>$[50,\\;60)$</td><td>12</td></tr><tr><td>$[60,\\;70]$</td><td>8</td></tr></table></div><p>¿Cuál es el primer cuartil $Q_1$, calculado con los datos agrupados?</p>",
+                        "a": [
+                            "36,43",
+                            "45,00",
+                            "30,64",
+                            "26,43"
+                        ],
+                        "c": 0,
+                        "explanation": "La posición de $Q_1$ es $\\dfrac{n}{4} = 15$. Las acumuladas son 6, 20, 40, 52 y 60, así que la clase es $[30,\\;40)$ con $F_{i-1} = 6$, $f_i = 14$ y $A = 10$. $Q_1 = 30 + \\dfrac{15 - 6}{14}\\cdot 10 = 36{,}43$ puntos. El 45,00 es la mediana (posición $n/2$), olvidar la amplitud da 30,64, y restar la acumulada de la propia clase en vez de la anterior da 26,43.",
+                        "r": "li <- c(20, 30, 40, 50, 60)   # límites inferiores de las clases\nf  <- c(6, 14, 20, 12, 8)   # frecuencias absolutas\nA  <- 10   # amplitud\nn  <- sum(f)\nFa  <- cumsum(f)                   # frecuencias acumuladas\npos <- 25 * n / 100                 # posición kn/100\ni   <- which(Fa >= pos)[1]         # primera clase con Fa >= posición\nFant <- if (i == 1) 0 else Fa[i - 1]\nround(li[i] + (pos - Fant) / f[i] * A, 2)"
+                    },
+                    {
+                        "type": "mcq",
+                        "q": "<p>Una cadena de gimnasios agrupó la edad de 80 clientes inscritos en su programa de fidelización:</p><div class=\"table-container\"><table><tr><th>Edad (años)</th><th>$f_i$</th></tr><tr><td>$[20,\\;30)$</td><td>10</td></tr><tr><td>$[30,\\;40)$</td><td>22</td></tr><tr><td>$[40,\\;50)$</td><td>25</td></tr><tr><td>$[50,\\;60)$</td><td>15</td></tr><tr><td>$[60,\\;70]$</td><td>8</td></tr></table></div><p>¿Cuál es el tercer cuartil $Q_3$, calculado con los datos agrupados?</p>",
+                        "a": [
+                            "52,00",
+                            "34,55",
+                            "43,20",
+                            "50,20"
+                        ],
+                        "c": 0,
+                        "explanation": "La posición de $Q_3$ es $\\dfrac{3n}{4} = 60$. Las acumuladas son 10, 32, 57, 72 y 80, así que la clase es $[50,\\;60)$ con $F_{i-1} = 57$, $f_i = 15$ y $A = 10$. $Q_3 = 50 + \\dfrac{60 - 57}{15}\\cdot 10 = 52{,}00$ años. Es decir, el 25 % de los clientes de mayor edad supera los 52 años. Los valores 34,55 y 43,20 son $Q_1$ y la mediana, y el 50,20 olvida la amplitud.",
+                        "r": "li <- c(20, 30, 40, 50, 60)   # límites inferiores de las clases\nf  <- c(10, 22, 25, 15, 8)   # frecuencias absolutas\nA  <- 10   # amplitud\nn  <- sum(f)\nFa  <- cumsum(f)                   # frecuencias acumuladas\npos <- 75 * n / 100                 # posición kn/100\ni   <- which(Fa >= pos)[1]         # primera clase con Fa >= posición\nFant <- if (i == 1) 0 else Fa[i - 1]\nround(li[i] + (pos - Fant) / f[i] * A, 2)"
+                    }
+                ]
+            },
+            {
+                "nav": "Percentiles",
+                "variants": [
+                    {
+                        "type": "mcq",
+                        "q": "<p>Una coordinadora de trabajo social registró cuántas visitas domiciliarias hizo en el mes cada una de las 14 profesionales de su equipo:</p><p style=\"font-family:Consolas,monospace; font-size:0.9em; background:#f4f6f8; padding:10px; border-radius:6px;\">12  18  9  22  15  11  25  14  19  8  16  21  13  30</p><p>Con la posición $\\dfrac{k(n+1)}{100}$ y la interpolación vista en clase, ¿cuál es el percentil 90 ($P_{90}$)?</p>",
+                        "a": [
+                            "27,5",
+                            "25,0",
+                            "30,0",
+                            "23,8"
+                        ],
+                        "c": 0,
+                        "explanation": "Ordenados: 8, 9, 11, 12, 13, 14, 15, 16, 18, 19, 21, 22, 25, 30. La posición de $P_{90}$ es $\\dfrac{90(14+1)}{100} = 13{,}5$: a mitad de camino entre el dato 13 (25) y el dato 14 (30). $P_{90} = 25 + 0{,}5(30 - 25) = 27{,}5$ visitas: solo el 10 % de las profesionales hizo más visitas que eso. Tomar solo uno de los dos vecinos no interpola, y usar $n$ en lugar de $n+1$ da 23,8.",
+                        "r": "x <- c(12, 18, 9, 22, 15, 11, 25, 14, 19, 8, 16, 21, 13, 30)\n# type = 6 usa la posición k(n+1)/100 con interpolación, la misma que se vio en clase.\n# (R usa por defecto type = 7, que da un resultado ligeramente distinto.)\nquantile(x, probs = 0.90, type = 6)"
+                    },
+                    {
+                        "type": "mcq",
+                        "q": "<p>Un psicólogo educativo aplicó una prueba de atención sostenida a 12 estudiantes. Los puntajes (de 0 a 100) fueron:</p><p style=\"font-family:Consolas,monospace; font-size:0.9em; background:#f4f6f8; padding:10px; border-radius:6px;\">54  61  47  70  66  52  58  75  63  49  68  57</p><p>Con la posición $\\dfrac{k(n+1)}{100}$ y la interpolación vista en clase, ¿cuál es el percentil 20 ($P_{20}$)?</p>",
+                        "a": [
+                            "50,8",
+                            "49,0",
+                            "52,0",
+                            "50,2"
+                        ],
+                        "c": 0,
+                        "explanation": "Ordenados: 47, 49, 52, 54, 57, 58, 61, 63, 66, 68, 70, 75. La posición de $P_{20}$ es $\\dfrac{20(12+1)}{100} = 2{,}6$: entre el segundo dato (49) y el tercero (52), a 0,6 del camino. $P_{20} = 49 + 0{,}6(52 - 49) = 50{,}8$ puntos. Quedarse con el segundo o el tercer dato no interpola, y aplicar 0,4 en lugar de 0,6 da 50,2.",
+                        "r": "x <- c(54, 61, 47, 70, 66, 52, 58, 75, 63, 49, 68, 57)\n# type = 6 usa la posición k(n+1)/100 con interpolación, la misma que se vio en clase.\n# (R usa por defecto type = 7, que da un resultado ligeramente distinto.)\nquantile(x, probs = 0.20, type = 6)"
+                    },
+                    {
+                        "type": "mcq",
+                        "q": "<p>En una investigación sobre procrastinación se midió cuántos minutos tardaron 40 estudiantes en iniciar una tarea académica asignada:</p><div class=\"table-container\"><table><tr><th>Minutos</th><th>$f_i$</th></tr><tr><td>$[0,\\;10)$</td><td>6</td></tr><tr><td>$[10,\\;20)$</td><td>11</td></tr><tr><td>$[20,\\;30)$</td><td>14</td></tr><tr><td>$[30,\\;40)$</td><td>6</td></tr><tr><td>$[40,\\;50]$</td><td>3</td></tr></table></div><p>¿Cuál es el percentil 90 ($P_{90}$), calculado con los datos agrupados?</p>",
+                        "a": [
+                            "38,33",
+                            "30,83",
+                            "33,57",
+                            "39,83"
+                        ],
+                        "c": 0,
+                        "explanation": "La posición es $\\dfrac{90n}{100} = 36$. Las acumuladas son 6, 17, 31, 37 y 40; la primera que alcanza 36 es la de la clase $[30,\\;40)$, con $F_{i-1} = 31$, $f_i = 6$ y $A = 10$. $P_{90} = 30 + \\dfrac{36 - 31}{6}\\cdot 10 = 38{,}33$ minutos. Con datos agrupados la posición es $kn/100$ (sin el $+1$ de los datos sueltos); olvidar la amplitud da 30,83 y elegir la clase por su frecuencia en vez de por la acumulada da 33,57.",
+                        "r": "li <- c(0, 10, 20, 30, 40)   # límites inferiores de las clases\nf  <- c(6, 11, 14, 6, 3)   # frecuencias absolutas\nA  <- 10   # amplitud\nn  <- sum(f)\nFa  <- cumsum(f)                   # frecuencias acumuladas\npos <- 90 * n / 100                 # posición kn/100\ni   <- which(Fa >= pos)[1]         # primera clase con Fa >= posición\nFant <- if (i == 1) 0 else Fa[i - 1]\nround(li[i] + (pos - Fant) / f[i] * A, 2)"
+                    },
+                    {
+                        "type": "mcq",
+                        "q": "<p>Una fundación que apoya a jóvenes en riesgo agrupó la edad de 50 usuarios de su programa de acompañamiento:</p><div class=\"table-container\"><table><tr><th>Edad (años)</th><th>$f_i$</th></tr><tr><td>$[15,\\;25)$</td><td>7</td></tr><tr><td>$[25,\\;35)$</td><td>13</td></tr><tr><td>$[35,\\;45)$</td><td>16</td></tr><tr><td>$[45,\\;55)$</td><td>9</td></tr><tr><td>$[55,\\;65]$</td><td>5</td></tr></table></div><p>¿Cuál es el percentil 30 ($P_{30}$), calculado con los datos agrupados?</p>",
+                        "a": [
+                            "31,15",
+                            "25,62",
+                            "29,23",
+                            "44,38"
+                        ],
+                        "c": 0,
+                        "explanation": "La posición es $\\dfrac{30n}{100} = 15$. Las acumuladas son 7, 20, 36, 45 y 50, así que la clase es $[25,\\;35)$ con $F_{i-1} = 7$, $f_i = 13$ y $A = 10$. $P_{30} = 25 + \\dfrac{15 - 7}{13}\\cdot 10 = 31{,}15$ años. Los valores 29,23 y 44,38 corresponden a $Q_1$ y a $P_{70}$, es decir, a otra posición, y el 25,62 olvida la amplitud.",
+                        "r": "li <- c(15, 25, 35, 45, 55)   # límites inferiores de las clases\nf  <- c(7, 13, 16, 9, 5)   # frecuencias absolutas\nA  <- 10   # amplitud\nn  <- sum(f)\nFa  <- cumsum(f)                   # frecuencias acumuladas\npos <- 30 * n / 100                 # posición kn/100\ni   <- which(Fa >= pos)[1]         # primera clase con Fa >= posición\nFant <- if (i == 1) 0 else Fa[i - 1]\nround(li[i] + (pos - Fant) / f[i] * A, 2)"
+                    },
+                    {
+                        "type": "mcq",
+                        "q": "<p>En un proceso de selección, una aspirante a un cargo de psicóloga organizacional obtuvo en la prueba de razonamiento un puntaje que la ubica en el <strong>percentil 85</strong> del grupo de aspirantes. ¿Cuál es la interpretación correcta?</p>",
+                        "a": [
+                            "El 85 % de los aspirantes obtuvo un puntaje igual o menor que el de ella.",
+                            "Ella respondió correctamente el 85 % de las preguntas de la prueba de razonamiento.",
+                            "Su puntaje en la prueba fue exactamente de 85 puntos sobre el máximo posible.",
+                            "El 85 % de los aspirantes obtuvo un puntaje mayor o igual que el de ella."
+                        ],
+                        "c": 0,
+                        "explanation": "El percentil $P_k$ deja por debajo (o igual) al $k$ % de los datos y por encima al $(100-k)$ %. Estar en el percentil 85 significa que el 85 % del grupo obtuvo un puntaje igual o inferior al suyo y solo el 15 % obtuvo uno superior. El percentil es una <em>posición</em> dentro del grupo: no indica cuántos puntos sacó ni qué porcentaje de preguntas acertó."
+                    }
+                ]
+            },
+            {
+                "nav": "Varianza",
+                "variants": [
+                    {
+                        "type": "mcq",
+                        "q": "<p>Una psicóloga del sueño registró las horas dormidas en una noche por 6 estudiantes seleccionados al azar de una facultad (<strong>muestra</strong>):</p><p style=\"font-family:Consolas,monospace; font-size:0.9em; background:#f4f6f8; padding:10px; border-radius:6px;\">4  6  8  5  7  6</p><p>¿Cuál es la varianza muestral $s^2$ de las horas de sueño?</p>",
+                        "a": [
+                            "2,00",
+                            "1,67",
+                            "10,00",
+                            "1,41"
+                        ],
+                        "c": 0,
+                        "explanation": "La media es $\\bar{x} = 36/6 = 6$. Las desviaciones son $-2, 0, 2, -1, 1, 0$ y sus cuadrados suman $4+0+4+1+1+0 = 10$. Como se trata de una muestra, se divide entre $n-1$: $s^2 = \\dfrac{10}{5} = 2{,}00$ horas². Dividir entre $n$ da 1,67 (varianza poblacional), la suma de cuadrados sin dividir es 10,00, y 1,41 es la desviación estándar, no la varianza.",
+                        "r": "x <- c(4, 6, 8, 5, 7, 6)\nround(var(x), 2)   # var() divide entre n - 1 (muestra)"
+                    },
+                    {
+                        "type": "mcq",
+                        "q": "<p>Una cadena tiene exactamente 5 sucursales. Las ventas de un día, en millones de pesos, fueron (se dispone de <strong>todas</strong> las sucursales, es decir, de la población):</p><p style=\"font-family:Consolas,monospace; font-size:0.9em; background:#f4f6f8; padding:10px; border-radius:6px;\">12  15  9  18  6</p><p>¿Cuál es la varianza poblacional $\\sigma^2$ de las ventas?</p>",
+                        "a": [
+                            "18,00",
+                            "22,50",
+                            "90,00",
+                            "4,24"
+                        ],
+                        "c": 0,
+                        "explanation": "La media es $\\mu = 60/5 = 12$. Las desviaciones son $0, 3, -3, 6, -6$ y sus cuadrados suman $0+9+9+36+36 = 90$. Al ser la población completa se divide entre $N$: $\\sigma^2 = \\dfrac{90}{5} = 18{,}00$ millones². Dividir entre $N-1$ da 22,50 (es la fórmula de la muestra), y 4,24 es la desviación estándar.",
+                        "r": "x <- c(12, 15, 9, 18, 6)\n# var() es de muestra (n - 1); para la población se divide entre N:\nround(sum((x - mean(x))^2) / length(x), 2)"
+                    },
+                    {
+                        "type": "mcq",
+                        "q": "<p>Una trabajadora social tomó una muestra de 40 personas que participan en un programa de reinserción laboral y registró las horas semanales que dedican a actividades formativas:</p><div class=\"table-container\"><table><tr><th>Horas semanales</th><th>Marca de clase $x_i$</th><th>$f_i$</th></tr><tr><td>$[0,\\;4)$</td><td>2</td><td>4</td></tr><tr><td>$[4,\\;8)$</td><td>6</td><td>9</td></tr><tr><td>$[8,\\;12)$</td><td>10</td><td>12</td></tr><tr><td>$[12,\\;16)$</td><td>14</td><td>10</td></tr><tr><td>$[16,\\;20]$</td><td>18</td><td>5</td></tr></table></div><p>¿Cuál es la varianza muestral $s^2$, calculada con los datos agrupados?</p>",
+                        "a": [
+                            "22,47",
+                            "21,91",
+                            "40,11",
+                            "876,40"
+                        ],
+                        "c": 0,
+                        "explanation": "Primero la media: $\\bar{x} = \\dfrac{412}{40} = 10{,}3$. Luego $\\sum f_i(x_i-\\bar{x})^2 = 4(2-10{,}3)^2 + 9(6-10{,}3)^2 + 12(10-10{,}3)^2 + 10(14-10{,}3)^2 + 5(18-10{,}3)^2 = 876{,}40$. Por ser muestra: $s^2 = \\dfrac{876{,}40}{40-1} = 22{,}47$ horas². Dividir entre $n$ da 21,91, ignorar las frecuencias $f_i$ da 40,11, y la suma sin dividir es 876,40.",
+                        "r": "li <- c(0, 4, 8, 12, 16)   # límites inferiores de las clases\nf  <- c(4, 9, 12, 10, 5)   # frecuencias absolutas\nA  <- 4   # amplitud\nn  <- sum(f)\nx    <- li + A / 2   # marcas de clase\nxbar <- sum(f * x) / n\nvarianza <- sum(f * (x - xbar)^2) / (n - 1)\nround(varianza, 2)"
+                    },
+                    {
+                        "type": "mcq",
+                        "q": "<p>Una empresa tiene 50 empleados en total (población completa). El área de gestión humana agrupó su antigüedad en la empresa así:</p><div class=\"table-container\"><table><tr><th>Antigüedad (años)</th><th>Marca de clase $x_i$</th><th>$f_i$</th></tr><tr><td>$[0,\\;5)$</td><td>2,5</td><td>14</td></tr><tr><td>$[5,\\;10)$</td><td>7,5</td><td>18</td></tr><tr><td>$[10,\\;15)$</td><td>12,5</td><td>10</td></tr><tr><td>$[15,\\;20)$</td><td>17,5</td><td>5</td></tr><tr><td>$[20,\\;25]$</td><td>22,5</td><td>3</td></tr></table></div><p>¿Cuál es la varianza poblacional $\\sigma^2$ de la antigüedad, calculada con los datos agrupados?</p>",
+                        "a": [
+                            "33,25",
+                            "33,93",
+                            "1662,50",
+                            "5,77"
+                        ],
+                        "c": 0,
+                        "explanation": "La media es $\\mu = \\dfrac{450}{50} = 9{,}0$ años. Entonces $\\sum f_i(x_i-\\mu)^2 = 14(6{,}5)^2 + 18(1{,}5)^2 + 10(3{,}5)^2 + 5(8{,}5)^2 + 3(13{,}5)^2 = 1662{,}50$. Como son todos los empleados, se divide entre $N$: $\\sigma^2 = \\dfrac{1662{,}50}{50} = 33{,}25$ años². Dividir entre $N-1$ da 33,93, la suma sin dividir es 1662,50, y 5,77 es la desviación estándar.",
+                        "r": "li <- c(0, 5, 10, 15, 20)   # límites inferiores de las clases\nf  <- c(14, 18, 10, 5, 3)   # frecuencias absolutas\nA  <- 5   # amplitud\nn  <- sum(f)\nx    <- li + A / 2   # marcas de clase\nxbar <- sum(f * x) / n\nvarianza <- sum(f * (x - xbar)^2) / n\nround(varianza, 2)"
+                    }
+                ]
+            },
+            {
+                "nav": "Desviación estándar",
+                "variants": [
+                    {
+                        "type": "mcq",
+                        "q": "<p>Una psicóloga clínica aplicó un inventario de ansiedad a una muestra de 5 pacientes y obtuvo los siguientes puntajes:</p><p style=\"font-family:Consolas,monospace; font-size:0.9em; background:#f4f6f8; padding:10px; border-radius:6px;\">12  15  18  20  10</p><p>¿Cuál es la desviación estándar muestral $s$?</p>",
+                        "a": [
+                            "4,12",
+                            "3,69",
+                            "17,00",
+                            "8,25"
+                        ],
+                        "c": 0,
+                        "explanation": "La media es $\\bar{x} = 75/5 = 15$. Las desviaciones son $-3, 0, 3, 5, -5$ y la suma de sus cuadrados es $9+0+9+25+25 = 68$. La varianza muestral es $s^2 = \\dfrac{68}{4} = 17{,}00$ y la desviación es su raíz: $s = \\sqrt{17{,}00} = 4{,}12$ puntos. Dividir entre $n$ da 3,69, quedarse con la varianza (17,00) olvida la raíz, y sacar la raíz de la suma de cuadrados (8,25) olvida dividir.",
+                        "r": "x <- c(12, 15, 18, 20, 10)\nround(sd(x), 2)   # sd() es la desviación de muestra (n - 1)"
+                    },
+                    {
+                        "type": "mcq",
+                        "q": "<p>Un call center tomó una muestra de 8 llamadas y registró su duración, en minutos:</p><p style=\"font-family:Consolas,monospace; font-size:0.9em; background:#f4f6f8; padding:10px; border-radius:6px;\">8  10  12  9  11  14  7  9</p><p>¿Cuál es la desviación estándar muestral $s$ de la duración?</p>",
+                        "a": [
+                            "2,27",
+                            "2,12",
+                            "5,14",
+                            "6,00"
+                        ],
+                        "c": 0,
+                        "explanation": "La media es $\\bar{x} = 80/8 = 10$ minutos. Las desviaciones son $-2, 0, 2, -1, 1, 4, -3, -1$ y sus cuadrados suman $36$. $s^2 = \\dfrac{36}{7} = 5{,}14$ y $s = \\sqrt{5{,}14} = 2{,}27$ minutos. Dividir entre $n$ da 2,12, la varianza (5,14) no es la desviación, y la raíz de la suma de cuadrados es 6,00.",
+                        "r": "x <- c(8, 10, 12, 9, 11, 14, 7, 9)\nround(sd(x), 2)   # sd() es la desviación de muestra (n - 1)"
+                    },
+                    {
+                        "type": "mcq",
+                        "q": "<p>Para evaluar un taller de manejo del estrés, una psicóloga tomó una muestra de 40 participantes y agrupó sus puntajes en una prueba de bienestar:</p><div class=\"table-container\"><table><tr><th>Puntaje</th><th>Marca de clase $x_i$</th><th>$f_i$</th></tr><tr><td>$[40,\\;50)$</td><td>45</td><td>3</td></tr><tr><td>$[50,\\;60)$</td><td>55</td><td>8</td></tr><tr><td>$[60,\\;70)$</td><td>65</td><td>14</td></tr><tr><td>$[70,\\;80)$</td><td>75</td><td>10</td></tr><tr><td>$[80,\\;90]$</td><td>85</td><td>5</td></tr></table></div><p>¿Cuál es la desviación estándar muestral $s$, calculada con los datos agrupados?</p>",
+                        "a": [
+                            "11,22",
+                            "11,08",
+                            "125,90",
+                            "70,07"
+                        ],
+                        "c": 0,
+                        "explanation": "La media agrupada es $\\bar{x} = \\dfrac{2660}{40} = 66{,}5$. Luego $\\sum f_i(x_i-\\bar{x})^2 = 4910$ y, por ser muestra, $s^2 = \\dfrac{4910}{39} = 125{,}90$. La desviación es la raíz: $s = 11{,}22$ puntos. Dividir entre $n$ da 11,08, la varianza (125,90) olvida la raíz, y 70,07 es la raíz de la suma sin dividir.",
+                        "r": "li <- c(40, 50, 60, 70, 80)   # límites inferiores de las clases\nf  <- c(3, 8, 14, 10, 5)   # frecuencias absolutas\nA  <- 10   # amplitud\nn  <- sum(f)\nx    <- li + A / 2   # marcas de clase\nxbar <- sum(f * x) / n\nvarianza <- sum(f * (x - xbar)^2) / (n - 1)\nround(sqrt(varianza), 2)"
+                    },
+                    {
+                        "type": "mcq",
+                        "q": "<p>Una organización social tomó una muestra de 40 voluntarios y registró las horas de voluntariado que cada uno aportó en el último trimestre:</p><div class=\"table-container\"><table><tr><th>Horas de voluntariado</th><th>Marca de clase $x_i$</th><th>$f_i$</th></tr><tr><td>$[0,\\;6)$</td><td>3</td><td>5</td></tr><tr><td>$[6,\\;12)$</td><td>9</td><td>10</td></tr><tr><td>$[12,\\;18)$</td><td>15</td><td>13</td></tr><tr><td>$[18,\\;24)$</td><td>21</td><td>8</td></tr><tr><td>$[24,\\;30]$</td><td>27</td><td>4</td></tr></table></div><p>¿Cuál es la desviación estándar muestral $s$, calculada con los datos agrupados?</p>",
+                        "a": [
+                            "7,03",
+                            "6,95",
+                            "49,48",
+                            "43,93"
+                        ],
+                        "c": 0,
+                        "explanation": "La media agrupada es $\\bar{x} = \\dfrac{576}{40} = 14{,}4$ horas. Luego $\\sum f_i(x_i-\\bar{x})^2 = 1929{,}60$ y, por ser muestra, $s^2 = \\dfrac{1929{,}60}{39} = 49{,}48$. La desviación es la raíz: $s = 7{,}03$ horas. Dividir entre $n$ da 6,95, la varianza (49,48) olvida la raíz, y 43,93 es la raíz de la suma sin dividir.",
+                        "r": "li <- c(0, 6, 12, 18, 24)   # límites inferiores de las clases\nf  <- c(5, 10, 13, 8, 4)   # frecuencias absolutas\nA  <- 6   # amplitud\nn  <- sum(f)\nx    <- li + A / 2   # marcas de clase\nxbar <- sum(f * x) / n\nvarianza <- sum(f * (x - xbar)^2) / (n - 1)\nround(sqrt(varianza), 2)"
+                    }
+                ]
+            },
+            {
+                "nav": "Diagrama de caja",
+                "variants": [
+                    {
+                        "type": "chart_mcq",
+                        "q": "<p>Una psicóloga midió cuántos minutos tardaron 12 personas en completar una prueba psicométrica:</p><p style=\"font-family:Consolas,monospace; font-size:0.9em; background:#f4f6f8; padding:10px; border-radius:6px;\">28  31  33  35  36  38  40  41  44  46  49  75</p><p>¿Cuál diagrama de caja representa correctamente estos datos, con el criterio de $1{,}5 \\times RIC$ para los valores atípicos?</p>",
+                        "charts": [
+                            {
+                                "type": "box",
+                                "boxes": [
+                                    {
+                                        "name": "",
+                                        "q1": 33.5,
+                                        "med": 39.0,
+                                        "q3": 45.5,
+                                        "lo": 28,
+                                        "hi": 49,
+                                        "out": [
+                                            75
+                                        ]
+                                    }
+                                ],
+                                "xTitle": "Minutos",
+                                "range": [
+                                    11.5,
+                                    79
+                                ]
+                            },
+                            {
+                                "type": "box",
+                                "boxes": [
+                                    {
+                                        "name": "",
+                                        "q1": 33.5,
+                                        "med": 39.0,
+                                        "q3": 45.5,
+                                        "lo": 28,
+                                        "hi": 75,
+                                        "out": []
+                                    }
+                                ],
+                                "xTitle": "Minutos",
+                                "range": [
+                                    11.5,
+                                    79
+                                ]
+                            },
+                            {
+                                "type": "box",
+                                "boxes": [
+                                    {
+                                        "name": "",
+                                        "q1": 33.5,
+                                        "med": 39.0,
+                                        "q3": 45.5,
+                                        "lo": 28,
+                                        "hi": 63.5,
+                                        "out": [
+                                            75
+                                        ]
+                                    }
+                                ],
+                                "xTitle": "Minutos",
+                                "range": [
+                                    11.5,
+                                    79
+                                ]
+                            },
+                            {
+                                "type": "box",
+                                "boxes": [
+                                    {
+                                        "name": "",
+                                        "q1": 33.5,
+                                        "med": 39.0,
+                                        "q3": 45.5,
+                                        "lo": 28,
+                                        "hi": 49,
+                                        "out": []
+                                    }
+                                ],
+                                "xTitle": "Minutos",
+                                "range": [
+                                    11.5,
+                                    79
+                                ]
+                            }
+                        ],
+                        "c": 0,
+                        "explanation": "Con las posiciones $\\dfrac{k(n+1)}{100}$ se obtiene el resumen de cinco números: mínimo 28, $Q_1 = 33{,}5$, $Me = 39{,}0$, $Q_3 = 45{,}5$ y máximo 75. Entonces $RIC = 45{,}5 - 33{,}5 = 12{,}0$ y las vallas son $Q_1 - 1{,}5\\,RIC = 15{,}50$ y $Q_3 + 1{,}5\\,RIC = 63{,}50$. El dato 75 supera la valla superior (63,50), así que es atípico y se dibuja como punto aparte; el bigote superior llega hasta 49, el último dato que cabe dentro de la valla, y el inferior hasta 28. Los distractores cometen los errores típicos: llevar el bigote hasta el máximo sin marcar el atípico, llevarlo hasta la valla en lugar de hasta el último dato real, o dibujar el bigote correcto pero olvidar el punto atípico.",
+                        "r": "x <- c(28, 31, 33, 35, 36, 38, 40, 41, 44, 46, 49, 75)\n# type = 6 usa la posición k(n+1)/100 con interpolación, la misma que se vio en clase.\n# (R usa por defecto type = 7, que da un resultado ligeramente distinto.)\nq   <- quantile(x, probs = c(0.25, 0.5, 0.75), type = 6)   # Q1, Me, Q3\nric <- q[3] - q[1]\nvallas <- c(q[1] - 1.5 * ric, q[3] + 1.5 * ric)            # vallas inferior y superior\nx[x < vallas[1] | x > vallas[2]]                           # valores atípicos\nrange(x[x >= vallas[1] & x <= vallas[2]])                  # hasta dónde llegan los bigotes\n# boxplot() usa las bisagras de Tukey: la caja puede diferir un poco de los cuartiles de arriba\nboxplot(x, horizontal = TRUE, xlab = \"Minutos\")"
+                    },
+                    {
+                        "type": "chart_mcq",
+                        "q": "<p>El valor, en miles de pesos, de 13 facturas de una papelería es:</p><p style=\"font-family:Consolas,monospace; font-size:0.9em; background:#f4f6f8; padding:10px; border-radius:6px;\">6  35  38  40  42  45  47  50  52  55  58  60  64</p><p>¿Cuál diagrama de caja representa correctamente estos datos, con el criterio de $1{,}5 \\times RIC$ para los valores atípicos?</p>",
+                        "charts": [
+                            {
+                                "type": "box",
+                                "boxes": [
+                                    {
+                                        "name": "",
+                                        "q1": 39.0,
+                                        "med": 47.0,
+                                        "q3": 56.5,
+                                        "lo": 35,
+                                        "hi": 64,
+                                        "out": [
+                                            6
+                                        ]
+                                    }
+                                ],
+                                "xTitle": "Miles de pesos",
+                                "range": [
+                                    1,
+                                    87.75
+                                ]
+                            },
+                            {
+                                "type": "box",
+                                "boxes": [
+                                    {
+                                        "name": "",
+                                        "q1": 39.0,
+                                        "med": 47.0,
+                                        "q3": 56.5,
+                                        "lo": 6,
+                                        "hi": 64,
+                                        "out": []
+                                    }
+                                ],
+                                "xTitle": "Miles de pesos",
+                                "range": [
+                                    1,
+                                    87.75
+                                ]
+                            },
+                            {
+                                "type": "box",
+                                "boxes": [
+                                    {
+                                        "name": "",
+                                        "q1": 39.0,
+                                        "med": 47.0,
+                                        "q3": 56.5,
+                                        "lo": 12.75,
+                                        "hi": 64,
+                                        "out": [
+                                            6
+                                        ]
+                                    }
+                                ],
+                                "xTitle": "Miles de pesos",
+                                "range": [
+                                    1,
+                                    87.75
+                                ]
+                            },
+                            {
+                                "type": "box",
+                                "boxes": [
+                                    {
+                                        "name": "",
+                                        "q1": 39.0,
+                                        "med": 47.0,
+                                        "q3": 56.5,
+                                        "lo": 35,
+                                        "hi": 64,
+                                        "out": []
+                                    }
+                                ],
+                                "xTitle": "Miles de pesos",
+                                "range": [
+                                    1,
+                                    87.75
+                                ]
+                            }
+                        ],
+                        "c": 0,
+                        "explanation": "Con las posiciones $\\dfrac{k(n+1)}{100}$ se obtiene el resumen de cinco números: mínimo 6, $Q_1 = 39{,}0$, $Me = 47{,}0$, $Q_3 = 56{,}5$ y máximo 64. Entonces $RIC = 56{,}5 - 39{,}0 = 17{,}5$ y las vallas son $Q_1 - 1{,}5\\,RIC = 12{,}75$ y $Q_3 + 1{,}5\\,RIC = 82{,}75$. El dato 6 queda por debajo de la valla inferior (12,75), así que es atípico y va como punto suelto; el bigote inferior llega hasta 35 (el menor dato dentro de las vallas) y el superior hasta 64. Un atípico puede estar en cualquiera de los dos extremos: aquí está abajo. Los distractores llevan el bigote hasta el mínimo, hasta la valla, o simplemente no dibujan el punto atípico.",
+                        "r": "x <- c(6, 35, 38, 40, 42, 45, 47, 50, 52, 55, 58, 60, 64)\n# type = 6 usa la posición k(n+1)/100 con interpolación, la misma que se vio en clase.\n# (R usa por defecto type = 7, que da un resultado ligeramente distinto.)\nq   <- quantile(x, probs = c(0.25, 0.5, 0.75), type = 6)   # Q1, Me, Q3\nric <- q[3] - q[1]\nvallas <- c(q[1] - 1.5 * ric, q[3] + 1.5 * ric)            # vallas inferior y superior\nx[x < vallas[1] | x > vallas[2]]                           # valores atípicos\nrange(x[x >= vallas[1] & x <= vallas[2]])                  # hasta dónde llegan los bigotes\n# boxplot() usa las bisagras de Tukey: la caja puede diferir un poco de los cuartiles de arriba\nboxplot(x, horizontal = TRUE, xlab = \"Miles de pesos\")"
+                    },
+                    {
+                        "type": "chart_mcq",
+                        "q": "<p>Una agencia de trabajo social registró cuántas visitas domiciliarias realizó en un mes cada uno de sus 15 profesionales:</p><p style=\"font-family:Consolas,monospace; font-size:0.9em; background:#f4f6f8; padding:10px; border-radius:6px;\">6  8  9  10  11  12  12  13  14  15  16  17  19  38  45</p><p>¿Cuál diagrama de caja representa correctamente estos datos, con el criterio de $1{,}5 \\times RIC$ para los valores atípicos?</p>",
+                        "charts": [
+                            {
+                                "type": "box",
+                                "boxes": [
+                                    {
+                                        "name": "",
+                                        "q1": 10.0,
+                                        "med": 13.0,
+                                        "q3": 17.0,
+                                        "lo": 6,
+                                        "hi": 19,
+                                        "out": [
+                                            38,
+                                            45
+                                        ]
+                                    }
+                                ],
+                                "xTitle": "Visitas por mes",
+                                "range": [
+                                    -3.5,
+                                    48
+                                ]
+                            },
+                            {
+                                "type": "box",
+                                "boxes": [
+                                    {
+                                        "name": "",
+                                        "q1": 10.0,
+                                        "med": 13.0,
+                                        "q3": 17.0,
+                                        "lo": 6,
+                                        "hi": 45,
+                                        "out": []
+                                    }
+                                ],
+                                "xTitle": "Visitas por mes",
+                                "range": [
+                                    -3.5,
+                                    48
+                                ]
+                            },
+                            {
+                                "type": "box",
+                                "boxes": [
+                                    {
+                                        "name": "",
+                                        "q1": 10.0,
+                                        "med": 13.0,
+                                        "q3": 17.0,
+                                        "lo": 6,
+                                        "hi": 27.5,
+                                        "out": [
+                                            38,
+                                            45
+                                        ]
+                                    }
+                                ],
+                                "xTitle": "Visitas por mes",
+                                "range": [
+                                    -3.5,
+                                    48
+                                ]
+                            },
+                            {
+                                "type": "box",
+                                "boxes": [
+                                    {
+                                        "name": "",
+                                        "q1": 10.0,
+                                        "med": 13.0,
+                                        "q3": 17.0,
+                                        "lo": 6,
+                                        "hi": 19,
+                                        "out": []
+                                    }
+                                ],
+                                "xTitle": "Visitas por mes",
+                                "range": [
+                                    -3.5,
+                                    48
+                                ]
+                            }
+                        ],
+                        "c": 0,
+                        "explanation": "Con las posiciones $\\dfrac{k(n+1)}{100}$ se obtiene el resumen de cinco números: mínimo 6, $Q_1 = 10{,}0$, $Me = 13{,}0$, $Q_3 = 17{,}0$ y máximo 45. Entonces $RIC = 17{,}0 - 10{,}0 = 7{,}0$ y las vallas son $Q_1 - 1{,}5\\,RIC = -0{,}50$ y $Q_3 + 1{,}5\\,RIC = 27{,}50$. Los datos 38 y 45 superan la valla superior (27,5): son dos atípicos que se dibujan como puntos, y el bigote superior llega hasta 19, el último dato dentro de la valla. El bigote inferior llega hasta 6. Los distractores prolongan el bigote hasta el máximo, lo llevan hasta la valla (que no es un dato) o no marcan los atípicos.",
+                        "r": "x <- c(6, 8, 9, 10, 11, 12, 12, 13, 14, 15, 16, 17, 19, 38, 45)\n# type = 6 usa la posición k(n+1)/100 con interpolación, la misma que se vio en clase.\n# (R usa por defecto type = 7, que da un resultado ligeramente distinto.)\nq   <- quantile(x, probs = c(0.25, 0.5, 0.75), type = 6)   # Q1, Me, Q3\nric <- q[3] - q[1]\nvallas <- c(q[1] - 1.5 * ric, q[3] + 1.5 * ric)            # vallas inferior y superior\nx[x < vallas[1] | x > vallas[2]]                           # valores atípicos\nrange(x[x >= vallas[1] & x <= vallas[2]])                  # hasta dónde llegan los bigotes\n# boxplot() usa las bisagras de Tukey: la caja puede diferir un poco de los cuartiles de arriba\nboxplot(x, horizontal = TRUE, xlab = \"Visitas por mes\")"
+                    },
+                    {
+                        "type": "mcq",
+                        "q": "<p>Una empresa de domicilios registró, en minutos, el tiempo de entrega de 12 pedidos (datos ya ordenados):</p><p style=\"font-family:Consolas,monospace; font-size:0.9em; background:#f4f6f8; padding:10px; border-radius:6px;\">14  18  19  21  22  24  26  27  29  33  35  52</p><p>Con el criterio de $1{,}5 \\times RIC$ para el diagrama de caja, ¿cuál afirmación es correcta?</p>",
+                        "a": [
+                            "Atípico: 52. La valla superior es 50,75 y el bigote superior llega hasta 35.",
+                            "Atípico: 52. El bigote superior llega hasta la valla superior (50,75).",
+                            "No hay atípicos, porque el máximo (52) es un dato real del conjunto.",
+                            "Atípico: 52. La valla superior es 44,50 y el bigote llega hasta 35."
+                        ],
+                        "c": 0,
+                        "explanation": "La posición de $Q_1$ es $\\dfrac{25(13)}{100} = 3{,}25$, luego $Q_1 = 19 + 0{,}25(21-19) = 19{,}5$; la de $Q_3$ es $\\dfrac{75(13)}{100} = 9{,}75$, luego $Q_3 = 29 + 0{,}75(33-29) = 32{,}0$. Entonces $RIC = 12{,}5$ y la valla superior es $Q_3 + 1{,}5\\,RIC = 32{,}0 + 18{,}75 = 50{,}75$. El 52 supera esa valla, así que es atípico; el bigote llega hasta 35, el mayor dato que sí cabe dentro de la valla (el bigote nunca termina en la valla misma). Un dato extremo no deja de ser atípico por ser real: lo es por quedar fuera de las vallas.",
+                        "r": "x <- c(14, 18, 19, 21, 22, 24, 26, 27, 29, 33, 35, 52)\n# type = 6 usa la posición k(n+1)/100 con interpolación, la misma que se vio en clase.\n# (R usa por defecto type = 7, que da un resultado ligeramente distinto.)\nq   <- quantile(x, probs = c(0.25, 0.5, 0.75), type = 6)   # Q1, Me, Q3\nric <- q[3] - q[1]\nvallas <- c(q[1] - 1.5 * ric, q[3] + 1.5 * ric)            # vallas inferior y superior\nx[x < vallas[1] | x > vallas[2]]                           # valores atípicos\nrange(x[x >= vallas[1] & x <= vallas[2]])                  # hasta dónde llegan los bigotes\n# boxplot() usa las bisagras de Tukey: la caja puede diferir un poco de los cuartiles de arriba\nboxplot(x, horizontal = TRUE, xlab = \"Minutos\")"
+                    }
+                ]
+            },
+            {
+                "nav": "Interpretación: comparar cajas",
+                "variants": [
+                    {
+                        "type": "mcq",
+                        "q": "<p>Una psicóloga midió el bienestar psicológico (puntaje de 0 a 100) de estudiantes de dos programas de acompañamiento, A y B. Observe los diagramas de caja:</p>",
+                        "q2": "<p>¿Cuál conclusión es correcta?</p>",
+                        "fig": {
+                            "type": "box",
+                            "boxes": [
+                                {
+                                    "name": "Grupo A",
+                                    "lo": 40,
+                                    "q1": 55,
+                                    "med": 66,
+                                    "q3": 78,
+                                    "hi": 92,
+                                    "out": []
+                                },
+                                {
+                                    "name": "Grupo B",
+                                    "lo": 52,
+                                    "q1": 60,
+                                    "med": 66,
+                                    "q3": 72,
+                                    "hi": 80,
+                                    "out": []
+                                }
+                            ],
+                            "xTitle": "Puntaje de bienestar (0 a 100)",
+                            "range": [
+                                30,
+                                100
+                            ]
+                        },
+                        "a": [
+                            "Las dos medianas son aproximadamente iguales (66), pero el Grupo A es más disperso, es decir, menos homogéneo.",
+                            "El Grupo A tiene una mediana más alta que el Grupo B, porque su caja es más ancha y llega a valores mayores.",
+                            "El Grupo B tiene menos estudiantes que el Grupo A, porque su caja es más angosta y sus bigotes son más cortos.",
+                            "Los dos grupos tienen la misma variabilidad, porque ambos tienen datos por encima y por debajo de la misma mediana."
+                        ],
+                        "c": 0,
+                        "explanation": "La línea dentro de cada caja es la mediana: en ambos grupos está en 66. Lo que cambia es el ancho de la caja, que es el rango intercuartílico: en A, $RIC = 78 - 55 = 23$ y en B, $RIC = 72 - 60 = 12$. Una caja más ancha significa que el 50 % central de los datos está más disperso, no que el centro sea mayor. El ancho de la caja tampoco dice nada sobre cuántos datos hay: eso no se puede leer en un diagrama de caja. Misma mediana no implica misma variabilidad.",
+                        "r": "# filas: mínimo del bigote, Q1, mediana, Q3 y máximo del bigote\nest <- cbind(\n    Grupo_A = c(40, 55, 66, 78, 92),\n    Grupo_B = c(52, 60, 66, 72, 80))\nest[4, ] - est[2, ]   # RIC de cada caja (ancho de la caja)\nest[3, ]              # mediana de cada caja\nbxp(list(stats = est, n = rep(30, 2), names = colnames(est)),\n    horizontal = TRUE, xlab = \"Puntaje de bienestar\")"
+                    },
+                    {
+                        "type": "mcq",
+                        "q": "<p>Una cadena de panaderías comparó las ventas diarias, en millones de pesos, de sus tres sucursales durante un trimestre:</p>",
+                        "q2": "<p>¿Cuál conclusión es correcta?</p>",
+                        "fig": {
+                            "type": "box",
+                            "boxes": [
+                                {
+                                    "name": "Norte",
+                                    "lo": 8,
+                                    "q1": 12,
+                                    "med": 15,
+                                    "q3": 18,
+                                    "hi": 22,
+                                    "out": []
+                                },
+                                {
+                                    "name": "Centro",
+                                    "lo": 10,
+                                    "q1": 17,
+                                    "med": 21,
+                                    "q3": 25,
+                                    "hi": 31,
+                                    "out": []
+                                },
+                                {
+                                    "name": "Sur",
+                                    "lo": 9,
+                                    "q1": 13,
+                                    "med": 16,
+                                    "q3": 20,
+                                    "hi": 25,
+                                    "out": [
+                                        40
+                                    ]
+                                }
+                            ],
+                            "xTitle": "Ventas diarias (millones de pesos)",
+                            "range": [
+                                0,
+                                45
+                            ]
+                        },
+                        "a": [
+                            "La sucursal Centro tiene la mediana de ventas más alta, y Sur es la única con un día atípico (cercano a 40 millones).",
+                            "La sucursal Sur vende más que las otras dos en general, porque tiene el valor más grande de los tres (cerca de 40 millones).",
+                            "La sucursal Norte tiene las ventas más altas, porque su caja empieza más a la izquierda que las de Centro y Sur.",
+                            "Las tres sucursales tienen la misma mediana de ventas, porque sus cajas se solapan en el centro del gráfico."
+                        ],
+                        "c": 0,
+                        "explanation": "La mediana es la línea dentro de la caja: Norte ≈ 15, Centro ≈ 21 y Sur ≈ 16, de modo que Centro tiene la más alta. El punto aislado de Sur (≈ 40) está fuera de las vallas: es un valor atípico, un día excepcional que conviene revisar. Un atípico no indica que la sucursal venda más en general: su mediana (≈ 16) es menor que la de Centro. Que las cajas se solapen no significa que las medianas sean iguales, y una caja ubicada más a la izquierda indica valores <em>menores</em>, no mayores.",
+                        "r": "# filas: mínimo del bigote, Q1, mediana, Q3 y máximo del bigote\nest <- cbind(\n    Norte = c(8, 12, 15, 18, 22),\n    Centro = c(10, 17, 21, 25, 31),\n    Sur = c(9, 13, 16, 20, 25))\nest[4, ] - est[2, ]   # RIC de cada caja (ancho de la caja)\nest[3, ]              # mediana de cada caja\n\nout   <- c(40)   # valores atípicos\ngrupo <- c(3)   # caja a la que pertenece cada atípico\nbxp(list(stats = est, n = rep(30, 3), names = colnames(est), out = out, group = grupo),\n    horizontal = TRUE, xlab = \"Ventas diarias (millones)\")"
+                    },
+                    {
+                        "type": "mcq",
+                        "q": "<p>Una secretaría de bienestar social comparó los días que esperan los usuarios para obtener una cita en dos sedes de atención:</p>",
+                        "q2": "<p>¿Cuál conclusión es correcta?</p>",
+                        "fig": {
+                            "type": "box",
+                            "boxes": [
+                                {
+                                    "name": "Sede A",
+                                    "lo": 2,
+                                    "q1": 4,
+                                    "med": 6,
+                                    "q3": 9,
+                                    "hi": 14,
+                                    "out": []
+                                },
+                                {
+                                    "name": "Sede B",
+                                    "lo": 3,
+                                    "q1": 8,
+                                    "med": 12,
+                                    "q3": 16,
+                                    "hi": 22,
+                                    "out": []
+                                }
+                            ],
+                            "xTitle": "Días de espera",
+                            "range": [
+                                0,
+                                25
+                            ]
+                        },
+                        "a": [
+                            "Al menos el 75 % de los usuarios de la Sede B espera más días que la mediana de A (≈ 6 días), y además B es más variable.",
+                            "La Sede A tiene los mayores tiempos de espera, porque su caja es más angosta y por eso sus usuarios esperan más.",
+                            "Los usuarios de ambas sedes esperan lo mismo, porque en las dos hay usuarios que esperan 3 días o menos.",
+                            "La Sede B tiene tiempos más homogéneos, porque su bigote superior llega más lejos que el de la Sede A."
+                        ],
+                        "c": 0,
+                        "explanation": "El primer cuartil de B (≈ 8 días) es mayor que la mediana de A (≈ 6 días): por eso al menos el 75 % de los usuarios de B espera más que la mitad de los de A. Además, la caja de B es más ancha ($RIC \\approx 8$ frente a $\\approx 5$ de A), así que B es más variable. Los valores bajos que existen en ambas sedes no hacen iguales a las distribuciones, y una caja más angosta indica <em>menor</em> dispersión, no mayor espera.",
+                        "r": "# filas: mínimo del bigote, Q1, mediana, Q3 y máximo del bigote\nest <- cbind(\n    Sede_A = c(2, 4, 6, 9, 14),\n    Sede_B = c(3, 8, 12, 16, 22))\nest[4, ] - est[2, ]   # RIC de cada caja (ancho de la caja)\nest[3, ]              # mediana de cada caja\nbxp(list(stats = est, n = rep(30, 2), names = colnames(est)),\n    horizontal = TRUE, xlab = \"Días de espera\")"
+                    },
+                    {
+                        "type": "mcq",
+                        "q": "<p>Un programa de intervención busca reducir los síntomas de depresión. Se midió un puntaje de síntomas (a mayor puntaje, más síntomas) en un grupo de participantes antes y después del programa:</p>",
+                        "q2": "<p>¿Cuál conclusión es correcta?</p>",
+                        "fig": {
+                            "type": "box",
+                            "boxes": [
+                                {
+                                    "name": "Antes",
+                                    "lo": 18,
+                                    "q1": 26,
+                                    "med": 32,
+                                    "q3": 38,
+                                    "hi": 46,
+                                    "out": []
+                                },
+                                {
+                                    "name": "Después",
+                                    "lo": 6,
+                                    "q1": 14,
+                                    "med": 19,
+                                    "q3": 24,
+                                    "hi": 34,
+                                    "out": []
+                                }
+                            ],
+                            "xTitle": "Puntaje de síntomas",
+                            "range": [
+                                0,
+                                50
+                            ]
+                        },
+                        "a": [
+                            "La mediana de síntomas baja de ≈ 32 a ≈ 19, y al menos tres de cada cuatro puntajes «después» están por debajo de la mediana «antes».",
+                            "La mediana de síntomas sube de ≈ 19 a ≈ 32 después del programa, por lo que los síntomas aumentaron en la mayoría de los casos.",
+                            "Después del programa los síntomas son más variables, porque la caja «Después» está más a la izquierda que la caja «Antes».",
+                            "El programa no tiene efecto, porque los bigotes de ambas cajas se solapan entre 18 y 34 puntos."
+                        ],
+                        "c": 0,
+                        "explanation": "La mediana «Antes» es ≈ 32 y la mediana «Después» es ≈ 19: los síntomas disminuyeron. Además, el tercer cuartil «Después» (≈ 24) es menor que la mediana «Antes» (≈ 32), lo que significa que al menos el 75 % de los puntajes posteriores quedó por debajo del valor central de los iniciales. Estar más a la izquierda indica valores menores, no mayor variabilidad (las anchuras de las cajas, ≈ 12 y ≈ 10, son parecidas). Que los bigotes se solapen no anula la diferencia de las medianas ni de las cajas.",
+                        "r": "# filas: mínimo del bigote, Q1, mediana, Q3 y máximo del bigote\nest <- cbind(\n    Antes = c(18, 26, 32, 38, 46),\n    Despues = c(6, 14, 19, 24, 34))\nest[4, ] - est[2, ]   # RIC de cada caja (ancho de la caja)\nest[3, ]              # mediana de cada caja\nbxp(list(stats = est, n = rep(30, 2), names = colnames(est)),\n    horizontal = TRUE, xlab = \"Puntaje de síntomas\")"
+                    }
+                ]
+            },
+            {
+                "nav": "Interpretación: comparar variación",
+                "variants": [
+                    {
+                        "type": "mcq",
+                        "q": "<p>Una empresa de distribución compara la estabilidad de las ventas diarias de dos sucursales, en millones de pesos:</p><div class=\"table-container\"><table><tr><th>Sucursal</th><th>Media $\\bar{x}$</th><th>Desviación $s$</th></tr><tr><td>Norte</td><td>250</td><td>40</td></tr><tr><td>Sur</td><td>90</td><td>21</td></tr></table></div><p>¿Cuál sucursal tiene ventas relativamente más estables y por qué?</p>",
+                        "a": [
+                            "Norte: su coeficiente de variación (16,0 %) es menor que el de Sur (23,3 %), aunque su desviación estándar sea mayor.",
+                            "Sur, porque su desviación estándar (21) es menor que la de Norte (40), así que sus ventas se alejan menos de la media.",
+                            "Norte, porque su media (250) es mayor que la de Sur (90), así que sus ventas diarias son más altas y más estables.",
+                            "Ninguna se puede comparar, porque las dos sucursales tienen medias distintas y no hay una medida común."
+                        ],
+                        "c": 0,
+                        "explanation": "Cuando las medias son muy diferentes no se comparan las desviaciones directamente, sino el coeficiente de variación $CV = \\dfrac{s}{\\bar{x}}\\times 100$: Norte 16,0 % y Sur 23,3 %. El menor CV indica menor variación relativa a la media, de modo que Norte es más estable aunque su $s$ sea el doble. Tener la media mayor no implica estabilidad, y precisamente el CV existe para poder comparar variables con medias o unidades distintas.",
+                        "r": "media <- c(Norte = 250, Sur = 90)\ns     <- c(Norte = 40,  Sur = 21)\nround(s / media * 100, 1)   # coeficiente de variación (%)"
+                    },
+                    {
+                        "type": "mcq",
+                        "q": "<p>Una neuropsicóloga evaluó al mismo grupo de pacientes con dos pruebas medidas en escalas distintas:</p><div class=\"table-container\"><table><tr><th>Prueba</th><th>Escala</th><th>Media $\\bar{x}$</th><th>Desviación $s$</th></tr><tr><td>Atención</td><td>0 a 100</td><td>70</td><td>14</td></tr><tr><td>Memoria</td><td>0 a 20</td><td>12</td><td>3</td></tr></table></div><p>¿En cuál prueba los resultados son más homogéneos y por qué?</p>",
+                        "a": [
+                            "En atención, porque su CV (20,0 %) es menor que el de memoria (25,0 %).",
+                            "En memoria, porque su desviación estándar (3) es menor que la de atención (14).",
+                            "En atención, porque su media (70) es mayor que la de memoria (12).",
+                            "No se puede saber, porque las escalas de las pruebas son distintas."
+                        ],
+                        "c": 0,
+                        "explanation": "Con escalas distintas las desviaciones estándar no son comparables (14 puntos de 100 no equivalen a 3 puntos de 20). Se usa el coeficiente de variación: atención $\\dfrac{14}{70}\\times 100 = 20{,}0$ % y memoria $\\dfrac{3}{12}\\times 100 = 25{,}0$ %. El CV es adimensional, por eso permite comparar. El menor CV corresponde a atención, que es la prueba más homogénea.",
+                        "r": "media <- c(Atención = 70, Memoria = 12)\ns     <- c(Atención = 14, Memoria = 3)\nround(s / media * 100, 1)   # coeficiente de variación (%)"
+                    },
+                    {
+                        "type": "mcq",
+                        "q": "<p>Una trabajadora social analizó el ingreso mensual de 60 hogares atendidos por una fundación, en millones de pesos:</p><div class=\"table-container\"><table><tr><th>Media</th><th>Mediana</th><th>Desviación $s$</th><th>Máximo</th></tr><tr><td>2,4</td><td>1,6</td><td>2,1</td><td>14,0</td></tr></table></div><p>Para describir el ingreso «típico» de estos hogares en un informe, ¿qué medida conviene reportar y por qué?</p>",
+                        "a": [
+                            "La mediana (1,6 millones), porque unos pocos hogares con ingresos muy altos inflan la media.",
+                            "La media (2,4 millones), porque usa todos los datos y por eso siempre es la mejor medida.",
+                            "La media (2,4 millones), porque es mayor que la mediana y así se refleja mejor el ingreso.",
+                            "Cualquiera de las dos da lo mismo, porque ambas miden el centro de los datos y son medidas de tendencia central."
+                        ],
+                        "c": 0,
+                        "explanation": "Cuando hay unos pocos valores muy altos (aquí hasta 14 millones), la media se arrastra hacia ellos y deja de representar a la mayoría: la media (2,4) está bien por encima de la mediana (1,6), es decir, la mitad de los hogares gana menos de 1,6 millones. La mediana no se ve afectada por los extremos, así que describe mejor al hogar típico. Que la media use todos los datos es su ventaja en general, pero aquí es justo su debilidad; y elegir una medida porque da un número mayor no tiene justificación estadística.",
+                        "r": "media   <- 2.4\nmediana <- 1.6\ns       <- 2.1\nmedia > mediana             # TRUE: la media queda arrastrada hacia los ingresos altos\nround(s / media * 100, 1)   # CV = 87.5 %: ingresos muy dispersos"
+                    },
+                    {
+                        "type": "mcq",
+                        "q": "<p>Una psicóloga comparó dos modalidades de terapia (grupal e individual) midiendo cuántos síntomas informó cada paciente al terminar el tratamiento:</p><div class=\"table-container\"><table><tr><th>Modalidad</th><th>Pacientes</th><th>Media $\\bar{x}$</th><th>Desviación $s$</th></tr><tr><td>Grupal</td><td>30</td><td>6,0</td><td>1,2</td></tr><tr><td>Individual</td><td>30</td><td>6,0</td><td>3,1</td></tr></table></div><p>¿Cuál es la interpretación correcta?</p>",
+                        "a": [
+                            "Tienen el mismo promedio, pero la terapia individual es mucho más variable (CV de 51,7 % frente a 20,0 %).",
+                            "La terapia individual es mejor, porque su desviación estándar es mayor (3,1 frente a 1,2) y eso indica más mejoría.",
+                            "Las dos modalidades son idénticas, porque tienen la misma media y la misma cantidad de pacientes (30).",
+                            "La terapia grupal es más variable, porque su coeficiente de variación es el más pequeño de los dos."
+                        ],
+                        "c": 0,
+                        "explanation": "Con medias iguales, la desviación estándar indica directamente dónde hay más dispersión: 3,1 frente a 1,2. En términos relativos, $CV_{grupal} = \\dfrac{1{,}2}{6}\\times 100 = 20{,}0$ % y $CV_{individual} = \\dfrac{3{,}1}{6}\\times 100 = 51{,}7$ %. En la modalidad individual los pacientes reportan cantidades de síntomas muy distintas, por lo que el promedio de 6 los describe peor. Una desviación mayor significa más dispersión, no un mejor resultado, y dos grupos con la misma media pueden ser muy diferentes.",
+                        "r": "media <- c(Grupal = 6, Individual = 6)\ns     <- c(Grupal = 1.2, Individual = 3.1)\nround(s / media * 100, 1)   # coeficiente de variación (%)"
+                    },
+                    {
+                        "type": "mcq",
+                        "q": "<p>Una empresa de mensajería registró el tiempo de entrega de sus pedidos, en días, y obtuvo los cuartiles $Q_1 = 3$, $Q_2 = 5$ y $Q_3 = 9$. ¿Cuál interpretación es correcta?</p>",
+                        "a": [
+                            "La mitad central de los pedidos tarda entre 3 y 9 días, porque ahí están $Q_1$ y $Q_3$.",
+                            "Todos los pedidos tardan entre 3 y 9 días, porque esos son el primer y el tercer cuartil.",
+                            "El 75 % de los pedidos tarda más de 9 días, porque 9 es el tercer cuartil.",
+                            "El promedio de entrega es de 5 días, porque $Q_2 = 5$ es el valor central."
+                        ],
+                        "c": 0,
+                        "explanation": "Los cuartiles dividen los datos ordenados en cuatro partes iguales: el 25 % tarda menos de 3 días, el 50 % tarda menos de 5 (la mediana), y el 75 % tarda menos de 9. Por tanto, entre $Q_1 = 3$ y $Q_3 = 9$ queda el 50 % central de los pedidos, y el rango intercuartílico es $RIC = 9 - 3 = 6$ días. No \"todos\" los pedidos caen en ese intervalo (hay pedidos más rápidos y más lentos), y $Q_2 = 5$ es la <em>mediana</em>, no el promedio.",
+                        "r": "q <- c(Q1 = 3, Q2 = 5, Q3 = 9)\nunname(q[\"Q3\"] - q[\"Q1\"])   # RIC = 6: ancho del 50 % central"
+                    }
+                ]
+            }
+        ];
+
+        let currentExam = [];
+        let userAnswers = {};
+
+        /* ---------------- utilidades ---------------- */
+
+        function shuffle(arr) {
+            for (let i = arr.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [arr[i], arr[j]] = [arr[j], arr[i]];
+            }
+            return arr;
+        }
+
+        function pickOne(arr) {
+            return arr[Math.floor(Math.random() * arr.length)];
+        }
+
+        /* Devuelve una copia de la variante con las opciones barajadas. */
+        function prepare(variant) {
+            const q = JSON.parse(JSON.stringify(variant));
+
+            if (q.type === "mcq") {
+                const correcta = q.a[q.c];
+                q.a = shuffle(q.a.slice());
+                q.c = q.a.indexOf(correcta);
+            } else if (q.type === "chart_mcq") {
+                const correcta = q.charts[q.c];
+                q.charts = shuffle(q.charts.slice());
+                q.c = q.charts.indexOf(correcta);
+                q.charts.forEach((ch, i) => { ch.title = 'Opción ' + String.fromCharCode(65 + i); });
+            } else if (q.type === "matching") {
+                q.pairs = shuffle(q.pairs.slice());
+                const encabezado = q.options[0];
+                q.options = [encabezado].concat(shuffle(q.options.slice(1)));
+            }
+            return q;
+        }
+
+        /* ---------------- construcción del examen ---------------- */
+
+        function generateExam() {
+            currentExam = TEMAS.map(tema => prepare(pickOne(tema.variants)));
+
+            userAnswers = {};
+            document.getElementById('results-container').style.display = 'none';
+            document.getElementById('total-count').innerText = currentExam.length;
+            renderQuestions();
+            renderNavigation();
+            updateProgress();
+        }
+
+        function renderQuestions() {
+            const container = document.getElementById('questions-container');
+            container.innerHTML = '';
+
+            currentExam.forEach((q, idx) => {
+                const card = document.createElement('div');
+                card.className = 'question-card';
+                card.id = `question-${idx}`;
+
+                let html = `
+                    <div class="question-header">
+                        <div class="question-number">${idx + 1}</div>
+                    </div>
+                    <div class="question-text">${q.q}</div>
+                    ${q.fig ? `<div id="fig-${idx}" class="chart-box fig-box" style="height:${q.fig.height || 280}px"></div>` : ''}
+                    ${q.q2 ? `<div class="question-text">${q.q2}</div>` : ''}
+                `;
+
+                if (q.type === "matching") {
+                    html += `<div class="matching-container">`;
+                    q.pairs.forEach(pair => {
+                        html += `
+                            <div class="match-row">
+                                <div style="width:42%; font-size:0.95em; color:#333;">${pair.prompt}</div>
+                                <select class="match-select" data-qid="${idx}" data-pairid="${pair.id}" onchange="selectMatch(${idx}, '${pair.id}', this.value)">
+                                    ${q.options.map(opt => `<option value="${opt.val}">${opt.text}</option>`).join('')}
+                                </select>
+                            </div>
+                        `;
+                    });
+                    html += `</div>`;
+                } else if (q.type === "mcq") {
+                    html += `<div class="options-container">`;
+                    q.a.forEach((opt, optIdx) => {
+                        html += `
+                            <div class="option" id="opt-${idx}-${optIdx}" onclick="selectOption(${idx}, ${optIdx})">
+                                <strong>${String.fromCharCode(65 + optIdx)}.</strong>&nbsp;<span>${opt}</span>
+                            </div>
+                        `;
+                    });
+                    html += `</div>`;
+                } else if (q.type === "chart_mcq") {
+                    html += `<div class="options-grid-charts">`;
+                    q.charts.forEach((chart, optIdx) => {
+                        html += `
+                            <div class="option option-chart-card" id="opt-${idx}-${optIdx}" onclick="selectOption(${idx}, ${optIdx})">
+                                <strong>Opción ${String.fromCharCode(65 + optIdx)}</strong>
+                                <div id="chart-container-${idx}-${optIdx}" class="chart-box"></div>
+                            </div>
+                        `;
+                    });
+                    html += `</div>`;
+                }
+
+                html += `<div id="explanation-${idx}" class="explanation" style="display:none;"></div>`;
+                card.innerHTML = html;
+                container.appendChild(card);
+
+                if (q.type === "chart_mcq") {
+                    setTimeout(() => renderChartsForQuestion(q, idx), 50);
+                }
+                if (q.fig) {
+                    setTimeout(() => drawChart(`fig-${idx}`, q.fig), 50);
+                }
+            });
+
+            if (window.MathJax && MathJax.typesetPromise) {
+                MathJax.typesetPromise();
+            }
+        }
+
+        function renderChartsForQuestion(q, qIdx) {
+            q.charts.forEach((c, optIdx) => drawChart(`chart-container-${qIdx}-${optIdx}`, c));
+        }
+
+        function drawChart(targetId, c) {
+            let data = [];
+            let layout = {
+                title: { text: c.title, font: { size: 12 } },
+                margin: { l: 30, r: 20, t: 30, b: 30 },
+                autosize: true
+            };
+            const ejeX = { automargin: true, tickfont: { size: 9 } };
+            const ejeY = { automargin: true, tickfont: { size: 9 } };
+            const config = { responsive: true, displayModeBar: false };
+
+            if (c.type === 'pie') {
+                data = [{ labels: c.labels, values: c.values, type: 'pie', textinfo: 'label+percent' }];
+            } else if (c.type === 'bar') {
+                data = [{ x: c.x, y: c.y, type: 'bar', marker: { color: '#3498db' } }];
+                layout.bargap = (c.gap === 0) ? 0.02 : 0.45;
+                layout.xaxis = Object.assign({ tickangle: -45 }, ejeX);
+                layout.yaxis = ejeY;
+            } else if (c.type === 'barh') {
+                data = [{ x: c.x, y: c.y, type: 'bar', orientation: 'h', marker: { color: '#3498db' } }];
+                layout.bargap = 0.45;
+                layout.xaxis = ejeX;
+                layout.yaxis = Object.assign({ autorange: 'reversed' }, ejeY);
+            } else if (c.type === 'line') {
+                data = [{ x: c.x, y: c.y, type: 'scatter', mode: 'lines+markers',
+                          marker: { color: '#3498db', size: 7 }, line: { color: '#3498db', width: 2 } }];
+                layout.xaxis = Object.assign({ tickangle: -45, tickmode: 'array', tickvals: c.x }, ejeX);
+                layout.yaxis = ejeY;
+            } else if (c.type === 'scatter') {
+                const total = c.n || 40;
+                const xs = [], ys = [];
+                for (let i = 0; i < total; i++) { xs.push(Math.random() * 10); ys.push(Math.random() * 10); }
+                data = [{ x: xs, y: ys, type: 'scatter', mode: 'markers', marker: { color: '#3498db', size: 6 } }];
+                layout.xaxis = ejeX;
+                layout.yaxis = ejeY;
+            } else if (c.type === 'box') {
+                /* Diagramas de caja horizontales con estadísticos ya calculados:
+                   b = { name, lo, q1, med, q3, hi, out: [atípicos] } */
+                const colores = ['#3498db', '#e67e22', '#27ae60'];
+                const varias = c.boxes.length > 1;
+                c.boxes.forEach((bx, i) => {
+                    const col = colores[i % colores.length];
+                    data.push({
+                        type: 'box', orientation: 'h', y: [bx.name],
+                        q1: [bx.q1], median: [bx.med], q3: [bx.q3],
+                        lowerfence: [bx.lo], upperfence: [bx.hi],
+                        fillcolor: col + '66', line: { color: col, width: 2 },
+                        boxpoints: false, hoverinfo: 'skip', showlegend: false
+                    });
+                    if (bx.out && bx.out.length) {
+                        data.push({
+                            type: 'scatter', mode: 'markers',
+                            x: bx.out, y: bx.out.map(() => bx.name),
+                            marker: { color: col, size: 9, symbol: 'circle-open', line: { color: col, width: 2 } },
+                            hoverinfo: 'skip', showlegend: false
+                        });
+                    }
+                });
+                layout.showlegend = false;
+                layout.margin = { l: varias ? 70 : 20, r: 20, t: c.title ? 30 : 10, b: 50 };
+                layout.xaxis = Object.assign({}, ejeX, {
+                    range: c.range, zeroline: false, fixedrange: true,
+                    tickfont: { size: 10 }, title: { text: c.xTitle, font: { size: 11 } }
+                });
+                layout.yaxis = { automargin: true, fixedrange: true, showticklabels: varias,
+                                 autorange: 'reversed', tickfont: { size: 12 } };
+                config.staticPlot = true;
+            }
+            Plotly.newPlot(targetId, data, layout, config);
+        }
+
+        /* ---------------- interacción ---------------- */
+
+        function selectOption(qIdx, optIdx) {
+            userAnswers[qIdx] = optIdx;
+            const card = document.getElementById(`question-${qIdx}`);
+            const options = card.querySelectorAll('.option');
+            options.forEach((opt, i) => {
+                if (i === optIdx) opt.classList.add('selected');
+                else opt.classList.remove('selected');
+            });
+            updateProgress();
+        }
+
+        function selectMatch(qIdx, pairId, value) {
+            if (!userAnswers[qIdx]) userAnswers[qIdx] = {};
+            userAnswers[qIdx][pairId] = value;
+            updateProgress();
+        }
+
+        function isAnswered(idx) {
+            const respuesta = userAnswers[idx];
+            if (respuesta === undefined) return false;
+            if (currentExam[idx].type === "matching") {
+                const total = currentExam[idx].pairs.length;
+                return Object.keys(respuesta).length === total &&
+                       Object.values(respuesta).every(v => v !== "");
+            }
+            return true;
+        }
+
+        function updateProgress() {
+            let answered = 0;
+
+            currentExam.forEach((_, idx) => {
+                const completa = isAnswered(idx);
+                if (completa) answered++;
+
+                const navItem = document.getElementById(`nav-item-${idx}`);
+                if (navItem) {
+                    const statusDot = navItem.querySelector('.topic-status');
+                    statusDot.className = `topic-status ${completa ? 'answered' : 'unanswered'}`;
+                }
+            });
+
+            document.getElementById('answered-count').innerText = answered;
+        }
+
+        function renderNavigation() {
+            const list = document.getElementById('topics-list');
+            list.innerHTML = '';
+
+            TEMAS.forEach((tema, idx) => {
+                const item = document.createElement('div');
+                item.className = 'topic-item';
+                item.id = `nav-item-${idx}`;
+                item.onclick = () => {
+                    document.getElementById(`question-${idx}`).scrollIntoView({ behavior: 'smooth' });
+                };
+                item.innerHTML = `
+                    <span class="topic-name">${idx + 1}. ${tema.nav}</span>
+                    <span class="topic-status unanswered"></span>
+                `;
+                list.appendChild(item);
+            });
+        }
+
+        /* ---------------- calificación ---------------- */
+
+        function escaparHTML(t) {
+            return t.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+        }
+
+        function submitExam() {
+            let correctCount = 0;
+            const total = currentExam.length;
+
+            currentExam.forEach((q, idx) => {
+                const card = document.getElementById(`question-${idx}`);
+                const expDiv = document.getElementById(`explanation-${idx}`);
+                let isCorrect = false;
+
+                if (q.type === "matching") {
+                    const userPairs = userAnswers[idx] || {};
+                    isCorrect = q.pairs.every(pair => userPairs[pair.id] === pair.correct);
+
+                    card.querySelectorAll('.match-select').forEach(sel => {
+                        const pair = q.pairs.find(p => p.id === sel.dataset.pairid);
+                        const fila = sel.closest('.match-row');
+                        if (sel.value === pair.correct) {
+                            fila.style.borderColor = 'var(--success-color)';
+                            fila.style.backgroundColor = '#d4edda';
+                        } else {
+                            fila.style.borderColor = 'var(--accent-color)';
+                            fila.style.backgroundColor = '#f8d7da';
+                        }
+                    });
+                } else {
+                    isCorrect = (userAnswers[idx] === q.c);
+                    const options = card.querySelectorAll('.option');
+                    options.forEach((opt, optIdx) => {
+                        if (optIdx === q.c) opt.classList.add('correct');
+                        else if (optIdx === userAnswers[idx]) opt.classList.add('incorrect');
+                    });
+                }
+
+                if (isCorrect) correctCount++;
+
+                const bloqueR = q.r ? `
+                    <p class="r-title"><strong>Proceso en R:</strong></p>
+                    <pre class="r-code"><code>${escaparHTML(q.r)}</code></pre>` : '';
+                expDiv.innerHTML = `<strong>Explicación:</strong> ${q.explanation}${bloqueR}`;
+                expDiv.style.display = 'block';
+
+                const navItem = document.getElementById(`nav-item-${idx}`);
+                if (navItem) {
+                    const statusDot = navItem.querySelector('.topic-status');
+                    statusDot.className = `topic-status ${isCorrect ? 'correct' : 'incorrect'}`;
+                }
+            });
+
+            if (window.MathJax && MathJax.typesetPromise) {
+                MathJax.typesetPromise();
+            }
+
+            const score = (correctCount / total) * 5;
+            const percentage = (correctCount / total) * 100;
+
+            const resultBox = document.getElementById('results-container');
+            const scoreCircle = document.getElementById('final-score');
+
+            scoreCircle.innerText = score.toFixed(1);
+            scoreCircle.className = `score-circle ${score >= 4 ? 'high' : score >= 3 ? 'medium' : 'low'}`;
+
+            document.getElementById('correct-count').innerText = correctCount;
+            document.getElementById('incorrect-count').innerText = total - correctCount;
+            document.getElementById('percentage-score').innerText = `${percentage.toFixed(1)}%`;
+
+            resultBox.style.display = 'block';
+            resultBox.scrollIntoView({ behavior: 'smooth' });
+        }
+
+        document.getElementById('submit-btn').addEventListener('click', submitExam);
+        document.getElementById('new-exam-btn').addEventListener('click', generateExam);
+        document.getElementById('restart-btn').addEventListener('click', generateExam);
+        document.getElementById('review-btn').addEventListener('click', () => {
+            document.querySelector('.questions-section').scrollIntoView({ behavior: 'smooth' });
+        });
+
+        document.addEventListener('DOMContentLoaded', generateExam);
+    </script>
+</body>
+</html>
