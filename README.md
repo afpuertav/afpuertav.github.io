@@ -36,6 +36,8 @@ sin build ni dependencias: solo HTML, CSS y JavaScript plano.
 │   ├── estadistica_general/   CM0244 — simuladores + PDFs
 │   ├── pensamiento_computacional/
 │   └── machine_learning_regresion/
+├── transversal/
+│   └── juegos_mentales/       Juegos mentales (portal 3D, 5 juegos)
 ├── presentations/             Una carpeta por presentación
 ├── blog/                      Una página por entrada
 ├── games/                     Juegos sueltos
@@ -44,7 +46,7 @@ sin build ni dependencias: solo HTML, CSS y JavaScript plano.
 ```
 
 **Reglas de nombres.** Todo lo que aparece en la raíz va en inglés: `courses/`,
-`presentations/`, `gallery/`, `games/`. Dentro de esas carpetas, el nombre puede
+`presentations/`, `gallery/`, `games/`, `transversal/`. Dentro de esas carpetas, el nombre puede
 ir en el idioma del contenido (`estadistica_general/`,
 `nlp-en-la-practica-pycon2026/`), porque son cursos y charlas en español.
 Siempre en minúscula, sin espacios ni tildes.

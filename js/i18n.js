@@ -301,6 +301,14 @@
     },
     "courses.selfpaced": { es: "Curso propio", en: "Independent course" },
     "courses.enter": { es: "Entrar al curso", en: "Enter course" },
+    "courses.transversal.heading": { es: "Material transversal", en: "Cross-curricular material" },
+    "courses.transversal.tag": { es: "Actividad · Todos los cursos", en: "Activity · All courses" },
+    "courses.mentalgames.name": { es: "Juegos mentales", en: "Mental games" },
+    "courses.mentalgames.desc": {
+        es: "Cinco rompecabezas en 3D (Torres de Hanoi, rompecabezas deslizante, N-Reinas, Apaga las luces y Salto del caballo) para ver las matemáticas detrás de cada juego. Diseñado por el docente Hernán Darío Hoyos Barrientos, con adaptaciones mías.",
+        en: "Five 3D puzzles (Towers of Hanoi, sliding puzzle, N-Queens, Lights Out and Knight's tour) to see the mathematics behind each game. Designed by Professor Hernán Darío Hoyos Barrientos, with my adaptations."
+    },
+    "courses.mentalgames.cta": { es: "Jugar", en: "Play" },
 
     /* --- Publicaciones --- */
     "page.publications.title": {

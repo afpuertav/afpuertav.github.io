@@ -995,3 +995,8 @@ a.card:hover .card-cta {
     color: #555;
   }
 }
+
+/* Sección "Material transversal" en courses.html */
+.transversal {
+  margin-top: 4rem;
+}

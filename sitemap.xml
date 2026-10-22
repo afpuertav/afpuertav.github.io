@@ -190,6 +190,14 @@
     <priority>0.4</priority>
   </url>
 
+  <!-- Material transversal -->
+  <url>
+    <loc>https://afpuertav.github.io/transversal/juegos_mentales/</loc>
+    <lastmod>2026-10-21</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.5</priority>
+  </url>
+
   <!-- Juegos -->
   <url>
     <loc>https://afpuertav.github.io/games/tetris.html</loc>
