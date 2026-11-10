@@ -1,0 +1,1328 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simulador del Tercer Parcial - Matemáticas Operativas</title>
+
+    <script>
+        window.MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                displayMath: [['$$', '$$'], ['\\[', '\\]']],
+                processEscapes: true
+            },
+            svg: { fontCache: 'global' },
+            startup: { pageReady: () => MathJax.typesetPromise().catch(err => console.log(err)) }
+        };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
+
+    <style>
+        :root {
+            --primary-color: #2c3e50;
+            --secondary-color: #3498db;
+            --accent-color: #e74c3c;
+            --light-color: #ecf0f1;
+            --success-color: #27ae60;
+            --warning-color: #f39c12;
+            --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: #f5f7fa;
+            color: #333;
+            line-height: 1.6;
+            padding: 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding: 20px;
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: var(--shadow);
+        }
+
+        h1 {
+            color: var(--primary-color);
+            margin-bottom: 10px;
+            font-size: 2.2rem;
+        }
+
+        .subtitle {
+            color: var(--secondary-color);
+            font-size: 1.1rem;
+            margin-bottom: 20px;
+        }
+
+        .instructions {
+            background-color: var(--light-color);
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 25px;
+            border-left: 5px solid var(--secondary-color);
+        }
+
+        .instructions h3 {
+            color: var(--primary-color);
+            margin-bottom: 10px;
+        }
+
+        .exam-container {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 25px;
+        }
+
+        .questions-section {
+            background-color: white;
+            padding: 25px;
+            border-radius: 10px;
+            box-shadow: var(--shadow);
+        }
+
+        .control-panel {
+            background-color: white;
+            padding: 25px;
+            border-radius: 10px;
+            box-shadow: var(--shadow);
+            height: fit-content;
+            position: sticky;
+            top: 20px;
+        }
+
+        .question-card {
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid #eee;
+            scroll-margin-top: 20px;
+        }
+
+        .question-card:last-child {
+            border-bottom: none;
+        }
+
+        .question-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .question-number {
+            background-color: var(--primary-color);
+            color: white;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+        }
+
+        .question-text {
+            margin-bottom: 20px;
+            font-size: 1.1rem;
+            line-height: 1.5;
+        }
+
+        .question-text p + p { margin-top: 10px; }
+
+        .table-container {
+            margin: 15px 0;
+            padding: 15px;
+            background-color: #f9f9f9;
+            border-radius: 8px;
+            overflow-x: auto;
+        }
+
+        table { width: 100%; border-collapse: collapse; margin: 10px 0; font-size: 0.95em; }
+        th { background-color: var(--primary-color); color: white; padding: 10px; text-align: center; border: 1px solid #ddd; }
+        td { padding: 8px; text-align: center; border: 1px solid #ddd; }
+        tr:nth-child(even) { background-color: #f2f2f2; }
+
+        .options-container {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .options-grid-charts {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+
+        .option {
+            padding: 12px 15px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+        }
+
+        .option-chart-card {
+            flex-direction: column;
+            align-items: flex-start;
+            padding: 10px;
+        }
+
+        .option:hover {
+            background-color: #f0f8ff;
+            border-color: var(--secondary-color);
+        }
+
+        .option.selected {
+            background-color: #e1f0ff;
+            border-color: var(--secondary-color);
+            font-weight: 600;
+        }
+
+        .option.correct {
+            background-color: #d4edda;
+            border-color: var(--success-color);
+            color: #155724;
+        }
+
+        .option.incorrect {
+            background-color: #f8d7da;
+            border-color: var(--accent-color);
+            color: #721c24;
+        }
+
+        .chart-box {
+            width: 100%;
+            height: 300px;
+            margin-top: 5px;
+        }
+
+        .match-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 12px;
+            padding: 10px;
+            background-color: #f8f9fa;
+            border-radius: 6px;
+            border: 1px solid #e9ecef;
+        }
+
+        .match-select {
+            padding: 8px;
+            border-radius: 6px;
+            border: 1px solid #ccc;
+            font-size: 0.95rem;
+            width: 55%;
+        }
+
+        .explanation {
+            margin-top: 20px;
+            padding: 15px;
+            background-color: #fff3cd;
+            border-left: 5px solid #ffc107;
+            border-radius: 5px;
+            font-size: 0.95rem;
+        }
+
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s;
+            font-size: 1rem;
+            margin-right: 10px;
+            margin-bottom: 10px;
+        }
+
+        .btn-primary { background-color: var(--secondary-color); color: white; }
+        .btn-primary:hover { background-color: #2980b9; }
+        .btn-secondary { background-color: var(--light-color); color: var(--primary-color); border: 1px solid #ddd; }
+        .btn-secondary:hover { background-color: #d5dbdb; }
+
+        .results-container {
+            margin-top: 25px;
+            padding: 20px;
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: var(--shadow);
+            display: none;
+        }
+
+        .score-display { text-align: center; margin-bottom: 20px; }
+        .score-circle {
+            width: 120px; height: 120px; border-radius: 50%;
+            background-color: var(--light-color); display: flex;
+            justify-content: center; align-items: center;
+            margin: 0 auto 20px; font-size: 2.5rem; font-weight: bold;
+            color: var(--primary-color); border: 5px solid var(--secondary-color);
+        }
+
+        .score-circle.low { border-color: var(--accent-color); color: var(--accent-color); }
+        .score-circle.medium { border-color: var(--warning-color); color: var(--warning-color); }
+        .score-circle.high { border-color: var(--success-color); color: var(--success-color); }
+
+        .stats { display: flex; justify-content: space-between; margin-top: 20px; }
+        .stat-box { flex: 1; text-align: center; padding: 15px; background-color: var(--light-color); border-radius: 8px; margin: 0 5px; }
+        .stat-value { font-size: 2rem; font-weight: bold; color: var(--primary-color); }
+        .stat-label { font-size: 0.9rem; color: #7f8c8d; }
+
+        .topic-progress { margin-top: 20px; }
+        .topic-item { display: flex; justify-content: space-between; align-items: center; padding: 8px 0; border-bottom: 1px solid #eee; cursor: pointer; }
+        .topic-item:hover { background-color: #f5f5f5; padding-left: 5px; }
+        .topic-name { flex: 1; font-size: 0.9em; }
+        .topic-status { width: 12px; height: 12px; border-radius: 50%; margin-left: 10px; }
+        .topic-status.correct { background-color: var(--success-color); }
+        .topic-status.incorrect { background-color: var(--accent-color); }
+        .topic-status.unanswered { background-color: #ddd; }
+        .topic-status.answered { background-color: var(--secondary-color); }
+
+        footer { text-align: center; margin-top: 30px; padding: 20px; color: #7f8c8d; font-size: 0.9rem; }
+
+        @media (max-width: 900px) {
+            .exam-container { grid-template-columns: 1fr; }
+            .options-grid-charts { grid-template-columns: 1fr; }
+            .match-row { flex-direction: column; align-items: stretch; gap: 8px; }
+            .match-select { width: 100%; }
+        }
+    </style>
+</head>
+<body>
+    <p style="margin:0;padding:0.6rem 1rem;background:#1553AD;font:0.95rem/1.4 'Segoe UI',Arial,sans-serif"><a href="index.html" style="color:#fff;text-decoration:none">&larr; Matemáticas Operativas</a></p>
+    <header>
+        <h1>Simulador del Tercer Parcial - Matemáticas Operativas</h1>
+        <p class="subtitle">CBASBL011 · UNIMINUTO — Propiedades de los logaritmos (sesión 11) y Unidad 3: álgebra y ecuaciones (sesiones 13 a 15)</p>
+    </header>
+
+    <div class="instructions">
+        <h3>Instrucciones</h3>
+        <p>Este simulador cubre las propiedades de los logaritmos (sesión 11) y toda la Unidad 3: expresiones algebraicas y polinomios y productos notables (sesión 13), factorización y fracciones algebraicas (sesión 14), ecuaciones de primer grado y ecuaciones cuadráticas (sesión 15). Varios ejercicios están contextualizados en situaciones de Psicología y Trabajo Social. Son 10 preguntas, una por cada tema, y la calificación es sobre 5.0. Cada vez que pulses <em>Nuevo Examen Aleatorio</em> el simulador sortea una pregunta distinta de cada tema y baraja el orden de las opciones, así que puedes practicar varias veces sin memorizar respuestas. Al calificar verás la explicación punto por punto.</p>
+    </div>
+
+    <div class="exam-container">
+        <section class="questions-section">
+            <h2>Preguntas del Parcial</h2>
+            <div id="questions-container"></div>
+
+            <div class="button-group" style="margin-top:20px;">
+                <button id="submit-btn" class="btn btn-primary">Calificar Examen</button>
+                <button id="new-exam-btn" class="btn btn-secondary">Nuevo Examen Aleatorio</button>
+            </div>
+        </section>
+
+        <section class="control-panel">
+            <h3>Progreso</h3>
+            <div class="stats">
+                <div class="stat-box">
+                    <div class="stat-value" id="answered-count">0</div>
+                    <div class="stat-label">Respondidas</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-value" id="total-count">10</div>
+                    <div class="stat-label">Total</div>
+                </div>
+            </div>
+
+            <div class="topic-progress">
+                <h4>Navegación:</h4>
+                <div id="topics-list"></div>
+            </div>
+        </section>
+    </div>
+
+    <div class="results-container" id="results-container">
+        <h2>Resultados del Parcial</h2>
+
+        <div class="score-display">
+            <div class="score-circle" id="final-score">0.0</div>
+            <h3>Calificación Final</h3>
+            <p id="score-text">Sobre 5.0 puntos</p>
+        </div>
+
+        <div class="stats">
+            <div class="stat-box">
+                <div class="stat-value" id="correct-count">0</div>
+                <div class="stat-label">Correctas</div>
+            </div>
+            <div class="stat-box">
+                <div class="stat-value" id="incorrect-count">0</div>
+                <div class="stat-label">Incorrectas</div>
+            </div>
+            <div class="stat-box">
+                <div class="stat-value" id="percentage-score">0%</div>
+                <div class="stat-label">Porcentaje</div>
+            </div>
+        </div>
+
+        <div style="text-align: center; margin-top: 20px;">
+            <button id="review-btn" class="btn btn-secondary">Revisar Respuestas</button>
+            <button id="restart-btn" class="btn btn-primary">Intentar Otro Examen</button>
+        </div>
+    </div>
+
+    <footer>
+        <p>Simulador del Tercer Parcial de Matemáticas Operativas</p>
+    </footer>
+
+    <script>
+        /* ------------------------------------------------------------------
+           Banco de preguntas. Un objeto por tema; cada tema tiene varias
+           variantes y el simulador sortea una. Las explicaciones nunca
+           nombran la opción por su letra, porque el orden se baraja.
+           ------------------------------------------------------------------ */
+        const TEMAS = [
+            {
+                "nav": "Propiedades de los logaritmos",
+                "variants": [
+                    {
+                        "type": "mcq",
+                        "q": "Use las propiedades de los logaritmos para calcular $\\log_{2}8+\\log_{2}4$.",
+                        "a": [
+                            "$5$",
+                            "$\\log_{2}12$",
+                            "$6$",
+                            "$32$"
+                        ],
+                        "c": 0,
+                        "explanation": "La suma de logaritmos de igual base es el logaritmo del producto: $\\log_{2}8+\\log_{2}4=\\log_{2}(8\\cdot4)=\\log_{2}32=5$, porque $2^{5}=32$. También se puede calcular por separado: $3+2=5$. El valor $\\log_{2}12$ resulta de sumar los argumentos (error clásico), y $32$ es el argumento, no el logaritmo."
+                    },
+                    {
+                        "type": "mcq",
+                        "q": "Calcule $\\log5+\\log20$ (logaritmos en base 10).",
+                        "a": [
+                            "$2$",
+                            "$\\log25$",
+                            "$25$",
+                            "$100$"
+                        ],
+                        "c": 0,
+                        "explanation": "$\\log5+\\log20=\\log(5\\cdot20)=\\log100=2$, porque $10^{2}=100$. El resultado $\\log25$ proviene de sumar los argumentos en lugar de multiplicarlos; el $100$ es el argumento del logaritmo, no su valor."
+                    },
+                    {
+                        "type": "mcq",
+                        "q": "Exprese como un solo logaritmo: $2\\log x-\\log y$ (con $x>0$ y $y>0$).",
+                        "a": [
+                            "$\\log\\dfrac{x^{2}}{y}$",
+                            "$\\log\\dfrac{2x}{y}$",
+                            "$\\log(x^{2}-y)$",
+                            "$\\dfrac{\\log x^{2}}{\\log y}$"
+                        ],
+                        "c": 0,
+                        "explanation": "La propiedad de la potencia dice que $2\\log x=\\log x^{2}$ (el coeficiente sube como exponente). La resta de logaritmos es el logaritmo del cociente: $\\log x^{2}-\\log y=\\log\\dfrac{x^{2}}{y}$. El coeficiente $2$ nunca multiplica al argumento, y $\\log A-\\log B$ no es $\\log(A-B)$ ni $\\dfrac{\\log A}{\\log B}$."
+                    },
+                    {
+                        "type": "mcq",
+                        "q": "Si $\\log2\\approx0{,}301$, use las propiedades para estimar $\\log8$.",
+                        "a": [
+                            "$0{,}903$",
+                            "$0{,}602$",
+                            "$2{,}408$",
+                            "$2{,}301$"
+                        ],
+                        "c": 0,
+                        "explanation": "Como $8=2^{3}$, la propiedad de la potencia da $\\log8=\\log2^{3}=3\\log2=3(0{,}301)=0{,}903$. El valor $0{,}602$ corresponde a $\\log4=2\\log2$; $2{,}408$ resulta de multiplicar por $8$ en vez de por el exponente $3$."
+                    },
+                    {
+                        "type": "mcq",
+                        "q": "Resuelva $\\log_{2}x+\\log_{2}(x-2)=3$ y recuerde verificar el dominio.",
+                        "a": [
+                            "$x=4$",
+                            "$x=-2$",
+                            "$x=4$ y $x=-2$",
+                            "$x=8$"
+                        ],
+                        "c": 0,
+                        "explanation": "Se reúnen los logaritmos: $\\log_{2}[x(x-2)]=3$, luego $x(x-2)=2^{3}=8$, o sea $x^{2}-2x-8=0$ y $(x-4)(x+2)=0$. Los candidatos son $x=4$ y $x=-2$. Pero los argumentos deben ser positivos: $x>0$ y $x-2>0$, es decir $x>2$. Por eso $x=-2$ se descarta y solo $x=4$ es solución. Comprobación: $\\log_{2}4+\\log_{2}2=2+1=3$."
+                    }
+                ]
+            },
+            {
+                "nav": "Expresiones algebraicas y operaciones con polinomios",
+                "variants": [
+                    {
+                        "type": "mcq",
+                        "q": "Una trabajadora social modela el costo mensual de un programa comunitario (en miles de pesos) con $C(x)=3x^{2}-2x+5$, donde $x$ es un factor de ajuste. ¿Cuánto vale $C(-2)$?",
+                        "a": [
+                            "$21$",
+                            "$13$",
+                            "$45$",
+                            "$-3$"
+                        ],
+                        "c": 0,
+                        "explanation": "Se sustituye con paréntesis: $C(-2)=3(-2)^{2}-2(-2)+5=3(4)+4+5=12+4+5=21$. Si se ignora el signo en $-2x$ queda $12-4+5=13$; si se eleva al cuadrado el producto $3\\cdot(-2)$ queda $36+4+5=45$."
+                    },
+                    {
+                        "type": "mcq",
+                        "q": "Efectúe $(5x^{2}-3x+2)-(2x^{2}-x-4)$.",
+                        "a": [
+                            "$3 x^{2} - 2 x + 6$",
+                            "$3 x^{2} - 4 x - 2$",
+                            "$7 x^{2} - 4 x - 2$",
+                            "$3 x^{2} - 2 x - 2$"
+                        ],
+                        "c": 0,
+                        "explanation": "Se cambia el signo de <strong>todos</strong> los términos del segundo polinomio: $5x^{2}-3x+2-2x^{2}+x+4$. Se agrupan semejantes: $(5-2)x^{2}+(-3+1)x+(2+4)=3x^{2}-2x+6$. Olvidar cambiar el signo del $-4$ da $-2$ como término independiente, y $7x^{2}-4x-2$ es la suma de los dos polinomios."
+                    },
+                    {
+                        "type": "mcq",
+                        "q": "Un salón comunitario es un rectángulo con largo $(2x-3)$ m y ancho $(x+4)$ m. ¿Cuál es la expresión de su área?",
+                        "a": [
+                            "$2 x^{2} + 5 x - 12$",
+                            "$2 x^{2} - 5 x - 12$",
+                            "$2 x^{2} + 5 x + 12$",
+                            "$2 x^{2} - 12$"
+                        ],
+                        "c": 0,
+                        "explanation": "El área es largo por ancho: $(x+4)(2x-3)=2x^{2}-3x+8x-12=2x^{2}+5x-12$. Se multiplica cada término del primer factor por cada término del segundo y luego se suman los semejantes $-3x+8x=5x$. Omitir los productos cruzados da $2x^{2}-12$."
+                    },
+                    {
+                        "type": "mcq",
+                        "q": "Reduzca los términos semejantes de $4a^{2}b-7ab^{2}+2a^{2}b+3ab^{2}$.",
+                        "a": [
+                            "$6 a^{2} b - 4 a b^{2}$",
+                            "$6 a^{2} b + 4 a b^{2}$",
+                            "$6 a^{2} b - 10 a b^{2}$",
+                            "$6 a^{3} b^{3} - 4 a^{2} b^{2}$"
+                        ],
+                        "c": 0,
+                        "explanation": "Solo se suman términos con <strong>la misma parte literal</strong>. Los términos en $a^{2}b$ son $4a^{2}b+2a^{2}b=6a^{2}b$, y los términos en $ab^{2}$ son $-7ab^{2}+3ab^{2}=-4ab^{2}$. Como $a^{2}b$ y $ab^{2}$ no son semejantes, no se pueden reunir más: $6a^{2}b-4ab^{2}$."
+                    },
+                    {
+                        "type": "mcq",
+                        "q": "Efectúe y reduzca $2x(x^{2}-3x+1)-x(x^{2}-4)$.",
+                        "a": [
+                            "$x^{3} - 6 x^{2} + 6 x$",
+                            "$x^{3} - 6 x^{2} - 2 x$",
+                            "$3 x^{3} - 6 x^{2} + 6 x$",
+                            "$x^{3} - 6 x^{2} + 2 x$"
+                        ],
+                        "c": 0,
+                        "explanation": "Se distribuye cada monomio: $2x^{3}-6x^{2}+2x$ y $-x^{3}+4x$ (el signo menos afecta a ambos términos). Al sumar: $(2-1)x^{3}-6x^{2}+(2+4)x=x^{3}-6x^{2}+6x$. Si se olvida cambiar el signo de $-x\\cdot(-4)$ se obtiene $2x-4x=-2x$."
+                    }
+                ]
+            },
+            {
+                "nav": "Productos notables",
+                "variants": [
+                    {
+                        "type": "mcq",
+                        "q": "Un patio cuadrado de una escuela tiene lado $(x+7)$ m. Desarrolle la expresión de su área, $(x+7)^{2}$.",
+                        "a": [
+                            "$x^{2} + 14 x + 49$",
+                            "$x^{2} + 49$",
+                            "$x^{2} + 7 x + 49$",
+                            "$x^{2} + 14 x + 7$"
+                        ],
+                        "c": 0,
+                        "explanation": "El cuadrado de una suma es $(a+b)^{2}=a^{2}+2ab+b^{2}$. Con $a=x$ y $b=7$: $x^{2}+2(x)(7)+7^{2}=x^{2}+14x+49$. Elevar cada término por separado ($x^{2}+49$) omite el doble producto, que es el error más frecuente del álgebra."
+                    },
+                    {
+                        "type": "mcq",
+                        "q": "Desarrolle $(2a-5)^{2}$.",
+                        "a": [
+                            "$4 a^{2} - 20 a + 25$",
+                            "$4 a^{2} + 25$",
+                            "$4 a^{2} - 10 a + 25$",
+                            "$4 a^{2} - 20 a - 25$"
+                        ],
+                        "c": 0,
+                        "explanation": "El cuadrado de una diferencia es $(p-q)^{2}=p^{2}-2pq+q^{2}$. Con $p=2a$ y $q=5$: $4a^{2}-2(2a)(5)+25=4a^{2}-20a+25$. El último término siempre es positivo, porque $q^{2}>0$; olvidar el factor $2$ del doble producto da $-10a$."
+                    },
+                    {
+                        "type": "mcq",
+                        "q": "Desarrolle el producto $(3m+2n)(3m-2n)$.",
+                        "a": [
+                            "$9 m^{2} - 4 n^{2}$",
+                            "$9 m^{2} + 4 n^{2}$",
+                            "$9 m^{2} - 12 m n + 4 n^{2}$",
+                            "$6 m^{2} - 4 n^{2}$"
+                        ],
+                        "c": 0,
+                        "explanation": "Es una suma por diferencia: $(p+q)(p-q)=p^{2}-q^{2}$. Con $p=3m$ y $q=2n$: $9m^{2}-4n^{2}$. Los términos cruzados $+6mn$ y $-6mn$ se cancelan, por eso no aparece término central."
+                    },
+                    {
+                        "type": "mcq",
+                        "q": "Calcule $98^{2}$ mentalmente escribiendo $98=100-2$ y usando un producto notable.",
+                        "a": [
+                            "$9\\,604$",
+                            "$9\\,600$",
+                            "$9\\,596$",
+                            "$10\\,404$"
+                        ],
+                        "c": 0,
+                        "explanation": "$(100-2)^{2}=100^{2}-2(100)(2)+2^{2}=10\\,000-400+4=9\\,604$. Si se olvida el último término se obtiene $9\\,600$; si se resta $4$ en lugar de sumarlo, $9\\,596$. El valor $10\\,404$ es $102^{2}$, es decir, el desarrollo de $(100+2)^{2}$."
+                    },
+                    {
+                        "type": "mcq",
+                        "q": "Desarrolle $(x+3)(x-5)$ con el producto de binomios con término común.",
+                        "a": [
+                            "$x^{2} - 2 x - 15$",
+                            "$x^{2} + 2 x - 15$",
+                            "$x^{2} - 2 x + 15$",
+                            "$x^{2} - 8 x - 15$"
+                        ],
+                        "c": 0,
+                        "explanation": "$(x+a)(x+b)=x^{2}+(a+b)x+ab$. Con $a=3$ y $b=-5$: la suma es $-2$ y el producto $-15$, así que el resultado es $x^{2}-2x-15$. Comprobación con $x=1$: $(4)(-4)=-16$ y $1-2-15=-16$."
+                    }
+                ]
+            },
+            {
+                "nav": "Factorización: factor común, diferencia de cuadrados y trinomios",
+                "variants": [
+                    {
+                        "type": "mcq",
+                        "q": "Factorice completamente por factor común: $15x^{2}y-10xy^{2}$.",
+                        "a": [
+                            "$5xy(3x-2y)$",
+                            "$5x(3xy-2y^{2})$",
+                            "$5(3x^{2}y-2xy^{2})$",
+                            "$5xy(3x+2y)$"
+                        ],
+                        "c": 0,
+                        "explanation": "El factor común es el MCD de los coeficientes ($\\text{MCD}(15,10)=5$) por cada variable con su menor exponente ($x$ y $y$): $5xy$. Al dividir cada término: $15x^{2}y\\div5xy=3x$ y $10xy^{2}\\div5xy=2y$. Resultado: $5xy(3x-2y)$. Las opciones con $5x$ o $5$ son factorizaciones válidas pero <strong>incompletas</strong>: el paréntesis todavía tiene factor común."
+                    },
+                    {
+                        "type": "mcq",
+                        "q": "Factorice $x^{2}-49$.",
+                        "a": [
+                            "$\\left(x - 7\\right) \\left(x + 7\\right)$",
+                            "$\\left(x - 7\\right)^{2}$",
+                            "$\\left(x + 7\\right)^{2}$",
+                            "$\\left(x - 49\\right) \\left(x + 1\\right)$"
+                        ],
+                        "c": 0,
+                        "explanation": "Es una diferencia de cuadrados: $a^{2}-b^{2}=(a-b)(a+b)$, con $a=x$ y $b=7$. Resultado: $(x-7)(x+7)$. Los cuadrados $(x\\pm7)^{2}$ producen término central $\\pm14x$, que aquí no existe."
+                    },
+                    {
+                        "type": "mcq",
+                        "q": "Factorice $x^{2}+10x+25$.",
+                        "a": [
+                            "$\\left(x + 5\\right)^{2}$",
+                            "$\\left(x - 5\\right) \\left(x + 5\\right)$",
+                            "$\\left(x - 5\\right)^{2}$",
+                            "$\\left(x + 1\\right) \\left(x + 25\\right)$"
+                        ],
+                        "c": 0,
+                        "explanation": "Es un trinomio cuadrado perfecto: $x^{2}$ y $25=5^{2}$ son cuadrados, y el término central cumple $2(x)(5)=10x$. Entonces $x^{2}+10x+25=(x+5)^{2}$. Con $(x+5)(x-5)$ se obtendría $x^{2}-25$."
+                    },
+                    {
+                        "type": "mcq",
+                        "q": "Factorice el trinomio $x^{2}+x-20$.",
+                        "a": [
+                            "$\\left(x - 4\\right) \\left(x + 5\\right)$",
+                            "$\\left(x - 5\\right) \\left(x + 4\\right)$",
+                            "$\\left(x - 2\\right) \\left(x + 10\\right)$",
+                            "$\\left(x - 1\\right) \\left(x + 20\\right)$"
+                        ],
+                        "c": 0,
+                        "explanation": "Se buscan dos números de producto $-20$ y suma $+1$: son $5$ y $-4$. Por eso $x^{2}+x-20=(x+5)(x-4)$. Comprobación: $x^{2}-4x+5x-20=x^{2}+x-20$. El par $-5$ y $4$ suma $-1$."
+                    },
+                    {
+                        "type": "mcq",
+                        "q": "Factorice completamente $2x^{2}-8$.",
+                        "a": [
+                            "$\\left(x + 2\\right) \\left(2 x - 4\\right)$",
+                            "$\\left(x + 4\\right) \\left(2 x - 8\\right)$",
+                            "$\\left(x - 2\\right) \\left(x + 2\\right)$",
+                            "$2 \\left(x - 2\\right)^{2}$"
+                        ],
+                        "c": 0,
+                        "explanation": "Primero el factor común $2$: $2x^{2}-8=2(x^{2}-4)$. Dentro del paréntesis hay una diferencia de cuadrados: $x^{2}-4=(x-2)(x+2)$. Resultado: $2(x-2)(x+2)$. Si se olvida el $2$, el producto $(x-2)(x+2)$ vale $x^{2}-4$, no $2x^{2}-8$."
+                    }
+                ]
+            },
+            {
+                "nav": "Fracciones algebraicas: simplificación y dominio",
+                "variants": [
+                    {
+                        "type": "mcq",
+                        "q": "Simplifique $\\dfrac{x^{2}-25}{x^{2}-5x}$ e indique las restricciones.",
+                        "a": [
+                            "$\\dfrac{x+5}{x}$, con $x\\neq0$ y $x\\neq5$",
+                            "$\\dfrac{x+5}{x}$, con $x\\neq0$",
+                            "$\\dfrac{x-5}{x}$, con $x\\neq0$ y $x\\neq5$",
+                            "$\\dfrac{5}{x}$, con $x\\neq0$"
+                        ],
+                        "c": 0,
+                        "explanation": "Numerador: $x^{2}-25=(x-5)(x+5)$. Denominador: $x^{2}-5x=x(x-5)$. Se cancela $(x-5)$ y queda $\\dfrac{x+5}{x}$. Las restricciones salen del denominador original: $x(x-5)\\neq0$, o sea $x\\neq0$ y $x\\neq5$. No se puede cancelar $x$ con el $x$ de $x+5$ porque es un sumando."
+                    },
+                    {
+                        "type": "mcq",
+                        "q": "Simplifique $\\dfrac{6x^{2}y}{9xy^{2}}$ (con $x\\neq0$ y $y\\neq0$).",
+                        "a": [
+                            "$\\dfrac{2x}{3y}$",
+                            "$\\dfrac{2y}{3x}$",
+                            "$\\dfrac{2}{3xy}$",
+                            "$\\dfrac{3x}{2y}$"
+                        ],
+                        "c": 0,
+                        "explanation": "Se simplifican coeficientes y variables por separado: $\\dfrac{6}{9}=\\dfrac23$; $\\dfrac{x^{2}}{x}=x$; $\\dfrac{y}{y^{2}}=\\dfrac1y$. Resultado: $\\dfrac{2x}{3y}$. Al restar exponentes siempre se resta el del denominador al del numerador."
+                    },
+                    {
+                        "type": "mcq",
+                        "q": "Simplifique $\\dfrac{x^{2}+4x+4}{x^{2}-4}$ e indique las restricciones.",
+                        "a": [
+                            "$\\dfrac{x+2}{x-2}$, con $x\\neq2$ y $x\\neq-2$",
+                            "$\\dfrac{x+2}{x-2}$, con $x\\neq2$",
+                            "$\\dfrac{x-2}{x+2}$, con $x\\neq2$ y $x\\neq-2$",
+                            "$\\dfrac{4x+4}{-4}$, con $x\\neq2$"
+                        ],
+                        "c": 0,
+                        "explanation": "Numerador: trinomio cuadrado perfecto, $x^{2}+4x+4=(x+2)^{2}$. Denominador: diferencia de cuadrados, $(x-2)(x+2)$. Se cancela un factor $(x+2)$ y queda $\\dfrac{x+2}{x-2}$. Restricciones: $x\\neq2$ y $x\\neq-2$ (esta última por el denominador original)."
+                    },
+                    {
+                        "type": "mcq",
+                        "q": "¿Cuál es el dominio de $\\dfrac{x+1}{x^{2}-9}$?",
+                        "a": [
+                            "Todos los reales excepto $x=3$ y $x=-3$",
+                            "Todos los reales excepto $x=3$",
+                            "Todos los reales excepto $x=-1$",
+                            "Todos los reales excepto $x=9$ y $x=-9$"
+                        ],
+                        "c": 0,
+                        "explanation": "El denominador no puede valer cero: $x^{2}-9=(x-3)(x+3)=0$ si $x=3$ o $x=-3$. Esos dos valores se excluyen; $x=-1$ anula el <em>numerador</em>, lo que no afecta al dominio. $x^{2}=9$ da $x=\\pm3$, no $\\pm9$."
+                    },
+                    {
+                        "type": "mcq",
+                        "q": "Simplifique $\\dfrac{3x+6}{x^{2}-4}$ e indique las restricciones.",
+                        "a": [
+                            "$\\dfrac{3}{x-2}$, con $x\\neq2$ y $x\\neq-2$",
+                            "$\\dfrac{3}{x-2}$, con $x\\neq2$",
+                            "$\\dfrac{3}{x+2}$, con $x\\neq2$ y $x\\neq-2$",
+                            "$\\dfrac{3x}{x-2}$, con $x\\neq2$ y $x\\neq-2$"
+                        ],
+                        "c": 0,
+                        "explanation": "Numerador: factor común, $3x+6=3(x+2)$. Denominador: $x^{2}-4=(x-2)(x+2)$. Se cancela $(x+2)$ y queda $\\dfrac{3}{x-2}$, declarando $x\\neq2$ y $x\\neq-2$ (el valor $-2$ se pierde de vista al cancelar, pero sigue excluido)."
+                    }
+                ]
+            },
+            {
+                "nav": "Operaciones con fracciones algebraicas",
+                "variants": [
+                    {
+                        "type": "mcq",
+                        "q": "Efectúe $\\dfrac{3}{x}+\\dfrac{2}{x+1}$ y exprese el resultado como una sola fracción.",
+                        "a": [
+                            "$\\frac{5 x + 3}{x \\left(x + 1\\right)}$",
+                            "$\\frac{5}{2 x + 1}$",
+                            "$\\frac{5 x + 2}{x \\left(x + 1\\right)}$",
+                            "$\\frac{5 x + 6}{x \\left(x + 1\\right)}$"
+                        ],
+                        "c": 0,
+                        "explanation": "El denominador común es $x(x+1)$. Cada numerador se multiplica por lo que falta a su denominador: $\\dfrac{3(x+1)+2x}{x(x+1)}=\\dfrac{3x+3+2x}{x(x+1)}=\\dfrac{5x+3}{x(x+1)}$. Sumar numeradores y denominadores por separado ($\\tfrac{5}{2x+1}$) es incorrecto."
+                    },
+                    {
+                        "type": "mcq",
+                        "q": "Efectúe y simplifique $\\dfrac{x}{x+2}\\cdot\\dfrac{x^{2}-4}{x^{2}}$.",
+                        "a": [
+                            "$\\frac{x - 2}{x}$",
+                            "$\\frac{x + 2}{x}$",
+                            "$\\frac{x - 2}{x^{2}}$",
+                            "$x \\left(x - 2\\right)$"
+                        ],
+                        "c": 0,
+                        "explanation": "Se factoriza $x^{2}-4=(x-2)(x+2)$ y se multiplica: $\\dfrac{x\\,(x-2)(x+2)}{(x+2)\\,x^{2}}$. Se cancelan $(x+2)$ y una $x$: queda $\\dfrac{x-2}{x}$. Restricciones: $x\\neq0$ y $x\\neq-2$."
+                    },
+                    {
+                        "type": "mcq",
+                        "q": "Efectúe y simplifique $\\dfrac{x^{2}-1}{x+3}\\div\\dfrac{x-1}{x+3}$.",
+                        "a": [
+                            "$x+1$",
+                            "$\\dfrac{x+1}{x+3}$",
+                            "$\\dfrac{(x-1)^{2}}{(x+3)^{2}}$",
+                            "$x-1$"
+                        ],
+                        "c": 0,
+                        "explanation": "Dividir equivale a multiplicar por el inverso: $\\dfrac{x^{2}-1}{x+3}\\cdot\\dfrac{x+3}{x-1}=\\dfrac{(x-1)(x+1)(x+3)}{(x+3)(x-1)}=x+1$. Se cancelan $(x+3)$ y $(x-1)$. Restricciones: $x\\neq-3$ y $x\\neq1$."
+                    },
+                    {
+                        "type": "mcq",
+                        "q": "Efectúe $\\dfrac{2}{x-1}-\\dfrac{1}{x+1}$ y exprese el resultado como una sola fracción.",
+                        "a": [
+                            "$\\frac{x + 3}{\\left(x - 1\\right) \\left(x + 1\\right)}$",
+                            "$\\frac{1}{x + 1}$",
+                            "$\\frac{1}{x - 2}$",
+                            "$\\frac{1}{x - 1}$"
+                        ],
+                        "c": 0,
+                        "explanation": "El denominador común es $(x-1)(x+1)$: $\\dfrac{2(x+1)-1(x-1)}{(x-1)(x+1)}=\\dfrac{2x+2-x+1}{(x-1)(x+1)}=\\dfrac{x+3}{x^{2}-1}$. El signo menos afecta a <strong>todo</strong> el segundo numerador: $-(x-1)=-x+1$. Si no se distribuye queda $x+1$ en el numerador."
+                    },
+                    {
+                        "type": "mcq",
+                        "q": "Efectúe y simplifique $\\dfrac{1}{x^{2}-x}+\\dfrac{1}{x}$.",
+                        "a": [
+                            "$\\frac{1}{x - 1}$",
+                            "$\\frac{2}{x^{2}}$",
+                            "$\\frac{2}{x^{2} - x}$",
+                            "$\\frac{1}{x}$"
+                        ],
+                        "c": 0,
+                        "explanation": "Como $x^{2}-x=x(x-1)$, el denominador común es $x(x-1)$: $\\dfrac{1}{x(x-1)}+\\dfrac{x-1}{x(x-1)}=\\dfrac{1+x-1}{x(x-1)}=\\dfrac{x}{x(x-1)}=\\dfrac{1}{x-1}$. Restricciones: $x\\neq0$ y $x\\neq1$."
+                    }
+                ]
+            },
+            {
+                "nav": "Ecuaciones de primer grado",
+                "variants": [
+                    {
+                        "type": "mcq",
+                        "q": "Resuelva $5(x-2)=3x+6$.",
+                        "a": [
+                            "$x=8$",
+                            "$x=-2$",
+                            "$x=4$",
+                            "$x=16$"
+                        ],
+                        "c": 0,
+                        "explanation": "Se distribuye: $5x-10=3x+6$. Se pasan las $x$ a un lado y los números al otro: $5x-3x=6+10$, o sea $2x=16$ y $x=8$. Comprobación: $5(8-2)=30$ y $3(8)+6=30$."
+                    },
+                    {
+                        "type": "mcq",
+                        "q": "Resuelva $\\dfrac{x}{3}+\\dfrac{x}{4}=14$.",
+                        "a": [
+                            "$x=24$",
+                            "$x=12$",
+                            "$x=98$",
+                            "$x=\\dfrac{24}{7}$"
+                        ],
+                        "c": 0,
+                        "explanation": "Se multiplica toda la ecuación por el mínimo común múltiplo $12$: $4x+3x=168$, es decir $7x=168$ y $x=24$. Comprobación: $\\tfrac{24}{3}+\\tfrac{24}{4}=8+6=14$. El valor $98$ resulta de multiplicar $7\\cdot14$."
+                    },
+                    {
+                        "type": "mcq",
+                        "q": "Resuelva $2(3x-1)-4=5(x+1)$.",
+                        "a": [
+                            "$x=11$",
+                            "$x=10$",
+                            "$x=7$",
+                            "$x=-3$"
+                        ],
+                        "c": 0,
+                        "explanation": "Se distribuye en ambos lados: $6x-2-4=5x+5$, o sea $6x-6=5x+5$. Luego $6x-5x=5+6$ y $x=11$. Comprobación: $2(32)-4=60$ y $5(12)=60$."
+                    },
+                    {
+                        "type": "mcq",
+                        "q": "Resuelva $\\dfrac{2x+1}{3}=\\dfrac{x-2}{2}$.",
+                        "a": [
+                            "$x=-8$",
+                            "$x=8$",
+                            "$x=-\\dfrac{4}{7}$",
+                            "$x=-4$"
+                        ],
+                        "c": 0,
+                        "explanation": "Se hace producto cruzado: $2(2x+1)=3(x-2)$, es decir $4x+2=3x-6$. Entonces $4x-3x=-6-2$ y $x=-8$. Comprobación: $\\tfrac{-16+1}{3}=-5$ y $\\tfrac{-8-2}{2}=-5$."
+                    },
+                    {
+                        "type": "mcq",
+                        "q": "Despeje $x$ en la fórmula $ax+b=c$ (con $a\\neq0$).",
+                        "a": [
+                            "$x=\\dfrac{c-b}{a}$",
+                            "$x=\\dfrac{c+b}{a}$",
+                            "$x=c-\\dfrac{b}{a}$",
+                            "$x=a(c-b)$"
+                        ],
+                        "c": 0,
+                        "explanation": "Primero se resta $b$ en ambos lados: $ax=c-b$. Luego se divide <strong>todo</strong> el lado derecho entre $a$: $x=\\dfrac{c-b}{a}$. Se cometen errores al sumar $b$ en lugar de restarlo, o al dividir solo uno de los términos entre $a$."
+                    }
+                ]
+            },
+            {
+                "nav": "Problemas con ecuaciones de primer grado",
+                "variants": [
+                    {
+                        "type": "mcq",
+                        "q": "Un taller de habilidades sociales cobra una inscripción de $20\\,000$ pesos más $5\\,000$ pesos por sesión. Una persona pagó en total $85\\,000$ pesos. ¿A cuántas sesiones asistió?",
+                        "a": [
+                            "$13$ sesiones",
+                            "$12$ sesiones",
+                            "$17$ sesiones",
+                            "$21$ sesiones"
+                        ],
+                        "c": 0,
+                        "explanation": "Si $n$ es el número de sesiones: $20\\,000+5\\,000n=85\\,000$. Entonces $5\\,000n=65\\,000$ y $n=13$. Comprobación: $20\\,000+13\\cdot5\\,000=85\\,000$. El $17$ resulta de dividir todo el pago entre la tarifa por sesión sin restar la inscripción."
+                    },
+                    {
+                        "type": "mcq",
+                        "q": "Una trabajadora social reparte $130$ kits de alimentos entre tres barrios. El segundo recibe el doble de kits que el primero y el tercero recibe $10$ más que el primero. ¿Cuántos kits recibe el primer barrio?",
+                        "a": [
+                            "$30$",
+                            "$60$",
+                            "$40$",
+                            "$26$"
+                        ],
+                        "c": 0,
+                        "explanation": "Si el primero recibe $x$, el segundo recibe $2x$ y el tercero $x+10$. La suma es $x+2x+(x+10)=130$, o sea $4x=120$ y $x=30$. Entonces el segundo recibe $60$ y el tercero $40$: $30+60+40=130$. Los valores $60$ y $40$ son lo que reciben los otros barrios."
+                    },
+                    {
+                        "type": "mcq",
+                        "q": "Un paciente tiene el triple de la edad de su hijo. Dentro de 10 años, la edad del paciente será el doble de la de su hijo. ¿Cuál es la edad actual del hijo?",
+                        "a": [
+                            "$10$ años",
+                            "$30$ años",
+                            "$20$ años",
+                            "$15$ años"
+                        ],
+                        "c": 0,
+                        "explanation": "Si el hijo tiene $x$ años, el paciente tiene $3x$. Dentro de 10 años: $3x+10=2(x+10)$. Entonces $3x+10=2x+20$ y $x=10$. El paciente tiene 30 años; en 10 años tendrán 40 y 20. El valor $30$ es la edad del paciente, no la del hijo."
+                    },
+                    {
+                        "type": "mcq",
+                        "q": "Después de un descuento del $20\\,\\%$, un curso de formación cuesta $160\\,000$ pesos. ¿Cuál era su precio original?",
+                        "a": [
+                            "$200\\,000$ pesos",
+                            "$192\\,000$ pesos",
+                            "$180\\,000$ pesos",
+                            "$128\\,000$ pesos"
+                        ],
+                        "c": 0,
+                        "explanation": "Si el precio original es $P$, el descuento deja el $80\\,\\%$: $0{,}8P=160\\,000$, luego $P=\\dfrac{160\\,000}{0{,}8}=200\\,000$. Comprobación: el $20\\,\\%$ de $200\\,000$ es $40\\,000$ y $200\\,000-40\\,000=160\\,000$. Sumar el $20\\,\\%$ a $160\\,000$ ($192\\,000$) es el error clásico: el porcentaje se aplica sobre el precio original, no sobre el final."
+                    },
+                    {
+                        "type": "mcq",
+                        "q": "Una terapeuta atendió $26$ pacientes en un día. En la tarde atendió $5$ más que el doble de los que atendió en la mañana. ¿Cuántos pacientes atendió en la mañana?",
+                        "a": [
+                            "$7$",
+                            "$19$",
+                            "$9$",
+                            "$12$"
+                        ],
+                        "c": 0,
+                        "explanation": "Si en la mañana atendió $x$, en la tarde atendió $2x+5$. Entonces $x+(2x+5)=26$, o sea $3x=21$ y $x=7$. En la tarde fueron $19$ pacientes ($2\\cdot7+5$) y $7+19=26$. El valor $19$ corresponde a la tarde."
+                    }
+                ]
+            },
+            {
+                "nav": "Ecuaciones cuadráticas: factorización, fórmula general y completar cuadrados",
+                "variants": [
+                    {
+                        "type": "mcq",
+                        "q": "Resuelva $x^{2}-5x+6=0$.",
+                        "a": [
+                            "$x=2$ y $x=3$",
+                            "$x=-2$ y $x=-3$",
+                            "$x=1$ y $x=6$",
+                            "$x=5$ y $x=6$"
+                        ],
+                        "c": 0,
+                        "explanation": "Se buscan dos números de producto $6$ y suma $-5$: $-2$ y $-3$. Entonces $(x-2)(x-3)=0$ y las soluciones son $x=2$ y $x=3$ (los valores que anulan cada factor, con el signo contrario). Comprobación: $4-10+6=0$ y $9-15+6=0$."
+                    },
+                    {
+                        "type": "mcq",
+                        "q": "Resuelva $x^{2}=9x$.",
+                        "a": [
+                            "$x=0$ y $x=9$",
+                            "Solo $x=9$",
+                            "$x=3$ y $x=-3$",
+                            "$x=0$ y $x=-9$"
+                        ],
+                        "c": 0,
+                        "explanation": "No se divide entre $x$ (se perdería una solución). Se lleva todo a un lado: $x^{2}-9x=0$, se factoriza $x(x-9)=0$ y cada factor se iguala a cero: $x=0$ o $x=9$. Dividir ambos lados entre $x$ deja solo $x=9$, que es el error típico."
+                    },
+                    {
+                        "type": "mcq",
+                        "q": "Resuelva $2x^{2}-7x+3=0$ con la fórmula general.",
+                        "a": [
+                            "$x=3$ y $x=\\dfrac12$",
+                            "$x=-3$ y $x=-\\dfrac12$",
+                            "$x=6$ y $x=1$",
+                            "$x=3$ y $x=-\\dfrac12$"
+                        ],
+                        "c": 0,
+                        "explanation": "Con $a=2$, $b=-7$, $c=3$: $\\Delta=b^{2}-4ac=49-24=25$. Entonces $x=\\dfrac{7\\pm\\sqrt{25}}{4}=\\dfrac{7\\pm5}{4}$, de donde $x=\\dfrac{12}{4}=3$ y $x=\\dfrac{2}{4}=\\dfrac12$. Comprobación en $x=3$: $18-21+3=0$. Cuidado con el signo: $-b=+7$."
+                    },
+                    {
+                        "type": "mcq",
+                        "q": "Resuelva $x^{2}-4x-1=0$ con la fórmula general.",
+                        "a": [
+                            "$x=2\\pm\\sqrt5$",
+                            "$x=2\\pm\\sqrt3$",
+                            "$x=4\\pm\\sqrt5$",
+                            "$x=-2\\pm\\sqrt5$"
+                        ],
+                        "c": 0,
+                        "explanation": "Con $a=1$, $b=-4$, $c=-1$: $\\Delta=16-4(1)(-1)=20$. Entonces $x=\\dfrac{4\\pm\\sqrt{20}}{2}=\\dfrac{4\\pm2\\sqrt5}{2}=2\\pm\\sqrt5$. Si el signo de $c$ se toma mal ($\\Delta=12$) se llega a $2\\pm\\sqrt3$; y $-b=+4$, no $-4$."
+                    },
+                    {
+                        "type": "mcq",
+                        "q": "Resuelva $(x-3)^{2}=16$.",
+                        "a": [
+                            "$x=7$ y $x=-1$",
+                            "$x=19$",
+                            "$x=4$ y $x=-4$",
+                            "Solo $x=7$"
+                        ],
+                        "c": 0,
+                        "explanation": "Se aplica raíz cuadrada en ambos lados <em>con los dos signos</em>: $x-3=\\pm4$. Entonces $x=3+4=7$ o $x=3-4=-1$. Comprobación: $(7-3)^{2}=16$ y $(-1-3)^{2}=16$. Perder la raíz negativa deja solo $x=7$; y sumar $3+16=19$ es confundir el exponente."
+                    }
+                ]
+            },
+            {
+                "nav": "Discriminante y problemas con ecuaciones cuadráticas",
+                "variants": [
+                    {
+                        "type": "mcq",
+                        "q": "¿Cuántas soluciones reales tiene la ecuación $x^{2}-6x+9=0$?",
+                        "a": [
+                            "Una solución real (doble), porque $\\Delta=0$",
+                            "Dos soluciones reales distintas, porque $\\Delta>0$",
+                            "Ninguna solución real, porque $\\Delta<0$",
+                            "Infinitas soluciones"
+                        ],
+                        "c": 0,
+                        "explanation": "Con $a=1$, $b=-6$, $c=9$: $\\Delta=36-36=0$. Un discriminante cero indica una única solución real, llamada doble: $x=\\dfrac{6}{2}=3$. En efecto, $x^{2}-6x+9=(x-3)^{2}$."
+                    },
+                    {
+                        "type": "mcq",
+                        "q": "¿Qué se puede afirmar sobre las soluciones reales de $2x^{2}+3x+4=0$?",
+                        "a": [
+                            "No tiene soluciones reales, porque $\\Delta=-23<0$",
+                            "Tiene dos soluciones reales distintas, porque $\\Delta=41>0$",
+                            "Tiene una solución doble, porque $\\Delta=0$",
+                            "Tiene dos soluciones reales, porque $\\Delta=-23$"
+                        ],
+                        "c": 0,
+                        "explanation": "Con $a=2$, $b=3$, $c=4$: $\\Delta=b^{2}-4ac=9-32=-23$. Como el discriminante es negativo, la raíz cuadrada no es un número real y la ecuación no tiene soluciones reales. El valor $41$ resulta de sumar $9+32$ por olvidar el signo."
+                    },
+                    {
+                        "type": "mcq",
+                        "q": "¿Para qué valores de $k$ la ecuación $x^{2}+kx+16=0$ tiene una única solución real?",
+                        "a": [
+                            "$k=8$ o $k=-8$",
+                            "$k=4$ o $k=-4$",
+                            "$k=16$",
+                            "$k=64$ o $k=-64$"
+                        ],
+                        "c": 0,
+                        "explanation": "Una única solución requiere $\\Delta=0$: $k^{2}-4(1)(16)=k^{2}-64=0$, de donde $k=\\pm8$. Comprobación: con $k=8$ queda $x^{2}+8x+16=(x+4)^{2}$. El valor $\\pm4$ resulta de usar $k^{2}=16$."
+                    },
+                    {
+                        "type": "mcq",
+                        "q": "El área de un salón rectangular para talleres de trabajo social es de $48$ m². Su largo excede en $2$ m a su ancho. ¿Cuál es el ancho del salón?",
+                        "a": [
+                            "$6$ m",
+                            "$8$ m",
+                            "$-8$ m",
+                            "$4$ m"
+                        ],
+                        "c": 0,
+                        "explanation": "Si el ancho es $x$, el largo es $x+2$ y el área es $x(x+2)=48$. Entonces $x^{2}+2x-48=0$, es decir $(x+8)(x-6)=0$. Las soluciones son $x=-8$ y $x=6$. Una longitud no puede ser negativa, así que el ancho es $6$ m y el largo $8$ m. Comprobación: $6\\cdot8=48$."
+                    },
+                    {
+                        "type": "mcq",
+                        "q": "El producto de dos números enteros positivos consecutivos es $156$. ¿Cuál es el mayor de los dos?",
+                        "a": [
+                            "$13$",
+                            "$12$",
+                            "$14$",
+                            "$78$"
+                        ],
+                        "c": 0,
+                        "explanation": "Si los números son $x$ y $x+1$: $x(x+1)=156$, o sea $x^{2}+x-156=0$ y $(x+13)(x-12)=0$. Las soluciones son $x=-13$ y $x=12$; se descarta la negativa porque los números son positivos. Los números son $12$ y $13$, y el mayor es $13$. Comprobación: $12\\cdot13=156$."
+                    }
+                ]
+            }
+        ];
+
+        let currentExam = [];
+        let userAnswers = {};
+
+        /* ---------------- utilidades ---------------- */
+
+        function shuffle(arr) {
+            for (let i = arr.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [arr[i], arr[j]] = [arr[j], arr[i]];
+            }
+            return arr;
+        }
+
+        function pickOne(arr) {
+            return arr[Math.floor(Math.random() * arr.length)];
+        }
+
+        /* Devuelve una copia de la variante con las opciones barajadas. */
+        function prepare(variant) {
+            const q = JSON.parse(JSON.stringify(variant));
+
+            if (q.type === "mcq") {
+                const correcta = q.a[q.c];
+                q.a = shuffle(q.a.slice());
+                q.c = q.a.indexOf(correcta);
+            } else if (q.type === "chart_mcq") {
+                const correcta = q.charts[q.c];
+                q.charts = shuffle(q.charts.slice());
+                q.c = q.charts.indexOf(correcta);
+                q.charts.forEach((ch, i) => { ch.title = 'Opción ' + String.fromCharCode(65 + i); });
+            } else if (q.type === "matching") {
+                q.pairs = shuffle(q.pairs.slice());
+                const encabezado = q.options[0];
+                q.options = [encabezado].concat(shuffle(q.options.slice(1)));
+            }
+            return q;
+        }
+
+        /* ---------------- construcción del examen ---------------- */
+
+        function generateExam() {
+            currentExam = TEMAS.map(tema => prepare(pickOne(tema.variants)));
+
+            userAnswers = {};
+            document.getElementById('results-container').style.display = 'none';
+            document.getElementById('total-count').innerText = currentExam.length;
+            renderQuestions();
+            renderNavigation();
+            updateProgress();
+        }
+
+        function renderQuestions() {
+            const container = document.getElementById('questions-container');
+            container.innerHTML = '';
+
+            currentExam.forEach((q, idx) => {
+                const card = document.createElement('div');
+                card.className = 'question-card';
+                card.id = `question-${idx}`;
+
+                let html = `
+                    <div class="question-header">
+                        <div class="question-number">${idx + 1}</div>
+                    </div>
+                    <div class="question-text">${q.q}</div>
+                `;
+
+                if (q.type === "matching") {
+                    html += `<div class="matching-container">`;
+                    q.pairs.forEach(pair => {
+                        html += `
+                            <div class="match-row">
+                                <div style="width:42%; font-size:0.95em; color:#333;">${pair.prompt}</div>
+                                <select class="match-select" data-qid="${idx}" data-pairid="${pair.id}" onchange="selectMatch(${idx}, '${pair.id}', this.value)">
+                                    ${q.options.map(opt => `<option value="${opt.val}">${opt.text}</option>`).join('')}
+                                </select>
+                            </div>
+                        `;
+                    });
+                    html += `</div>`;
+                } else if (q.type === "mcq") {
+                    html += `<div class="options-container">`;
+                    q.a.forEach((opt, optIdx) => {
+                        html += `
+                            <div class="option" id="opt-${idx}-${optIdx}" onclick="selectOption(${idx}, ${optIdx})">
+                                <strong>${String.fromCharCode(65 + optIdx)}.</strong>&nbsp;<span>${opt}</span>
+                            </div>
+                        `;
+                    });
+                    html += `</div>`;
+                } else if (q.type === "chart_mcq") {
+                    html += `<div class="options-grid-charts">`;
+                    q.charts.forEach((chart, optIdx) => {
+                        html += `
+                            <div class="option option-chart-card" id="opt-${idx}-${optIdx}" onclick="selectOption(${idx}, ${optIdx})">
+                                <strong>Opción ${String.fromCharCode(65 + optIdx)}</strong>
+                                <div id="chart-container-${idx}-${optIdx}" class="chart-box"></div>
+                            </div>
+                        `;
+                    });
+                    html += `</div>`;
+                }
+
+                html += `<div id="explanation-${idx}" class="explanation" style="display:none;"></div>`;
+                card.innerHTML = html;
+                container.appendChild(card);
+
+                if (q.type === "chart_mcq") {
+                    setTimeout(() => renderChartsForQuestion(q, idx), 50);
+                }
+            });
+
+            if (window.MathJax && MathJax.typesetPromise) {
+                MathJax.typesetPromise();
+            }
+        }
+
+        /* Este simulador no usa preguntas con gráfico. Si se agrega alguna,
+           hay que volver a incluir el script de Plotly en el encabezado del archivo. */
+        function renderChartsForQuestion(q, qIdx) {
+            q.charts.forEach((c, optIdx) => {
+                const targetId = `chart-container-${qIdx}-${optIdx}`;
+                let data = [];
+                let layout = {
+                    title: { text: c.title, font: { size: 12 } },
+                    margin: { l: 30, r: 20, t: 30, b: 30 },
+                    autosize: true
+                };
+
+                if (c.type === 'pie') {
+                    data = [{ labels: c.labels, values: c.values, type: 'pie', textinfo: 'label+percent' }];
+                } else if (c.type === 'bar') {
+                    data = [{ x: c.x, y: c.y, type: 'bar', marker: { color: '#3498db' } }];
+                    layout.xaxis = { tickangle: -45, automargin: true, tickfont: { size: 10 } };
+                    layout.yaxis = { automargin: true };
+                    if (c.gap === 0) {
+                        layout.bargap = 0.05;
+                    }
+                }
+                Plotly.newPlot(targetId, data, layout, { responsive: true, displayModeBar: false });
+            });
+        }
+
+        /* ---------------- interacción ---------------- */
+
+        function selectOption(qIdx, optIdx) {
+            userAnswers[qIdx] = optIdx;
+            const card = document.getElementById(`question-${qIdx}`);
+            const options = card.querySelectorAll('.option');
+            options.forEach((opt, i) => {
+                if (i === optIdx) opt.classList.add('selected');
+                else opt.classList.remove('selected');
+            });
+            updateProgress();
+        }
+
+        function selectMatch(qIdx, pairId, value) {
+            if (!userAnswers[qIdx]) userAnswers[qIdx] = {};
+            userAnswers[qIdx][pairId] = value;
+            updateProgress();
+        }
+
+        function isAnswered(idx) {
+            const respuesta = userAnswers[idx];
+            if (respuesta === undefined) return false;
+            if (currentExam[idx].type === "matching") {
+                const total = currentExam[idx].pairs.length;
+                return Object.keys(respuesta).length === total &&
+                       Object.values(respuesta).every(v => v !== "");
+            }
+            return true;
+        }
+
+        function updateProgress() {
+            let answered = 0;
+
+            currentExam.forEach((_, idx) => {
+                const completa = isAnswered(idx);
+                if (completa) answered++;
+
+                const navItem = document.getElementById(`nav-item-${idx}`);
+                if (navItem) {
+                    const statusDot = navItem.querySelector('.topic-status');
+                    statusDot.className = `topic-status ${completa ? 'answered' : 'unanswered'}`;
+                }
+            });
+
+            document.getElementById('answered-count').innerText = answered;
+        }
+
+        function renderNavigation() {
+            const list = document.getElementById('topics-list');
+            list.innerHTML = '';
+
+            TEMAS.forEach((tema, idx) => {
+                const item = document.createElement('div');
+                item.className = 'topic-item';
+                item.id = `nav-item-${idx}`;
+                item.onclick = () => {
+                    document.getElementById(`question-${idx}`).scrollIntoView({ behavior: 'smooth' });
+                };
+                item.innerHTML = `
+                    <span class="topic-name">${idx + 1}. ${tema.nav}</span>
+                    <span class="topic-status unanswered"></span>
+                `;
+                list.appendChild(item);
+            });
+        }
+
+        /* ---------------- calificación ---------------- */
+
+        function submitExam() {
+            let correctCount = 0;
+            const total = currentExam.length;
+
+            currentExam.forEach((q, idx) => {
+                const card = document.getElementById(`question-${idx}`);
+                const expDiv = document.getElementById(`explanation-${idx}`);
+                let isCorrect = false;
+
+                if (q.type === "matching") {
+                    const userPairs = userAnswers[idx] || {};
+                    isCorrect = q.pairs.every(pair => userPairs[pair.id] === pair.correct);
+
+                    card.querySelectorAll('.match-select').forEach(sel => {
+                        const pair = q.pairs.find(p => p.id === sel.dataset.pairid);
+                        const fila = sel.closest('.match-row');
+                        if (sel.value === pair.correct) {
+                            fila.style.borderColor = 'var(--success-color)';
+                            fila.style.backgroundColor = '#d4edda';
+                        } else {
+                            fila.style.borderColor = 'var(--accent-color)';
+                            fila.style.backgroundColor = '#f8d7da';
+                        }
+                    });
+                } else {
+                    isCorrect = (userAnswers[idx] === q.c);
+                    const options = card.querySelectorAll('.option');
+                    options.forEach((opt, optIdx) => {
+                        if (optIdx === q.c) opt.classList.add('correct');
+                        else if (optIdx === userAnswers[idx]) opt.classList.add('incorrect');
+                    });
+                }
+
+                if (isCorrect) correctCount++;
+
+                expDiv.innerHTML = `<strong>Explicación:</strong> ${q.explanation}`;
+                expDiv.style.display = 'block';
+
+                const navItem = document.getElementById(`nav-item-${idx}`);
+                if (navItem) {
+                    const statusDot = navItem.querySelector('.topic-status');
+                    statusDot.className = `topic-status ${isCorrect ? 'correct' : 'incorrect'}`;
+                }
+            });
+
+            if (window.MathJax && MathJax.typesetPromise) {
+                MathJax.typesetPromise();
+            }
+
+            const score = (correctCount / total) * 5;
+            const percentage = (correctCount / total) * 100;
+
+            const resultBox = document.getElementById('results-container');
+            const scoreCircle = document.getElementById('final-score');
+
+            scoreCircle.innerText = score.toFixed(1);
+            scoreCircle.className = `score-circle ${score >= 4 ? 'high' : score >= 3 ? 'medium' : 'low'}`;
+
+            document.getElementById('correct-count').innerText = correctCount;
+            document.getElementById('incorrect-count').innerText = total - correctCount;
+            document.getElementById('percentage-score').innerText = `${percentage.toFixed(1)}%`;
+
+            resultBox.style.display = 'block';
+            resultBox.scrollIntoView({ behavior: 'smooth' });
+        }
+
+        document.getElementById('submit-btn').addEventListener('click', submitExam);
+        document.getElementById('new-exam-btn').addEventListener('click', generateExam);
+        document.getElementById('restart-btn').addEventListener('click', generateExam);
+        document.getElementById('review-btn').addEventListener('click', () => {
+            document.querySelector('.questions-section').scrollIntoView({ behavior: 'smooth' });
+        });
+
+        document.addEventListener('DOMContentLoaded', generateExam);
+    </script>
+</body>
+</html>

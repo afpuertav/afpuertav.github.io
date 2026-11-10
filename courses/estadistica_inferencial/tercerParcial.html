@@ -1,0 +1,1385 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simulador del Tercer Parcial - Estadística Inferencial</title>
+
+    <script src="https://cdn.plot.ly/plotly-2.27.0.min.js"></script>
+
+    <script>
+        window.MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                displayMath: [['$$', '$$'], ['\\[', '\\]']],
+                processEscapes: true
+            },
+            svg: { fontCache: 'global' },
+            startup: { pageReady: () => MathJax.typesetPromise().catch(err => console.log(err)) }
+        };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
+
+    <style>
+        :root {
+            --primary-color: #2c3e50;
+            --secondary-color: #3498db;
+            --accent-color: #e74c3c;
+            --light-color: #ecf0f1;
+            --success-color: #27ae60;
+            --warning-color: #f39c12;
+            --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: #f5f7fa;
+            color: #333;
+            line-height: 1.6;
+            padding: 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding: 20px;
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: var(--shadow);
+        }
+
+        h1 {
+            color: var(--primary-color);
+            margin-bottom: 10px;
+            font-size: 2.2rem;
+        }
+
+        .subtitle {
+            color: var(--secondary-color);
+            font-size: 1.1rem;
+            margin-bottom: 20px;
+        }
+
+        .instructions {
+            background-color: var(--light-color);
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 25px;
+            border-left: 5px solid var(--secondary-color);
+        }
+
+        .instructions h3 {
+            color: var(--primary-color);
+            margin-bottom: 10px;
+        }
+
+        .exam-container {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 25px;
+        }
+
+        .questions-section {
+            background-color: white;
+            padding: 25px;
+            border-radius: 10px;
+            box-shadow: var(--shadow);
+        }
+
+        .control-panel {
+            background-color: white;
+            padding: 25px;
+            border-radius: 10px;
+            box-shadow: var(--shadow);
+            height: fit-content;
+            position: sticky;
+            top: 20px;
+        }
+
+        .question-card {
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid #eee;
+            scroll-margin-top: 20px;
+        }
+
+        .question-card:last-child {
+            border-bottom: none;
+        }
+
+        .question-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .question-number {
+            background-color: var(--primary-color);
+            color: white;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+        }
+
+        .question-text {
+            margin-bottom: 20px;
+            font-size: 1.1rem;
+            line-height: 1.5;
+        }
+
+        .question-text p + p { margin-top: 10px; }
+
+        .table-container {
+            margin: 15px 0;
+            padding: 15px;
+            background-color: #f9f9f9;
+            border-radius: 8px;
+            overflow-x: auto;
+        }
+
+        table { width: 100%; border-collapse: collapse; margin: 10px 0; font-size: 0.95em; }
+        th { background-color: var(--primary-color); color: white; padding: 10px; text-align: center; border: 1px solid #ddd; }
+        td { padding: 8px; text-align: center; border: 1px solid #ddd; }
+        tr:nth-child(even) { background-color: #f2f2f2; }
+
+        .options-container {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .options-grid-charts {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+
+        .option {
+            padding: 12px 15px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+        }
+
+        .option-chart-card {
+            flex-direction: column;
+            align-items: flex-start;
+            padding: 10px;
+        }
+
+        .option:hover {
+            background-color: #f0f8ff;
+            border-color: var(--secondary-color);
+        }
+
+        .option.selected {
+            background-color: #e1f0ff;
+            border-color: var(--secondary-color);
+            font-weight: 600;
+        }
+
+        .option.correct {
+            background-color: #d4edda;
+            border-color: var(--success-color);
+            color: #155724;
+        }
+
+        .option.incorrect {
+            background-color: #f8d7da;
+            border-color: var(--accent-color);
+            color: #721c24;
+        }
+
+        .chart-box {
+            width: 100%;
+            height: 300px;
+            margin-top: 5px;
+        }
+
+        .match-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 12px;
+            padding: 10px;
+            background-color: #f8f9fa;
+            border-radius: 6px;
+            border: 1px solid #e9ecef;
+        }
+
+        .match-select {
+            padding: 8px;
+            border-radius: 6px;
+            border: 1px solid #ccc;
+            font-size: 0.95rem;
+            width: 55%;
+        }
+
+        .explanation {
+            margin-top: 20px;
+            padding: 15px;
+            background-color: #fff3cd;
+            border-left: 5px solid #ffc107;
+            border-radius: 5px;
+            font-size: 0.95rem;
+        }
+
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s;
+            font-size: 1rem;
+            margin-right: 10px;
+            margin-bottom: 10px;
+        }
+
+        .btn-primary { background-color: var(--secondary-color); color: white; }
+        .btn-primary:hover { background-color: #2980b9; }
+        .btn-secondary { background-color: var(--light-color); color: var(--primary-color); border: 1px solid #ddd; }
+        .btn-secondary:hover { background-color: #d5dbdb; }
+
+        .results-container {
+            margin-top: 25px;
+            padding: 20px;
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: var(--shadow);
+            display: none;
+        }
+
+        .score-display { text-align: center; margin-bottom: 20px; }
+        .score-circle {
+            width: 120px; height: 120px; border-radius: 50%;
+            background-color: var(--light-color); display: flex;
+            justify-content: center; align-items: center;
+            margin: 0 auto 20px; font-size: 2.5rem; font-weight: bold;
+            color: var(--primary-color); border: 5px solid var(--secondary-color);
+        }
+
+        .score-circle.low { border-color: var(--accent-color); color: var(--accent-color); }
+        .score-circle.medium { border-color: var(--warning-color); color: var(--warning-color); }
+        .score-circle.high { border-color: var(--success-color); color: var(--success-color); }
+
+        .stats { display: flex; justify-content: space-between; margin-top: 20px; }
+        .stat-box { flex: 1; text-align: center; padding: 15px; background-color: var(--light-color); border-radius: 8px; margin: 0 5px; }
+        .stat-value { font-size: 2rem; font-weight: bold; color: var(--primary-color); }
+        .stat-label { font-size: 0.9rem; color: #7f8c8d; }
+
+        .topic-progress { margin-top: 20px; }
+        .topic-item { display: flex; justify-content: space-between; align-items: center; padding: 8px 0; border-bottom: 1px solid #eee; cursor: pointer; }
+        .topic-item:hover { background-color: #f5f5f5; padding-left: 5px; }
+        .topic-name { flex: 1; font-size: 0.9em; }
+        .topic-status { width: 12px; height: 12px; border-radius: 50%; margin-left: 10px; }
+        .topic-status.correct { background-color: var(--success-color); }
+        .topic-status.incorrect { background-color: var(--accent-color); }
+        .topic-status.unanswered { background-color: #ddd; }
+        .topic-status.answered { background-color: var(--secondary-color); }
+
+        footer { text-align: center; margin-top: 30px; padding: 20px; color: #7f8c8d; font-size: 0.9rem; }
+
+        .r-title { margin-top: 15px; }
+        pre.r-code { margin-top: 8px; padding: 12px; background: #1e2a38; color: #e8eef4; border-radius: 6px;
+                     overflow-x: auto; font-family: Consolas, 'Courier New', monospace; font-size: 0.85rem; line-height: 1.5; }
+        pre.r-code code { font-family: inherit; white-space: pre; }
+
+        @media (max-width: 900px) {
+            .exam-container { grid-template-columns: 1fr; }
+            .options-grid-charts { grid-template-columns: 1fr; }
+            .match-row { flex-direction: column; align-items: stretch; gap: 8px; }
+            .match-select { width: 100%; }
+        }
+    </style>
+</head>
+<body>
+    <p style="margin:0;padding:0.6rem 1rem;background:#1553AD;font:0.95rem/1.4 'Segoe UI',Arial,sans-serif"><a href="index.html" style="color:#fff;text-decoration:none">&larr; Estadística Inferencial</a></p>
+    <header>
+        <h1>Simulador del Tercer Parcial - Estadística Inferencial</h1>
+        <p class="subtitle">CBASBL061 · UNIMINUTO — Sesiones 10 a 15: estimación e intervalos de confianza, pruebas de hipótesis, correlación y regresión lineal</p>
+    </header>
+
+    <div class="instructions">
+        <h3>Instrucciones</h3>
+        <p>Este simulador cubre estimación puntual e intervalos de confianza (sesión 10), cálculo de intervalos para la media y la proporción y tamaño de muestra (sesión 11), planteamiento de hipótesis, errores y valor $p$ (sesión 13), pruebas de hipótesis para una media y una proporción (sesión 14) y correlación y regresión lineal simple (sesión 15). Los ejercicios están contextualizados en situaciones de Administración de Empresas. Son 10 preguntas y la calificación es sobre 5.0. Cada vez que pulses <em>Nuevo Examen Aleatorio</em> el simulador sortea una pregunta distinta de cada tema y baraja el orden de las opciones, así que puedes practicar varias veces sin memorizar respuestas. Al calificar verás la explicación de cada punto y el mismo proceso en R (también puedes usar R en el examen).</p>
+        <p style="margin-top:10px;"><strong>Convenciones del curso.</strong> Con la tabla de la normal estándar se redondea $z$ a dos decimales y las probabilidades a cuatro. El tamaño de muestra se redondea siempre hacia arriba. Si el enunciado da $s$ (desviación de la muestra) se usa $t$ con $n-1$ grados de libertad; si da $\sigma$ (poblacional), se usa $Z$. En los intervalos de confianza para una proporción el error estándar usa $\hat p$; en las pruebas de hipótesis usa $p_0$. Se rechaza $H_0$ cuando $p\le\alpha$. En una prueba bilateral el valor $p$ suma las dos colas.</p>
+    </div>
+
+    <div class="exam-container">
+        <section class="questions-section">
+            <h2>Preguntas del Parcial</h2>
+            <div id="questions-container"></div>
+
+            <div class="button-group" style="margin-top:20px;">
+                <button id="submit-btn" class="btn btn-primary">Calificar Examen</button>
+                <button id="new-exam-btn" class="btn btn-secondary">Nuevo Examen Aleatorio</button>
+            </div>
+        </section>
+
+        <section class="control-panel">
+            <h3>Progreso</h3>
+            <div class="stats">
+                <div class="stat-box">
+                    <div class="stat-value" id="answered-count">0</div>
+                    <div class="stat-label">Respondidas</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-value" id="total-count">10</div>
+                    <div class="stat-label">Total</div>
+                </div>
+            </div>
+
+            <div class="topic-progress">
+                <h4>Navegación:</h4>
+                <div id="topics-list"></div>
+            </div>
+        </section>
+    </div>
+
+    <div class="results-container" id="results-container">
+        <h2>Resultados del Parcial</h2>
+
+        <div class="score-display">
+            <div class="score-circle" id="final-score">0.0</div>
+            <h3>Calificación Final</h3>
+            <p id="score-text">Sobre 5.0 puntos</p>
+        </div>
+
+        <div class="stats">
+            <div class="stat-box">
+                <div class="stat-value" id="correct-count">0</div>
+                <div class="stat-label">Correctas</div>
+            </div>
+            <div class="stat-box">
+                <div class="stat-value" id="incorrect-count">0</div>
+                <div class="stat-label">Incorrectas</div>
+            </div>
+            <div class="stat-box">
+                <div class="stat-value" id="percentage-score">0%</div>
+                <div class="stat-label">Porcentaje</div>
+            </div>
+        </div>
+
+        <div style="text-align: center; margin-top: 20px;">
+            <button id="review-btn" class="btn btn-secondary">Revisar Respuestas</button>
+            <button id="restart-btn" class="btn btn-primary">Intentar Otro Examen</button>
+        </div>
+    </div>
+
+    <footer>
+        <p>Simulador del Tercer Parcial de Estadística Inferencial</p>
+    </footer>
+
+    <script>
+        /* ------------------------------------------------------------------
+           Banco de preguntas. Un objeto por tema; cada tema tiene varias
+           variantes y el simulador sortea una. Las explicaciones nunca
+           nombran la opción por su letra, porque el orden se baraja.
+           ------------------------------------------------------------------ */
+        const TEMAS = [
+            {
+                "nav": "Estimación puntual y propiedades de un buen estimador",
+                "variants": [
+                    {
+                        "type": "mcq",
+                        "q": "Las ventas diarias (en unidades) de un producto durante 8 días fueron $12,\\ 15,\\ 11,\\ 14,\\ 18,\\ 13,\\ 16,\\ 13$. ¿Cuáles son las estimaciones puntuales de la media $\\mu$ y de la desviación estándar $\\sigma$ de las ventas diarias?",
+                        "a": [
+                            "$\\bar{x}=14$ y $s\\approx2{,}27$",
+                            "$\\bar{x}=14$ y $s\\approx2{,}12$",
+                            "$\\bar{x}=14$ y $s\\approx5{,}14$",
+                            "$\\bar{x}=13{,}5$ y $s\\approx2{,}27$"
+                        ],
+                        "c": 0,
+                        "explanation": "La media muestral es $\\bar{x}=\\dfrac{112}{8}=14$. La suma de cuadrados de las desviaciones es $36$ y la varianza muestral usa $n-1$: $s^{2}=\\dfrac{36}{7}\\approx5{,}14$, de modo que $s=\\sqrt{5{,}14}\\approx2{,}27$. Con $n$ en el denominador saldría $2{,}12$ (subestima); $5{,}14$ es la varianza, no la desviación; y $13{,}5$ es la mediana.",
+                        "r": "ventas <- c(12, 15, 11, 14, 18, 13, 16, 13)\nmean(ventas)   # estimación puntual de mu\nsd(ventas)     # estimación puntual de sigma (usa n - 1)\nvar(ventas)    # varianza muestral s^2"
+                    },
+                    {
+                        "type": "mcq",
+                        "q": "De $250$ clientes encuestados, $37$ devolvieron el producto en el último mes. ¿Cuál es la estimación puntual de la proporción $p$ de clientes que devuelven?",
+                        "a": [
+                            "$\\hat{p}=0{,}148$",
+                            "$\\hat{p}=0{,}174$",
+                            "$\\hat{p}=6{,}757$",
+                            "$\\hat{p}=0{,}852$"
+                        ],
+                        "c": 0,
+                        "explanation": "El estimador puntual de una proporción es la proporción muestral: $\\hat{p}=\\dfrac{x}{n}=\\dfrac{37}{250}=0{,}148$ (el $14{,}8\\,\\%$). El valor $0{,}852$ es la proporción de clientes que <em>no</em> devolvieron ($1-\\hat p$); $0{,}174$ resulta de dividir entre $213$; y $6{,}757=250/37$ invierte la fracción.",
+                        "r": "x <- 37; n <- 250\nx / n          # p-hat = 0.148\nprop.test(x, n)$estimate"
+                    },
+                    {
+                        "type": "mcq",
+                        "q": "¿Por qué la varianza muestral $s^{2}=\\dfrac{\\sum(x_i-\\bar{x})^{2}}{n-1}$ se divide entre $n-1$ y no entre $n$?",
+                        "a": [
+                            "Porque así $s^{2}$ es un estimador insesgado de $\\sigma^{2}$: su valor esperado es $\\sigma^{2}$",
+                            "Porque así $s^{2}$ resulta siempre menor que $\\sigma^{2}$",
+                            "Porque una de las observaciones se descarta de la muestra",
+                            "Porque así $s^{2}$ tiene la menor varianza posible entre todos los estimadores"
+                        ],
+                        "c": 0,
+                        "explanation": "Las desviaciones se miden respecto de $\\bar{x}$, que ya está ajustada a los datos; con $n$ en el denominador se <strong>subestimaría</strong> sistemáticamente $\\sigma^{2}$. Dividir entre $n-1$ corrige ese sesgo y logra $E(s^{2})=\\sigma^{2}$: es la propiedad de <em>insesgamiento</em>. No se descarta ninguna observación, y la eficiencia (mínima varianza) es otra propiedad distinta."
+                    },
+                    {
+                        "type": "mcq",
+                        "q": "Un estimador cuyo valor esperado coincide con el parámetro que se quiere estimar, $E(\\hat\\theta)=\\theta$, se llama:",
+                        "a": [
+                            "Insesgado",
+                            "Consistente",
+                            "Eficiente",
+                            "Sesgado"
+                        ],
+                        "c": 0,
+                        "explanation": "Un estimador es <strong>insesgado</strong> si, en promedio sobre muchas muestras, acierta el parámetro. La <em>consistencia</em> exige que se acerque al parámetro cuando $n$ crece; la <em>eficiencia</em> compara varianzas entre estimadores insesgados. Un estimador sesgado es justamente el que no cumple $E(\\hat\\theta)=\\theta$."
+                    },
+                    {
+                        "type": "mcq",
+                        "q": "Dos estimadores insesgados de la misma media $\\mu$ tienen varianzas $\\text{Var}(A)=4$ y $\\text{Var}(B)=9$. ¿Cuál es preferible y por qué?",
+                        "a": [
+                            "$A$, porque es más eficiente (menor varianza)",
+                            "$B$, porque su varianza es mayor y por eso es más confiable",
+                            "Ninguno, porque ambos son insesgados y por tanto equivalentes",
+                            "$B$, porque un estimador con más varianza es más consistente"
+                        ],
+                        "c": 0,
+                        "explanation": "Entre estimadores insesgados se prefiere el de <strong>menor varianza</strong>: es el <em>más eficiente</em>, pues sus resultados varían menos de una muestra a otra y quedan más cerca de $\\mu$. Que ambos sean insesgados no los hace equivalentes. La consistencia depende del tamaño de muestra, no de que la varianza sea grande."
+                    }
+                ]
+            },
+            {
+                "nav": "Interpretación del intervalo de confianza y factores que lo modifican",
+                "variants": [
+                    {
+                        "type": "mcq",
+                        "q": "Con una muestra de clientes se obtuvo un intervalo de confianza del $95\\,\\%$ para el gasto medio mensual $\\mu$ (en miles de pesos): $(48{,}2;\\ 53{,}8)$. ¿Cuál es la interpretación correcta?",
+                        "a": [
+                            "Si se repitiera el muestreo muchas veces, cerca del $95\\,\\%$ de los intervalos construidos así contendría a $\\mu$",
+                            "Hay una probabilidad del $95\\,\\%$ de que $\\mu$ esté entre $48{,}2$ y $53{,}8$",
+                            "El $95\\,\\%$ de los clientes gasta entre $48{,}2$ y $53{,}8$ mil pesos al mes",
+                            "El $95\\,\\%$ de las medias muestrales caerá entre $48{,}2$ y $53{,}8$"
+                        ],
+                        "c": 0,
+                        "explanation": "La confianza está en el <em>método</em>, no en el intervalo particular: $\\mu$ es un número fijo, que está o no está dentro de $(48{,}2;\\ 53{,}8)$. Lo aleatorio es el intervalo, que cambia en cada muestra. Por eso no es correcto hablar de “probabilidad del $95\\,\\%$” para este intervalo ya calculado. Tampoco describe a los clientes individuales (eso sería un intervalo de variación, no de confianza) ni a otras medias muestrales."
+                    },
+                    {
+                        "type": "mcq",
+                        "q": "Se construye un intervalo de confianza para una media con $\\sigma$ conocida. Si el tamaño de muestra se <strong>cuadruplica</strong> y todo lo demás permanece igual, el margen de error:",
+                        "a": [
+                            "Se reduce a la mitad",
+                            "Se reduce a la cuarta parte",
+                            "Se duplica",
+                            "No cambia"
+                        ],
+                        "c": 0,
+                        "explanation": "El margen es $e=z\\dfrac{\\sigma}{\\sqrt{n}}$. Con $4n$ queda $z\\dfrac{\\sigma}{\\sqrt{4n}}=\\dfrac12\\,z\\dfrac{\\sigma}{\\sqrt{n}}$: la raíz cuadrada convierte el factor $4$ en $2$. Para reducir el margen a la cuarta parte habría que multiplicar la muestra por $16$. Por eso la precisión se encarece rápido.",
+                        "r": "z <- qnorm(0.975); sigma <- 8\nz * sigma / sqrt(64)    # margen con n = 64  -> 1.96\nz * sigma / sqrt(256)   # margen con n = 256 -> 0.98 (la mitad)"
+                    },
+                    {
+                        "type": "mcq",
+                        "q": "Con la misma muestra se pasa de construir un intervalo del $95\\,\\%$ a uno del $99\\,\\%$ para la media. El intervalo del $99\\,\\%$ será:",
+                        "a": [
+                            "Más ancho, porque $z$ pasa de $1{,}96$ a $2{,}576$",
+                            "Más angosto, porque tiene mayor confianza",
+                            "Igual de ancho, porque el tamaño de muestra no cambió",
+                            "Más angosto, porque $z$ pasa de $2{,}576$ a $1{,}96$"
+                        ],
+                        "c": 0,
+                        "explanation": "Mayor confianza exige un valor crítico mayor: $z_{0,025}=1{,}96$ para el $95\\,\\%$ y $z_{0,005}=2{,}576$ para el $99\\,\\%$. El margen $e=z\\,\\dfrac{\\sigma}{\\sqrt n}$ crece en la misma proporción ($2{,}576/1{,}96\\approx1{,}31$, un $31\\,\\%$ más ancho). Ganar confianza se paga con menos precisión, a menos que se aumente $n$.",
+                        "r": "qnorm(0.975)   # 1.96 (95 %)\nqnorm(0.995)   # 2.576 (99 %)\nqnorm(0.995) / qnorm(0.975)  # 1.314"
+                    },
+                    {
+                        "type": "mcq",
+                        "q": "Un intervalo de confianza del $95\\,\\%$ para una media es $(50{,}04;\\ 53{,}96)$. ¿Cuáles son la media muestral y el margen de error?",
+                        "a": [
+                            "$\\bar{x}=52$ y $e=1{,}96$",
+                            "$\\bar{x}=52$ y $e=3{,}92$",
+                            "$\\bar{x}=50{,}04$ y $e=3{,}92$",
+                            "$\\bar{x}=53{,}96$ y $e=1{,}96$"
+                        ],
+                        "c": 0,
+                        "explanation": "El intervalo es simétrico en torno a $\\bar{x}$: $\\bar{x}=\\dfrac{50{,}04+53{,}96}{2}=52$. El margen de error es la mitad del ancho: $e=\\dfrac{53{,}96-50{,}04}{2}=1{,}96$. El valor $3{,}92$ es el ancho total del intervalo, no el margen.",
+                        "r": "lim <- c(50.04, 53.96)\nmean(lim)           # media muestral = 52\ndiff(lim) / 2       # margen de error = 1.96"
+                    },
+                    {
+                        "type": "mcq",
+                        "q": "El intervalo de confianza del $95\\,\\%$ para el tiempo medio de atención es $(14{,}5;\\ 16{,}7)$ minutos. Un gerente afirma que el tiempo medio es de $17$ minutos. ¿Qué se puede concluir?",
+                        "a": [
+                            "$17$ queda fuera del intervalo: no es un valor plausible para $\\mu$ con el $95\\,\\%$ de confianza",
+                            "$17$ es plausible, porque está cerca del límite superior del intervalo",
+                            "$17$ es plausible, porque la media muestral está dentro del intervalo",
+                            "Está demostrado que $\\mu\\neq17$ con probabilidad del $100\\,\\%$"
+                        ],
+                        "c": 0,
+                        "explanation": "Los valores plausibles para $\\mu$ son los que caen dentro del intervalo. Como $17>16{,}7$, queda fuera y la afirmación no es respaldada por los datos al $95\\,\\%$ de confianza. Estar “cerca” no cuenta, y la media muestral siempre está dentro del intervalo (es su centro). Tampoco hay certeza del $100\\,\\%$: sigue existiendo un $5\\,\\%$ de riesgo de que el método falle. Este es el mismo razonamiento de una prueba de hipótesis bilateral con $\\alpha=0{,}05$."
+                    }
+                ]
+            },
+            {
+                "nav": "Intervalo de confianza para la media ($Z$ o $t$)",
+                "variants": [
+                    {
+                        "type": "mcq",
+                        "q": "El monto de las facturas de una empresa tiene desviación estándar poblacional conocida $\\sigma=15$ (miles de pesos). Con una muestra de $n=100$ facturas se obtuvo $\\bar{x}=120$. Construya el intervalo de confianza del $95\\,\\%$ para el monto medio.",
+                        "a": [
+                            "$(117{,}06;\\ 122{,}94)$",
+                            "$(90{,}60;\\ 149{,}40)$",
+                            "$(117{,}53;\\ 122{,}47)$",
+                            "$(119{,}71;\\ 120{,}29)$"
+                        ],
+                        "c": 0,
+                        "explanation": "Como $\\sigma$ es conocida se usa $Z$ con $z_{0,025}=1{,}96$. El error estándar es $\\dfrac{\\sigma}{\\sqrt n}=\\dfrac{15}{10}=1{,}5$ y el margen $e=1{,}96\\cdot1{,}5=2{,}94$. El intervalo es $120\\pm2{,}94=(117{,}06;\\ 122{,}94)$. Olvidar dividir entre $\\sqrt n$ da un intervalo enorme; usar $z=1{,}645$ corresponde al $90\\,\\%$; y dividir entre $n$ en vez de $\\sqrt n$ lo hace diminuto.",
+                        "r": "xbar <- 120; sigma <- 15; n <- 100\nmargen <- qnorm(0.975) * sigma / sqrt(n)\nc(xbar - margen, xbar + margen)   # (117.06, 122.94)"
+                    },
+                    {
+                        "type": "mcq",
+                        "q": "El tiempo de respuesta de un servicio (en ms) se midió en $n=25$ solicitudes: $\\bar{x}=250$ y $s=20$. Suponga población aproximadamente normal y construya el intervalo del $95\\,\\%$ para el tiempo medio.",
+                        "a": [
+                            "$(241{,}74;\\ 258{,}26)$",
+                            "$(242{,}16;\\ 257{,}84)$",
+                            "$(208{,}72;\\ 291{,}28)$",
+                            "$(243{,}16;\\ 256{,}84)$"
+                        ],
+                        "c": 0,
+                        "explanation": "Como se conoce $s$ y no $\\sigma$, se usa la distribución $t$ con $gl=n-1=24$: $t_{0,025;\\,24}=2{,}064$. El error estándar es $\\dfrac{20}{\\sqrt{25}}=4$ y el margen $e=2{,}064\\cdot4=8{,}256$. Intervalo: $250\\pm8{,}256=(241{,}74;\\ 258{,}26)$. Usar $z=1{,}96$ lo estrecha de forma indebida; olvidar dividir entre $\\sqrt n$ lo infla; y $1{,}711$ es el valor para el $90\\,\\%$ bilateral.",
+                        "r": "n <- 25; xbar <- 250; s <- 20\nmargen <- qt(0.975, df = n - 1) * s / sqrt(n)\nc(xbar - margen, xbar + margen)   # (241.74, 258.26)\n# con datos crudos: t.test(datos)$conf.int"
+                    },
+                    {
+                        "type": "mcq",
+                        "q": "Una empresa conoce que la desviación estándar de las horas semanales trabajadas es $\\sigma=12$. En una muestra de $n=36$ empleados, $\\bar{x}=80$ horas. Construya el intervalo del $99\\,\\%$ para la media poblacional.",
+                        "a": [
+                            "$(74{,}85;\\ 85{,}15)$",
+                            "$(76{,}08;\\ 83{,}92)$",
+                            "$(49{,}09;\\ 110{,}91)$",
+                            "$(76{,}71;\\ 83{,}29)$"
+                        ],
+                        "c": 0,
+                        "explanation": "Con $\\sigma$ conocida se usa $Z$ y $z_{0,005}=2{,}576$. El error estándar es $\\dfrac{12}{\\sqrt{36}}=2$ y el margen $e=2{,}576\\cdot2=5{,}152$. Intervalo: $80\\pm5{,}152=(74{,}85;\\ 85{,}15)$. El intervalo con $1{,}96$ corresponde al $95\\,\\%$ y el de $1{,}645$ al $90\\,\\%$, ambos más angostos porque aceptan más riesgo.",
+                        "r": "xbar <- 80; sigma <- 12; n <- 36\nmargen <- qnorm(0.995) * sigma / sqrt(n)\nc(xbar - margen, xbar + margen)   # (74.85, 85.15)"
+                    },
+                    {
+                        "type": "mcq",
+                        "q": "Se construirá un intervalo de confianza del $95\\,\\%$ para una media con una muestra de $n=20$ observaciones de una población normal con $\\sigma$ desconocida. ¿Qué valor crítico debe usarse?",
+                        "a": [
+                            "$t_{0,025;\\,19}=2{,}093$",
+                            "$z_{0,025}=1{,}96$",
+                            "$t_{0,025;\\,20}=2{,}086$",
+                            "$t_{0,05;\\,19}=1{,}729$"
+                        ],
+                        "c": 0,
+                        "explanation": "Como no se conoce $\\sigma$ se usa la distribución $t$ con $gl=n-1=19$, y para el $95\\,\\%$ bilateral queda $\\alpha/2=0{,}025$ en cada cola: $t_{0,025;\\,19}=2{,}093$. El valor $1{,}96$ solo aplica con $\\sigma$ conocida; $2{,}086$ se obtiene con $20$ grados de libertad (olvidar restar 1); y $1{,}729$ es el valor para un $90\\,\\%$ bilateral ($0{,}05$ por cola).",
+                        "r": "qt(0.975, df = 19)   # 2.093\nqnorm(0.975)         # 1.96 (solo si sigma es conocida)"
+                    },
+                    {
+                        "type": "mcq",
+                        "q": "Una muestra de $n=9$ tiempos de entrega de una población normal da $\\bar{x}=40$ minutos y $s=6$. Construya el intervalo de confianza del $90\\,\\%$ para el tiempo medio.",
+                        "a": [
+                            "$(36{,}28;\\ 43{,}72)$",
+                            "$(36{,}71;\\ 43{,}29)$",
+                            "$(36{,}33;\\ 43{,}67)$",
+                            "$(35{,}39;\\ 44{,}61)$"
+                        ],
+                        "c": 0,
+                        "explanation": "Con $s$ y $n=9$ se usa $t$ con $gl=8$; para el $90\\,\\%$ bilateral, $t_{0,05;\\,8}=1{,}860$. El error estándar es $\\dfrac{6}{\\sqrt9}=2$ y el margen $e=1{,}860\\cdot2=3{,}72$. Intervalo: $40\\pm3{,}72=(36{,}28;\\ 43{,}72)$. Con $z=1{,}645$ el intervalo sale demasiado angosto, con $9$ grados de libertad ($1{,}833$) casi igual, y con $2{,}306$ (el valor para el $95\\,\\%$) demasiado ancho.",
+                        "r": "n <- 9; xbar <- 40; s <- 6\nmargen <- qt(0.95, df = n - 1) * s / sqrt(n)\nc(xbar - margen, xbar + margen)   # (36.28, 43.72)"
+                    }
+                ]
+            },
+            {
+                "nav": "Intervalo de confianza para una proporción",
+                "variants": [
+                    {
+                        "type": "mcq",
+                        "q": "En una encuesta a $n=500$ clientes, $135$ dijeron que recomendarían la marca. Construya el intervalo de confianza del $95\\,\\%$ para la proporción poblacional de clientes que la recomiendan.",
+                        "a": [
+                            "$(0{,}2311;\\ 0{,}3089)$",
+                            "$(0{,}2373;\\ 0{,}3027)$",
+                            "$(0{,}2245;\\ 0{,}3155)$",
+                            "$(0{,}2189;\\ 0{,}3211)$"
+                        ],
+                        "c": 0,
+                        "explanation": "La proporción muestral es $\\hat p=\\dfrac{135}{500}=0{,}27$. Las condiciones se cumplen: $n\\hat p=135\\ge5$ y $n(1-\\hat p)=365\\ge5$. El error estándar es $\\sqrt{\\dfrac{0{,}27\\cdot0{,}73}{500}}=0{,}0199$ y el margen $e=1{,}96\\cdot0{,}0199=0{,}0389$. Intervalo: $(0{,}2311;\\ 0{,}3089)$. Usar $1{,}645$ corresponde al $90\\,\\%$, $2{,}576$ al $99\\,\\%$, y omitir el factor $(1-\\hat p)$ en el radicando infla el error estándar.",
+                        "r": "x <- 135; n <- 500\nphat <- x / n\nmargen <- qnorm(0.975) * sqrt(phat * (1 - phat) / n)\nc(phat - margen, phat + margen)   # (0.2311, 0.3089)\n# prop.test(x, n, correct = FALSE)$conf.int  (método de Wilson, valores similares)"
+                    },
+                    {
+                        "type": "mcq",
+                        "q": "De $n=200$ usuarios de una aplicación, el $40\\,\\%$ usa la función premium. Construya el intervalo de confianza del $90\\,\\%$ para la proporción poblacional de usuarios premium.",
+                        "a": [
+                            "$(0{,}3430;\\ 0{,}4570)$",
+                            "$(0{,}3321;\\ 0{,}4679)$",
+                            "$(0{,}3264;\\ 0{,}4736)$",
+                            "$(0{,}3108;\\ 0{,}4892)$"
+                        ],
+                        "c": 0,
+                        "explanation": "Con $\\hat p=0{,}40$ y $n=200$: $n\\hat p=80\\ge5$ y $n(1-\\hat p)=120\\ge5$. Error estándar: $\\sqrt{\\dfrac{0{,}40\\cdot0{,}60}{200}}=0{,}0346$. Para el $90\\,\\%$, $z=1{,}645$, de modo que $e=1{,}645\\cdot0{,}0346=0{,}0570$ y el intervalo es $(0{,}3430;\\ 0{,}4570)$. Con $1{,}96$ o $2{,}576$ se obtienen intervalos del $95\\,\\%$ y $99\\,\\%$.",
+                        "r": "phat <- 0.40; n <- 200\nmargen <- qnorm(0.95) * sqrt(phat * (1 - phat) / n)\nc(phat - margen, phat + margen)   # (0.3430, 0.4570)"
+                    },
+                    {
+                        "type": "mcq",
+                        "q": "El intervalo de confianza normal para una proporción exige $n\\hat p\\ge5$ y $n(1-\\hat p)\\ge5$. ¿En cuál de los siguientes casos puede usarse?",
+                        "a": [
+                            "$n=200$ y $\\hat p=0{,}30$",
+                            "$n=50$ y $\\hat p=0{,}04$",
+                            "$n=30$ y $\\hat p=0{,}10$",
+                            "$n=100$ y $\\hat p=0{,}97$"
+                        ],
+                        "c": 0,
+                        "explanation": "Se verifican ambos productos. Con $n=200$ y $\\hat p=0{,}30$: $60\\ge5$ y $140\\ge5$, así que sí. Con $n=50$, $\\hat p=0{,}04$ el número esperado de éxitos es $2<5$; con $n=30$, $\\hat p=0{,}10$ es $3<5$; con $n=100$, $\\hat p=0{,}97$ los fracasos son $100(0{,}03)=3<5$. En esos casos la aproximación normal no es confiable.",
+                        "r": "n <- 200; phat <- 0.30\nn * phat          # 60  >= 5\nn * (1 - phat)    # 140 >= 5"
+                    },
+                    {
+                        "type": "mcq",
+                        "q": "En una encuesta de intención de compra con $n=1\\,000$ personas, el $50\\,\\%$ respondió que sí. ¿Cuál es el margen de error del intervalo del $95\\,\\%$ para la proporción?",
+                        "a": [
+                            "$0{,}0310$",
+                            "$0{,}0620$",
+                            "$0{,}0155$",
+                            "$0{,}0005$"
+                        ],
+                        "c": 0,
+                        "explanation": "$e=z\\sqrt{\\dfrac{\\hat p(1-\\hat p)}{n}}=1{,}96\\sqrt{\\dfrac{0{,}5\\cdot0{,}5}{1\\,000}}=1{,}96\\cdot0{,}01581=0{,}0310$, es decir, unos $\\pm3{,}1$ puntos porcentuales. $0{,}0620$ es el ancho total y $0{,}0155$ es la mitad del margen; $0{,}0005$ resulta de olvidar la raíz cuadrada.",
+                        "r": "phat <- 0.5; n <- 1000\nqnorm(0.975) * sqrt(phat * (1 - phat) / n)   # 0.0310"
+                    },
+                    {
+                        "type": "mcq",
+                        "q": "El intervalo de confianza del $95\\,\\%$ para la proporción de clientes satisfechos es $(0{,}41;\\ 0{,}49)$. La empresa se había propuesto una meta de $50\\,\\%$. ¿Qué indica el intervalo?",
+                        "a": [
+                            "$0{,}50$ queda fuera del intervalo: con el $95\\,\\%$ de confianza la proporción real es menor que la meta",
+                            "$0{,}50$ es plausible, porque está muy cerca del límite superior",
+                            "Con el $95\\,\\%$ de confianza la proporción real es exactamente $0{,}45$",
+                            "No se puede concluir nada porque el intervalo es muy angosto"
+                        ],
+                        "c": 0,
+                        "explanation": "Todos los valores del intervalo, de $0{,}41$ a $0{,}49$, están por debajo de $0{,}50$. Por lo tanto, la meta no es un valor plausible para $p$ y hay evidencia de que la proporción de clientes satisfechos es menor que el $50\\,\\%$. El punto medio $0{,}45$ es solo la estimación puntual $\\hat p$; no es el valor exacto. Que el intervalo sea angosto significa mucha precisión, no ausencia de conclusión."
+                    }
+                ]
+            },
+            {
+                "nav": "Tamaño de muestra para un margen de error deseado",
+                "variants": [
+                    {
+                        "type": "mcq",
+                        "q": "Se quiere estimar el tiempo medio de espera en una sucursal con una precisión de $\\pm4$ minutos y confianza del $95\\,\\%$. Se sabe que $\\sigma=20$ minutos. ¿Qué tamaño de muestra se necesita?",
+                        "a": [
+                            "$97$",
+                            "$96$",
+                            "$25$",
+                            "$10$"
+                        ],
+                        "c": 0,
+                        "explanation": "$n=\\left(\\dfrac{z\\sigma}{e}\\right)^{2}=\\left(\\dfrac{1{,}96\\cdot20}{4}\\right)^{2}=(9{,}8)^{2}=96{,}04$. El tamaño de muestra se redondea <strong>siempre hacia arriba</strong>: $97$, porque con $96$ el margen superaría $4$ minutos. El valor $25=(20/4)^{2}$ olvida el $z$, y $10$ es la raíz sin elevar al cuadrado.",
+                        "r": "ceiling((qnorm(0.975) * 20 / 4)^2)   # 97"
+                    },
+                    {
+                        "type": "mcq",
+                        "q": "Se quiere estimar la proporción de usuarios que usarían un servicio nuevo, con un margen de error de $\\pm3\\,\\%$ y confianza del $95\\,\\%$. No hay información previa sobre $p$. ¿Qué tamaño de muestra se necesita?",
+                        "a": [
+                            "$1\\,068$",
+                            "$1\\,067$",
+                            "$385$",
+                            "$534$"
+                        ],
+                        "c": 0,
+                        "explanation": "Sin información previa se toma el caso más desfavorable $p=q=0{,}5$: $n=\\dfrac{z^{2}pq}{e^{2}}=\\dfrac{(1{,}96)^{2}(0{,}5)(0{,}5)}{(0{,}03)^{2}}=\\dfrac{0{,}9604}{0{,}0009}=1\\,067{,}1$. Se redondea hacia arriba: $1\\,068$. El valor $385$ corresponde a un margen de $\\pm5\\,\\%$, y $534$ es la mitad del resultado.",
+                        "r": "ceiling(qnorm(0.975)^2 * 0.5 * 0.5 / 0.03^2)   # 1068"
+                    },
+                    {
+                        "type": "mcq",
+                        "q": "Un estudio piloto indica que cerca del $20\\,\\%$ de los pedidos llega con retraso. Se desea estimar esa proporción con un margen de $\\pm4\\,\\%$ y confianza del $95\\,\\%$. ¿Qué tamaño de muestra se necesita?",
+                        "a": [
+                            "$385$",
+                            "$384$",
+                            "$601$",
+                            "$246$"
+                        ],
+                        "c": 0,
+                        "explanation": "Con información previa $p=0{,}20$ y $q=0{,}80$: $n=\\dfrac{(1{,}96)^{2}(0{,}20)(0{,}80)}{(0{,}04)^{2}}=\\dfrac{0{,}6147}{0{,}0016}=384{,}16$, y se redondea hacia arriba: $385$. Si se ignorara el estudio piloto y se usara $p=0{,}5$ se obtendrían $601$, una muestra innecesariamente grande.",
+                        "r": "ceiling(qnorm(0.975)^2 * 0.2 * 0.8 / 0.04^2)   # 385\nceiling(qnorm(0.975)^2 * 0.5 * 0.5 / 0.04^2)   # 601 (sin informacion previa)"
+                    },
+                    {
+                        "type": "mcq",
+                        "q": "Una muestra de $n=100$ produce cierto margen de error en una estimación de la media. ¿Qué tamaño de muestra se necesita para que el margen de error se reduzca a la mitad, con la misma confianza y desviación?",
+                        "a": [
+                            "$400$",
+                            "$200$",
+                            "$50$",
+                            "$25$"
+                        ],
+                        "c": 0,
+                        "explanation": "Como $e=z\\dfrac{\\sigma}{\\sqrt n}$, reducir $e$ a la mitad exige que $\\sqrt n$ se duplique, y entonces $n$ se multiplica por $4$: $n=4\\cdot100=400$. Duplicar la muestra ($200$) solo reduce el margen en un factor de $\\sqrt2\\approx1{,}41$."
+                    },
+                    {
+                        "type": "mcq",
+                        "q": "El desvío estándar de las ventas diarias es $\\sigma=12$ unidades. ¿Qué tamaño de muestra permite estimar la venta media con un margen de $\\pm2$ unidades y confianza del $99\\,\\%$?",
+                        "a": [
+                            "$239$",
+                            "$238$",
+                            "$139$",
+                            "$16$"
+                        ],
+                        "c": 0,
+                        "explanation": "$n=\\left(\\dfrac{z\\sigma}{e}\\right)^{2}=\\left(\\dfrac{2{,}576\\cdot12}{2}\\right)^{2}=(15{,}456)^{2}=238{,}88$, que se redondea hacia arriba a $239$. El valor $139$ corresponde a usar $z=1{,}96$ (confianza del $95\\,\\%$), y $16$ es la raíz sin elevar al cuadrado.",
+                        "r": "ceiling((qnorm(0.995) * 12 / 2)^2)   # 239"
+                    }
+                ]
+            },
+            {
+                "nav": "Planteamiento de hipótesis, tipos de prueba y errores tipo I y II",
+                "variants": [
+                    {
+                        "type": "mcq",
+                        "q": "El gerente de logística quiere probar si el tiempo medio de entrega <strong>superó</strong> los $30$ minutos. ¿Cuáles son las hipótesis correctas?",
+                        "a": [
+                            "$H_0:\\mu\\le30$ frente a $H_1:\\mu>30$ (unilateral derecha)",
+                            "$H_0:\\mu>30$ frente a $H_1:\\mu\\le30$ (unilateral izquierda)",
+                            "$H_0:\\mu=30$ frente a $H_1:\\mu\\neq30$ (bilateral)",
+                            "$H_0:\\mu\\ge30$ frente a $H_1:\\mu<30$ (unilateral izquierda)"
+                        ],
+                        "c": 0,
+                        "explanation": "Lo que se quiere <em>demostrar</em> va en la hipótesis alternativa: $H_1:\\mu>30$. La hipótesis nula contiene la igualdad y el resto de casos: $H_0:\\mu\\le30$. Como $H_1$ apunta hacia valores mayores, la región de rechazo está en la cola derecha. La nula nunca puede contener la afirmación que se quiere probar sin igualdad, y “difiere” sería una prueba bilateral, que no es el caso."
+                    },
+                    {
+                        "type": "mcq",
+                        "q": "Un analista sospecha que la proporción de unidades defectuosas es <strong>menor</strong> que el $5\\,\\%$ histórico. ¿Cuáles son las hipótesis y el tipo de prueba?",
+                        "a": [
+                            "$H_0:p\\ge0{,}05$ frente a $H_1:p<0{,}05$; unilateral izquierda",
+                            "$H_0:p\\le0{,}05$ frente a $H_1:p>0{,}05$; unilateral derecha",
+                            "$H_0:p=0{,}05$ frente a $H_1:p\\neq0{,}05$; bilateral",
+                            "$H_0:p<0{,}05$ frente a $H_1:p\\ge0{,}05$; unilateral izquierda"
+                        ],
+                        "c": 0,
+                        "explanation": "La sospecha (“menor que”) se convierte en $H_1:p<0{,}05$, y $H_0$ recoge la igualdad con lo contrario: $H_0:p\\ge0{,}05$. La desigualdad de $H_1$ apunta a la izquierda, así que la prueba es unilateral izquierda. Una hipótesis nula con desigualdad estricta ($p<0{,}05$) es incorrecta porque $H_0$ siempre incluye el signo igual."
+                    },
+                    {
+                        "type": "mcq",
+                        "q": "Una empresa prueba $H_0$: “el nuevo proveedor no mejora la calidad del producto”. Con los datos concluye que sí la mejora, pero en realidad no hay ninguna mejora. ¿Qué error cometió?",
+                        "a": [
+                            "Error tipo I (rechazar una $H_0$ verdadera), cuya probabilidad es $\\alpha$",
+                            "Error tipo II (no rechazar una $H_0$ falsa), cuya probabilidad es $\\beta$",
+                            "Ningún error: el resultado de la muestra es el que manda",
+                            "Error tipo II, cuya probabilidad es $1-\\alpha$"
+                        ],
+                        "c": 0,
+                        "explanation": "Se rechazó $H_0$ cuando $H_0$ era verdadera (no hay mejora real): eso es un <strong>error tipo I</strong>, “condenar a un inocente”, y su probabilidad máxima es el nivel de significancia $\\alpha$. El error tipo II sería lo contrario: no detectar una mejora que sí existe. El resultado muestral nunca garantiza la verdad poblacional."
+                    },
+                    {
+                        "type": "mcq",
+                        "q": "Un auditor prueba $H_0$: “la tasa de defectos no aumentó”. Los datos no permiten rechazarla, pero en realidad la tasa sí aumentó. ¿Qué ocurrió?",
+                        "a": [
+                            "Error tipo II: no se rechazó una $H_0$ falsa, con probabilidad $\\beta$",
+                            "Error tipo I: se rechazó una $H_0$ verdadera, con probabilidad $\\alpha$",
+                            "Una decisión correcta, porque la muestra no encontró evidencia",
+                            "Error tipo I, con probabilidad $\\beta$"
+                        ],
+                        "c": 0,
+                        "explanation": "No rechazar $H_0$ cuando es falsa es un <strong>error tipo II</strong> (“absolver a un culpable”), con probabilidad $\\beta$; la potencia de la prueba es $1-\\beta$. No haber encontrado evidencia es una decisión que puede ser equivocada si el efecto existe pero la muestra fue pequeña o el efecto sutil."
+                    },
+                    {
+                        "type": "mcq",
+                        "q": "Si, con el mismo tamaño de muestra, se reduce el nivel de significancia de $\\alpha=0{,}05$ a $\\alpha=0{,}01$, ¿qué ocurre con la probabilidad $\\beta$ del error tipo II?",
+                        "a": [
+                            "Aumenta",
+                            "Disminuye",
+                            "No cambia",
+                            "Se vuelve cero"
+                        ],
+                        "c": 0,
+                        "explanation": "Reducir $\\alpha$ hace más exigente el criterio para rechazar $H_0$ (la región de rechazo se encoge), por lo que es más probable no rechazar una $H_0$ falsa: $\\beta$ aumenta. Para bajar ambos errores a la vez, la única opción es <strong>aumentar el tamaño de muestra</strong>."
+                    }
+                ]
+            },
+            {
+                "nav": "Nivel de significancia, valor $p$ y decisión",
+                "variants": [
+                    {
+                        "type": "mcq",
+                        "q": "Una prueba de hipótesis arroja un valor $p=0{,}031$. ¿Cuál es la decisión con $\\alpha=0{,}05$ y con $\\alpha=0{,}01$?",
+                        "a": [
+                            "Con $\\alpha=0{,}05$ se rechaza $H_0$; con $\\alpha=0{,}01$ no se rechaza",
+                            "Con ambos niveles se rechaza $H_0$",
+                            "Con ambos niveles no se rechaza $H_0$",
+                            "Con $\\alpha=0{,}05$ no se rechaza; con $\\alpha=0{,}01$ se rechaza"
+                        ],
+                        "c": 0,
+                        "explanation": "La regla es: se rechaza $H_0$ si $p\\le\\alpha$. Con $\\alpha=0{,}05$: $0{,}031\\le0{,}05$, se rechaza. Con $\\alpha=0{,}01$: $0{,}031>0{,}01$, no se rechaza. La decisión depende del nivel de significancia fijado <em>antes</em> de ver los datos, por eso este tipo de resultado “en el límite” conviene reportarlo con su valor $p$."
+                    },
+                    {
+                        "type": "mcq",
+                        "q": "En una prueba de hipótesis se obtuvo $p=0{,}03$. ¿Qué significa exactamente este valor?",
+                        "a": [
+                            "Es la probabilidad de obtener un resultado tan extremo o más que el observado, suponiendo que $H_0$ es verdadera",
+                            "Es la probabilidad de que $H_0$ sea verdadera",
+                            "Es la probabilidad de equivocarse al rechazar $H_0$ en general",
+                            "Es la probabilidad de que $H_1$ sea verdadera"
+                        ],
+                        "c": 0,
+                        "explanation": "El valor $p$ mide qué tan sorprendente es la muestra <em>si $H_0$ fuera cierta</em>. No es la probabilidad de que $H_0$ sea verdadera (esa hipótesis es un hecho fijo, no una variable aleatoria), ni la probabilidad de que $H_1$ sea verdadera. Tampoco es la probabilidad de error: esa es $\\alpha$, fijada de antemano."
+                    },
+                    {
+                        "type": "mcq",
+                        "q": "Un analista prueba si el tiempo medio de procesamiento es menor que $120$ ms y obtiene en R la siguiente salida. Con $\\alpha=0{,}05$, ¿cuál es la decisión correcta?<pre style='background:#1e2a38;color:#e8eef4;padding:10px 12px;border-radius:6px;overflow-x:auto;font-size:0.9rem;line-height:1.4;margin-top:10px'>One Sample t-test\n\ndata:  tiempos\nt = -2.4, df = 15, p-value = 0.0149\nalternative hypothesis: true mean is less than 120</pre>",
+                        "a": [
+                            "Se rechaza $H_0$: hay evidencia de que el tiempo medio es menor que $120$ ms",
+                            "No se rechaza $H_0$, porque el estadístico $t$ es negativo",
+                            "Se rechaza $H_0$: hay evidencia de que el tiempo medio es mayor que $120$ ms",
+                            "No se rechaza $H_0$, porque $p<0{,}05$ prueba que $H_0$ es cierta"
+                        ],
+                        "c": 0,
+                        "explanation": "Primero se verifica que R hizo la prueba planteada: “less” corresponde a $H_1:\\mu<120$ (unilateral izquierda). El valor $p=0{,}0149$ es menor que $\\alpha=0{,}05$, por lo que se <strong>rechaza $H_0$</strong> y se concluye que el tiempo medio es menor que $120$ ms. El signo negativo de $t$ es lo esperado cuando $\\bar{x}<\\mu_0$; no es motivo para no rechazar. Un $p$ pequeño es evidencia <em>contra</em> $H_0$, no a su favor.",
+                        "r": "pt(-2.4, df = 15)                 # p-valor unilateral izquierdo = 0.0149\n# con datos crudos:\n# t.test(tiempos, mu = 120, alternative = \"less\")"
+                    },
+                    {
+                        "type": "mcq",
+                        "q": "En una prueba <strong>bilateral</strong> para una media con $\\sigma$ conocida se obtiene $z=1{,}80$. Con $\\alpha=0{,}05$, ¿cuál es la decisión?",
+                        "a": [
+                            "No se rechaza $H_0$: el valor $p$ bilateral es $0{,}0718$, mayor que $0{,}05$",
+                            "Se rechaza $H_0$: el valor $p$ es $0{,}0359$, menor que $0{,}05$",
+                            "Se rechaza $H_0$, porque $1{,}80>1{,}645$",
+                            "No se rechaza $H_0$: el valor $p$ es $0{,}9641$"
+                        ],
+                        "c": 0,
+                        "explanation": "En una prueba bilateral el valor crítico es $z_{0,025}=\\pm1{,}96$ y el valor $p$ suma <strong>las dos colas</strong>: $p=2\\,P(Z>1{,}80)=2(0{,}0359)=0{,}0718$. Como $0{,}0718>0{,}05$ (y $1{,}80<1{,}96$), no se rechaza $H_0$. Olvidar duplicar la cola ($0{,}0359$), o usar el valor crítico unilateral $1{,}645$, llevaría a rechazar mal. Con una prueba unilateral derecha, en cambio, $z=1{,}80$ sí rechazaría.",
+                        "r": "z <- 1.80\n2 * pnorm(abs(z), lower.tail = FALSE)   # 0.0719 (con z sin redondear)\nqnorm(0.975)                          # 1.96"
+                    },
+                    {
+                        "type": "mcq",
+                        "q": "Con $n=50\\,000$ clientes, una prueba concluye que el tiempo medio de atención se redujo en apenas $0{,}2$ minutos, con $p=0{,}001$. ¿Qué conclusión es la más adecuada?",
+                        "a": [
+                            "Hay evidencia estadística de reducción, pero debe evaluarse si $0{,}2$ minutos es relevante en la práctica",
+                            "La reducción es grande e importante, porque el valor $p$ es muy pequeño",
+                            "Como $p$ es pequeño, la probabilidad de que $H_0$ sea cierta es $0{,}001$",
+                            "No hay evidencia de reducción, porque $0{,}2$ minutos es una diferencia pequeña"
+                        ],
+                        "c": 0,
+                        "explanation": "Con muestras enormes, diferencias triviales producen valores $p$ minúsculos. Un $p$ pequeño solo indica que el resultado es difícil de explicar por azar, no que el efecto sea grande. La <em>significancia estadística</em> no equivale a <em>relevancia práctica</em>: decidir si $0{,}2$ minutos justifica una inversión es una decisión administrativa. Y el valor $p$ no es la probabilidad de que $H_0$ sea cierta."
+                    }
+                ]
+            },
+            {
+                "nav": "Prueba de hipótesis para una media ($Z$ y $t$)",
+                "variants": [
+                    {
+                        "type": "mcq",
+                        "q": "El monto medio histórico de las facturas es $\\mu_0=120$ (miles de pesos) con $\\sigma=15$. Tras una campaña, una muestra de $n=36$ facturas da $\\bar{x}=125$. Para probar $H_0:\\mu\\le120$ contra $H_1:\\mu>120$, ¿cuánto vale el estadístico de prueba?",
+                        "a": [
+                            "$z=2{,}00$",
+                            "$z=0{,}33$",
+                            "$z=12{,}00$",
+                            "$z=-2{,}00$"
+                        ],
+                        "c": 0,
+                        "explanation": "Como $\\sigma$ es conocida y $n\\ge30$, se usa $z=\\dfrac{\\bar{x}-\\mu_0}{\\sigma/\\sqrt n}=\\dfrac{125-120}{15/\\sqrt{36}}=\\dfrac{5}{2{,}5}=2{,}00$. El valor $0{,}33=5/15$ olvida dividir por $\\sqrt n$; $12$ divide entre $15/36$ en lugar de $15/\\sqrt{36}$; y $-2{,}00$ resta al revés. Como $2{,}00>1{,}645$ (valor p $=0{,}0228$), se rechazaría $H_0$ con $\\alpha=0{,}05$.",
+                        "r": "xbar <- 125; mu0 <- 120; sigma <- 15; n <- 36\nz <- (xbar - mu0) / (sigma / sqrt(n))   # 2.00\npnorm(z, lower.tail = FALSE)             # valor p = 0.0228"
+                    },
+                    {
+                        "type": "mcq",
+                        "q": "Un proveedor asegura que un proceso tarda en promedio $25$ minutos. Una muestra de $n=16$ procesos da $\\bar{x}=28{,}5$ y $s=6$ (población aprox. normal). Se prueba $H_0:\\mu=25$ contra $H_1:\\mu\\neq25$ con $\\alpha=0{,}05$. ¿Cuál es la decisión?",
+                        "a": [
+                            "Se rechaza $H_0$: $t=2{,}33$ supera el valor crítico $2{,}131$ (y $p\\approx0{,}0340$)",
+                            "No se rechaza $H_0$: $t=2{,}33$ es menor que $2{,}131$",
+                            "Se rechaza $H_0$ porque $t=3{,}5$ supera el valor crítico",
+                            "No se rechaza $H_0$ porque la prueba bilateral exige $|t|>2{,}33$"
+                        ],
+                        "c": 0,
+                        "explanation": "Como se conoce $s$, se usa $t$ con $gl=15$: $t=\\dfrac{28{,}5-25}{6/\\sqrt{16}}=\\dfrac{3{,}5}{1{,}5}=2{,}33$. El valor crítico bilateral es $t_{0,025;\\,15}=2{,}131$. Como $|2{,}33|>2{,}131$ se rechaza $H_0$ (el valor $p\\approx0{,}0340$ es menor que $0{,}05$): hay evidencia de que la media difiere de $25$ minutos. El valor $3{,}5$ es la diferencia de medias, no el estadístico.",
+                        "r": "n <- 16; xbar <- 28.5; s <- 6; mu0 <- 25\nt <- (xbar - mu0) / (s / sqrt(n))        # 2.333\nqt(0.975, df = n - 1)                     # valor critico 2.131\n2 * pt(abs(t), df = n - 1, lower.tail = FALSE)   # valor p bilateral"
+                    },
+                    {
+                        "type": "mcq",
+                        "q": "Un fabricante asegura que sus baterías duran en promedio $40$ horas ($\\sigma=6$). Una muestra de $n=49$ baterías da $\\bar{x}=38{,}5$ horas. Se prueba $H_0:\\mu\\ge40$ contra $H_1:\\mu<40$. ¿Cuál es el valor $p$ de la prueba?",
+                        "a": [
+                            "$p=0{,}0401$",
+                            "$p=0{,}9599$",
+                            "$p=0{,}0802$",
+                            "$p=0{,}4599$"
+                        ],
+                        "c": 0,
+                        "explanation": "$z=\\dfrac{38{,}5-40}{6/\\sqrt{49}}=\\dfrac{-1{,}5}{0{,}8571}=-1{,}75$. La prueba es unilateral izquierda, así que $p=P(Z\\le-1{,}75)=0{,}0401$. Con $\\alpha=0{,}05$ se rechaza $H_0$. El valor $0{,}9599$ es la cola contraria; $0{,}0802$ duplica la cola como si la prueba fuera bilateral.",
+                        "r": "z <- (38.5 - 40) / (6 / sqrt(49))   # -1.75\npnorm(z)                             # p = 0.0401 (cola izquierda)"
+                    },
+                    {
+                        "type": "mcq",
+                        "q": "Se hará una prueba <strong>unilateral derecha</strong> para una media con $\\alpha=0{,}05$, $n=25$ y $\\sigma$ desconocida. ¿Cuál es el valor crítico?",
+                        "a": [
+                            "$t_{0,05;\\,24}=1{,}711$",
+                            "$t_{0,025;\\,24}=2{,}064$",
+                            "$z_{0,05}=1{,}645$",
+                            "$t_{0,01;\\,24}=2{,}492$"
+                        ],
+                        "c": 0,
+                        "explanation": "Con $\\sigma$ desconocida se usa $t$ con $gl=24$. En una prueba unilateral la región de rechazo ($\\alpha=0{,}05$) está toda en una cola, así que el valor crítico es $t_{0,05;\\,24}=1{,}711$. El valor $2{,}064$ sería el de una prueba bilateral; $1{,}645$ sería correcto solo con $\\sigma$ conocida; y $2{,}492$ corresponde a $\\alpha=0{,}01$.",
+                        "r": "qt(0.95, df = 24)    # 1.711 (unilateral, alpha = 0.05)\nqt(0.975, df = 24)   # 2.064 (bilateral)"
+                    },
+                    {
+                        "type": "mcq",
+                        "q": "Una prueba bilateral de $H_0:\\mu=500$ con $\\alpha=0{,}05$ arrojó $z=-0{,}8$. ¿Cuál es la conclusión mejor redactada?",
+                        "a": [
+                            "No se rechaza $H_0$: no hay evidencia suficiente de que la media difiera de $500$",
+                            "Se acepta $H_0$: queda demostrado que la media es exactamente $500$",
+                            "Se rechaza $H_0$: la media difiere de $500$ con confianza del $95\\,\\%$",
+                            "Se acepta $H_1$ porque $z$ es negativo"
+                        ],
+                        "c": 0,
+                        "explanation": "Como $|-0{,}8|<1{,}96$, el estadístico no cae en la región de rechazo y <strong>no se rechaza $H_0$</strong>. Esto significa que la muestra no aporta evidencia suficiente en contra de $H_0$, no que $H_0$ haya sido demostrada: nunca se “acepta” $H_0$ como verdad probada. El signo negativo no decide nada; lo que importa es si $|z|$ supera el valor crítico."
+                    }
+                ]
+            },
+            {
+                "nav": "Prueba de hipótesis para una proporción",
+                "variants": [
+                    {
+                        "type": "mcq",
+                        "q": "Históricamente el $6\\,\\%$ de los envíos llega dañado. Tras un cambio de empaque, se revisan $n=300$ envíos y $24$ llegan dañados ($\\hat p=0{,}08$). Para probar $H_0:p\\le0{,}06$ contra $H_1:p>0{,}06$, ¿cuánto vale el estadístico de prueba?",
+                        "a": [
+                            "$z=1{,}46$",
+                            "$z=1{,}28$",
+                            "$z=0{,}02$",
+                            "$z=2{,}92$"
+                        ],
+                        "c": 0,
+                        "explanation": "Primero se verifican las condiciones con $p_0$: $np_0=18\\ge5$ y $n(1-p_0)=282\\ge5$. En la prueba, el error estándar se calcula con $p_0$ (el valor de $H_0$): $\\sqrt{\\dfrac{0{,}06\\cdot0{,}94}{300}}=0{,}01371$, de modo que $z=\\dfrac{0{,}08-0{,}06}{0{,}01371}=1{,}46$. Si se usa $\\hat p$ en el error estándar (como en un intervalo de confianza) sale $1{,}28$, que es incorrecto para una prueba. El valor $0{,}02$ es solo la diferencia sin estandarizar.",
+                        "r": "x <- 24; n <- 300; p0 <- 0.06\nphat <- x / n\nz <- (phat - p0) / sqrt(p0 * (1 - p0) / n)   # 1.46\npnorm(z, lower.tail = FALSE)                  # valor p = 0.0721\n# prop.test(x, n, p = p0, alternative = \"greater\", correct = FALSE)"
+                    },
+                    {
+                        "type": "mcq",
+                        "q": "En la prueba anterior ($H_0:p\\le0{,}06$ contra $H_1:p>0{,}06$, $z=1{,}46$), ¿cuál es la decisión con $\\alpha=0{,}05$?",
+                        "a": [
+                            "No se rechaza $H_0$: $z=1{,}46<1{,}645$ y $p=0{,}0721>0{,}05$; no hay evidencia suficiente de que la proporción de envíos dañados haya aumentado",
+                            "Se rechaza $H_0$: $\\hat p=0{,}08$ es mayor que $0{,}06$, así que la proporción aumentó",
+                            "Se rechaza $H_0$ porque $p=0{,}0721<0{,}10$",
+                            "No se rechaza $H_0$ porque queda demostrado que la proporción es $0{,}06$"
+                        ],
+                        "c": 0,
+                        "explanation": "Prueba unilateral derecha con $\\alpha=0{,}05$: el valor crítico es $z_{0,05}=1{,}645$ y $1{,}46$ no lo supera. El valor $p=P(Z>1{,}46)=0{,}0721$ es mayor que $0{,}05$. Que $\\hat p>0{,}06$ en la muestra no basta: esa diferencia es compatible con la variación del muestreo. El resultado quedaría significativo solo con $\\alpha=0{,}10$, un nivel que no se fijó. Y no rechazar $H_0$ no prueba que $p=0{,}06$.",
+                        "r": "qnorm(0.95)                          # valor critico 1.645\npnorm(1.46, lower.tail = FALSE)      # valor p = 0.0721"
+                    },
+                    {
+                        "type": "mcq",
+                        "q": "Se prueba $H_0:p=0{,}25$ con una muestra de $n=200$ en la que $\\hat p=0{,}30$. ¿Cuál es el error estándar que se usa en el estadístico de prueba?",
+                        "a": [
+                            "$0{,}0306$",
+                            "$0{,}0324$",
+                            "$0{,}0020$",
+                            "$0{,}2165$"
+                        ],
+                        "c": 0,
+                        "explanation": "En una prueba de proporción el error estándar se calcula con el valor de la hipótesis nula: $\\sqrt{\\dfrac{p_0(1-p_0)}{n}}=\\sqrt{\\dfrac{0{,}25\\cdot0{,}75}{200}}=0{,}0306$. El valor $0{,}0324$ usa $\\hat p=0{,}30$ (es el error estándar de un intervalo de confianza). $0{,}2165$ olvida dividir entre $n$ y la raíz cuadrada.",
+                        "r": "p0 <- 0.25; n <- 200\nsqrt(p0 * (1 - p0) / n)    # 0.0306 (prueba)\nsqrt(0.30 * 0.70 / n)      # 0.0324 (intervalo de confianza)"
+                    },
+                    {
+                        "type": "mcq",
+                        "q": "Una empresa afirma que la mitad de sus clientes prefiere el pago digital. En una muestra de $n=100$, $60$ lo prefieren. Para $H_0:p=0{,}5$ contra $H_1:p\\neq0{,}5$, ¿cuál es el valor $p$ de la prueba?",
+                        "a": [
+                            "$p=0{,}0456$",
+                            "$p=0{,}0228$",
+                            "$p=0{,}9544$",
+                            "$p=0{,}0912$"
+                        ],
+                        "c": 0,
+                        "explanation": "$z=\\dfrac{0{,}60-0{,}50}{\\sqrt{0{,}5\\cdot0{,}5/100}}=\\dfrac{0{,}10}{0{,}05}=2{,}00$. La prueba es bilateral, así que el valor $p$ suma las dos colas: $p=2\\,P(Z>2{,}00)=2(0{,}0228)=0{,}0456$. Como $0{,}0456<0{,}05$ se rechaza $H_0$ al $5\\,\\%$ (pero no al $1\\,\\%$). El valor $0{,}0228$ es una sola cola.",
+                        "r": "z <- (0.60 - 0.50) / sqrt(0.5 * 0.5 / 100)   # 2.00\n2 * pnorm(z, lower.tail = FALSE)              # 0.0455 (tabla: 0.0456)\n# prop.test(60, 100, p = 0.5, correct = FALSE)"
+                    },
+                    {
+                        "type": "mcq",
+                        "q": "El intervalo de confianza del $95\\,\\%$ para la tasa de abandono de clientes es $(0{,}048;\\ 0{,}092)$. La gerencia prueba $H_0:p=0{,}10$ contra $H_1:p\\neq0{,}10$ con $\\alpha=0{,}05$. ¿Qué decisión implica el intervalo?",
+                        "a": [
+                            "Se rechaza $H_0$, porque $0{,}10$ queda fuera del intervalo",
+                            "No se rechaza $H_0$, porque $0{,}10$ está cerca del intervalo",
+                            "No se rechaza $H_0$, porque el centro del intervalo es menor que $0{,}10$",
+                            "No se puede decidir: un intervalo de confianza no sirve para probar hipótesis"
+                        ],
+                        "c": 0,
+                        "explanation": "Una prueba bilateral con nivel $\\alpha$ y un intervalo de confianza del $(1-\\alpha)\\,100\\,\\%$ <strong>siempre coinciden</strong>: se rechaza $H_0:p=p_0$ exactamente cuando $p_0$ queda fuera del intervalo. Como $0{,}10>0{,}092$, se rechaza $H_0$: hay evidencia de que la tasa de abandono difiere de $10\\,\\%$ (en concreto, es menor). Estar “cerca” no cuenta."
+                    }
+                ]
+            },
+            {
+                "nav": "Correlación y regresión lineal simple",
+                "variants": [
+                    {
+                        "type": "mcq",
+                        "q": "Entre las horas de capacitación de los vendedores y sus errores de facturación se obtuvo $r=-0{,}85$. ¿Cómo se interpreta?",
+                        "a": [
+                            "Relación lineal fuerte y negativa: a más horas de capacitación, tienden a haber menos errores",
+                            "Relación lineal débil y negativa",
+                            "Relación lineal fuerte y positiva: más capacitación produce más errores",
+                            "El $85\\,\\%$ de los errores se debe a la capacitación"
+                        ],
+                        "c": 0,
+                        "explanation": "El signo indica el sentido (negativo: una variable sube mientras la otra baja) y el valor absoluto la fuerza: $|r|=0{,}85>0{,}7$ es una relación <strong>fuerte</strong>. El $85\\,\\%$ no tiene este significado: la proporción de variabilidad explicada es $r^{2}=0{,}7225$ (el $72{,}25\\,\\%$). Además, correlación no implica causalidad.",
+                        "r": "# con datos crudos:\n# cor(horas, errores)\nr <- -0.85\nr^2     # 0.7225 -> 72.25 % de la variabilidad explicada"
+                    },
+                    {
+                        "type": "mcq",
+                        "q": "El modelo de regresión $\\hat{y}=12{,}5+3{,}2x$ relaciona las horas de capacitación $x$ con las ventas mensuales $\\hat{y}$ (en millones de pesos). ¿Cómo se interpreta la pendiente $b_1=3{,}2$?",
+                        "a": [
+                            "Por cada hora adicional de capacitación, las ventas aumentan en promedio $3{,}2$ millones",
+                            "Cuando no hay capacitación, las ventas son de $3{,}2$ millones",
+                            "Cada hora de capacitación causa exactamente $3{,}2$ millones más de ventas en todos los casos",
+                            "El $3{,}2\\,\\%$ de las ventas se explica por la capacitación"
+                        ],
+                        "c": 0,
+                        "explanation": "La pendiente es el cambio <em>promedio</em> estimado de $y$ por cada unidad que aumenta $x$. La interpretación sobre el valor de $y$ cuando $x=0$ corresponde al intercepto $b_0=12{,}5$. Además, el modelo describe una tendencia promedio y no establece causalidad exacta; y la proporción explicada se mide con $r^{2}$, no con la pendiente."
+                    },
+                    {
+                        "type": "mcq",
+                        "q": "Con el modelo $\\hat{y}=20+2{,}5x$, un vendedor con $x=10$ tuvo una venta observada $y=48$. ¿Cuáles son el valor estimado y el residuo?",
+                        "a": [
+                            "$\\hat{y}=45$ y residuo $e=+3$",
+                            "$\\hat{y}=45$ y residuo $e=-3$",
+                            "$\\hat{y}=70$ y residuo $e=-22$",
+                            "$\\hat{y}=48$ y residuo $e=0$"
+                        ],
+                        "c": 0,
+                        "explanation": "Valor estimado: $\\hat{y}=20+2{,}5(10)=45$. El residuo es observado menos estimado: $e=y-\\hat{y}=48-45=+3$, es decir, el vendedor vendió $3$ unidades más de lo que predice el modelo. Con el orden invertido ($\\hat y-y$) se obtendría $-3$. El valor $70$ aparece al evaluar con $x=20$ en lugar de $x=10$ (y daría un residuo de $-22$).",
+                        "r": "b0 <- 20; b1 <- 2.5\nyhat <- b0 + b1 * 10    # 45\n48 - yhat               # residuo = +3"
+                    },
+                    {
+                        "type": "mcq",
+                        "q": "Si el coeficiente de correlación entre dos variables es $r=0{,}90$, ¿qué porcentaje de la variabilidad de $y$ explica el modelo lineal con $x$?",
+                        "a": [
+                            "$81\\,\\%$",
+                            "$90\\,\\%$",
+                            "$19\\,\\%$",
+                            "$9\\,\\%$"
+                        ],
+                        "c": 0,
+                        "explanation": "El coeficiente de determinación es el cuadrado de $r$: $r^{2}=0{,}90^{2}=0{,}81$, o sea el $81\\,\\%$ de la variabilidad de $y$ es explicada por la regresión lineal. El $90\\,\\%$ confunde $r$ con $r^{2}$ y $19\\,\\%$ es la parte no explicada. Un $r^{2}$ alto tampoco valida el modelo por sí solo: hay que revisar el gráfico de dispersión y los residuos.",
+                        "r": "r <- 0.90\nr^2     # 0.81"
+                    },
+                    {
+                        "type": "mcq",
+                        "q": "Para $n=5$ meses se registraron la inversión en publicidad $x=1,2,3,4,5$ y las ventas $y=3,5,6,8,10$. Se sabe que $\\sum x=15$, $\\sum y=32$, $\\sum xy=113$ y $\\sum x^{2}=55$. ¿Cuál es la pendiente de la recta de regresión?",
+                        "a": [
+                            "$b_1=1{,}7$",
+                            "$b_1=1{,}3$",
+                            "$b_1=2{,}2$",
+                            "$b_1=0{,}59$"
+                        ],
+                        "c": 0,
+                        "explanation": "$b_1=\\dfrac{n\\sum xy-\\sum x\\sum y}{n\\sum x^{2}-(\\sum x)^{2}}=\\dfrac{5(113)-15(32)}{5(55)-15^{2}}=\\dfrac{565-480}{275-225}=\\dfrac{85}{50}=1{,}7$. El intercepto es $b_0=\\bar y-b_1\\bar x=6{,}4-1{,}7(3)=1{,}3$, de modo que $\\hat{y}=1{,}3+1{,}7x$ (el $1{,}3$ es el intercepto, no la pendiente). El valor $0{,}59$ resulta de invertir la fracción.",
+                        "r": "x <- 1:5; y <- c(3, 5, 6, 8, 10)\nmodelo <- lm(y ~ x)\ncoef(modelo)         # intercepto 1.3, pendiente 1.7\ncor(x, y)^2          # r^2"
+                    },
+                    {
+                        "type": "mcq",
+                        "q": "Con datos de inversión publicitaria entre $2$ y $14$ millones se ajustó $\\hat{y}=26{,}42+4{,}43x$ con $r^{2}=0{,}97$. Un directivo propone predecir las ventas con una inversión de $60$ millones. ¿Qué se debe responder?",
+                        "a": [
+                            "No es recomendable: $60$ está muy fuera del rango observado y extrapolar no tiene respaldo",
+                            "Es válido, porque $r^{2}=0{,}97$ garantiza que el modelo vale para cualquier $x$",
+                            "Es válido, porque la pendiente es positiva",
+                            "No se puede, porque $r^{2}$ debería ser $1$"
+                        ],
+                        "c": 0,
+                        "explanation": "La recta solo es creíble <strong>dentro del rango de $x$ observado</strong>; fuera de él no hay garantía de que la relación siga siendo lineal. Un $r^{2}$ alto describe el ajuste en los datos disponibles, no la validez del modelo en cualquier punto. Si se aplicara el modelo, $\\hat y(60)=26{,}42+4{,}43\\cdot60=292{,}22$, un número que podría ser absurdo (por ejemplo, por saturación del mercado)."
+                    }
+                ]
+            }
+        ];
+
+        let currentExam = [];
+        let userAnswers = {};
+
+        /* ---------------- utilidades ---------------- */
+
+        function shuffle(arr) {
+            for (let i = arr.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [arr[i], arr[j]] = [arr[j], arr[i]];
+            }
+            return arr;
+        }
+
+        function pickOne(arr) {
+            return arr[Math.floor(Math.random() * arr.length)];
+        }
+
+        /* Devuelve una copia de la variante con las opciones barajadas. */
+        function prepare(variant) {
+            const q = JSON.parse(JSON.stringify(variant));
+
+            if (q.type === "mcq") {
+                const correcta = q.a[q.c];
+                q.a = shuffle(q.a.slice());
+                q.c = q.a.indexOf(correcta);
+            } else if (q.type === "chart_mcq") {
+                const correcta = q.charts[q.c];
+                q.charts = shuffle(q.charts.slice());
+                q.c = q.charts.indexOf(correcta);
+                q.charts.forEach((ch, i) => { ch.title = 'Opción ' + String.fromCharCode(65 + i); });
+            } else if (q.type === "matching") {
+                q.pairs = shuffle(q.pairs.slice());
+                const encabezado = q.options[0];
+                q.options = [encabezado].concat(shuffle(q.options.slice(1)));
+            }
+            return q;
+        }
+
+        /* ---------------- construcción del examen ---------------- */
+
+        function generateExam() {
+            currentExam = TEMAS.map(tema => prepare(pickOne(tema.variants)));
+
+            userAnswers = {};
+            document.getElementById('results-container').style.display = 'none';
+            document.getElementById('total-count').innerText = currentExam.length;
+            renderQuestions();
+            renderNavigation();
+            updateProgress();
+        }
+
+        function renderQuestions() {
+            const container = document.getElementById('questions-container');
+            container.innerHTML = '';
+
+            currentExam.forEach((q, idx) => {
+                const card = document.createElement('div');
+                card.className = 'question-card';
+                card.id = `question-${idx}`;
+
+                let html = `
+                    <div class="question-header">
+                        <div class="question-number">${idx + 1}</div>
+                    </div>
+                    <div class="question-text">${q.q}</div>
+                `;
+
+                if (q.type === "matching") {
+                    html += `<div class="matching-container">`;
+                    q.pairs.forEach(pair => {
+                        html += `
+                            <div class="match-row">
+                                <div style="width:42%; font-size:0.95em; color:#333;">${pair.prompt}</div>
+                                <select class="match-select" data-qid="${idx}" data-pairid="${pair.id}" onchange="selectMatch(${idx}, '${pair.id}', this.value)">
+                                    ${q.options.map(opt => `<option value="${opt.val}">${opt.text}</option>`).join('')}
+                                </select>
+                            </div>
+                        `;
+                    });
+                    html += `</div>`;
+                } else if (q.type === "mcq") {
+                    html += `<div class="options-container">`;
+                    q.a.forEach((opt, optIdx) => {
+                        html += `
+                            <div class="option" id="opt-${idx}-${optIdx}" onclick="selectOption(${idx}, ${optIdx})">
+                                <strong>${String.fromCharCode(65 + optIdx)}.</strong>&nbsp;<span>${opt}</span>
+                            </div>
+                        `;
+                    });
+                    html += `</div>`;
+                } else if (q.type === "chart_mcq") {
+                    html += `<div class="options-grid-charts">`;
+                    q.charts.forEach((chart, optIdx) => {
+                        html += `
+                            <div class="option option-chart-card" id="opt-${idx}-${optIdx}" onclick="selectOption(${idx}, ${optIdx})">
+                                <strong>Opción ${String.fromCharCode(65 + optIdx)}</strong>
+                                <div id="chart-container-${idx}-${optIdx}" class="chart-box"></div>
+                            </div>
+                        `;
+                    });
+                    html += `</div>`;
+                }
+
+                html += `<div id="explanation-${idx}" class="explanation" style="display:none;"></div>`;
+                card.innerHTML = html;
+                container.appendChild(card);
+
+                if (q.type === "chart_mcq") {
+                    setTimeout(() => renderChartsForQuestion(q, idx), 50);
+                }
+            });
+
+            if (window.MathJax && MathJax.typesetPromise) {
+                MathJax.typesetPromise();
+            }
+        }
+
+        function renderChartsForQuestion(q, qIdx) {
+            q.charts.forEach((c, optIdx) => {
+                const targetId = `chart-container-${qIdx}-${optIdx}`;
+                let data = [];
+                let layout = {
+                    title: { text: c.title, font: { size: 12 } },
+                    margin: { l: 30, r: 20, t: 30, b: 30 },
+                    autosize: true
+                };
+
+                if (c.type === 'pie') {
+                    data = [{ labels: c.labels, values: c.values, type: 'pie', textinfo: 'label+percent' }];
+                } else if (c.type === 'bar') {
+                    data = [{ x: c.x, y: c.y, type: 'bar', marker: { color: '#3498db' } }];
+                    layout.xaxis = { tickangle: -45, automargin: true, tickfont: { size: 10 } };
+                    layout.yaxis = { automargin: true };
+                    if (c.gap === 0) {
+                        layout.bargap = 0.05;
+                    }
+                }
+                Plotly.newPlot(targetId, data, layout, { responsive: true, displayModeBar: false });
+            });
+        }
+
+        /* ---------------- interacción ---------------- */
+
+        function selectOption(qIdx, optIdx) {
+            userAnswers[qIdx] = optIdx;
+            const card = document.getElementById(`question-${qIdx}`);
+            const options = card.querySelectorAll('.option');
+            options.forEach((opt, i) => {
+                if (i === optIdx) opt.classList.add('selected');
+                else opt.classList.remove('selected');
+            });
+            updateProgress();
+        }
+
+        function selectMatch(qIdx, pairId, value) {
+            if (!userAnswers[qIdx]) userAnswers[qIdx] = {};
+            userAnswers[qIdx][pairId] = value;
+            updateProgress();
+        }
+
+        function isAnswered(idx) {
+            const respuesta = userAnswers[idx];
+            if (respuesta === undefined) return false;
+            if (currentExam[idx].type === "matching") {
+                const total = currentExam[idx].pairs.length;
+                return Object.keys(respuesta).length === total &&
+                       Object.values(respuesta).every(v => v !== "");
+            }
+            return true;
+        }
+
+        function updateProgress() {
+            let answered = 0;
+
+            currentExam.forEach((_, idx) => {
+                const completa = isAnswered(idx);
+                if (completa) answered++;
+
+                const navItem = document.getElementById(`nav-item-${idx}`);
+                if (navItem) {
+                    const statusDot = navItem.querySelector('.topic-status');
+                    statusDot.className = `topic-status ${completa ? 'answered' : 'unanswered'}`;
+                }
+            });
+
+            document.getElementById('answered-count').innerText = answered;
+        }
+
+        function renderNavigation() {
+            const list = document.getElementById('topics-list');
+            list.innerHTML = '';
+
+            TEMAS.forEach((tema, idx) => {
+                const item = document.createElement('div');
+                item.className = 'topic-item';
+                item.id = `nav-item-${idx}`;
+                item.onclick = () => {
+                    document.getElementById(`question-${idx}`).scrollIntoView({ behavior: 'smooth' });
+                };
+                item.innerHTML = `
+                    <span class="topic-name">${idx + 1}. ${tema.nav}</span>
+                    <span class="topic-status unanswered"></span>
+                `;
+                list.appendChild(item);
+            });
+        }
+
+        /* ---------------- calificación ---------------- */
+
+        function escaparHTML(t) {
+            return t.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+        }
+
+        function submitExam() {
+            let correctCount = 0;
+            const total = currentExam.length;
+
+            currentExam.forEach((q, idx) => {
+                const card = document.getElementById(`question-${idx}`);
+                const expDiv = document.getElementById(`explanation-${idx}`);
+                let isCorrect = false;
+
+                if (q.type === "matching") {
+                    const userPairs = userAnswers[idx] || {};
+                    isCorrect = q.pairs.every(pair => userPairs[pair.id] === pair.correct);
+
+                    card.querySelectorAll('.match-select').forEach(sel => {
+                        const pair = q.pairs.find(p => p.id === sel.dataset.pairid);
+                        const fila = sel.closest('.match-row');
+                        if (sel.value === pair.correct) {
+                            fila.style.borderColor = 'var(--success-color)';
+                            fila.style.backgroundColor = '#d4edda';
+                        } else {
+                            fila.style.borderColor = 'var(--accent-color)';
+                            fila.style.backgroundColor = '#f8d7da';
+                        }
+                    });
+                } else {
+                    isCorrect = (userAnswers[idx] === q.c);
+                    const options = card.querySelectorAll('.option');
+                    options.forEach((opt, optIdx) => {
+                        if (optIdx === q.c) opt.classList.add('correct');
+                        else if (optIdx === userAnswers[idx]) opt.classList.add('incorrect');
+                    });
+                }
+
+                if (isCorrect) correctCount++;
+
+                const bloqueR = q.r ? `
+                    <p class="r-title"><strong>Proceso en R:</strong></p>
+                    <pre class="r-code"><code>${escaparHTML(q.r)}</code></pre>` : '';
+                expDiv.innerHTML = `<strong>Explicación:</strong> ${q.explanation}${bloqueR}`;
+                expDiv.style.display = 'block';
+
+                const navItem = document.getElementById(`nav-item-${idx}`);
+                if (navItem) {
+                    const statusDot = navItem.querySelector('.topic-status');
+                    statusDot.className = `topic-status ${isCorrect ? 'correct' : 'incorrect'}`;
+                }
+            });
+
+            if (window.MathJax && MathJax.typesetPromise) {
+                MathJax.typesetPromise();
+            }
+
+            const score = (correctCount / total) * 5;
+            const percentage = (correctCount / total) * 100;
+
+            const resultBox = document.getElementById('results-container');
+            const scoreCircle = document.getElementById('final-score');
+
+            scoreCircle.innerText = score.toFixed(1);
+            scoreCircle.className = `score-circle ${score >= 4 ? 'high' : score >= 3 ? 'medium' : 'low'}`;
+
+            document.getElementById('correct-count').innerText = correctCount;
+            document.getElementById('incorrect-count').innerText = total - correctCount;
+            document.getElementById('percentage-score').innerText = `${percentage.toFixed(1)}%`;
+
+            resultBox.style.display = 'block';
+            resultBox.scrollIntoView({ behavior: 'smooth' });
+        }
+
+        document.getElementById('submit-btn').addEventListener('click', submitExam);
+        document.getElementById('new-exam-btn').addEventListener('click', generateExam);
+        document.getElementById('restart-btn').addEventListener('click', generateExam);
+        document.getElementById('review-btn').addEventListener('click', () => {
+            document.querySelector('.questions-section').scrollIntoView({ behavior: 'smooth' });
+        });
+
+        document.addEventListener('DOMContentLoaded', generateExam);
+    </script>
+</body>
+</html>
