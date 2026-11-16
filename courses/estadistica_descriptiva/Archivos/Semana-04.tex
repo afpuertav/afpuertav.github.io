@@ -1,0 +1,787 @@
+% ============================================================================
+%  ESTADÍSTICA DESCRIPTIVA — Sesión 4
+%  Semana 4: 31 de agosto al 5 de septiembre de 2026
+%  1.7 Métodos gráficos: histogramas y polígonos de frecuencia
+%  Duración prevista: 3 horas
+% ============================================================================
+\documentclass[aspectratio=169,10pt]{beamer}
+
+\usepackage[utf8]{inputenc}
+\IfFileExists{spanish.ldf}{\usepackage[spanish,es-noshorthands]{babel}}{}
+\usepackage{amsmath,amssymb}
+\usepackage{booktabs}
+\usepackage{tikz}
+\usepackage{listings}
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.16}
+\usetikzlibrary{patterns}
+
+\usetheme{Uniminuto}
+
+\uniasignatura{Estadística descriptiva}
+\uniprofesor{Andrés Felipe Puerta Velez}
+\unicorreo{andres.puerta-v@uniminuto.edu.co}
+\uninrc{CBASBL031 - CBASBL141}
+\unisemana{Sesión 4 — Semana 4 · 31 de agosto al 5 de septiembre de 2026}
+
+\newcommand{\listatiny}{\setbeamerfont{itemize/enumerate body}{size=\tiny}\tiny}
+
+% Estilo común de los gráficos
+\pgfplotsset{
+  uniplot/.style={
+    width=8.4cm, height=3.9cm,
+    axis lines=left,
+    tick label style={font=\tiny,color=uniGris},
+    label style={font=\tiny,color=uniGris},
+    title style={font=\scriptsize\bfseries,color=uniAzul},
+    every axis plot/.append style={fill=uniAzul!70,draw=uniAzul},
+    ymajorgrids, grid style={uniGris!25,very thin},
+  }
+}
+
+\newcommand{\fx}[1]{{\ttfamily\color{uniAzul}#1}}
+
+% ------------------------------------------------------------- CÓDIGO R ----
+\lstdefinestyle{Rcode}{
+  language=R,
+  basicstyle=\ttfamily\scriptsize,
+  keywordstyle=\color{uniAzul}\bfseries,
+  commentstyle=\color{uniGris}\itshape,
+  stringstyle=\color{uniTitulo},
+  showstringspaces=false, numbers=none, breaklines=true,
+  columns=fullflexible,
+  backgroundcolor=\color{uniCremaClaro},
+  frame=leftline, framerule=1.2pt, rulecolor=\color{uniNaranja},
+  xleftmargin=0.35cm, framexleftmargin=0.35cm,
+  framexrightmargin=0.15cm, framextopmargin=2pt, framexbottommargin=2pt,
+  aboveskip=0.15cm, belowskip=0.15cm
+}
+\lstdefinestyle{Rmini}{
+  language=R,
+  basicstyle=\ttfamily\tiny,
+  keywordstyle=\color{uniAzul}\bfseries,
+  commentstyle=\color{uniGris}\itshape,
+  stringstyle=\color{uniTitulo},
+  showstringspaces=false, numbers=none, breaklines=true,
+  columns=fullflexible,
+  backgroundcolor=\color{uniCremaClaro},
+  frame=leftline, framerule=1.2pt, rulecolor=\color{uniNaranja},
+  xleftmargin=0.35cm, framexleftmargin=0.35cm,
+  framexrightmargin=0.15cm, framextopmargin=2pt, framexbottommargin=2pt,
+  aboveskip=0.12cm, belowskip=0.12cm
+}
+\lstdefinestyle{Rout}{
+  basicstyle=\ttfamily\tiny\color{black},
+  showstringspaces=false, numbers=none, breaklines=true,
+  columns=fullflexible,
+  backgroundcolor=\color{uniGris!10},
+  frame=leftline, framerule=1.2pt, rulecolor=\color{uniGris},
+  xleftmargin=0.35cm, framexleftmargin=0.35cm,
+  framexrightmargin=0.15cm, framextopmargin=2pt, framexbottommargin=2pt,
+  aboveskip=0.12cm, belowskip=0.12cm
+}
+
+\begin{document}
+
+\portada
+
+\begin{frame}{Orden del día}
+  \begin{enumerate}
+    \item Llamado a lista y revisión de los ejercicios propuestos
+    \item Repaso: de los datos crudos a la tabla
+    \item \azul{Gráficos para variables cualitativas: barras y circular}
+    \item \azul{Gráficos para variables cuantitativas: histograma, polígono y ojiva}
+    \item Taller guiado con el caso Almacén Bello
+    \item Formas de la distribución y errores frecuentes
+  \end{enumerate}
+
+  \vspace{0.25cm}
+  {\footnotesize\color{uniGris} Sesión de 3 horas. Traiga la tabla de la sesión
+  3: hoy la convertimos en imagen.}
+\end{frame}
+
+\begin{frame}{Repaso: dónde quedamos}
+  En la sesión 3 construimos tablas de frecuencia para el caso Almacén Bello.
+
+  \vspace{0.2cm}
+  \begin{alertblock}{La pregunta de hoy}
+    \footnotesize
+    Una tabla con seis filas y siete columnas es correcta, pero
+    \destacar{nadie la mira en una junta}. ¿Cómo convertimos esa tabla en una
+    imagen que muestre de un vistazo dónde se concentran los datos?
+  \end{alertblock}
+
+  \vspace{0.2cm}
+  \begin{block}{La regla que gobierna toda la sesión}
+    \footnotesize
+    \azul{El tipo de variable decide el gráfico.} Barras y circular para
+    cualitativas; histograma, polígono y ojiva para cuantitativas agrupadas.
+    Usar un histograma para una variable nominal es un error, no una
+    preferencia estética.
+  \end{block}
+\end{frame}
+
+\begin{frame}{El mapa de los gráficos}
+  \scriptsize
+  \begin{center}
+  \begin{tabular}{@{}p{3.0cm}p{3.4cm}p{5.4cm}@{}}
+    \toprule
+    \textbf{Gráfico} & \textbf{Sirve para} & \textbf{Qué muestra} \\
+    \midrule
+    Barras          & Cualitativa (nominal u ordinal) &
+      Compara categorías; barras \azul{separadas} \\
+    Circular        & Cualitativa con pocas categorías &
+      Composición del total (partes de 100\%) \\
+    Histograma      & Cuantitativa agrupada &
+      Forma de la distribución; barras \azul{pegadas} \\
+    Polígono        & Cuantitativa agrupada &
+      Perfil de la distribución; permite comparar grupos \\
+    Ojiva           & Cuantitativa agrupada &
+      Frecuencia acumulada; lectura de percentiles \\
+    \bottomrule
+  \end{tabular}
+  \end{center}
+
+  \vspace{0.1cm}
+  \begin{alertblock}{Barras separadas frente a barras pegadas}
+    \scriptsize
+    En un \destacar{diagrama de barras} las categorías son etiquetas
+    independientes: las barras van separadas. En un \destacar{histograma} el
+    eje es una recta numérica continua y las barras se tocan.
+  \end{alertblock}
+\end{frame}
+
+\seccion{Gráficos para variables cualitativas}
+
+\begin{frame}{Diagrama de barras — canal de compra}
+  \centering
+  \begin{tikzpicture}
+    \begin{axis}[uniplot,
+      title={Canal de compra de 40 clientes — Almacén Bello},
+      ybar, bar width=0.85cm,
+      ylabel={Frecuencia absoluta $f_i$},
+      symbolic x coords={Tienda,App,Web,Teléfono},
+      xtick=data, ymin=0, ymax=16, enlarge x limits=0.18,
+      nodes near coords, nodes near coords style={font=\tiny,color=uniAzul}]
+      \addplot coordinates {(Tienda,14) (App,13) (Web,9) (Teléfono,4)};
+    \end{axis}
+  \end{tikzpicture}
+
+  \vspace{-0.1cm}
+  \begin{alertblock}{Cuatro reglas de construcción}
+    \scriptsize
+    (1) El eje vertical \destacar{empieza en cero}, siempre. \quad
+    (2) Todas las barras tienen el \destacar{mismo ancho}. \quad
+    (3) Las barras van \destacar{separadas}. \quad
+    (4) Si la variable es nominal, se ordena de mayor a menor frecuencia; si es
+    ordinal, se respeta el orden natural.
+  \end{alertblock}
+\end{frame}
+
+\begin{frame}{Diagrama circular — el cálculo de los ángulos}
+  \footnotesize
+  \begin{columns}[T,onlytextwidth]
+    \begin{column}{0.50\textwidth}
+      \centering\scriptsize
+      \begin{tabular}{@{}lrrr@{}}
+        \toprule
+        \textbf{Canal} & \textbf{$f_i$} & \textbf{$\%_i$} &
+        \textbf{Ángulo} \\
+        \midrule
+        Tienda   & 14 & 35{,}0 & $126^\circ$ \\
+        App      & 13 & 32{,}5 & $117^\circ$ \\
+        Web      &  9 & 22{,}5 & $81^\circ$  \\
+        Teléfono &  4 & 10{,}0 & $36^\circ$  \\
+        \midrule
+        \textbf{Total} & \textbf{40} & \textbf{100} & $\mathbf{360^\circ}$ \\
+        \bottomrule
+      \end{tabular}
+
+      \vspace{0.15cm}
+      \[ \text{ángulo}_i = h_i \times 360^\circ \]
+      \[ \tfrac{14}{40}\times 360 = 126^\circ \]
+    \end{column}
+    \begin{column}{0.46\textwidth}
+      \centering
+      \begin{tikzpicture}[scale=0.95]
+        \def\r{1.75}
+        \fill[uniAzul]     (0,0) -- (90:\r) arc (90:-36:\r) -- cycle;
+        \fill[uniNaranja]  (0,0) -- (-36:\r) arc (-36:-153:\r) -- cycle;
+        \fill[uniAmarillo] (0,0) -- (-153:\r) arc (-153:-234:\r) -- cycle;
+        \fill[uniGris]     (0,0) -- (-234:\r) arc (-234:-270:\r) -- cycle;
+        \draw[white,thick] (0,0)--(90:\r); \draw[white,thick] (0,0)--(-36:\r);
+        \draw[white,thick] (0,0)--(-153:\r); \draw[white,thick] (0,0)--(-234:\r);
+        \node[font=\tiny,white] at (27:1.05) {35\%};
+        \node[font=\tiny,white] at (-94:1.05) {32,5\%};
+        \node[font=\tiny,white] at (166:1.05) {22,5\%};
+        \node[font=\tiny,white] at (108:1.15) {10\%};
+        \node[font=\tiny,right,color=uniGris] at (2.0,0.75) {Tienda};
+        \node[font=\tiny,right,color=uniGris] at (2.0,0.35) {App};
+        \node[font=\tiny,right,color=uniGris] at (2.0,-0.05) {Web};
+        \node[font=\tiny,right,color=uniGris] at (2.0,-0.45) {Teléfono};
+        \fill[uniAzul]    (1.75,0.65) rectangle (1.95,0.85);
+        \fill[uniNaranja] (1.75,0.25) rectangle (1.95,0.45);
+        \fill[uniAmarillo](1.75,-0.15) rectangle (1.95,0.05);
+        \fill[uniGris]    (1.75,-0.55) rectangle (1.95,-0.35);
+      \end{tikzpicture}
+    \end{column}
+  \end{columns}
+
+  \vspace{0.1cm}
+  \begin{alertblock}{Cuándo NO usar el circular}
+    \scriptsize
+    Con \destacar{más de 5 o 6 categorías} los sectores se vuelven
+    indistinguibles, y el ojo humano compara mal ángulos. Con muchas
+    categorías, o cuando lo importante es comparar, \azul{use barras}.
+  \end{alertblock}
+\end{frame}
+
+\begin{frame}{Ejercicio 1 — en clase}
+  \begin{alertblock}{En parejas (15 minutos)}
+    \footnotesize
+    Retome la tabla de satisfacción de la sesión 3 ($n = 30$):
+
+    \vspace{0.15cm}
+    \centering\scriptsize
+    \begin{tabular}{@{}lrrrrr@{}}
+      \toprule
+      \textbf{Satisfacción} & Muy bajo & Bajo & Medio & Alto & Muy alto \\
+      \midrule
+      \textbf{$f_i$} & 3 & 5 & 10 & 8 & 4 \\
+      \bottomrule
+    \end{tabular}
+
+    \vspace{0.25cm}
+    \raggedright
+    \begin{enumerate}\setlength{\itemsep}{-0.05cm}
+      \item Calcule $h_i$, $\%_i$ y el ángulo de cada sector.
+      \item Dibuje el diagrama de barras. ¿En qué orden van las categorías?
+      \item ¿Es apropiado un diagrama circular aquí? Justifique.
+      \item Escriba dos frases de interpretación para el gerente.
+    \end{enumerate}
+  \end{alertblock}
+\end{frame}
+
+\begin{frame}{Ejercicio 1 — solución}
+  \footnotesize
+  \begin{columns}[T,onlytextwidth]
+    \begin{column}{0.44\textwidth}
+      \centering\scriptsize
+      \begin{tabular}{@{}lrrr@{}}
+        \toprule
+        \textbf{Nivel} & \textbf{$f_i$} & \textbf{$\%_i$} & \textbf{Áng.} \\
+        \midrule
+        Muy bajo & 3 & 10{,}0 & $36^\circ$ \\
+        Bajo     & 5 & 16{,}7 & $60^\circ$ \\
+        Medio    & 10 & 33{,}3 & $120^\circ$ \\
+        Alto     & 8 & 26{,}7 & $96^\circ$ \\
+        Muy alto & 4 & 13{,}3 & $48^\circ$ \\
+        \midrule
+        \textbf{Tot.} & \textbf{30} & \textbf{100} & $\mathbf{360^\circ}$ \\
+        \bottomrule
+      \end{tabular}
+    \end{column}
+    \begin{column}{0.53\textwidth}
+      \begin{exampleblock}{Puntos 2 y 3}
+        \scriptsize
+        \textbf{Orden:} de muy bajo a muy alto. La variable es \azul{ordinal},
+        así que ordenar por frecuencia \destacar{destruiría la información}
+        que el gráfico debe mostrar.
+
+        \vspace{0.1cm}
+        \textbf{Circular:} es aceptable (5 categorías), pero las barras son
+        mejores porque conservan visualmente el orden de la escala.
+      \end{exampleblock}
+    \end{column}
+  \end{columns}
+
+  \vspace{0.1cm}
+  \begin{alertblock}{Punto 4: dos frases posibles}
+    \scriptsize
+    ``El \destacar{60,0\%} de los clientes reporta satisfacción media o
+    inferior.'' \quad ``Solo 1 de cada 6 clientes está en el nivel más alto:
+    hay margen de mejora en el servicio.''
+  \end{alertblock}
+\end{frame}
+
+\seccion{Gráficos para variables cuantitativas}
+
+\begin{frame}{Histograma — caso Almacén Bello}
+  \centering
+  \begin{tikzpicture}
+    \begin{axis}[uniplot,
+      title={Gasto mensual de 40 clientes (miles de pesos)},
+      ybar interval, bar width=1,
+      xlabel={Gasto (miles \$)}, ylabel={$f_i$},
+      xtick={112,152,192,232,272,312,352},
+      ymin=0, ymax=12.5, x tick label style={font=\tiny},
+      xticklabel style={/pgf/number format/1000 sep=}]
+      \addplot coordinates {(112,4) (152,7) (192,11) (232,9) (272,6) (312,3) (352,0)};
+    \end{axis}
+  \end{tikzpicture}
+
+  \vspace{-0.1cm}
+  \begin{alertblock}{Cómo se construye}
+    \scriptsize
+    En el eje horizontal van los \destacar{límites de clase} (no las
+    categorías); en el vertical, la frecuencia. Cada barra ocupa exactamente el
+    ancho de su clase, y las barras \destacar{se tocan}: el gasto es una
+    variable continua y no hay huecos entre 152 y 152.
+  \end{alertblock}
+\end{frame}
+
+\begin{frame}{Polígono de frecuencias}
+  \centering
+  \begin{tikzpicture}
+    \begin{axis}[uniplot,
+      title={Polígono de frecuencias — gasto mensual},
+      xlabel={Marca de clase $x_i$}, ylabel={$f_i$},
+      xtick={92,132,172,212,252,292,332,372},
+      ymin=0, ymax=12.5, xmin=80, xmax=384,
+      every axis plot/.append style={fill=none}]
+      \addplot[color=uniTitulo,thick,mark=*,mark size=1.6pt,
+               mark options={fill=uniTitulo}]
+        coordinates {(92,0) (132,4) (172,7) (212,11) (252,9) (292,6) (332,3) (372,0)};
+    \end{axis}
+  \end{tikzpicture}
+
+  \vspace{-0.1cm}
+  \begin{alertblock}{Los dos puntos que casi todos olvidan}
+    \scriptsize
+    El polígono une las \destacar{marcas de clase} a la altura de $f_i$, y
+    debe \destacar{cerrarse sobre el eje} con una clase ficticia \azul{antes}
+    de la primera ($x=92$, $f=0$) y otra \azul{después} de la última
+    ($x=372$, $f=0$).
+  \end{alertblock}
+\end{frame}
+
+\begin{frame}{Ojiva — frecuencias acumuladas}
+  \centering
+  \begin{tikzpicture}
+    \begin{axis}[uniplot,
+      title={Ojiva — gasto mensual acumulado},
+      xlabel={Gasto (miles \$)}, ylabel={$F_i$},
+      xtick={112,152,192,232,272,312,352},
+      ymin=0, ymax=44, xmin=108, xmax=356,
+      every axis plot/.append style={fill=none}]
+      \addplot[color=uniAzul,thick,mark=*,mark size=1.6pt,
+               mark options={fill=uniAzul}]
+        coordinates {(112,0) (152,4) (192,11) (232,22) (272,31) (312,37) (352,40)};
+      \draw[uniTitulo,dashed] (axis cs:108,20) -- (axis cs:225,20)
+                              -- (axis cs:225,0);
+    \end{axis}
+  \end{tikzpicture}
+
+  \vspace{-0.1cm}
+  \begin{alertblock}{Para qué sirve}
+    \scriptsize
+    La ojiva se traza sobre los \destacar{límites superiores} de clase, nunca
+    sobre las marcas. ¿Cuál es el gasto por debajo del cual está la mitad de
+    los clientes? Se busca $F=20$, se corta la curva y se baja:
+    \azul{alrededor de 225 mil}. Eso es la mediana.
+  \end{alertblock}
+\end{frame}
+
+\begin{frame}{Los tres gráficos vienen de la misma tabla}
+  \scriptsize
+  \begin{center}
+  \begin{tabular}{@{}lrrrl@{}}
+    \toprule
+    \textbf{Clase} & \textbf{$x_i$} & \textbf{$f_i$} & \textbf{$F_i$} &
+    \textbf{Se usa en} \\
+    \midrule
+    $[112,\ 152)$ & 132 &  4 &  4 & Histograma, polígono y ojiva \\
+    $[152,\ 192)$ & 172 &  7 & 11 & \\
+    $[192,\ 232)$ & 212 & 11 & 22 & Clase modal: la barra más alta \\
+    $[232,\ 272)$ & 252 &  9 & 31 & \\
+    $[272,\ 312)$ & 292 &  6 & 37 & \\
+    $[312,\ 352]$ & 332 &  3 & 40 & La ojiva termina en $n=40$ \\
+    \bottomrule
+  \end{tabular}
+  \end{center}
+
+  \vspace{0.05cm}
+  \begin{center}\scriptsize
+  \begin{tabular}{@{}lll@{}}
+    \toprule
+    \textbf{Gráfico} & \textbf{Eje horizontal} & \textbf{Eje vertical} \\
+    \midrule
+    Histograma & Límites de clase & $f_i$ (o $h_i$) \\
+    Polígono   & Marcas de clase $x_i$ & $f_i$ (o $h_i$) \\
+    Ojiva      & Límites superiores & $F_i$ (o $H_i$) \\
+    \bottomrule
+  \end{tabular}
+  \end{center}
+\end{frame}
+
+\begin{frame}{Ejercicio 2 — en clase (taller principal)}
+  \begin{alertblock}{En grupos de 3 (25 minutos)}
+    \scriptsize
+    Retome la tabla del tiempo de espera de la sesión 3 ($n=30$):
+
+    \vspace{0.1cm}
+    \centering\scriptsize
+    \begin{tabular}{@{}lrrrrrr@{}}
+      \toprule
+      \textbf{Clase} & $[4,9)$ & $[9,14)$ & $[14,19)$ & $[19,24)$ & $[24,29)$ &
+      $[29,34]$ \\
+      \midrule
+      $x_i$ & 6{,}5 & 11{,}5 & 16{,}5 & 21{,}5 & 26{,}5 & 31{,}5 \\
+      $f_i$ & 4 & 6 & 6 & 5 & 5 & 4 \\
+      \bottomrule
+    \end{tabular}
+
+    \vspace{0.15cm}
+    \raggedright
+    \begin{enumerate}\setlength{\itemsep}{-0.1cm}
+      \item Dibuje el histograma en papel milimetrado o cuadriculado.
+      \item Superponga el polígono de frecuencias, con las clases ficticias.
+      \item Complete $F_i$ y dibuje la ojiva.
+      \item Lea en la ojiva el tiempo por debajo del cual está el 50\% de los
+            clientes.
+      \item Compare la forma de este histograma con el del gasto: ¿cuál está
+            más concentrado?
+    \end{enumerate}
+  \end{alertblock}
+\end{frame}
+
+\begin{frame}{Ejercicio 2 — solución (histograma y polígono)}
+  \centering
+  \begin{tikzpicture}
+    \begin{axis}[uniplot, width=7.2cm, height=3.6cm,
+      title={Tiempo de espera en caja (minutos)},
+      ybar interval, bar width=1,
+      xlabel={Minutos}, ylabel={$f_i$},
+      xtick={4,9,14,19,24,29,34}, ymin=0, ymax=7.5]
+      \addplot coordinates {(4,4) (9,6) (14,6) (19,5) (24,5) (29,4) (34,0)};
+      \addplot[color=uniTitulo,thick,mark=*,mark size=1.3pt,fill=none,
+               mark options={fill=uniTitulo}]
+        coordinates {(1.5,0) (6.5,4) (11.5,6) (16.5,6) (21.5,5) (26.5,5)
+                     (31.5,4) (36.5,0)};
+    \end{axis}
+  \end{tikzpicture}
+
+  \vspace{-0.1cm}
+  \begin{alertblock}{Punto 5: comparación de formas}
+    \scriptsize
+    El histograma del gasto tiene un \destacar{pico claro} en $[192,232)$ y
+    cae a ambos lados: los datos están \azul{concentrados}. El del tiempo de
+    espera es casi \destacar{plano}: todos los tiempos son igual de probables,
+    los datos están \azul{dispersos}. En la unidad 2 pondremos un número a esa
+    diferencia (la desviación estándar).
+  \end{alertblock}
+\end{frame}
+
+\begin{frame}{Ejercicio 2 — solución (ojiva)}
+  \footnotesize
+  \begin{columns}[T,onlytextwidth]
+    \begin{column}{0.36\textwidth}
+      \centering\scriptsize
+      \begin{tabular}{@{}lrr@{}}
+        \toprule
+        \textbf{Clase} & \textbf{$f_i$} & \textbf{$F_i$} \\
+        \midrule
+        $[4,9)$   & 4 &  4 \\
+        $[9,14)$  & 6 & 10 \\
+        $[14,19)$ & 6 & 16 \\
+        $[19,24)$ & 5 & 21 \\
+        $[24,29)$ & 5 & 26 \\
+        $[29,34]$ & 4 & 30 \\
+        \bottomrule
+      \end{tabular}
+    \end{column}
+    \begin{column}{0.62\textwidth}
+      \centering
+      \begin{tikzpicture}
+        \begin{axis}[uniplot, width=6.4cm, height=3.9cm,
+          xlabel={Minutos}, ylabel={$F_i$},
+          xtick={4,9,14,19,24,29,34}, ymin=0, ymax=33, xmin=3, xmax=35,
+          every axis plot/.append style={fill=none}]
+          \addplot[color=uniAzul,thick,mark=*,mark size=1.3pt,
+                   mark options={fill=uniAzul}]
+            coordinates {(4,0) (9,4) (14,10) (19,16) (24,21) (29,26) (34,30)};
+          \draw[uniTitulo,dashed] (axis cs:3,15) -- (axis cs:18.2,15)
+                                  -- (axis cs:18.2,0);
+        \end{axis}
+      \end{tikzpicture}
+    \end{column}
+  \end{columns}
+
+  \vspace{0.05cm}
+  \begin{alertblock}{Punto 4}
+    \scriptsize
+    Se busca $F = n/2 = 15$ en el eje vertical y se corta la ojiva:
+    el resultado está \destacar{alrededor de 18 minutos}. Con los datos
+    originales la mediana es $(17+18)/2 = 17{,}5$: la lectura gráfica es
+    aproximada, pero sirve.
+  \end{alertblock}
+\end{frame}
+
+\seccion{Formas de la distribución}
+
+\begin{frame}{Cuatro formas que hay que reconocer a simple vista}
+  \centering
+  \begin{tikzpicture}[scale=0.86]
+    \begin{scope}
+      \foreach \x/\h in {0/0.4,0.5/0.9,1/1.5,1.5/1.9,2/1.5,2.5/0.9,3/0.4}
+        \fill[uniAzul!70] (\x,0) rectangle (\x+0.5,\h);
+      \draw[uniGris] (0,0)--(3.5,0);
+      \node[font=\tiny,color=uniAzul] at (1.75,-0.35) {Simétrica};
+    \end{scope}
+    \begin{scope}[xshift=4.2cm]
+      \foreach \x/\h in {0/1.9,0.5/1.6,1/1.1,1.5/0.8,2/0.5,2.5/0.3,3/0.15}
+        \fill[uniNaranja!80] (\x,0) rectangle (\x+0.5,\h);
+      \draw[uniGris] (0,0)--(3.5,0);
+      \node[font=\tiny,color=uniAzul,align=center] at (1.75,-0.45)
+        {Asimétrica positiva\\(cola a la derecha)};
+    \end{scope}
+    \begin{scope}[xshift=8.4cm]
+      \foreach \x/\h in {0/0.15,0.5/0.3,1/0.5,1.5/0.8,2/1.1,2.5/1.6,3/1.9}
+        \fill[uniNaranja!80] (\x,0) rectangle (\x+0.5,\h);
+      \draw[uniGris] (0,0)--(3.5,0);
+      \node[font=\tiny,color=uniAzul,align=center] at (1.75,-0.45)
+        {Asimétrica negativa\\(cola a la izquierda)};
+    \end{scope}
+    \begin{scope}[xshift=12.6cm]
+      \foreach \x/\h in {0/1.6,0.5/1.0,1/0.5,1.5/0.4,2/0.6,2.5/1.2,3/1.7}
+        \fill[uniGris!60] (\x,0) rectangle (\x+0.5,\h);
+      \draw[uniGris] (0,0)--(3.5,0);
+      \node[font=\tiny,color=uniAzul] at (1.75,-0.35) {Bimodal};
+    \end{scope}
+  \end{tikzpicture}
+
+  \vspace{0.25cm}
+  \begin{alertblock}{Por qué importa}
+    \scriptsize
+    La forma decide \destacar{qué medida resume mejor}. En una distribución
+    simétrica la media es un buen resumen. En una asimétrica positiva —típica
+    de salarios y gastos— la media se va detrás de la cola y la
+    \azul{mediana} describe mejor al caso típico. Una distribución
+    \azul{bimodal} suele significar que hay \destacar{dos grupos mezclados}.
+  \end{alertblock}
+\end{frame}
+
+\begin{frame}{¿Qué forma tiene el gasto del Almacén Bello?}
+  \footnotesize
+  \begin{columns}[T,onlytextwidth]
+    \begin{column}{0.52\textwidth}
+      \centering
+      \begin{tikzpicture}
+        \begin{axis}[uniplot, width=6.6cm, height=3.7cm,
+          ybar interval, bar width=1,
+          xtick={112,192,272,352}, ymin=0, ymax=12.5,
+          xlabel={Gasto (miles \$)}, ylabel={$f_i$}]
+          \addplot coordinates {(112,4) (152,7) (192,11) (232,9) (272,6)
+                                (312,3) (352,0)};
+        \end{axis}
+      \end{tikzpicture}
+    \end{column}
+    \begin{column}{0.45\textwidth}
+      \begin{exampleblock}{Lectura}
+        \scriptsize
+        Pico en $[192,232)$, caída rápida a la izquierda y \azul{cola larga a
+        la derecha}: es una distribución \destacar{asimétrica positiva}.
+
+        \vspace{0.15cm}
+        Tiene sentido económico: hay un piso de gasto (nadie gasta menos de
+        cero) pero no hay techo.
+      \end{exampleblock}
+    \end{column}
+  \end{columns}
+
+  \vspace{0.1cm}
+  \begin{alertblock}{La consecuencia práctica}
+    \scriptsize
+    Si el gerente reporta el \destacar{gasto promedio}, ese número estará
+    inflado por los pocos clientes de la cola. Para describir al cliente
+    típico conviene la \azul{mediana}. Esta es la discusión central de la
+    unidad 2.
+  \end{alertblock}
+\end{frame}
+
+\begin{frame}{Errores frecuentes en gráficos}
+  \scriptsize
+  \begin{center}
+  \begin{tabular}{@{}p{5.4cm}p{6.4cm}@{}}
+    \toprule
+    \textbf{Error} & \textbf{Por qué es un error} \\
+    \midrule
+    Eje vertical que no empieza en cero &
+      Exagera diferencias pequeñas: es la manipulación gráfica más común \\
+    Histograma con barras separadas &
+      Sugiere huecos en una variable continua \\
+    Barras pegadas en variable nominal &
+      Sugiere continuidad donde solo hay etiquetas \\
+    Gráfico circular con 12 categorías &
+      Los sectores dejan de ser comparables \\
+    Efectos 3D y sombras &
+      Distorsionan las áreas; no aportan información \\
+    Polígono sin cerrar sobre el eje &
+      El área deja de coincidir con la del histograma \\
+    Ojiva trazada sobre marcas de clase &
+      Se traza sobre \azul{límites superiores}: $F_i$ acumula hasta ahí \\
+    Gráfico sin título, sin ejes rotulados o sin fuente &
+      El lector no puede saber qué está viendo \\
+    \bottomrule
+  \end{tabular}
+  \end{center}
+\end{frame}
+
+\begin{frame}[fragile]{Los mismos gráficos, en R}
+  \scriptsize
+\begin{lstlisting}[style=Rmini]
+# Cualitativa: barras separadas y circular
+barplot(table(canal), col = "steelblue",
+        main = "Canal de compra de 40 clientes", ylab = "Frecuencia")
+pie(table(canal), main = "Participacion por canal")
+
+# Histograma con NUESTROS limites de clase
+limites <- seq(112, 352, by = 40)
+hist(gasto, breaks = limites, right = FALSE, col = "steelblue",
+     main = "Gasto mensual de 40 clientes", xlab = "Miles de pesos")
+
+# Poligono: marcas de clase, cerrado sobre el eje
+xi <- head(limites, -1) + 20
+lines(c(92, xi, 372), c(0, as.vector(table(clases)), 0), type = "b", col = "tomato")
+
+# Ojiva: acumulada sobre los limites superiores
+plot(limites, c(0, cumsum(table(clases))), type = "b",
+     main = "Ojiva del gasto", xlab = "Miles de pesos", ylab = "Fi")
+\end{lstlisting}
+
+  \vspace{-0.1cm}
+  \begin{alertblock}{El argumento que no se puede olvidar}
+    \tiny
+    Sin \fx{breaks = limites}, \fx{hist()} elige sus propias clases con la regla
+    de Sturges y \destacar{el gráfico deja de coincidir con la tabla}. En R,
+    como a mano, las clases las decide usted.
+  \end{alertblock}
+\end{frame}
+
+\begin{frame}{Cierre de la sesión}
+  \begin{block}{Lo que debe quedar claro hoy}
+    \scriptsize
+    \begin{itemize}\setlength{\itemsep}{0.02cm}
+      \item Cualitativas: \azul{barras} (separadas) y \azul{circular}
+            (ángulo $= h_i \times 360^\circ$).
+      \item Cuantitativas agrupadas: \azul{histograma} (barras pegadas sobre
+            los límites), \azul{polígono} (marcas de clase, cerrado sobre el
+            eje) y \azul{ojiva} (límites superiores, $F_i$).
+      \item Los tres salen de la \destacar{misma tabla}: cambia qué columna se
+            grafica contra qué.
+      \item La \azul{forma} de la distribución anticipa qué medida resumirá
+            mejor los datos.
+    \end{itemize}
+  \end{block}
+
+  \vspace{0.1cm}
+  \begin{alertblock}{Trabajo independiente}
+    \scriptsize
+    Resolver los 20 ejercicios de la lámina siguiente. En la sesión 5
+    integramos todo el proceso —de los datos crudos al informe— y hacemos el
+    repaso para el examen 1.
+  \end{alertblock}
+\end{frame}
+
+\begin{frame}{Ejercicios propuestos}
+  \vspace{-0.1cm}
+  \begin{beamercolorbox}[wd=\textwidth,sep=0.10cm]{block body}
+    \centering\scriptsize
+    \textbf{1--8:} elección del gráfico. \quad
+    \textbf{9--14:} cálculo. \quad
+    \textbf{15--20:} construcción e interpretación.
+  \end{beamercolorbox}
+  \listatiny
+  \vspace{0.15cm}
+  \begin{columns}[T,onlytextwidth]
+    \begin{column}{0.47\textwidth}
+      \begin{enumerate}\setlength{\itemsep}{0.16cm}
+        \item Gráfico adecuado para: ciudad de residencia
+        \item Para: gasto mensual agrupado en 6 clases
+        \item Para: nivel educativo alcanzado
+        \item Para: la proporción acumulada de clientes
+        \item ¿Barras separadas o pegadas en un histograma?
+        \item ¿Sobre qué valores se traza el polígono?
+        \item ¿Sobre qué valores se traza la ojiva?
+        \item ¿Por qué el eje $y$ debe empezar en cero?
+        \item $h_i = 0{,}22$: ¿cuál es el ángulo del sector?
+        \item Ángulo $= 54^\circ$: ¿cuál es $\%_i$?
+      \end{enumerate}
+    \end{column}
+    \begin{column}{0.50\textwidth}
+      \begin{enumerate}\setlength{\itemsep}{0.16cm}
+        \setcounter{enumi}{10}
+        \item Clases $[10,20)\dots[50,60)$: ¿cuáles son las clases ficticias
+              del polígono?
+        \item $n=40$ y la ojiva termina en\dots
+        \item Si $f_i=11$ y $n=40$: altura de la barra en escala $h_i$
+        \item ¿Cambia la forma del histograma si grafico $h_i$ en vez de $f_i$?
+        \item Dibuje el histograma de: 3, 8, 12, 9, 5, 3
+        \item ¿Cuál es la clase modal en ese histograma?
+        \item ¿Qué forma tiene esa distribución?
+        \item Con $F_i$: 3, 11, 23, 32, 37, 40. Dibuje la ojiva
+        \item Lea en esa ojiva el valor con $F=20$
+        \item Un gráfico muestra ventas de 98 a 102 con eje de 97 a 103.
+              ¿Qué problema tiene?
+      \end{enumerate}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{Respuestas}{Autoevaluación de los ejercicios propuestos}
+  \listatiny
+  \vspace{0.15cm}
+  \begin{columns}[T,onlytextwidth]
+    \begin{column}{0.47\textwidth}
+      \begin{enumerate}\setlength{\itemsep}{0.16cm}
+        \item Barras (nominal); circular si son pocas ciudades
+        \item Histograma y polígono
+        \item Barras en orden natural (ordinal)
+        \item Ojiva
+        \item Pegadas
+        \item Sobre las marcas de clase $x_i$
+        \item Sobre los límites superiores de clase
+        \item Porque truncarlo exagera las diferencias
+        \item $0{,}22\times360 = 79{,}2^\circ$
+        \item $54/360 = 0{,}15 \Rightarrow 15\%$
+      \end{enumerate}
+    \end{column}
+    \begin{column}{0.50\textwidth}
+      \begin{enumerate}\setlength{\itemsep}{0.16cm}
+        \setcounter{enumi}{10}
+        \item Marcas ficticias en 5 y 65, con $f=0$
+        \item En 40, es decir en $n$
+        \item $h_i = 11/40 = 0{,}275$
+        \item No: solo cambia la escala del eje vertical
+        \item Barras de altura 3, 8, 12, 9, 5, 3, pegadas
+        \item La tercera clase ($f=12$)
+        \item Asimétrica positiva (cola a la derecha)
+        \item Puntos crecientes que terminan en 40
+        \item Entre la tercera y la cuarta clase
+        \item Eje truncado: exagera diferencias mínimas
+      \end{enumerate}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{Referencias}
+  \footnotesize
+  \begin{itemize}
+    \item[{[1]}] Monroy Saldívar, S. (2008). \textit{Estadística descriptiva}.
+      Instituto Politécnico Nacional.
+      \texttt{https://elibro.net/es/lc/uniminuto/titulos/74722}
+    \item[{[2]}] Ordóñez Fernández, F. F. \& González Fernández, J. (2021).
+      \textit{Estadística descriptiva paso a paso}. Ediciones Pirámide.
+      \texttt{https://elibro.net/es/lc/uniminuto/titulos/215449}
+    \item[{[3]}] Llinás Solano, H. (2014). \textit{Introducción a la
+      estadística con aplicaciones en ciencias sociales}. Universidad del
+      Norte. \texttt{https://elibro.net/es/lc/uniminuto/titulos/70062}
+  \end{itemize}
+
+  \vspace{0.35cm}
+  \begin{center}
+    {\Large\color{uniAzul}\textbf{¿Preguntas?}}
+  \end{center}
+\end{frame}
+
+\end{document}

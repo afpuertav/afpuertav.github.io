@@ -1,0 +1,1059 @@
+% ============================================================================
+%  ESTADÍSTICA DESCRIPTIVA — Sesión 1
+%  Semana 1: 10 al 15 de agosto de 2026
+%  Presentación del curso + 1.1 Conceptos básicos: población, muestra,
+%  variable y dato
+% ============================================================================
+\documentclass[aspectratio=169,10pt]{beamer}
+
+\usepackage[utf8]{inputenc}
+\IfFileExists{spanish.ldf}{\usepackage[spanish,es-noshorthands]{babel}}{}
+\usepackage{amsmath,amssymb}
+\usepackage{booktabs}
+\usepackage{tikz}
+\usepackage{listings}
+
+\usetheme{Uniminuto}
+
+\uniasignatura{Estadística descriptiva}
+\uniprofesor{Andrés Felipe Puerta Velez}
+\unicorreo{andres.puerta-v@uniminuto.edu.co}
+\uninrc{CBASBL031 - CBASBL141}
+\unisemana{Sesión 1 — Semana 1 · 10 al 15 de agosto de 2026}
+
+
+\newcommand{\fx}[1]{{\ttfamily\color{uniAzul}#1}}
+\newcommand{\listatiny}{\setbeamerfont{itemize/enumerate body}{size=\tiny}\tiny}
+
+% ------------------------------------------------------------- CÓDIGO R ----
+\lstdefinestyle{Rmini}{
+  language=R,
+  basicstyle=\ttfamily\tiny,
+  keywordstyle=\color{uniAzul}\bfseries,
+  commentstyle=\color{uniGris}\itshape,
+  stringstyle=\color{uniTitulo},
+  showstringspaces=false, numbers=none, breaklines=true,
+  columns=fullflexible,
+  backgroundcolor=\color{uniCremaClaro},
+  frame=leftline, framerule=1.2pt, rulecolor=\color{uniNaranja},
+  xleftmargin=0.35cm, framexleftmargin=0.35cm,
+  framexrightmargin=0.15cm, framextopmargin=2pt, framexbottommargin=2pt,
+  aboveskip=0.12cm, belowskip=0.12cm
+}
+\lstdefinestyle{Rout}{
+  basicstyle=\ttfamily\tiny\color{black},
+  showstringspaces=false, numbers=none, breaklines=true,
+  columns=fullflexible,
+  backgroundcolor=\color{uniGris!10},
+  frame=leftline, framerule=1.2pt, rulecolor=\color{uniGris},
+  xleftmargin=0.35cm, framexleftmargin=0.35cm,
+  framexrightmargin=0.15cm, framextopmargin=2pt, framexbottommargin=2pt,
+  aboveskip=0.12cm, belowskip=0.12cm
+}
+
+\begin{document}
+
+\portada
+
+\begin{frame}{Orden del día}
+  \begin{enumerate}
+    \item Llamado a lista, presentación del grupo y elección del representante
+    \item Para qué sirve la estadística: tres historias y tres preguntas
+    \item Temario, cronograma, evaluación y acuerdos mínimos
+    \item \azul{Tema 1.1: población, muestra, unidad de observación, variable y dato}
+    \item Cómo se produce un dato y cómo se guarda: la matriz de datos
+    \item De dónde salen los datos: censo, muestra y sesgos de recolección
+    \item Cómo se lee mal una estadística; taller de diseño y cierre
+  \end{enumerate}
+
+  \vspace{0.25cm}
+  {\footnotesize\color{uniGris} Sesión de 3 horas. Al final de hoy queda
+  definido el \destacar{conjunto de datos} que acompañará todo el semestre.}
+\end{frame}
+
+\begin{frame}{¿Para qué sirve la estadística descriptiva?}
+  Un conjunto de datos en bruto no dice nada. \destacar{Describir} es
+  convertirlo en algo que se pueda leer, comparar y comunicar.
+
+  \vspace{0.3cm}
+  \begin{columns}[T,onlytextwidth]
+    \begin{column}{0.47\textwidth}
+      \begin{block}{Lo que haremos}
+        \footnotesize
+        \begin{itemize}
+          \item Organizar datos en tablas
+          \item Representarlos en gráficos
+          \item Resumirlos en unos pocos números
+          \item Interpretarlos y sustentar decisiones
+        \end{itemize}
+      \end{block}
+    \end{column}
+    \begin{column}{0.47\textwidth}
+      \begin{exampleblock}{Hasta dónde llega}
+        \footnotesize
+        La estadística descriptiva \azul{resume lo que ya se observó}.\\[0.3em]
+        No afirma nada sobre los casos que \azul{no} se midieron.\\[0.3em]
+        Esa disciplina no es una limitación: es lo que hace que un informe sea
+        \destacar{defendible}.
+      \end{exampleblock}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{Tres historias que hicieron la estadística}
+  \scriptsize
+  \begin{block}{1854 — John Snow y el cólera en Londres}
+    \tiny
+    Cuando estalla un brote en el Soho, la teoría dominante culpa al ``aire
+    viciado''. Snow hace otra cosa: \azul{marca en un mapa dónde vivía cada
+    muerto}. Las marcas se apiñan alrededor de una bomba de agua de la calle
+    Broad. Convence a las autoridades de retirar la palanca de la bomba.
+    \destacar{No tenía una teoría mejor: tenía los datos organizados.}
+  \end{block}
+
+  \vspace{0.06cm}
+  \begin{block}{1858 — Florence Nightingale y el diagrama de la rosa}
+    \tiny
+    De vuelta de la guerra de Crimea, quiere convencer al gobierno británico
+    de que la mayoría de los soldados no moría por heridas de combate sino por
+    \azul{enfermedades evitables en los hospitales}. Sabe que nadie va a leer
+    su tabla, así que la convierte en un gráfico circular por meses. El
+    gráfico funciona: \destacar{cambió la política sanitaria del ejército}.
+  \end{block}
+
+  \vspace{0.06cm}
+  \begin{block}{1890 — el censo de Estados Unidos}
+    \tiny
+    El censo anterior había tardado casi ocho años en tabularse. Hermann
+    Hollerith diseña una máquina de tarjetas perforadas para contarlo, y su
+    empresa terminaría siendo parte de lo que hoy es \azul{IBM}.
+    \destacar{La informática nació, literalmente, de un problema
+    estadístico.}
+  \end{block}
+
+  \vspace{0.06cm}
+  {\tiny\color{uniGris} Las tres tienen la misma moraleja:
+  \destacar{los datos no convencen solos}. Convencen cuando alguien los
+  organiza, los representa y los interpreta. Eso es exactamente lo que vamos a
+  aprender.}
+\end{frame}
+
+\begin{frame}{Cuatro preguntas que llegan a su escritorio}
+  \tiny
+  \begin{center}
+  \begin{tabular}{@{}p{1.4cm}p{4.8cm}p{5.8cm}@{}}
+    \toprule
+    & \textbf{Lo que le preguntan} &
+    \textbf{Lo que hay que resolver primero} \\
+    \midrule
+    \azul{Psicología} &
+      ``¿Cómo es el perfil de los estudiantes que llegan a consulta?'' &
+      ¿Perfil en qué variables: edad, semestre, motivo de consulta? ¿Y cómo se
+      resume cada una? \\
+    \addlinespace
+    \azul{Psicología} &
+      ``¿Cuánto tiempo espera un usuario para su primera cita?'' &
+      ¿El tiempo \emph{típico} es el promedio, la mitad o el más frecuente?
+      Los tres pueden dar cifras distintas \\
+    \addlinespace
+    \azul{T.\ Social} &
+      ``¿El programa de acompañamiento familiar está funcionando?'' &
+      ¿Funcionando en qué indicador, medido cómo y comparado con qué? \\
+    \addlinespace
+    \azul{T.\ Social} &
+      ``¿A qué comuna dirigimos los recursos del próximo semestre?'' &
+      ¿Qué datos tengo, sobre cuántos casos, de qué periodo y de qué fuente? \\
+    \bottomrule
+  \end{tabular}
+  \end{center}
+
+  \vspace{0.1cm}
+  \begin{alertblock}{Lo que este curso le da}
+    \tiny
+    Ninguna de las cuatro se responde con una fórmula suelta. Se responden con
+    un \destacar{procedimiento}: definir bien la pregunta, organizar los datos,
+    resumirlos con la medida adecuada e interpretarlos \azul{sin decir más de
+    lo que los datos permiten}.
+  \end{alertblock}
+
+  \vspace{0.05cm}
+  {\tiny\color{uniGris} En psicología y trabajo social los datos casi nunca son
+  dinero: son \destacar{personas, casos y trayectorias}. Eso no cambia el
+  procedimiento, pero sí sube el costo de equivocarse: detrás de cada fila de
+  la tabla hay alguien.}
+\end{frame}
+
+\begin{frame}{La prueba de las cuatro frases}
+  \scriptsize
+  \begin{center}
+  \begin{tabular}{@{}p{7.8cm}p{4.2cm}@{}}
+    \toprule
+    \textbf{Afirmación} & \textbf{¿Se puede sostener?} \\
+    \midrule
+    ``Los 40 usuarios encuestados esperaron en promedio 12 días.'' &
+      \azul{Sí}: habla de los medidos \\
+    ``Los usuarios del centro esperan en promedio 12 días.'' &
+      \destacar{No}: nadie midió a todos \\
+    ``El 35\% de los encuestados asistió a todas las sesiones.'' &
+      \azul{Sí} \\
+    ``El 35\% de la población atendida asiste a todas las sesiones.'' &
+      \destacar{No} \\
+    \bottomrule
+  \end{tabular}
+  \end{center}
+
+  \vspace{0.15cm}
+  \begin{alertblock}{La señal que las distingue}
+    \scriptsize
+    Fíjese en el \destacar{sujeto de la frase}. Si dice ``los encuestados'',
+    ``los casos registrados'' o ``la muestra'', la afirmación se sostiene con
+    los datos que tiene. Si dice ``los usuarios'' a secas, \destacar{está
+    hablando de gente que nunca midió}.
+  \end{alertblock}
+
+  \vspace{0.08cm}
+  {\tiny\color{uniGris} La corrección casi siempre es de \azul{redacción}, no
+  de cálculo: basta con nombrar bien a quién se midió. Es el error que más se
+  penaliza en los tres exámenes.}
+\end{frame}
+
+\begin{frame}{El curso en tres unidades}
+  \begin{columns}[T,onlytextwidth]
+    \begin{column}{0.32\textwidth}
+      \begin{block}{Unidad 1 (sem. 1--5)}
+        \small Conceptos y tablas\\[0.2em]
+        Población y muestra, tipos de variables, escalas de medición, tablas de
+        frecuencia y métodos gráficos.
+      \end{block}
+    \end{column}
+    \begin{column}{0.32\textwidth}
+      \begin{block}{Unidad 2 (sem. 7--11)}
+        \small Medidas estadísticas\\[0.2em]
+        Tendencia central, posición, dispersión y forma; gráficos e
+        interpretación de resultados.
+      \end{block}
+    \end{column}
+    \begin{column}{0.32\textwidth}
+      \begin{block}{Unidad 3 (sem. 13--15)}
+        \small Análisis integrado\\[0.2em]
+        Aplicación completa a un conjunto de datos y sustentación de decisiones
+        con evidencia.
+      \end{block}
+    \end{column}
+  \end{columns}
+
+  \vspace{0.45cm}
+  \begin{center}
+    \small Curso \destacar{100\% presencial} · 3 créditos · 16 semanas ·
+    2 horas de clase por semana
+  \end{center}
+\end{frame}
+
+\begin{frame}{Evaluación: tres exámenes, nada más}
+  \begin{center}
+  \begin{tabular}{@{}llr@{}}
+    \toprule
+    \textbf{Evaluación} & \textbf{Semana y fechas} & \textbf{Peso} \\
+    \midrule
+    Examen 1 — Unidad 1 & Semana 6: 14 al 19 de septiembre & 35\% \\
+    Examen 2 — Unidad 2 & Semana 12: 26 al 31 de octubre   & 35\% \\
+    Examen 3 — Unidad 3 & Semana 16: 23 al 28 de noviembre & 30\% \\
+    \midrule
+    \textbf{Total} & & \textbf{100\%} \\
+    \bottomrule
+  \end{tabular}
+  \end{center}
+
+  \vspace{0.3cm}
+  \begin{alertblock}{Cómo son los exámenes}
+    \footnotesize
+    Individuales, en \azul{Aulas Virtuales (Moodle)}, presentados de forma
+    presencial en el aula y con tiempo límite. Selección múltiple con única
+    respuesta y problemas de aplicación con respuesta numérica. Se permite
+    calculadora y formulario.
+  \end{alertblock}
+\end{frame}
+
+\begin{frame}{Acuerdos mínimos del curso}
+  \begin{itemize}
+    \item \azul{No hay talleres, quices ni trabajos calificables.} Todo lo que
+          hagamos en clase es formativo: sirve para prepararse.
+    \item Las semanas \destacar{6, 12 y 16} se dedican por completo al examen;
+          no se dictan temas nuevos.
+    \item Notas y retroalimentación se publican dentro de la semana siguiente
+          al examen. Reclamaciones: 3 días hábiles.
+    \item Presentación en fecha distinta solo con excusa válida radicada ante
+          la coordinación del programa.
+    \item Comunicación en clase, por correo institucional o por medio del
+          representante de curso.
+    \item Fraude o plagio anula la prueba y se reporta según el Reglamento
+          Estudiantil.
+  \end{itemize}
+\end{frame}
+
+\seccion{Unidad 1. Conceptos básicos y tablas de distribución}
+
+\begin{frame}{1.1 Los cuatro conceptos de partida}
+  \footnotesize
+  \begin{center}
+  \begin{tabular}{@{}p{2.4cm}p{5.0cm}p{4.0cm}@{}}
+    \toprule
+    \textbf{Concepto} & \textbf{Definición} & \textbf{Ejemplo} \\
+    \midrule
+    Población & Conjunto \emph{completo} de elementos sobre los que se quiere
+      concluir. Tamaño $N$. & Los 1\,200 clientes de la tienda \\
+    \addlinespace
+    Muestra & Subconjunto de la población que sí se observa. Tamaño $n$. &
+      40 clientes encuestados \\
+    \addlinespace
+    Variable & Característica que se mide y que \azul{puede cambiar} de un
+      elemento a otro. & Gasto mensual, canal de compra \\
+    \addlinespace
+    Dato & El valor concreto que toma la variable en un elemento. &
+      \$35\,000; ``App'' \\
+    \bottomrule
+  \end{tabular}
+  \end{center}
+
+  \vspace{0.2cm}
+  {\footnotesize\color{uniGris} Si algo no cambia entre los elementos no es una
+  variable, es una \azul{constante}: no aporta información para describir.}
+\end{frame}
+
+\begin{frame}{Población objetivo, población de estudio y marco muestral}
+  \scriptsize
+  \begin{center}
+  \begin{tabular}{@{}p{3.0cm}p{4.2cm}p{4.6cm}@{}}
+    \toprule
+    \textbf{Concepto} & \textbf{Qué es} & \textbf{En el ejemplo} \\
+    \midrule
+    Población objetivo &
+      Sobre quién \azul{quiero} concluir &
+      Todos los clientes del almacén \\
+    \addlinespace
+    Población de estudio &
+      A quién \azul{puedo} llegar de verdad &
+      Los 1\,200 clientes \emph{registrados} \\
+    \addlinespace
+    Marco muestral &
+      La \azul{lista} de la que se saca la muestra &
+      La base de datos de registrados \\
+    \addlinespace
+    Muestra &
+      Los que efectivamente se midieron &
+      Los 40 encuestados \\
+    \bottomrule
+  \end{tabular}
+  \end{center}
+
+  \vspace{0.1cm}
+  \begin{alertblock}{Dónde se cuela el sesgo}
+    \scriptsize
+    \destacar{En el salto de la primera fila a la segunda.} Los clientes que
+    compran y nunca se registran \azul{no pueden salir en la muestra}, por más
+    bien que se haga el muestreo. Si esos clientes son distintos —compran menos,
+    o son de paso—, las conclusiones ya nacen torcidas.
+  \end{alertblock}
+
+  \vspace{0.05cm}
+  {\tiny\color{uniGris} Por eso un informe serio \destacar{declara las tres
+  cosas}: sobre quién quería concluir, a quién pudo llegar y a quién midió. Es
+  la diferencia entre un estudio y una encuesta improvisada.}
+\end{frame}
+
+\begin{frame}{Unidad de observación y variable: no confundirlas}
+  \begin{columns}[T,onlytextwidth]
+    \begin{column}{0.48\textwidth}
+      \begin{block}{Unidad de observación}
+        \footnotesize
+        El \azul{elemento} del que se toman los datos: un cliente, una factura,
+        un empleado, un pedido.
+
+        \vspace{0.1cm}
+        Responde a ``¿de quién o de qué estoy midiendo?''.
+      \end{block}
+    \end{column}
+    \begin{column}{0.48\textwidth}
+      \begin{exampleblock}{Variable}
+        \footnotesize
+        La \azul{característica} que se mide en esa unidad: el gasto, la edad,
+        el canal de compra.
+
+        \vspace{0.1cm}
+        Responde a ``¿qué estoy midiendo?''.
+      \end{exampleblock}
+    \end{column}
+  \end{columns}
+
+  \vspace{0.3cm}
+  \begin{alertblock}{En una tabla de datos}
+    \footnotesize
+    Cada \destacar{fila} es una unidad de observación y cada
+    \destacar{columna} es una variable. Es la estructura de un
+    \azul{data.frame} en R, y la misma en cualquier software estadístico.
+  \end{alertblock}
+\end{frame}
+
+\begin{frame}{De la realidad al dato: cómo se mide algo que no es un número}
+  \scriptsize
+  \begin{center}
+  \begin{tikzpicture}[scale=0.9,every node/.style={font=\tiny,align=center},
+    nodo/.style={draw=uniAzul,fill=uniAzul!10,rounded corners,inner sep=3pt,
+                 minimum width=2.5cm,minimum height=0.62cm},
+    flecha/.style={->,>=latex,uniGris,thick}]
+    \node[nodo] (a) at (0,0) {Concepto\\ ``satisfacción''};
+    \node[nodo] (b) at (3.4,0) {Variable\\ ``nivel de\\ satisfacción''};
+    \node[nodo] (c) at (6.8,0) {Indicador\\ escala de 1 a 5};
+    \node[nodo,fill=uniCrema,draw=uniTitulo] (d) at (10.2,0)
+      {Dato\\ ``4''};
+    \draw[flecha] (a)--(b); \draw[flecha] (b)--(c); \draw[flecha] (c)--(d);
+  \end{tikzpicture}
+  \end{center}
+
+  \vspace{0.15cm}
+  \begin{alertblock}{Las decisiones que se toman en el camino}
+    \scriptsize
+    ``Satisfacción'' no existe como número: \destacar{alguien decidió} medirla
+    con una escala de 1 a 5, y no de 1 a 10, ni con una pregunta abierta.
+    \azul{Esa decisión es parte del resultado.} Dos encuestas que preguntan
+    distinto no son comparables, aunque las dos hablen de satisfacción.
+  \end{alertblock}
+
+  \vspace{0.1cm}
+  \begin{exampleblock}{La pregunta que hay que hacerle a todo dato}
+    \scriptsize
+    \destacar{¿Cómo se produjo este número?} Un gasto de ``227 mil'' puede ser
+    lo que el cliente \emph{dijo} que gasta, lo que la caja \emph{registró} o
+    lo que el sistema \emph{estimó}. Los tres se ven igual en la tabla y
+    significan cosas distintas.
+  \end{exampleblock}
+\end{frame}
+
+\begin{frame}{Ejercicio 1 — en clase}
+  \begin{alertblock}{Individual (6 minutos)}
+    Un supermercado quiere estudiar el comportamiento de compra de sus
+    \destacar{1\,200 clientes registrados}. Se encuesta a \destacar{40} de
+    ellos y a cada uno se le pregunta el gasto del último mes y el canal por el
+    que compró.
+
+    \vspace{0.3cm}
+    \begin{enumerate}
+      \item Identifique la población y su tamaño.
+      \item Identifique la muestra y su tamaño.
+      \item ¿Cuál es la unidad de observación?
+      \item Nombre las dos variables y dé un ejemplo de dato para cada una.
+    \end{enumerate}
+  \end{alertblock}
+\end{frame}
+
+\begin{frame}{Ejercicio 1 — solución}
+  \begin{columns}[T,onlytextwidth]
+    \begin{column}{0.50\textwidth}
+      \begin{block}{Respuestas}
+        \footnotesize
+        \begin{itemize}
+          \item Población: los 1\,200 clientes registrados, $N=1\,200$.
+          \item Muestra: los 40 encuestados, $n=40$.
+          \item Unidad de observación: \azul{un cliente}.
+          \item Variables: \azul{gasto mensual} (dato: 35 mil) y \azul{canal de
+                compra} (dato: ``App'').
+        \end{itemize}
+      \end{block}
+    \end{column}
+    \begin{column}{0.46\textwidth}
+      \begin{exampleblock}{Fíjese}
+        \footnotesize
+        El número 1\,200 \azul{no} es un dato del estudio: es el tamaño de la
+        población.
+
+        \vspace{0.2cm}
+        Y ``40'' tampoco: es el tamaño de la muestra. Los datos son los 40
+        gastos y los 40 canales.
+      \end{exampleblock}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{Las etapas del proceso estadístico}
+  \small
+  \begin{enumerate}
+    \item \azul{Plantear la pregunta.} ¿Qué se quiere saber y sobre quién?
+    \item \azul{Definir población y unidad de observación.}
+    \item \azul{Elegir las variables} y cómo se van a medir.
+    \item \azul{Recolectar los datos} (censo o muestra).
+    \item \azul{Organizar}: tablas de frecuencia. \hfill{\scriptsize (sesión 3)}
+    \item \azul{Representar}: gráficos. \hfill{\scriptsize (sesión 4)}
+    \item \azul{Resumir}: medidas estadísticas. \hfill{\scriptsize (unidad 2)}
+    \item \azul{Interpretar y decidir.} \hfill{\scriptsize (unidad 3)}
+  \end{enumerate}
+
+  \vspace{0.2cm}
+  \begin{alertblock}{Dónde se pierde la mayoría de los estudios}
+    \footnotesize
+    En los pasos 1 a 3. Si la variable está mal definida o la unidad de
+    observación es ambigua, \destacar{ningún cálculo posterior lo arregla}.
+  \end{alertblock}
+\end{frame}
+
+\begin{frame}{Estudio observacional o experimental}
+  \scriptsize
+  \begin{center}
+  \begin{tabular}{@{}p{2.2cm}p{4.6cm}p{4.8cm}@{}}
+    \toprule
+    & \textbf{Observacional} & \textbf{Experimental} \\
+    \midrule
+    Qué se hace & Se \azul{mira} lo que pasa, sin intervenir &
+      Se \azul{interviene} y se compara con un grupo de control \\
+    \addlinespace
+    Ejemplo & Registrar el gasto de los clientes que llegan &
+      Poner una promoción en una sede y no en otra, y comparar \\
+    \addlinespace
+    Qué permite decir & Que dos cosas \azul{van juntas} &
+      Que una \destacar{causa} la otra \\
+    \addlinespace
+    Costo y control & Barato, pero con muchas explicaciones alternativas &
+      Costoso, a veces imposible o no ético \\
+    \bottomrule
+  \end{tabular}
+  \end{center}
+
+  \vspace{0.06cm}
+  \begin{alertblock}{Por qué se lo digo en la primera semana}
+    \tiny
+    Porque el error más caro de todo el curso es leer un estudio
+    \destacar{observacional} y redactar una conclusión \destacar{causal}.
+    ``Los clientes que usan la app gastan más'' \azul{no} significa que la app
+    los haga gastar más: puede que los que ya gastaban más sean justamente
+    quienes se bajan la app.
+  \end{alertblock}
+
+  {\tiny\color{uniGris} Casi todo lo que veremos en este curso es
+  observacional. Volveremos sobre esto en la unidad 3.}
+\end{frame}
+
+\begin{frame}{Ejercicio 2 — en clase}
+  \begin{alertblock}{En parejas (8 minutos)}
+    Para cada estudio, identifique la \azul{unidad de observación} y proponga
+    \azul{dos variables} que tendría sentido medir.
+
+    \vspace{0.25cm}
+    \begin{enumerate}
+      \item Un hospital quiere caracterizar las consultas del último mes.
+      \item Una empresa quiere estudiar sus facturas de venta del año.
+      \item Un colegio quiere describir a sus docentes.
+      \item Una tienda quiere analizar sus pedidos a domicilio.
+    \end{enumerate}
+  \end{alertblock}
+\end{frame}
+
+\begin{frame}{Ejercicio 2 — solución}
+  \scriptsize
+  \begin{center}
+  \begin{tabular}{@{}clll@{}}
+    \toprule
+    \textbf{\#} & \textbf{Estudio} & \textbf{Unidad de observación} &
+    \textbf{Variables posibles} \\
+    \midrule
+    1 & Consultas del mes & Una consulta &
+      Duración en minutos; especialidad \\
+    2 & Facturas del año  & Una factura &
+      Valor facturado; forma de pago \\
+    3 & Docentes          & Un docente &
+      Años de experiencia; nivel de formación \\
+    4 & Pedidos a domicilio & Un pedido &
+      Tiempo de entrega; canal del pedido \\
+    \bottomrule
+  \end{tabular}
+  \end{center}
+
+  \vspace{0.25cm}
+  \begin{alertblock}{El error típico}
+    \footnotesize
+    Decir que la unidad del caso 1 es ``el hospital''. El hospital es
+    \emph{uno solo}: si fuera la unidad, habría un solo dato y nada que
+    describir. \destacar{La unidad es aquello de lo que hay muchos.}
+  \end{alertblock}
+\end{frame}
+
+\begin{frame}{De dónde salen los datos}
+  \scriptsize
+  \begin{columns}[T,onlytextwidth]
+    \begin{column}{0.48\textwidth}
+      \begin{block}{Según quién los recogió}
+        \tiny
+        \textbf{Primarios:} los recoge usted para \azul{esta} pregunta.
+        Encuesta, observación, experimento. Más costosos, pero a la medida.
+
+        \vspace{0.1cm}
+        \textbf{Secundarios:} ya existían. Registros de la empresa, DANE,
+        bases públicas. Baratos, pero fueron pensados para otra pregunta.
+      \end{block}
+    \end{column}
+    \begin{column}{0.48\textwidth}
+      \begin{block}{Según cuánto se mide}
+        \tiny
+        \textbf{Censo:} se mide \azul{toda} la población. Exacto, pero
+        costoso, lento y a veces imposible.
+
+        \vspace{0.1cm}
+        \textbf{Muestra:} se mide una parte. Más rápido y barato, y si está
+        bien tomada, suficiente.
+      \end{block}
+    \end{column}
+  \end{columns}
+
+  \vspace{0.1cm}
+  \begin{alertblock}{Por qué casi siempre se muestrea}
+    \scriptsize
+    Porque medir a los 1\,200 clientes cuesta 30 veces más que medir a 40, y
+    porque a veces la medición \destacar{destruye} la unidad: nadie prueba la
+    resistencia de los 10\,000 tornillos del lote, porque se quedaría sin
+    lote.
+  \end{alertblock}
+\end{frame}
+
+\begin{frame}{Cómo se arruina un estudio antes de calcular nada}
+  \scriptsize
+  \begin{center}
+  \begin{tabular}{@{}p{3.2cm}p{4.2cm}p{4.6cm}@{}}
+    \toprule
+    \textbf{Problema} & \textbf{Ejemplo} & \textbf{Consecuencia} \\
+    \midrule
+    Muestra mal tomada &
+      Encuestar solo los sábados en la mañana &
+      Describe ese momento, no el negocio \\
+    \addlinespace
+    Pregunta ambigua &
+      ``¿Cuánto gasta usted?'' (¿al día? ¿al mes?) &
+      Datos que no son comparables entre sí \\
+    \addlinespace
+    Unidad mal definida &
+      Contar ``clientes'' cuando el registro son facturas &
+      Un cliente con 3 facturas cuenta tres veces \\
+    \addlinespace
+    No respuesta selectiva &
+      Los insatisfechos no contestan &
+      Todo se ve mejor de lo que es \\
+    \bottomrule
+  \end{tabular}
+  \end{center}
+
+  \vspace{0.1cm}
+  \begin{alertblock}{La regla que hay que interiorizar}
+    \scriptsize
+    \destacar{Ningún cálculo arregla un dato mal recogido.} Se puede calcular
+    la media de datos basura con seis decimales, y sigue siendo basura con seis
+    decimales.
+  \end{alertblock}
+\end{frame}
+
+\begin{frame}{Ejercicio 3 — en clase}
+  \begin{alertblock}{Individual (8 minutos)}
+    Una empresa con \destacar{850 empleados} encuesta a \destacar{120}. Parte
+    de la tabla de datos se ve así:
+
+    \vspace{0.2cm}
+    \centering\footnotesize
+    \begin{tabular}{@{}cccc@{}}
+      \toprule
+      \textbf{Empleado} & \textbf{Área} & \textbf{Antigüedad (años)} &
+      \textbf{Salario (miles)} \\
+      \midrule
+      1 & Ventas       & 3 & 2\,100 \\
+      2 & Operaciones  & 7 & 1\,850 \\
+      3 & Ventas       & 1 & 1\,950 \\
+      \bottomrule
+    \end{tabular}
+
+    \vspace{0.2cm}
+    \raggedright
+    \begin{enumerate}
+      \item ¿Cuántas filas y cuántas columnas de variables tiene la tabla completa?
+      \item Clasifique los números 850, 120, 7 y 1\,850: ¿cuál es dato, cuál es
+            tamaño de población y cuál de muestra?
+      \item ¿Es ``Empleado'' una variable?
+    \end{enumerate}
+  \end{alertblock}
+\end{frame}
+
+\begin{frame}{Ejercicio 3 — solución}
+  \begin{columns}[T,onlytextwidth]
+    \begin{column}{0.50\textwidth}
+      \begin{block}{Puntos 1 y 2}
+        \footnotesize
+        \begin{itemize}
+          \item \azul{120 filas} (una por empleado encuestado) y
+                \azul{3 columnas} de variables.
+          \item $N=850$ y $n=120$ son \azul{tamaños}, no datos.
+          \item $7$ y $1\,850$ sí son \azul{datos}: valores de antigüedad y
+                salario del empleado 2.
+        \end{itemize}
+      \end{block}
+    \end{column}
+    \begin{column}{0.46\textwidth}
+      \begin{exampleblock}{Punto 3}
+        \footnotesize
+        No. ``Empleado'' es el \azul{identificador} de la unidad de
+        observación: dice de quién es la fila, no qué se midió.
+      \end{exampleblock}
+      \begin{alertblock}{Ojo}
+        \footnotesize
+        Si el identificador fuera un número (1, 2, 3\dots), promediarlo daría
+        un resultado sin ningún sentido. Es el mismo problema del código de
+        sucursal que veremos en la sesión 2.
+      \end{alertblock}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{El conjunto de datos que usaremos todo el curso}
+  \footnotesize
+  Gasto mensual, en miles de pesos, de una muestra de \destacar{$n=40$}
+  clientes del \azul{Almacén Bello}:
+
+  \vspace{0.2cm}
+  \begin{center}
+  \ttfamily\scriptsize
+  112\quad 127\quad 138\quad 149\quad 153\quad 158\quad 165\quad 171\quad 178\quad 184\\
+  190\quad 195\quad 199\quad 203\quad 208\quad 212\quad 215\quad 219\quad 222\quad 226\\
+  229\quad 231\quad 234\quad 238\quad 241\quad 245\quad 249\quad 253\quad 258\quad 264\\
+  269\quad 275\quad 281\quad 288\quad 295\quad 302\quad 309\quad 318\quad 331\quad 352
+  \end{center}
+
+  \vspace{0.2cm}
+  \begin{alertblock}{Guárdelo}
+    \scriptsize
+    Estos mismos 40 datos aparecerán en todas las sesiones: primero para armar
+    tablas (sesión 3), luego gráficos (sesión 4), después medidas (unidad 2) y
+    al final el análisis completo (unidad 3). \destacar{Así se ve cómo cada
+    herramienta aporta algo distinto sobre el mismo conjunto.}
+  \end{alertblock}
+\end{frame}
+
+\begin{frame}{La matriz de datos: cómo se guarda todo esto}
+  \scriptsize
+  \begin{center}
+  \begin{tabular}{@{}crrll@{}}
+    \toprule
+    \textbf{Cliente} & \textbf{Gasto} & \textbf{Compras} &
+    \textbf{Canal} & \textbf{Fidelidad} \\
+    \midrule
+    1 & 112 & 2 & Tienda & Nuevo \\
+    2 & 127 & 3 & App    & Frecuente \\
+    3 & 138 & 1 & Web    & Ocasional \\
+    4 & 149 & 4 & Tienda & Frecuente \\
+    \multicolumn{5}{c}{\dots} \\
+    40 & 352 & 8 & App   & Frecuente \\
+    \bottomrule
+  \end{tabular}
+  \end{center}
+
+  \vspace{0.1cm}
+  \begin{columns}[T,onlytextwidth]
+    \begin{column}{0.48\textwidth}
+      \begin{block}{Cómo se lee}
+        \tiny
+        Cada \azul{fila} es una unidad de observación (un cliente). \\
+        Cada \azul{columna} es una variable. \\
+        Cada \azul{celda} es un dato. \\
+        $n$ = número de filas; aquí, 40.
+      \end{block}
+    \end{column}
+    \begin{column}{0.48\textwidth}
+      \begin{alertblock}{Lo que nunca debe pasar}
+        \tiny
+        Dos unidades en una misma fila; dos variables en una misma columna;
+        una celda con \destacar{texto y número mezclados}
+        (``\$127 mil aprox.''); o un dato faltante escrito como \azul{cero},
+        que después se promedia como si fuera un gasto real.
+      \end{alertblock}
+    \end{column}
+  \end{columns}
+
+  \vspace{0.05cm}
+  {\tiny\color{uniGris} Esta estructura es universal: es una hoja de cálculo,
+  una tabla de base de datos y un \azul{data.frame} de R. \destacar{Dejar los
+  datos así es la mitad del trabajo de cualquier análisis real.}}
+\end{frame}
+
+\begin{frame}{Ejercicio 4 — en clase (taller principal)}
+  \begin{alertblock}{En grupos de 3 (20 minutos)}
+    \scriptsize
+    Su grupo asesora a la administración de la universidad, que quiere
+    \destacar{reducir las filas en la cafetería}.
+
+    \vspace{0.2cm}
+    \begin{enumerate}\setlength{\itemsep}{-0.06cm}
+      \item Formule la pregunta estadística en una sola frase.
+      \item Defina la población y la unidad de observación. ¿Son estudiantes,
+            visitas o días?
+      \item Proponga \destacar{tres variables} y diga exactamente cómo se
+            mediría cada una (con su unidad).
+      \item ¿Censo o muestra? Justifique.
+      \item Describa cómo tomaría los datos: quién, cuándo y dónde.
+      \item Enuncie \destacar{un sesgo} que podría colarse en su diseño.
+    \end{enumerate}
+
+    \vspace{0.1cm}
+    Al final, dos grupos exponen y el curso busca el sesgo del otro diseño.
+  \end{alertblock}
+\end{frame}
+
+\begin{frame}{Ejercicio 4 — solución sugerida}
+  \scriptsize
+  \begin{columns}[T,onlytextwidth]
+    \begin{column}{0.50\textwidth}
+      \begin{block}{Puntos 1 a 3}
+        \tiny
+        \textbf{Pregunta:} ¿cuánto espera un usuario de la cafetería y de qué
+        depende esa espera?
+
+        \vspace{0.08cm}
+        \textbf{Unidad:} \azul{una visita} a la cafetería (no un estudiante:
+        un mismo estudiante puede ir varias veces).
+
+        \vspace{0.08cm}
+        \textbf{Variables:} tiempo de espera en minutos; franja horaria
+        (mañana / mediodía / tarde); número de personas en fila al llegar.
+      \end{block}
+    \end{column}
+    \begin{column}{0.47\textwidth}
+      \begin{exampleblock}{Puntos 4 a 6}
+        \tiny
+        \textbf{Muestra:} un censo de todas las visitas de un semestre es
+        inviable. Se mide una muestra de visitas.
+
+        \vspace{0.08cm}
+        \textbf{Recolección:} un observador con cronómetro, en \azul{días y
+        franjas distintos}, durante dos semanas.
+
+        \vspace{0.08cm}
+        \textbf{Sesgo posible:} medir solo al mediodía —la hora pico— haría ver
+        el problema \destacar{peor} de lo que es en promedio.
+      \end{exampleblock}
+    \end{column}
+  \end{columns}
+
+  \vspace{0.05cm}
+  {\tiny\color{uniGris} No hay una única respuesta correcta. Lo que se evalúa
+  es la \destacar{coherencia}: que la unidad, las variables y la forma de
+  recolección respondan a la pregunta que se formuló en el punto 1.}
+\end{frame}
+
+\begin{frame}{Cómo se lee mal una estadística}
+  \scriptsize
+  \begin{center}
+  \begin{tabular}{@{}p{5.0cm}p{6.8cm}@{}}
+    \toprule
+    \textbf{La afirmación} & \textbf{Lo que falta preguntar} \\
+    \midrule
+    ``El salario promedio subió 12\%'' &
+      ¿Promedio o mediana? Unos pocos sueldos altos mueven el promedio \\
+    \addlinespace
+    ``El 80\% de los usuarios lo recomienda'' &
+      ¿80\% \azul{de cuántos}? Ocho de diez no es lo mismo que 8\,000 de
+      10\,000 \\
+    \addlinespace
+    ``Las ventas se dispararon'' (con gráfico) &
+      ¿El eje vertical empieza en cero, o está cortado? \\
+    \addlinespace
+    ``Nueve de cada diez odontólogos lo recomiendan'' &
+      ¿Quién los eligió? ¿Cuántos dijeron que no y no aparecen? \\
+    \addlinespace
+    ``Bajó la criminalidad un 3\%'' &
+      ¿Bajaron los delitos o bajaron las \azul{denuncias}? \\
+    \bottomrule
+  \end{tabular}
+  \end{center}
+
+  \vspace{0.08cm}
+  \begin{alertblock}{Las cuatro preguntas que desmontan casi cualquier cifra}
+    \tiny
+    \destacar{¿Sobre cuántos casos?} \quad \destacar{¿Cómo se midió?} \quad
+    \destacar{¿Comparado con qué?} \quad \destacar{¿Qué no me están
+    mostrando?}
+  \end{alertblock}
+
+  \vspace{0.05cm}
+  {\tiny\color{uniGris} Este curso sirve para dos cosas: producir cifras
+  honestas y \azul{no dejarse engañar por las ajenas}. La segunda le va a
+  servir más veces en la vida que la primera.}
+\end{frame}
+
+\begin{frame}{Errores frecuentes en esta sesión}
+  \scriptsize
+  \begin{center}
+  \begin{tabular}{@{}p{5.4cm}p{6.4cm}@{}}
+    \toprule
+    \textbf{Error} & \textbf{Corrección} \\
+    \midrule
+    Confundir la unidad de observación con la institución &
+      La unidad es \azul{aquello de lo que hay muchos}: una consulta, una
+      factura, un cliente \\
+    \addlinespace
+    Llamar ``dato'' al tamaño de la población &
+      $N=1\,200$ describe el estudio, no es una observación \\
+    \addlinespace
+    Confundir la variable con el dato &
+      La variable es ``gasto mensual''; el dato es ``227'' \\
+    \addlinespace
+    Decir ``los clientes'' cuando se midieron 40 &
+      Se describe \azul{la muestra}: hay que nombrarla en la frase \\
+    \addlinespace
+    Empezar por el cálculo &
+      Primero pregunta, población, unidad y variables \\
+    \bottomrule
+  \end{tabular}
+  \end{center}
+\end{frame}
+
+\begin{frame}[fragile]{Primer vistazo a R: la tabla de datos}
+  \scriptsize
+  Todo lo de hoy tiene un nombre en R. La \azul{tabla de datos} es un
+  \fx{data.frame}: una fila por unidad de observación, una columna por
+  variable.
+\begin{lstlisting}[style=Rmini]
+clientes <- data.frame(
+  id     = 1:4,
+  gasto  = c(112, 127, 138, 149),      # variable cuantitativa
+  canal  = c("Tienda", "App", "Web", "Tienda")   # variable cualitativa
+)
+clientes
+nrow(clientes)   # cuantas unidades de observacion hay -> el tamano n
+ncol(clientes)   # cuantas variables se midieron
+\end{lstlisting}
+\begin{lstlisting}[style=Rout]
+  id gasto  canal
+1  1   112 Tienda
+2  2   127    App
+3  3   138    Web
+4  4   149 Tienda
+[1] 4
+[1] 3
+\end{lstlisting}
+
+  \vspace{-0.12cm}
+  {\tiny\color{uniGris} \fx{nrow()} es el $n$ del estudio y \fx{ncol()} es el
+  número de variables. En la sesión 14 volveremos sobre R con calma; por ahora
+  basta ver que \destacar{la estructura es la misma} que dibujamos en el
+  tablero.}
+\end{frame}
+
+\begin{frame}{Cierre de la sesión}
+  \begin{block}{Lo que debe quedar claro hoy}
+    \begin{itemize}
+      \item Población es el todo ($N$); muestra es la parte observada ($n$).
+      \item La unidad de observación es \emph{de quién} se mide; la variable es
+            \emph{qué} se mide.
+      \item Un dato es un valor concreto de una variable en una unidad.
+      \item En una tabla: filas = unidades, columnas = variables.
+    \end{itemize}
+  \end{block}
+
+  \vspace{0.25cm}
+  \begin{alertblock}{Trabajo independiente para la próxima sesión}
+    \footnotesize
+    Resolver los \destacar{20 ejercicios de la lámina siguiente}; las
+    respuestas están en la lámina posterior, para que usted mismo se corrija.
+  \end{alertblock}
+\end{frame}
+
+\begin{frame}{Ejercicios propuestos}
+  \vspace{-0.1cm}
+  \begin{beamercolorbox}[wd=\textwidth,sep=0.10cm]{block body}
+    \centering\scriptsize
+    \textbf{1--10:} una universidad con 8\,000 estudiantes encuesta a 300 sobre
+    su promedio acumulado y su programa académico.
+  \end{beamercolorbox}
+  \listatiny
+  \vspace{0.15cm}
+  \begin{columns}[T,onlytextwidth]
+    \begin{column}{0.47\textwidth}
+      \begin{enumerate}\setlength{\itemsep}{0.16cm}
+        \item ¿Cuál es la población?
+        \item ¿Cuál es $N$?
+        \item ¿Cuál es la muestra?
+        \item ¿Cuál es $n$?
+        \item ¿Cuál es la unidad de observación?
+        \item Nombre las dos variables
+        \item Dé un dato posible de la primera variable
+        \item Dé un dato posible de la segunda
+        \item ¿Es 8\,000 un dato del estudio?
+        \item ¿Cuántas filas tendría la tabla de datos?
+      \end{enumerate}
+    \end{column}
+    \begin{column}{0.50\textwidth}
+      \begin{enumerate}\setlength{\itemsep}{0.16cm}
+        \setcounter{enumi}{10}
+        \item ¿Cuántas columnas de variables tendría?
+        \item ¿Población o muestra: los 40 clientes encuestados?
+        \item ¿Variable o constante: el nombre del supermercado?
+        \item ¿Qué describe la estadística descriptiva?
+        \item ¿Sobre quiénes se puede afirmar algo con estos datos?
+        \item ¿Se puede tener muestra sin población?
+        \item Si se encuesta a todos, ¿cómo se llama el estudio?
+        \item ¿Qué símbolo se usa para el tamaño poblacional?
+        \item ¿Y para el tamaño muestral?
+        \item En el conjunto del curso, ¿cuánto vale $n$?
+      \end{enumerate}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{Respuestas}{Autoevaluación de los ejercicios propuestos}
+  \listatiny
+  \vspace{0.15cm}
+  \begin{columns}[T,onlytextwidth]
+    \begin{column}{0.47\textwidth}
+      \begin{enumerate}\setlength{\itemsep}{0.16cm}
+        \item Los 8\,000 estudiantes
+        \item $N=8\,000$
+        \item Los 300 encuestados
+        \item $n=300$
+        \item Un estudiante
+        \item Promedio acumulado y programa académico
+        \item Por ejemplo, $4{,}1$
+        \item Por ejemplo, ``Administración''
+        \item No: es el tamaño de la población
+        \item 300
+      \end{enumerate}
+    \end{column}
+    \begin{column}{0.50\textwidth}
+      \begin{enumerate}\setlength{\itemsep}{0.16cm}
+        \setcounter{enumi}{10}
+        \item 2
+        \item Muestra
+        \item Constante
+        \item Lo que ya se observó
+        \item Solo sobre los casos que se midieron
+        \item No
+        \item Censo
+        \item $N$
+        \item $n$
+        \item $n=40$
+      \end{enumerate}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{Referencias}
+  \footnotesize
+  \begin{itemize}
+    \item[{[1]}] Monroy Saldívar, S. (2008). \textit{Estadística descriptiva}.
+      Instituto Politécnico Nacional.
+      \texttt{https://elibro.net/es/lc/uniminuto/titulos/74722}
+    \item[{[2]}] Ordóñez Fernández, F. F. \& González Fernández, J. (2021).
+      \textit{Estadística descriptiva paso a paso}. Ediciones Pirámide.
+      \texttt{https://elibro.net/es/lc/uniminuto/titulos/215449}
+    \item[{[3]}] Llinás Solano, H. (2014). \textit{Introducción a la
+      estadística con aplicaciones en ciencias sociales}. Universidad del
+      Norte. \texttt{https://elibro.net/es/lc/uniminuto/titulos/70062}
+  \end{itemize}
+
+  \vspace{0.35cm}
+  \begin{center}
+    {\Large\color{uniAzul}\textbf{¿Preguntas?}}
+  \end{center}
+\end{frame}
+
+\end{document}

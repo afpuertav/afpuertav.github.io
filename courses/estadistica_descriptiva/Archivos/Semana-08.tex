@@ -1,0 +1,845 @@
+% ============================================================================
+%  ESTADÍSTICA DESCRIPTIVA — Sesión 8
+%  Semana 8: 28 de septiembre al 3 de octubre de 2026
+%  2.3 Medidas de dispersión: rango, varianza y desviación estándar
+%  2.4 Medidas de forma: asimetría y curtosis
+%  Duración prevista: 3 horas
+% ============================================================================
+\documentclass[aspectratio=169,10pt]{beamer}
+
+\usepackage[utf8]{inputenc}
+\IfFileExists{spanish.ldf}{\usepackage[spanish,es-noshorthands]{babel}}{}
+\usepackage{amsmath,amssymb}
+\usepackage{booktabs}
+\usepackage{tikz}
+\usepackage{listings}
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.16}
+
+\usetheme{Uniminuto}
+
+\uniasignatura{Estadística descriptiva}
+\uniprofesor{Andrés Felipe Puerta Velez}
+\unicorreo{andres.puerta-v@uniminuto.edu.co}
+\uninrc{CBASBL031 - CBASBL141}
+\unisemana{Sesión 8 — Semana 8 · 28 de septiembre al 3 de octubre de 2026}
+
+\newcommand{\listatiny}{\setbeamerfont{itemize/enumerate body}{size=\tiny}\tiny}
+
+\pgfplotsset{
+  uniplot/.style={
+    width=8.0cm, height=3.5cm, axis lines=left,
+    tick label style={font=\tiny,color=uniGris},
+    label style={font=\tiny,color=uniGris},
+    title style={font=\scriptsize\bfseries,color=uniAzul},
+    every axis plot/.append style={fill=uniAzul!70,draw=uniAzul},
+    ymajorgrids, grid style={uniGris!25,very thin},
+  }
+}
+
+\newcommand{\fx}[1]{{\ttfamily\color{uniAzul}#1}}
+
+% ------------------------------------------------------------- CÓDIGO R ----
+\lstdefinestyle{Rcode}{
+  language=R,
+  basicstyle=\ttfamily\scriptsize,
+  keywordstyle=\color{uniAzul}\bfseries,
+  commentstyle=\color{uniGris}\itshape,
+  stringstyle=\color{uniTitulo},
+  showstringspaces=false, numbers=none, breaklines=true,
+  columns=fullflexible,
+  backgroundcolor=\color{uniCremaClaro},
+  frame=leftline, framerule=1.2pt, rulecolor=\color{uniNaranja},
+  xleftmargin=0.35cm, framexleftmargin=0.35cm,
+  framexrightmargin=0.15cm, framextopmargin=2pt, framexbottommargin=2pt,
+  aboveskip=0.15cm, belowskip=0.15cm
+}
+\lstdefinestyle{Rmini}{
+  language=R,
+  basicstyle=\ttfamily\tiny,
+  keywordstyle=\color{uniAzul}\bfseries,
+  commentstyle=\color{uniGris}\itshape,
+  stringstyle=\color{uniTitulo},
+  showstringspaces=false, numbers=none, breaklines=true,
+  columns=fullflexible,
+  backgroundcolor=\color{uniCremaClaro},
+  frame=leftline, framerule=1.2pt, rulecolor=\color{uniNaranja},
+  xleftmargin=0.35cm, framexleftmargin=0.35cm,
+  framexrightmargin=0.15cm, framextopmargin=2pt, framexbottommargin=2pt,
+  aboveskip=0.12cm, belowskip=0.12cm
+}
+\lstdefinestyle{Rout}{
+  basicstyle=\ttfamily\tiny\color{black},
+  showstringspaces=false, numbers=none, breaklines=true,
+  columns=fullflexible,
+  backgroundcolor=\color{uniGris!10},
+  frame=leftline, framerule=1.2pt, rulecolor=\color{uniGris},
+  xleftmargin=0.35cm, framexleftmargin=0.35cm,
+  framexrightmargin=0.15cm, framextopmargin=2pt, framexbottommargin=2pt,
+  aboveskip=0.12cm, belowskip=0.12cm
+}
+
+\begin{document}
+
+\portada
+
+\begin{frame}{Orden del día}
+  \begin{enumerate}
+    \item Llamado a lista y revisión de los ejercicios propuestos
+    \item ¿Por qué el centro no basta?
+    \item \azul{Tema 2.3: rango, varianza, desviación estándar y CV}
+    \item \azul{Tema 2.4: asimetría y curtosis}
+    \item Taller guiado con el caso Cafetería El Portal
+    \item Errores frecuentes y cierre
+  \end{enumerate}
+
+  \vspace{0.25cm}
+  {\footnotesize\color{uniGris} Sesión de 3 horas. Hoy se hacen muchas cuentas:
+  traiga calculadora.}
+\end{frame}
+
+\begin{frame}{Por qué el centro no basta}
+  \footnotesize
+  \begin{columns}[T,onlytextwidth]
+    \begin{column}{0.48\textwidth}
+      \begin{block}{Sucursal A}
+        \scriptsize
+        Ventas diarias: \ttfamily 48 \ 49 \ 50 \ 51 \ 52 \rmfamily
+        \[ \bar{x} = 50 \]
+      \end{block}
+    \end{column}
+    \begin{column}{0.48\textwidth}
+      \begin{block}{Sucursal B}
+        \scriptsize
+        Ventas diarias: \ttfamily 10 \ 30 \ 50 \ 70 \ 90 \rmfamily
+        \[ \bar{x} = 50 \]
+      \end{block}
+    \end{column}
+  \end{columns}
+
+  \vspace{0.2cm}
+  \begin{alertblock}{Misma media, negocios completamente distintos}
+    \footnotesize
+    La sucursal A es \azul{predecible}: se puede planear el inventario. La B es
+    \azul{volátil}: unos días sobra mercancía y otros falta. Un solo número —la
+    media— \destacar{no distingue estas dos situaciones}.
+  \end{alertblock}
+
+  \vspace{0.15cm}
+  {\footnotesize\color{uniGris} Las medidas de dispersión responden a la
+  pregunta: \azul{¿qué tan lejos del centro están los datos?}}
+\end{frame}
+
+\seccion{2.3 Medidas de dispersión}
+
+\begin{frame}{Rango y rango intercuartílico}
+  \footnotesize
+  \begin{columns}[T,onlytextwidth]
+    \begin{column}{0.48\textwidth}
+      \begin{block}{Rango}
+        \scriptsize
+        \[ R = x_{\max} - x_{\min} \]
+        Almacén Bello: $R = 352 - 112 = \destacar{240}$
+
+        \vspace{0.1cm}
+        \azul{Ventaja:} inmediato.
+        \azul{Problema:} usa solo dos datos y los dos son los más extremos.
+      \end{block}
+    \end{column}
+    \begin{column}{0.48\textwidth}
+      \begin{exampleblock}{Rango intercuartílico}
+        \scriptsize
+        \[ RIC = Q_3 - Q_1 \]
+        Almacén Bello: $267{,}56 - 186{,}29 = \destacar{81{,}27}$
+
+        \vspace{0.1cm}
+        Es el ancho del \azul{50\% central}. No lo afectan los valores
+        extremos: es la medida robusta de dispersión.
+      \end{exampleblock}
+    \end{column}
+  \end{columns}
+
+  \vspace{0.15cm}
+  \begin{alertblock}{Cómo se lee}
+    \scriptsize
+    ``El 50\% central de los clientes se mueve en una franja de
+    \destacar{81 mil pesos} de ancho''. Es una frase mucho más útil que ``el
+    rango es 240'', que solo describe a los dos clientes más raros.
+  \end{alertblock}
+\end{frame}
+
+\begin{frame}{Varianza y desviación estándar — la idea}
+  \footnotesize
+  \begin{block}{El razonamiento, paso a paso}
+    \scriptsize
+    \begin{enumerate}\setlength{\itemsep}{-0.05cm}
+      \item Queremos la distancia promedio de cada dato a la media:
+            $x_i - \bar{x}$.
+      \item Pero $\sum(x_i - \bar{x}) = 0$ siempre: los positivos cancelan a
+            los negativos.
+      \item Solución: \azul{elevar al cuadrado} antes de promediar. Eso es la
+            \destacar{varianza}.
+      \item La varianza queda en unidades al cuadrado (pesos$^2$), que no
+            significan nada. Se saca la raíz: eso es la \destacar{desviación
+            estándar}.
+    \end{enumerate}
+  \end{block}
+
+  \vspace{0.1cm}
+  \begin{columns}[T,onlytextwidth]
+    \begin{column}{0.48\textwidth}
+      \begin{exampleblock}{Muestra}
+        \scriptsize
+        \[ s^2 = \frac{\sum (x_i-\bar{x})^2}{n-1} \qquad s = \sqrt{s^2} \]
+      \end{exampleblock}
+    \end{column}
+    \begin{column}{0.48\textwidth}
+      \begin{exampleblock}{Población}
+        \scriptsize
+        \[ \sigma^2 = \frac{\sum (x_i-\mu)^2}{N} \qquad \sigma = \sqrt{\sigma^2} \]
+      \end{exampleblock}
+    \end{column}
+  \end{columns}
+
+  \vspace{0.05cm}
+  {\tiny\color{uniGris} La diferencia entre $n-1$ y $N$ importa poco cuando $n$
+  es grande, pero hay que declarar cuál se usó. En este curso, si el enunciado
+  dice ``muestra'', se divide entre $n-1$.}
+\end{frame}
+
+\begin{frame}{Varianza con datos agrupados — el procedimiento}
+  \scriptsize
+  \[ s^2 = \frac{\sum f_i (x_i-\bar{x})^2}{n-1} \qquad\qquad
+     \sigma^2 = \frac{\sum f_i (x_i-\bar{x})^2}{n} \]
+
+  \vspace{0.1cm}
+  \begin{center}
+  \begin{tabular}{@{}lrrrrr@{}}
+    \toprule
+    \textbf{Clase} & \textbf{$x_i$} & \textbf{$f_i$} &
+    \textbf{$x_i-\bar{x}$} & \textbf{$(x_i-\bar{x})^2$} &
+    \textbf{$f_i(x_i-\bar{x})^2$} \\
+    \midrule
+    $[112,152)$ & 132 &  4 & $-95$ &  9\,025 &  36\,100 \\
+    $[152,192)$ & 172 &  7 & $-55$ &  3\,025 &  21\,175 \\
+    $[192,232)$ & 212 & 11 & $-15$ &     225 &   2\,475 \\
+    $[232,272)$ & 252 &  9 & $+25$ &     625 &   5\,625 \\
+    $[272,312)$ & 292 &  6 & $+65$ &  4\,225 &  25\,350 \\
+    $[312,352]$ & 332 &  3 & $+105$ & 11\,025 & 33\,075 \\
+    \midrule
+    \textbf{Total} & & \textbf{40} & & & \textbf{123\,800} \\
+    \bottomrule
+  \end{tabular}
+  \end{center}
+
+  \vspace{0.05cm}
+  {\tiny\color{uniGris} Recuerde de la sesión 7: $\bar{x} = 227{,}0$. Las
+  desviaciones se calculan respecto a esa media, no respecto a cada clase.}
+\end{frame}
+
+\begin{frame}{Varianza y desviación del Almacén Bello}
+  \footnotesize
+  \begin{columns}[T,onlytextwidth]
+    \begin{column}{0.48\textwidth}
+      \begin{exampleblock}{El cálculo}
+        \scriptsize
+        \[ s^2 = \frac{123\,800}{40-1} = \destacar{3\,174{,}36} \]
+        \[ s = \sqrt{3\,174{,}36} = \destacar{56{,}34} \]
+        En unidades: pesos$^2$ la varianza, \azul{miles de pesos} la
+        desviación.
+      \end{exampleblock}
+    \end{column}
+    \begin{column}{0.48\textwidth}
+      \begin{block}{Cómo se interpreta}
+        \scriptsize
+        El gasto de un cliente se aparta del promedio, \azul{en promedio}, unos
+        \destacar{56\,340 pesos}.
+
+        \vspace{0.1cm}
+        Con datos originales: $s = 57{,}71$. La diferencia es, otra vez, el
+        error de agrupamiento.
+      \end{block}
+    \end{column}
+  \end{columns}
+
+  \vspace{0.1cm}
+  \begin{alertblock}{La regla empírica (distribuciones aproximadamente simétricas)}
+    \scriptsize
+    Cerca del \destacar{68\%} de los datos cae en $\bar{x} \pm s$;
+    el \destacar{95\%} en $\bar{x} \pm 2s$; casi todo en $\bar{x} \pm 3s$.
+    Aquí: $227 \pm 56{,}34 = [170{,}7,\ 283{,}3]$, franja que en efecto
+    contiene a la mayoría de los clientes.
+  \end{alertblock}
+\end{frame}
+
+\begin{frame}{Coeficiente de variación — comparar lo incomparable}
+  \footnotesize
+  \begin{columns}[T,onlytextwidth]
+    \begin{column}{0.38\textwidth}
+      \begin{block}{Fórmula}
+        \scriptsize
+        \[ CV = \frac{s}{\bar{x}} \times 100 \]
+        Se expresa en porcentaje y \azul{no tiene unidades}.
+        \vspace{0.1cm}
+        Almacén Bello:
+        \[ CV = \frac{56{,}34}{227{,}0}\times 100 = \destacar{24{,}8\%} \]
+      \end{block}
+    \end{column}
+    \begin{column}{0.58\textwidth}
+      \begin{exampleblock}{Para qué sirve: dos productos}
+        \scriptsize
+        \begin{tabular}{@{}lrrr@{}}
+          \toprule
+          & \textbf{$\bar{x}$} & \textbf{$s$} & \textbf{$CV$} \\
+          \midrule
+          Producto A (unidades/día) & 120 & 18 & 15{,}0\% \\
+          Producto B (unidades/día) &  45 &  9 & 20{,}0\% \\
+          \bottomrule
+        \end{tabular}
+        \vspace{0.1cm}
+        A tiene una desviación \azul{mayor} (18 frente a 9), pero
+        \destacar{B es el producto más inestable} en términos relativos.
+      \end{exampleblock}
+    \end{column}
+  \end{columns}
+
+  \vspace{0.1cm}
+  \begin{alertblock}{Guía de lectura (orientativa)}
+    \scriptsize
+    $CV < 10\%$: muy homogéneo. \quad $10$–$25\%$: homogeneidad
+    aceptable. \quad $25$–$50\%$: heterogéneo. \quad $> 50\%$: muy
+    disperso, la media deja de ser un buen resumen.
+    \azul{Solo tiene sentido si $\bar{x} > 0$.}
+  \end{alertblock}
+\end{frame}
+
+\begin{frame}{Ejercicio 1 — en clase}
+  \begin{alertblock}{En parejas (15 minutos)}
+    \footnotesize
+    Dos cajeros registran el tiempo de atención (minutos) de 5 clientes:
+
+    \vspace{0.15cm}
+    \centering\scriptsize
+    \begin{tabular}{@{}ll@{}}
+      \toprule
+      \textbf{Cajero 1} & 4 \quad 5 \quad 6 \quad 7 \quad 8 \\
+      \textbf{Cajero 2} & 2 \quad 3 \quad 6 \quad 9 \quad 10 \\
+      \bottomrule
+    \end{tabular}
+
+    \vspace{0.2cm}
+    \raggedright
+    \begin{enumerate}\setlength{\itemsep}{-0.05cm}
+      \item Calcule la media de cada cajero.
+      \item Calcule el rango de cada uno.
+      \item Calcule $s^2$ y $s$ de cada uno (como muestra, $n-1$).
+      \item Calcule el $CV$ de cada uno.
+      \item ¿Cuál cajero es más consistente? ¿Con qué argumento lo defendería
+            ante el jefe?
+    \end{enumerate}
+  \end{alertblock}
+\end{frame}
+
+\begin{frame}{Ejercicio 1 — solución}
+  \scriptsize
+  \begin{columns}[T,onlytextwidth]
+    \begin{column}{0.49\textwidth}
+      \begin{block}{Cajero 1}
+        \scriptsize
+        $\bar{x} = 30/5 = 6{,}0$ \quad $R = 4$
+        \[ \sum(x-\bar{x})^2 = 4+1+0+1+4 = 10 \]
+        \[ s^2 = \tfrac{10}{4} = 2{,}5 \qquad s = \destacar{1{,}58} \]
+        \[ CV = \tfrac{1{,}58}{6{,}0}\times100 = \destacar{26{,}4\%} \]
+      \end{block}
+    \end{column}
+    \begin{column}{0.49\textwidth}
+      \begin{block}{Cajero 2}
+        \scriptsize
+        $\bar{x} = 30/5 = 6{,}0$ \quad $R = 8$
+        \[ \sum(x-\bar{x})^2 = 16+9+0+9+16 = 50 \]
+        \[ s^2 = \tfrac{50}{4} = 12{,}5 \qquad s = \destacar{3{,}54} \]
+        \[ CV = \tfrac{3{,}54}{6{,}0}\times100 = \destacar{58{,}9\%} \]
+      \end{block}
+    \end{column}
+  \end{columns}
+
+  \vspace{0.1cm}
+  \begin{alertblock}{Punto 5}
+    \scriptsize
+    Los dos atienden en \azul{6 minutos promedio}, pero el cajero 1 tiene una
+    desviación de 1,6 minutos frente a 3,5. \destacar{El cajero 1 es más
+    consistente}: su cliente puede prever cuánto va a esperar. Al jefe se le
+    dice con el CV: 26\% frente a 59\%.
+  \end{alertblock}
+\end{frame}
+
+\seccion{2.4 Medidas de forma}
+
+\begin{frame}{Asimetría — qué mide}
+  \centering
+  \begin{tikzpicture}[scale=0.82]
+    \begin{scope}
+      \foreach \x/\h in {0/0.4,0.5/0.9,1/1.5,1.5/1.9,2/1.5,2.5/0.9,3/0.4}
+        \fill[uniAzul!70] (\x,0) rectangle (\x+0.5,\h);
+      \draw[uniGris] (0,0)--(3.5,0);
+      \node[font=\tiny,color=uniAzul,align=center] at (1.75,-0.45)
+        {Simétrica\\$As = 0$};
+    \end{scope}
+    \begin{scope}[xshift=5.0cm]
+      \foreach \x/\h in {0/1.9,0.5/1.6,1/1.1,1.5/0.8,2/0.5,2.5/0.3,3/0.15}
+        \fill[uniNaranja!85] (\x,0) rectangle (\x+0.5,\h);
+      \draw[uniGris] (0,0)--(3.5,0);
+      \node[font=\tiny,color=uniAzul,align=center] at (1.75,-0.45)
+        {Positiva (a la derecha)\\$As > 0$ \ · \ $Mo<Me<\bar{x}$};
+    \end{scope}
+    \begin{scope}[xshift=10.0cm]
+      \foreach \x/\h in {0/0.15,0.5/0.3,1/0.5,1.5/0.8,2/1.1,2.5/1.6,3/1.9}
+        \fill[uniNaranja!85] (\x,0) rectangle (\x+0.5,\h);
+      \draw[uniGris] (0,0)--(3.5,0);
+      \node[font=\tiny,color=uniAzul,align=center] at (1.75,-0.45)
+        {Negativa (a la izquierda)\\$As < 0$ \ · \ $\bar{x}<Me<Mo$};
+    \end{scope}
+  \end{tikzpicture}
+
+  \vspace{0.5cm}
+  \begin{alertblock}{La asimetría es una pregunta de negocio}
+    \scriptsize
+    Gastos, salarios y tiempos de espera casi siempre son
+    \destacar{asimétricos positivos}: hay un piso pero no un techo. Las notas
+    de un curso fácil suelen ser \destacar{asimétricas negativas}: casi todos
+    arriba y unos pocos muy abajo.
+  \end{alertblock}
+\end{frame}
+
+\begin{frame}{Los tres coeficientes de asimetría}
+  \scriptsize
+  \begin{center}
+  \begin{tabular}{@{}p{3.3cm}p{4.0cm}p{4.6cm}@{}}
+    \toprule
+    \textbf{Coeficiente} & \textbf{Fórmula} & \textbf{Cuándo usarlo} \\
+    \midrule
+    Pearson (moda) &
+      $As_1 = \dfrac{\bar{x}-Mo}{s}$ &
+      Rápido; exige que la moda esté bien definida \\
+    \addlinespace
+    Pearson (mediana) &
+      $As_2 = \dfrac{3(\bar{x}-Me)}{s}$ &
+      El más usado en la práctica \\
+    \addlinespace
+    Bowley (cuartiles) &
+      $As_B = \dfrac{Q_3+Q_1-2Q_2}{Q_3-Q_1}$ &
+      Robusto: no lo afectan los extremos \\
+    \addlinespace
+    Fisher (momentos) &
+      $g_1 = \dfrac{\sum f_i(x_i-\bar{x})^3 / n}{\sigma^3}$ &
+      El que reportan R y los paquetes estadísticos \\
+    \bottomrule
+  \end{tabular}
+  \end{center}
+
+  \vspace{0.1cm}
+  \begin{alertblock}{Lo único que hay que leer del resultado}
+    \scriptsize
+    El \destacar{signo} y la \destacar{magnitud}: positivo, cola a la derecha;
+    negativo, cola a la izquierda; cerca de cero, simétrica. Valores entre
+    $-0{,}5$ y $0{,}5$ se consideran aproximadamente simétricos.
+  \end{alertblock}
+\end{frame}
+
+\begin{frame}{Asimetría del Almacén Bello}
+  \scriptsize
+  \begin{columns}[T,onlytextwidth]
+    \begin{column}{0.49\textwidth}
+      \begin{exampleblock}{Los datos que ya tenemos}
+        \scriptsize
+        \[ \bar{x}=227{,}0 \quad Me=224{,}73 \quad Mo=218{,}67 \]
+        \[ s = 56{,}34 \quad Q_1=186{,}29 \quad Q_3=267{,}56 \]
+      \end{exampleblock}
+    \end{column}
+    \begin{column}{0.49\textwidth}
+      \begin{block}{Los tres cálculos}
+        \scriptsize
+        \[ As_1 = \frac{227{,}0-218{,}67}{56{,}34} = \destacar{0{,}148} \]
+        \[ As_2 = \frac{3(227{,}0-224{,}73)}{56{,}34} = \destacar{0{,}121} \]
+        \[ As_B = \frac{267{,}56+186{,}29-2(224{,}73)}{81{,}27}
+                = \destacar{0{,}054} \]
+      \end{block}
+    \end{column}
+  \end{columns}
+
+  \vspace{0.1cm}
+  \begin{alertblock}{La conclusión}
+    \scriptsize
+    Los tres coeficientes son \destacar{positivos pero pequeños}: hay una cola
+    a la derecha —los clientes de gasto alto— pero la distribución no está muy
+    deformada. Coincide con lo que muestra el histograma y con el orden
+    $Mo < Me < \bar{x}$.
+  \end{alertblock}
+\end{frame}
+
+\begin{frame}{Curtosis — qué tan concentrada está la distribución}
+  \centering
+  \begin{tikzpicture}[scale=0.9]
+    \draw[uniGris,->] (-3.2,0)--(3.2,0);
+    \draw[uniAzul,very thick,domain=-3:3,samples=80]
+      plot (\x,{2.0*exp(-\x*\x*1.6)});
+    \draw[uniTitulo,very thick,dashed,domain=-3:3,samples=80]
+      plot (\x,{1.15*exp(-\x*\x*0.42)});
+    \node[font=\tiny,color=uniAzul,right] at (0.9,1.75) {Leptocúrtica ($g_2>0$)};
+    \node[font=\tiny,color=uniTitulo,right] at (1.5,0.85) {Platicúrtica ($g_2<0$)};
+  \end{tikzpicture}
+
+  \vspace{0.2cm}
+  \begin{columns}[T,onlytextwidth]
+    \begin{column}{0.46\textwidth}
+      \begin{block}{Fórmula (exceso de curtosis)}
+        \scriptsize
+        \[ g_2 = \frac{\sum f_i (x_i-\bar{x})^4 / n}{\sigma^4} - 3 \]
+      \end{block}
+    \end{column}
+    \begin{column}{0.50\textwidth}
+      \begin{exampleblock}{Cómo se lee}
+        \scriptsize
+        $g_2 > 0$: \azul{leptocúrtica}, pico alto y colas pesadas. \\
+        $g_2 = 0$: \azul{mesocúrtica}, como la normal. \\
+        $g_2 < 0$: \azul{platicúrtica}, achatada, datos repartidos.
+      \end{exampleblock}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{Curtosis del Almacén Bello}
+  \scriptsize
+  \begin{columns}[T,onlytextwidth]
+    \begin{column}{0.52\textwidth}
+      \centering
+      \begin{tabular}{@{}lrrr@{}}
+        \toprule
+        \textbf{$x_i$} & \textbf{$f_i$} & \textbf{$f_i d_i^3$} &
+        \textbf{$f_i d_i^4$} \\
+        \midrule
+        132 &  4 & $-3\,429\,500$ & 325\,802\,500 \\
+        172 &  7 & $-1\,164\,625$ &  64\,054\,375 \\
+        212 & 11 & $\ \ \ -37\,125$ &     556\,875 \\
+        252 &  9 & $+140\,625$ &   3\,515\,625 \\
+        292 &  6 & $+1\,647\,750$ & 107\,103\,750 \\
+        332 &  3 & $+3\,472\,875$ & 364\,651\,875 \\
+        \midrule
+        \textbf{Suma} & \textbf{40} & \textbf{630\,000} &
+        \textbf{865\,685\,000} \\
+        \bottomrule
+      \end{tabular}
+      {\tiny $d_i = x_i - 227{,}0$}
+    \end{column}
+    \begin{column}{0.46\textwidth}
+      \begin{block}{Los coeficientes de Fisher}
+        \scriptsize
+        Con $\sigma = 55{,}63$ (dividiendo entre $n$):
+        \[ g_1 = \frac{630\,000/40}{55{,}63^3} = \destacar{0{,}091} \]
+        \[ g_2 = \frac{865\,685\,000/40}{55{,}63^4} - 3 \]
+        \[ g_2 = 2{,}259 - 3 = \destacar{-0{,}741} \]
+      \end{block}
+    \end{column}
+  \end{columns}
+
+  \vspace{0.05cm}
+  \begin{alertblock}{Lectura conjunta}
+    \tiny
+    $g_1 = 0{,}09$: prácticamente simétrica según Fisher. \quad
+    $g_2 = -0{,}74$: \destacar{platicúrtica}, más achatada que la normal. Los
+    gastos están repartidos en una franja ancha, sin una concentración fuerte
+    en un punto.
+  \end{alertblock}
+\end{frame}
+
+\begin{frame}{Ejercicio 2 — en clase (taller principal)}
+  \begin{alertblock}{En grupos de 3 (30 minutos)}
+    \scriptsize
+    Cafetería El Portal ($n = 45$). De la sesión 7 ya sabemos:
+    $\bar{x} = 22{,}33$, \ $Me = 21{,}92$, \ $Mo = 21{,}43$, \
+    $Q_1 = 16{,}17$, \ $Q_3 = 28{,}05$.
+
+    \vspace{0.15cm}
+    \centering
+    \begin{tabular}{@{}lrrrrrr@{}}
+      \toprule
+      \textbf{Clase} & $[6,12)$ & $[12,18)$ & $[18,24)$ & $[24,30)$ &
+      $[30,36)$ & $[36,42]$ \\
+      \midrule
+      $x_i$ &  9 & 15 & 21 & 27 & 33 & 39 \\
+      $f_i$ &  5 &  9 & 13 & 10 &  5 &  3 \\
+      \bottomrule
+    \end{tabular}
+
+    \vspace{0.2cm}
+    \raggedright
+    \begin{enumerate}\setlength{\itemsep}{-0.07cm}
+      \item Construya la columna $f_i(x_i-\bar{x})^2$ y súmela.
+      \item Calcule $s^2$ y $s$ (como muestra).
+      \item Calcule el $CV$ e interprete la homogeneidad del grupo.
+      \item Calcule el $RIC$.
+      \item Calcule $As_1$, $As_2$ y $As_B$. ¿Coinciden en el signo?
+      \item Compare el $CV$ de El Portal con el del Almacén Bello (24,8\%).
+            ¿Qué negocio tiene clientes más parecidos entre sí?
+    \end{enumerate}
+  \end{alertblock}
+\end{frame}
+
+\begin{frame}{Ejercicio 2 — solución (dispersión)}
+  \scriptsize
+  \begin{columns}[T,onlytextwidth]
+    \begin{column}{0.50\textwidth}
+      \centering
+      \begin{tabular}{@{}rrrr@{}}
+        \toprule
+        \textbf{$x_i$} & \textbf{$f_i$} & \textbf{$(x_i-\bar{x})^2$} &
+        \textbf{$f_i(x_i-\bar{x})^2$} \\
+        \midrule
+         9 &  5 & 177{,}78 & 888{,}89 \\
+        15 &  9 &  53{,}78 & 484{,}00 \\
+        21 & 13 &   1{,}78 &  23{,}11 \\
+        27 & 10 &  21{,}78 & 217{,}78 \\
+        33 &  5 & 113{,}78 & 568{,}89 \\
+        39 &  3 & 277{,}78 & 833{,}33 \\
+        \midrule
+        & \textbf{45} & & \textbf{3\,016{,}00} \\
+        \bottomrule
+      \end{tabular}
+    \end{column}
+    \begin{column}{0.47\textwidth}
+      \begin{exampleblock}{Puntos 2 a 4}
+        \scriptsize
+        \[ s^2 = \frac{3\,016}{44} = \destacar{68{,}55} \]
+        \[ s = \destacar{8{,}28} \text{ miles de pesos} \]
+        \[ CV = \frac{8{,}28}{22{,}33}\times100 = \destacar{37{,}1\%} \]
+        \[ RIC = 28{,}05-16{,}17 = \destacar{11{,}88} \]
+      \end{exampleblock}
+    \end{column}
+  \end{columns}
+
+  \vspace{0.05cm}
+  {\tiny\color{uniGris} Con $CV = 37{,}1\%$ el grupo es \azul{heterogéneo}:
+  el consumo varía bastante de un cliente a otro.}
+\end{frame}
+
+\begin{frame}{Ejercicio 2 — solución (forma y comparación)}
+  \scriptsize
+  \begin{columns}[T,onlytextwidth]
+    \begin{column}{0.50\textwidth}
+      \begin{block}{Punto 5: los tres coeficientes}
+        \scriptsize
+        \[ As_1 = \frac{22{,}33-21{,}43}{8{,}28} = \destacar{0{,}109} \]
+        \[ As_2 = \frac{3(22{,}33-21{,}92)}{8{,}28} = \destacar{0{,}149} \]
+        \[ As_B = \frac{28{,}05+16{,}17-2(21{,}92)}{11{,}88}
+                = \destacar{0{,}031} \]
+        Los tres son \azul{positivos}: coinciden.
+      \end{block}
+    \end{column}
+    \begin{column}{0.47\textwidth}
+      \begin{exampleblock}{Punto 6: la comparación}
+        \scriptsize
+        \begin{tabular}{@{}lrr@{}}
+          \toprule
+          & \textbf{Bello} & \textbf{El Portal} \\
+          \midrule
+          $\bar{x}$ & 227{,}0 & 22{,}33 \\
+          $s$       &  56{,}34 &  8{,}28 \\
+          $CV$      & 24{,}8\% & 37{,}1\% \\
+          \bottomrule
+        \end{tabular}
+        \vspace{0.1cm}
+        El \destacar{Almacén Bello} tiene la clientela más homogénea, aunque
+        su desviación en pesos sea mucho mayor.
+      \end{exampleblock}
+    \end{column}
+  \end{columns}
+
+  \vspace{0.05cm}
+  {\tiny\color{uniGris} Esta es la razón de ser del CV: comparar dispersión
+  entre variables con medias y unidades muy distintas.}
+\end{frame}
+
+\begin{frame}{Errores frecuentes}
+  \scriptsize
+  \begin{center}
+  \begin{tabular}{@{}p{5.4cm}p{6.4cm}@{}}
+    \toprule
+    \textbf{Error} & \textbf{Corrección} \\
+    \midrule
+    Reportar la varianza como si describiera los datos &
+      La varianza está en unidades al cuadrado; se reporta $s$ \\
+    Dividir entre $n$ cuando el enunciado dice ``muestra'' &
+      Muestra: $n-1$. Población: $N$. Declararlo siempre \\
+    Comparar desviaciones de variables con medias distintas &
+      Para eso está el $CV$ \\
+    Calcular $CV$ con media negativa o cero &
+      No tiene interpretación; no se usa \\
+    Confundir el signo de la asimetría con ``bueno o malo'' &
+      Solo indica hacia dónde está la cola \\
+    Olvidar restar 3 en la curtosis de Fisher &
+      $g_2 = m_4/\sigma^4 - 3$; sin el $-3$ se compara contra 3 \\
+    Redondear la media antes de calcular las desviaciones &
+      Arrastra el error a toda la columna \\
+    \bottomrule
+  \end{tabular}
+  \end{center}
+\end{frame}
+
+\begin{frame}[fragile]{Dispersión y forma, en R}
+  \tiny
+\begin{lstlisting}[style=Rmini]
+diff(range(gasto))              # rango
+IQR(gasto)                      # rango intercuartilico
+var(gasto);  sd(gasto)          # varianza y desviacion DE MUESTRA (n-1)
+sd(gasto) / mean(gasto) * 100   # coeficiente de variacion
+
+# R base no trae asimetria ni curtosis: se calculan a mano
+n  <- length(gasto);  mu <- mean(gasto)
+sg <- sqrt(sum((gasto - mu)^2) / n)        # sigma poblacional
+As2 <- 3 * (mu - median(gasto)) / sd(gasto)
+g1  <- sum((gasto - mu)^3) / n / sg^3
+g2  <- sum((gasto - mu)^4) / n / sg^4 - 3
+round(c(As2 = As2, g1 = g1, g2 = g2), 3)
+\end{lstlisting}
+\begin{lstlisting}[style=Rout]
+[1] 240
+[1] 76.75
+[1] 3329.977
+[1] 57.706
+[1] 25.404
+   As2     g1     g2
+-0.018  0.077 -0.564
+\end{lstlisting}
+
+  \vspace{-0.28cm}
+  \begin{alertblock}{Una lección escondida en estos números}
+    \tiny
+    Con datos crudos $As_2=-0{,}018$ y con la tabla agrupada dio $+0{,}121$:
+    cuando la asimetría es \destacar{muy leve}, los coeficientes basados en la
+    mediana cambian de signo con nada. El de Fisher ($g_1=+0{,}077$) y el
+    histograma coinciden: cola derecha, pero pequeña.
+  \end{alertblock}
+\end{frame}
+
+\begin{frame}{Cierre de la sesión}
+  \begin{block}{Lo que debe quedar claro hoy}
+    \scriptsize
+    \begin{itemize}\setlength{\itemsep}{0.02cm}
+      \item Dos grupos con la misma media pueden ser negocios distintos: la
+            \azul{dispersión} lo revela.
+      \item $R$ y $RIC$ son rápidos; $s^2$ y $s$ usan toda la información.
+      \item $s$ se reporta en las \azul{unidades originales}; la varianza no.
+      \item El $CV$ permite \azul{comparar} dispersión entre variables
+            distintas.
+      \item $As$ indica hacia dónde está la cola; $g_2$, qué tan apuntada es
+            la distribución.
+    \end{itemize}
+  \end{block}
+
+  \vspace{0.1cm}
+  \begin{alertblock}{Trabajo independiente}
+    \scriptsize
+    Resolver los 20 ejercicios de la lámina siguiente. En la sesión 9
+    construimos el \destacar{diagrama de caja}, que reúne en un solo dibujo la
+    mediana, los cuartiles, el recorrido y los valores atípicos.
+  \end{alertblock}
+\end{frame}
+
+\begin{frame}{Ejercicios propuestos}
+  \vspace{-0.1cm}
+  \begin{beamercolorbox}[wd=\textwidth,sep=0.10cm]{block body}
+    \centering\scriptsize
+    \textbf{1--8:} cálculo directo. \quad \textbf{9--14:} agrupados. \quad
+    \textbf{15--20:} interpretación y comparación.
+  \end{beamercolorbox}
+  \listatiny
+  \begin{columns}[T,onlytextwidth]
+    \begin{column}{0.47\textwidth}
+      \begin{enumerate}\setlength{\itemsep}{0.16cm}
+        \item Rango de: 12, 19, 7, 25, 14
+        \item Media de: 2, 4, 4, 4, 5, 5, 7, 9
+        \item $\sum(x-\bar{x})^2$ de ese conjunto
+        \item $s^2$ y $s$ como muestra
+        \item $\sigma^2$ y $\sigma$ como población
+        \item $CV$ de ese conjunto
+        \item Si $s = 12$ y $\bar{x} = 60$: ¿$CV$?
+        \item Si $CV = 30\%$ y $\bar{x} = 80$: ¿$s$?
+        \item $RIC$ del Almacén Bello
+        \item $s$ agrupada del Almacén Bello (verifique 56{,}34)
+      \end{enumerate}
+    \end{column}
+    \begin{column}{0.50\textwidth}
+      \begin{enumerate}\setlength{\itemsep}{0.16cm}
+        \setcounter{enumi}{10}
+        \item $CV$ del Almacén Bello
+        \item $As_2$ del Almacén Bello
+        \item $As_B$ del Almacén Bello
+        \item $g_2$ del Almacén Bello y su nombre
+        \item Dos sucursales: $\bar{x}=200$, $s=20$ y $\bar{x}=50$, $s=8$.
+              ¿Cuál es más estable?
+        \item ¿Por qué se eleva al cuadrado en la varianza?
+        \item ¿Qué significa $s = 0$?
+        \item Si $As_2 < 0$, ¿dónde está la cola?
+        \item ¿Qué medida de dispersión no se afecta por atípicos?
+        \item ¿Por qué la varianza no se reporta en el informe final?
+      \end{enumerate}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{Respuestas}{Autoevaluación de los ejercicios propuestos}
+  \listatiny
+  \begin{columns}[T,onlytextwidth]
+    \begin{column}{0.47\textwidth}
+      \begin{enumerate}\setlength{\itemsep}{0.16cm}
+        \item $25-7 = 18$
+        \item $40/8 = 5{,}0$
+        \item $9+1+1+1+0+0+4+16 = 32$
+        \item $s^2 = 32/7 = 4{,}57$; \ $s = 2{,}14$
+        \item $\sigma^2 = 32/8 = 4{,}00$; \ $\sigma = 2{,}00$
+        \item $CV = 2{,}14/5{,}0 = 42{,}8\%$
+        \item $20{,}0\%$
+        \item $s = 0{,}30 \times 80 = 24$
+        \item $267{,}56-186{,}29 = 81{,}27$
+        \item $\sqrt{123\,800/39} = 56{,}34$
+      \end{enumerate}
+    \end{column}
+    \begin{column}{0.50\textwidth}
+      \begin{enumerate}\setlength{\itemsep}{0.16cm}
+        \setcounter{enumi}{10}
+        \item $56{,}34/227{,}0 = 24{,}8\%$
+        \item $3(227{,}0-224{,}73)/56{,}34 = 0{,}121$
+        \item $0{,}054$
+        \item $-0{,}741$: platicúrtica
+        \item $CV$: 10\% frente a 16\%; la primera es más estable
+        \item Para que las desviaciones no se cancelen
+        \item Todos los datos son iguales: no hay dispersión
+        \item A la izquierda (asimetría negativa)
+        \item El $RIC$ (y el $As_B$, en forma)
+        \item Porque sus unidades están al cuadrado y no se interpretan
+      \end{enumerate}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{Referencias}
+  \footnotesize
+  \begin{itemize}
+    \item[{[1]}] Monroy Saldívar, S. (2008). \textit{Estadística descriptiva}.
+      Instituto Politécnico Nacional.
+      \texttt{https://elibro.net/es/lc/uniminuto/titulos/74722}
+    \item[{[2]}] Ordóñez Fernández, F. F. \& González Fernández, J. (2021).
+      \textit{Estadística descriptiva paso a paso}. Ediciones Pirámide.
+      \texttt{https://elibro.net/es/lc/uniminuto/titulos/215449}
+    \item[{[3]}] Llinás Solano, H. (2014). \textit{Introducción a la
+      estadística con aplicaciones en ciencias sociales}. Universidad del
+      Norte. \texttt{https://elibro.net/es/lc/uniminuto/titulos/70062}
+  \end{itemize}
+
+  \vspace{0.35cm}
+  \begin{center}
+    {\Large\color{uniAzul}\textbf{¿Preguntas?}}
+  \end{center}
+\end{frame}
+
+\end{document}

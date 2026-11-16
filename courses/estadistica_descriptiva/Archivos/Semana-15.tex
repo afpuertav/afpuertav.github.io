@@ -1,0 +1,624 @@
+% ============================================================================
+%  ESTADÍSTICA DESCRIPTIVA — Sesión 15
+%  Semana 15: 16 al 21 de noviembre de 2026   (lunes 16: festivo)
+%  3.5 Coherencia entre análisis y conclusiones
+%  3.6 Sustentación de decisiones basadas en datos
+%  Repaso integrador del curso · Preparación del Examen 3
+%  Duración prevista: 3 horas
+% ============================================================================
+\documentclass[aspectratio=169,10pt]{beamer}
+
+\usepackage[utf8]{inputenc}
+\IfFileExists{spanish.ldf}{\usepackage[spanish,es-noshorthands]{babel}}{}
+\usepackage{amsmath,amssymb}
+\usepackage{booktabs}
+\usepackage{tikz}
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.16}
+
+\usetheme{Uniminuto}
+
+\uniasignatura{Estadística descriptiva}
+\uniprofesor{Andrés Felipe Puerta Velez}
+\unicorreo{andres.puerta-v@uniminuto.edu.co}
+\uninrc{CBASBL031 - CBASBL141}
+\unisemana{Sesión 15 — Semana 15 · 16 al 21 de noviembre de 2026}
+
+\newcommand{\listatiny}{\setbeamerfont{itemize/enumerate body}{size=\tiny}\tiny}
+
+\begin{document}
+
+\portada
+
+\begin{frame}{Orden del día}
+  \begin{enumerate}
+    \item Llamado a lista y revisión del taller de la sesión 14
+    \item \azul{Tema 3.5: la cadena de coherencia}
+    \item Los cinco quiebres que invalidan un informe
+    \item \azul{Tema 3.6: sustentar una decisión con datos}
+    \item Taller de sustentación en grupos
+    \item Repaso del curso y simulacro del Examen 3
+  \end{enumerate}
+
+  \vspace{0.25cm}
+  {\footnotesize\color{uniGris} Última sesión de clase. La próxima semana se
+  presenta el \destacar{Examen 3 (30\%)}, que es \azul{integrador}: evalúa
+  las tres unidades.}
+\end{frame}
+
+\seccion{3.5 Coherencia entre análisis y conclusiones}
+
+\begin{frame}{La cadena de coherencia}
+  \centering
+  \begin{tikzpicture}[scale=0.95,every node/.style={font=\tiny,align=center},
+    nodo/.style={draw=uniAzul,fill=uniAzul!10,rounded corners,inner sep=3pt,
+                 minimum width=2.1cm,minimum height=0.66cm},
+    flecha/.style={->,>=latex,uniGris,thick}]
+    \node[nodo] (a) at (0,0) {Dato\\ observado};
+    \node[nodo] (b) at (2.7,0) {Medida\\ calculada};
+    \node[nodo] (c) at (5.4,0) {Hallazgo\\ descrito};
+    \node[nodo] (d) at (8.1,0) {Conclusión};
+    \node[nodo,fill=uniCrema,draw=uniTitulo] (e) at (10.8,0) {Decisión};
+    \draw[flecha] (a)--(b); \draw[flecha] (b)--(c);
+    \draw[flecha] (c)--(d); \draw[flecha] (d)--(e);
+  \end{tikzpicture}
+
+  \vspace{0.3cm}
+  \begin{alertblock}{La regla}
+    \scriptsize
+    Cada eslabón debe \destacar{sostenerse en el anterior}. Si alguien
+    pregunta ``¿de dónde sacó eso?'' en cualquier punto de la cadena, la
+    respuesta tiene que estar a la izquierda, no en la intuición.
+  \end{alertblock}
+
+  \vspace{0.15cm}
+  \begin{exampleblock}{Un ejemplo completo}
+    \tiny
+    \azul{Dato:} 50 compras registradas en octubre. \quad
+    \azul{Medida:} $Q_3 = 49{,}44$ mil. \quad
+    \azul{Hallazgo:} el 25\% de los clientes compra más de 49\,440 pesos.
+    \quad \azul{Conclusión:} existe un segmento identificable de compra alta.
+    \quad \azul{Decisión:} crear un programa de fidelización con ese corte.
+  \end{exampleblock}
+\end{frame}
+
+\begin{frame}{Los cinco quiebres de coherencia}
+  \scriptsize
+  \begin{center}
+  \begin{tabular}{@{}p{2.5cm}p{4.6cm}p{4.8cm}@{}}
+    \toprule
+    \textbf{Quiebre} & \textbf{Cómo suena} & \textbf{Por qué falla} \\
+    \midrule
+    Medida inadecuada &
+      ``El estrato promedio es 2,8'' &
+      El estrato es ordinal: no admite media \\
+    \addlinespace
+    Salto de escala &
+      ``El 55\% de \emph{nuestros clientes} gasta menos de 232'' &
+      Se midieron 40: la frase debe decirlo \\
+    \addlinespace
+    Causa inventada &
+      ``Las ventas subieron \emph{por} el nuevo aviso'' &
+      Solo se observó coincidencia temporal \\
+    \addlinespace
+    Cifra sin contexto &
+      ``La desviación es 56,34'' &
+      Sin media ni unidad no se puede juzgar \\
+    \addlinespace
+    Decisión sin ancla &
+      ``Recomendamos ampliar el horario'' &
+      Ninguna cifra del estudio sostiene esa acción \\
+    \bottomrule
+  \end{tabular}
+  \end{center}
+
+  \vspace{0.05cm}
+  {\tiny\color{uniGris} Los cinco aparecen en informes reales todo el tiempo, y
+  los tres primeros son los que más se penalizan en el Examen 3.}
+\end{frame}
+
+\begin{frame}{Lista de verificación de coherencia}
+  \footnotesize
+  \begin{block}{Ocho preguntas antes de entregar}
+    \scriptsize
+    \begin{enumerate}\setlength{\itemsep}{-0.04cm}
+      \item ¿Cada medida es válida para la \azul{escala} de su variable?
+      \item ¿La medida de centro elegida es coherente con la \azul{forma} de
+            la distribución?
+      \item ¿Cada cifra aparece con su \azul{unidad} y su $n$?
+      \item ¿Cada afirmación se limita a los \azul{casos observados}?
+      \item ¿Se declaró si los cálculos son \azul{agrupados o con datos
+            crudos}?
+      \item ¿Los gráficos cuentan \azul{la misma historia} que los números?
+      \item ¿Cada recomendación está \azul{anclada} a una cifra concreta?
+      \item ¿Se enunciaron las \azul{limitaciones} reales del estudio?
+    \end{enumerate}
+  \end{block}
+
+  \vspace{-0.05cm}
+  \begin{alertblock}{El criterio de suficiencia}
+    \tiny
+    Si un lector externo, con solo su informe en la mano, puede
+    \destacar{reproducir el razonamiento} y llegar a la misma conclusión, el
+    informe es coherente. Si necesita que usted se lo explique, no lo es.
+  \end{alertblock}
+\end{frame}
+
+\begin{frame}{Ejercicio 1 — en clase}
+  \begin{alertblock}{En parejas (20 minutos)}
+    \scriptsize
+    Para cada afirmación, identifique el quiebre de coherencia y
+    \destacar{reescríbala correctamente}.
+
+    \vspace{0.2cm}
+    \begin{enumerate}\setlength{\itemsep}{-0.06cm}
+      \item ``El nivel de satisfacción promedio de los clientes es 3,7.''
+      \item ``Como la media de gasto es 227, todos nuestros clientes gastan
+            alrededor de esa cifra.''
+      \item ``La desviación estándar es 15,54, lo cual es alto.''
+      \item ``Las ventas del Centro Sur mejoraron porque cambiamos al jefe de
+            turno en mayo.''
+      \item ``Recomendamos abrir una sede en Envigado.'' (el estudio solo
+            midió zonas Norte, Centro y Sur)
+      \item ``El 60\% de los clientes de la ciudad consume menos de 24 mil
+            pesos.'' (se encuestaron 45 clientes de una cafetería)
+    \end{enumerate}
+  \end{alertblock}
+\end{frame}
+
+\begin{frame}{Ejercicio 1 — solución}
+  \scriptsize
+  \begin{center}
+  \begin{tabular}{@{}cp{2.6cm}p{7.6cm}@{}}
+    \toprule
+    & \textbf{Quiebre} & \textbf{Versión correcta} \\
+    \midrule
+    1 & Medida inadecuada &
+      ``La satisfacción \azul{mediana} es `medio'; el 56,7\% reporta media o
+      inferior.'' \\
+    \addlinespace
+    2 & Cifra sin contexto &
+      ``El gasto promedio es 227 mil, con $s = 56$ mil: los clientes
+      \azul{varían} bastante alrededor de esa cifra.'' \\
+    \addlinespace
+    3 & Cifra sin contexto &
+      ``$s = 15{,}54$ sobre una media de 39,40 equivale a un
+      \azul{$CV$ del 39,4\%}: dispersión alta.'' \\
+    \addlinespace
+    4 & Causa inventada &
+      ``Las ventas mejoraron tras el cambio de jefe; \azul{no es posible
+      atribuir} la mejora a ese cambio con estos datos.'' \\
+    \addlinespace
+    5 & Decisión sin ancla &
+      Recomendar sobre una de las zonas medidas, o proponer \azul{un nuevo
+      estudio} que incluya Envigado. \\
+    \addlinespace
+    6 & Salto de escala &
+      ``El 60\% de \azul{los 45 clientes encuestados} consume menos de 24
+      mil pesos.'' \\
+    \bottomrule
+  \end{tabular}
+  \end{center}
+\end{frame}
+
+\seccion{3.6 Sustentación de decisiones}
+
+\begin{frame}{Estructura de una sustentación de cinco minutos}
+  \scriptsize
+  \begin{center}
+  \begin{tabular}{@{}rp{2.9cm}p{6.8cm}@{}}
+    \toprule
+    \textbf{Tiempo} & \textbf{Momento} & \textbf{Qué se dice} \\
+    \midrule
+    30 s & Contexto y pregunta &
+      ``Analizamos X sobre $n$ casos para decidir Y'' \\
+    45 s & Método &
+      Qué se midió, cómo y en qué periodo \\
+    2 min & Hallazgos &
+      \destacar{Tres máximo}, cada uno con su cifra y su gráfico \\
+    45 s & Limitaciones &
+      Qué no permite concluir el estudio \\
+    1 min & Recomendación &
+      Qué hacer, anclado a una cifra, y qué se espera lograr \\
+    \bottomrule
+  \end{tabular}
+  \end{center}
+
+  \vspace{0.1cm}
+  \begin{alertblock}{La regla de los tres hallazgos}
+    \scriptsize
+    Nadie recuerda ocho cifras. \destacar{Tres hallazgos bien escogidos} —uno
+    de centro, uno de dispersión y uno de forma o segmento— comunican más que
+    una tabla completa proyectada en pantalla.
+  \end{alertblock}
+\end{frame}
+
+\begin{frame}{Cómo se presenta un número en voz alta}
+  \scriptsize
+  \begin{center}
+  \begin{tabular}{@{}p{5.6cm}p{6.2cm}@{}}
+    \toprule
+    \textbf{No diga} & \textbf{Diga} \\
+    \midrule
+    ``La media es 39,54'' &
+      ``Un cliente compra en promedio 39\,500 pesos'' \\
+    \addlinespace
+    ``El CV es 39,4\%'' &
+      ``Los clientes son bastante distintos entre sí: la variación equivale al
+      40\% del promedio'' \\
+    \addlinespace
+    ``$Q_3 = 49{,}44$'' &
+      ``Uno de cada cuatro clientes compra más de 49\,000 pesos'' \\
+    \addlinespace
+    ``La asimetría es positiva'' &
+      ``Hay una minoría de clientes grandes que empuja el promedio hacia
+      arriba'' \\
+    \addlinespace
+    ``Hay seis atípicos'' &
+      ``Seis casos se salen del patrón y vale la pena revisarlos uno por
+      uno'' \\
+    \bottomrule
+  \end{tabular}
+  \end{center}
+
+  \vspace{0.05cm}
+  {\tiny\color{uniGris} El vocabulario técnico se usa \azul{después} de la
+  frase en lenguaje común, nunca antes, y solo si el auditorio lo necesita.}
+\end{frame}
+
+\begin{frame}{Las preguntas difíciles y cómo responderlas}
+  \scriptsize
+  \begin{center}
+  \begin{tabular}{@{}p{4.6cm}p{7.2cm}@{}}
+    \toprule
+    \textbf{Pregunta} & \textbf{Respuesta profesional} \\
+    \midrule
+    ``¿Está seguro de ese número?'' &
+      ``Sale de estos 50 registros; aquí está el cálculo. Con otra muestra
+      podría variar.'' \\
+    \addlinespace
+    ``¿Y si quitamos ese caso raro?'' &
+      ``La mediana no cambia; la media baja a X. Por eso reporto la mediana.'' \\
+    \addlinespace
+    ``¿Esto aplica para toda la ciudad?'' &
+      ``No. Describe a los clientes medidos en octubre en esta sede.'' \\
+    \addlinespace
+    ``¿Entonces qué hacemos?'' &
+      Una recomendación concreta, con su cifra y su costo esperado. \\
+    \addlinespace
+    ``No estoy de acuerdo con la conclusión'' &
+      ``¿Qué otra explicación ve para estos datos?'' y anotarla. \\
+    \bottomrule
+  \end{tabular}
+  \end{center}
+
+  \vspace{0.05cm}
+  \begin{alertblock}{Lo que nunca se hace}
+    \tiny
+    Inventar una cifra, defender una conclusión que los datos no sostienen, o
+    decir ``el sistema lo calculó así''. \destacar{Decir ``no lo sé, lo
+    verifico''} es una respuesta correcta y respetada.
+  \end{alertblock}
+\end{frame}
+
+\begin{frame}{Taller de sustentación}
+  \begin{alertblock}{En grupos de 3 (35 minutos: 20 de preparación, 15 de
+                     exposición)}
+    \scriptsize
+    Cada grupo recibe uno de los casos del curso —\azul{Almacén Bello},
+    \azul{Cafetería El Portal} o \azul{Ferretería El Tornillo}— y prepara una
+    sustentación de \destacar{cinco minutos}.
+
+    \vspace{0.2cm}
+    \begin{enumerate}\setlength{\itemsep}{-0.06cm}
+      \item Elija los \destacar{tres hallazgos} que va a comunicar.
+      \item Escoja \destacar{un solo gráfico} para proyectar.
+      \item Redacte la recomendación en una frase, anclada a una cifra.
+      \item Prepare la respuesta a: ``¿y si quitamos los casos extremos?''
+      \item Exponga. El resto del curso actúa como junta directiva y hace
+            \destacar{dos preguntas} por grupo.
+    \end{enumerate}
+
+    \vspace{0.12cm}
+    Se evalúa con la rúbrica de la sesión 10: coherencia, elección de medidas,
+    interpretación y claridad.
+  \end{alertblock}
+\end{frame}
+
+\seccion{Repaso del curso}
+
+\begin{frame}{Mapa completo del curso}
+  \scriptsize
+  \begin{center}
+  \begin{tabular}{@{}p{1.5cm}p{4.6cm}p{5.8cm}@{}}
+    \toprule
+    \textbf{Unidad} & \textbf{Contenido} & \textbf{Pregunta que responde} \\
+    \midrule
+    1 & Población y muestra; tipos de variable y escalas; tablas de frecuencia
+      agrupadas y no agrupadas; histograma, polígono y ojiva &
+      ¿Cómo \azul{organizo} y muestro los datos? \\
+    \addlinespace
+    2 & Media, mediana y moda; cuartiles, deciles y percentiles; rango, $RIC$,
+      varianza, desviación y $CV$; asimetría y curtosis; diagrama de caja;
+      interpretación e informe &
+      ¿Cómo \azul{resumo} lo que muestran los datos? \\
+    \addlinespace
+    3 & Integración de medidas; lectura global; caso completo con herramientas;
+      coherencia y sustentación &
+      ¿Cómo \azul{decido} con base en los datos? \\
+    \bottomrule
+  \end{tabular}
+  \end{center}
+
+  \vspace{0.08cm}
+  \begin{alertblock}{La idea que atraviesa las tres unidades}
+    \tiny
+    \destacar{La escala de la variable y la forma de la distribución deciden
+    todo}: qué tabla, qué gráfico, qué medida y qué se puede afirmar.
+  \end{alertblock}
+\end{frame}
+
+\begin{frame}{Simulacro del Examen 3 — parte integradora}
+  \begin{alertblock}{Individual (25 minutos)}
+    \scriptsize
+    Una distribuidora midió el \azul{tiempo de despacho} (horas) de 60 pedidos:
+
+    \vspace{0.12cm}
+    \centering
+    \begin{tabular}{@{}lrrrrrr@{}}
+      \toprule
+      \textbf{Clase} & $[2,6)$ & $[6,10)$ & $[10,14)$ & $[14,18)$ & $[18,22)$ &
+      $[22,26]$ \\
+      \midrule
+      $f_i$ & 7 & 15 & 18 & 11 & 6 & 3 \\
+      \bottomrule
+    \end{tabular}
+
+    \vspace{0.18cm}
+    \raggedright
+    \begin{enumerate}\setlength{\itemsep}{-0.07cm}
+      \item Complete $x_i$, $F_i$, $h_i$ y $H_i$. \hfill (Unidad 1)
+      \item ¿Qué tipo de variable y qué escala es el tiempo de despacho?
+      \item Calcule $\bar{x}$, $Me$ y $Mo$. \hfill (Unidad 2)
+      \item Calcule $Q_1$, $Q_3$, $RIC$, $s$ y $CV$.
+      \item Calcule $As_2$ e indique la forma.
+      \item Describa el perfil de la distribución. \hfill (Unidad 3)
+      \item ¿Qué medida de centro reportaría y por qué?
+      \item Escriba una recomendación anclada a una cifra y una limitación.
+    \end{enumerate}
+  \end{alertblock}
+\end{frame}
+
+\begin{frame}{Simulacro — solución (tabla y medidas)}
+  \scriptsize
+  \begin{columns}[T,onlytextwidth]
+    \begin{column}{0.50\textwidth}
+      \centering
+      \begin{tabular}{@{}lrrrrr@{}}
+        \toprule
+        \textbf{Clase} & \textbf{$x_i$} & \textbf{$f_i$} & \textbf{$F_i$} &
+        \textbf{$f_ix_i$} & \textbf{$f_id_i^2$} \\
+        \midrule
+        $[2,6)$   &  4 &  7 &  7 &  28 & 470{,}68 \\
+        $[6,10)$  &  8 & 15 & 22 & 120 & 264{,}60 \\
+        $[10,14)$ & 12 & 18 & 40 & 216 &   0{,}72 \\
+        $[14,18)$ & 16 & 11 & 51 & 176 & 158{,}84 \\
+        $[18,22)$ & 20 &  6 & 57 & 120 & 365{,}04 \\
+        $[22,26]$ & 24 &  3 & 60 &  72 & 417{,}72 \\
+        \midrule
+        \textbf{Tot.} & & \textbf{60} & & \textbf{732} &
+        \textbf{1\,677{,}60} \\
+        \bottomrule
+      \end{tabular}
+      {\tiny $d_i = x_i - 12{,}2$}
+    \end{column}
+    \begin{column}{0.47\textwidth}
+      \begin{exampleblock}{Puntos 2 y 3}
+        \scriptsize
+        \textbf{2.} Cuantitativa \azul{continua}, escala de \azul{razón}.
+        \[ \bar{x} = \frac{732}{60} = \destacar{12{,}20} \]
+        $\frac{n}{2}=30 \Rightarrow [10,14)$: $F_{i-1}=22$, $f_i=18$
+        \[ Me = 10+\frac{30-22}{18}\cdot4 = \destacar{11{,}78} \]
+        $d_1=18-15=3$, \ $d_2=18-11=7$
+        \[ Mo = 10+\tfrac{3}{10}\cdot4 = \destacar{11{,}20} \]
+      \end{exampleblock}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{Simulacro — solución (dispersión, forma y lectura)}
+  \scriptsize
+  \begin{columns}[T,onlytextwidth]
+    \begin{column}{0.49\textwidth}
+      \begin{block}{Puntos 4 y 5}
+        \scriptsize
+        $\frac{n}{4}=15 \Rightarrow [6,10)$: $F_{i-1}=7$, $f_i=15$
+        \[ Q_1 = 6+\tfrac{15-7}{15}\cdot4 = \destacar{8{,}13} \]
+        $\frac{3n}{4}=45 \Rightarrow [14,18)$: $F_{i-1}=40$, $f_i=11$
+        \[ Q_3 = 14+\tfrac{45-40}{11}\cdot4 = \destacar{15{,}82} \]
+        \[ RIC = \destacar{7{,}68} \qquad
+           s = \sqrt{\tfrac{1\,677{,}60}{59}} = \destacar{5{,}33} \]
+        \[ CV = \tfrac{5{,}33}{12{,}20}\times100 = \destacar{43{,}7\%} \]
+        \[ As_2 = \tfrac{3(12{,}20-11{,}78)}{5{,}33} = \destacar{0{,}238} \]
+      \end{block}
+    \end{column}
+    \begin{column}{0.49\textwidth}
+      \begin{exampleblock}{Puntos 6 a 8}
+        \scriptsize
+        \textbf{6.} Perfil: \azul{asimétrico positivo leve}
+        ($Mo<Me<\bar{x}$), \destacar{muy heterogéneo} ($CV=43{,}7\%$), con
+        un pico claro en $[10,14)$.
+
+        \vspace{0.1cm}
+        \textbf{7.} La \azul{mediana} (11,78 h): la cola de despachos lentos
+        infla la media.
+
+        \vspace{0.1cm}
+        \textbf{8.} Recomendación: fijar la meta en el $Q_3$ —que el 75\% de
+        los pedidos salga en menos de \destacar{16 horas}—. Limitación: no se
+        distingue tipo de pedido ni destino.
+      \end{exampleblock}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{Recomendaciones para el Examen 3}
+  \begin{block}{Qué se evalúa}
+    \tiny
+    \begin{itemize}\setlength{\itemsep}{-0.02cm}
+      \item \azul{Unidad 1:} clasificar variables, construir tablas, elegir y
+            leer gráficos.
+      \item \azul{Unidad 2:} calcular e interpretar centro, posición,
+            dispersión y forma.
+      \item \azul{Unidad 3:} integrar todo, describir el perfil y sustentar
+            una decisión.
+      \item Redacción: frases completas, con cifra, unidad y alcance.
+    \end{itemize}
+  \end{block}
+
+  \vspace{0.08cm}
+  \begin{alertblock}{Siete consejos}
+    \tiny
+    (1) Empiece por clasificar la variable: eso ordena todo lo demás. \quad
+    (2) Verifique $\sum f_i = n$. \quad (3) Escriba $L_i$, $F_{i-1}$, $f_i$ y
+    $A$ antes de reemplazar. \quad (4) No redondee en pasos intermedios. \quad
+    (5) Toda cifra con unidad. \quad (6) Limite las afirmaciones a los casos
+    observados. \quad (7) Toda recomendación, anclada a un número del
+    ejercicio.
+  \end{alertblock}
+
+  \vspace{0.08cm}
+  {\tiny\color{uniGris} Examen 3: semana 16 (23 al 28 de noviembre), 30\% de
+  la nota, en Aulas Virtuales (Moodle), presencial en el aula. Recuerde que
+  este examen aporta 15\% al RAC 1 y 15\% al RAC 2.}
+\end{frame}
+
+\begin{frame}{Cierre del curso}
+  \begin{block}{Lo que se lleva de este semestre}
+    \scriptsize
+    \begin{itemize}\setlength{\itemsep}{0.02cm}
+      \item Sabe \azul{organizar} datos crudos en tablas y gráficos correctos.
+      \item Sabe \azul{resumirlos} con las medidas adecuadas a cada escala y
+            forma.
+      \item Sabe \azul{leerlos en conjunto} y detectar cuándo un promedio
+            engaña.
+      \item Sabe \azul{escribir y sustentar} una conclusión que se sostiene en
+            la evidencia.
+    \end{itemize}
+  \end{block}
+
+  \vspace{0.15cm}
+  \begin{alertblock}{Lo que sigue}
+    \scriptsize
+    Este curso describe \destacar{lo observado}, y eso ya alcanza para
+    sustentar buena parte de las decisiones de su ejercicio profesional.
+    Cursos posteriores dan el paso siguiente: extender esas conclusiones a
+    toda la población midiendo la incertidumbre. \azul{Todo lo de este
+    semestre es su base.}
+  \end{alertblock}
+
+  \vspace{0.2cm}
+  \begin{center}
+    {\large\color{uniAzul}\textbf{Gracias por el semestre}}
+  \end{center}
+\end{frame}
+
+\begin{frame}{Ejercicios propuestos}
+  \vspace{-0.1cm}
+  \begin{beamercolorbox}[wd=\textwidth,sep=0.10cm]{block body}
+    \centering\scriptsize
+    Repaso final. Use la tabla del simulacro (tiempo de despacho, $n=60$).
+  \end{beamercolorbox}
+  \listatiny
+  \begin{columns}[T,onlytextwidth]
+    \begin{column}{0.47\textwidth}
+      \begin{enumerate}\setlength{\itemsep}{0.16cm}
+        \item Tipo y escala de la variable
+        \item Verifique $\bar{x} = 12{,}20$
+        \item Verifique $Me = 11{,}78$
+        \item Verifique $Mo = 11{,}20$
+        \item Calcule $D_4$
+        \item Calcule $P_{85}$
+        \item Verifique $Q_1$ y $Q_3$
+        \item Calcule el $RIC$ y las vallas
+        \item Verifique $s = 5{,}33$ y $CV = 43{,}7\%$
+        \item Calcule $As_1$ y compárelo con $As_2$
+      \end{enumerate}
+    \end{column}
+    \begin{column}{0.50\textwidth}
+      \begin{enumerate}\setlength{\itemsep}{0.16cm}
+        \setcounter{enumi}{10}
+        \item ¿Qué \% de pedidos sale en menos de 14 horas?
+        \item ¿Cuántos pedidos tardan 18 horas o más?
+        \item ¿Cuál es la clase modal y qué significa?
+        \item ¿Qué gráfico usaría para presentar esto a la gerencia?
+        \item Describa el perfil de la distribución
+        \item ¿Qué medida de centro reporta y por qué?
+        \item Identifique el quiebre: ``el tiempo promedio de la empresa es
+              12,2 horas''
+        \item Identifique el quiebre: ``mejoramos porque contratamos más
+              personal''
+        \item Escriba tres hallazgos para una sustentación de 5 minutos
+        \item Escriba la recomendación y su limitación
+      \end{enumerate}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{Respuestas}{Autoevaluación de los ejercicios propuestos}
+  \listatiny
+  \begin{columns}[T,onlytextwidth]
+    \begin{column}{0.47\textwidth}
+      \begin{enumerate}\setlength{\itemsep}{0.16cm}
+        \item Cuantitativa continua; escala de razón
+        \item $732/60 = 12{,}20$
+        \item $10+\frac{30-22}{18}(4) = 11{,}78$
+        \item $10+\frac{3}{10}(4) = 11{,}20$
+        \item $\frac{4n}{10}=24 \Rightarrow 10+\frac{24-22}{18}(4)=10{,}44$
+        \item $\frac{85n}{100}=51 \Rightarrow$ límite de $[14,18)$: $18{,}00$
+        \item $Q_1 = 8{,}13$; \ $Q_3 = 15{,}82$
+        \item $RIC = 7{,}68$; vallas $-3{,}39$ y $27{,}35$
+        \item $\sqrt{1\,677{,}60/59} = 5{,}33$; \ $CV = 43{,}7\%$
+        \item $As_1 = (12{,}20-11{,}20)/5{,}33 = 0{,}188$; ambos positivos
+      \end{enumerate}
+    \end{column}
+    \begin{column}{0.50\textwidth}
+      \begin{enumerate}\setlength{\itemsep}{0.16cm}
+        \setcounter{enumi}{10}
+        \item $H_3 = 40/60 = 66{,}7\%$
+        \item $6+3 = 9$ pedidos
+        \item $[10,14)$: el tiempo de despacho más frecuente
+        \item Histograma, y caja si hay que comparar grupos
+        \item Asimétrico positivo leve, muy heterogéneo, unimodal
+        \item La mediana: la cola de despachos lentos infla la media
+        \item Salto de escala: son 60 pedidos medidos, no toda la empresa
+        \item Causa inventada: solo hay coincidencia temporal
+        \item Respuesta abierta: uno de centro, uno de dispersión, uno de
+              segmento
+        \item Respuesta abierta, anclada a $Q_3$ y con alcance declarado
+      \end{enumerate}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{Referencias}
+  \footnotesize
+  \begin{itemize}
+    \item[{[1]}] Monroy Saldívar, S. (2008). \textit{Estadística descriptiva}.
+      Instituto Politécnico Nacional.
+      \texttt{https://elibro.net/es/lc/uniminuto/titulos/74722}
+    \item[{[2]}] Ordóñez Fernández, F. F. \& González Fernández, J. (2021).
+      \textit{Estadística descriptiva paso a paso}. Ediciones Pirámide.
+      \texttt{https://elibro.net/es/lc/uniminuto/titulos/215449}
+    \item[{[3]}] Llinás Solano, H. (2014). \textit{Introducción a la
+      estadística con aplicaciones en ciencias sociales}. Universidad del
+      Norte. \texttt{https://elibro.net/es/lc/uniminuto/titulos/70062}
+  \end{itemize}
+
+  \vspace{0.35cm}
+  \begin{center}
+    {\Large\color{uniAzul}\textbf{Éxitos en el Examen 3}}
+  \end{center}
+\end{frame}
+
+\end{document}

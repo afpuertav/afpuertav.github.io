@@ -1,0 +1,497 @@
+% ============================================================================
+%  ESTADÍSTICA INFERENCIAL — Sesión 8
+%  Semana 8: 28 de septiembre al 3 de octubre de 2026
+%  2.3 Distribución de probabilidad continua: normal
+% ============================================================================
+\documentclass[aspectratio=169,10pt]{beamer}
+
+\usepackage[utf8]{inputenc}
+\IfFileExists{spanish.ldf}{\usepackage[spanish,es-noshorthands]{babel}}{}
+\usepackage{amsmath,amssymb}
+\usepackage{booktabs}
+\usepackage{tikz}
+\usepackage{listings}
+
+\usetheme{Uniminuto}
+
+\uniasignatura{Estadística inferencial}
+\uniprofesor{Andrés Felipe Puerta Velez}
+\unicorreo{andres.puerta-v@uniminuto.edu.co}
+\uninrc{CBASBL061}
+\unisemana{Sesión 8 — Semana 8 · 28 de septiembre al 3 de octubre de 2026}
+
+\newcommand{\listatiny}{\setbeamerfont{itemize/enumerate body}{size=\tiny}\tiny}
+
+% curva normal reutilizable
+\newcommand{\curvanormal}[1]{%
+  \draw[uniGris,->] (-3.4,0) -- (3.5,0);
+  \draw[uniAzul,thick,domain=-3.3:3.3,samples=90,smooth]
+    plot (\x,{2.1*exp(-0.5*\x*\x)});
+  #1}
+
+\newcommand{\fx}[1]{{\ttfamily\color{uniAzul}#1}}
+
+% ------------------------------------------------------------- CÓDIGO R ----
+\lstdefinestyle{Rcode}{
+  language=R,
+  basicstyle=\ttfamily\scriptsize,
+  keywordstyle=\color{uniAzul}\bfseries,
+  commentstyle=\color{uniGris}\itshape,
+  stringstyle=\color{uniTitulo},
+  showstringspaces=false, numbers=none, breaklines=true,
+  columns=fullflexible,
+  backgroundcolor=\color{uniCremaClaro},
+  frame=leftline, framerule=1.2pt, rulecolor=\color{uniNaranja},
+  xleftmargin=0.35cm, framexleftmargin=0.35cm,
+  framexrightmargin=0.15cm, framextopmargin=2pt, framexbottommargin=2pt,
+  aboveskip=0.15cm, belowskip=0.15cm
+}
+\lstdefinestyle{Rmini}{
+  language=R,
+  basicstyle=\ttfamily\tiny,
+  keywordstyle=\color{uniAzul}\bfseries,
+  commentstyle=\color{uniGris}\itshape,
+  stringstyle=\color{uniTitulo},
+  showstringspaces=false, numbers=none, breaklines=true,
+  columns=fullflexible,
+  backgroundcolor=\color{uniCremaClaro},
+  frame=leftline, framerule=1.2pt, rulecolor=\color{uniNaranja},
+  xleftmargin=0.35cm, framexleftmargin=0.35cm,
+  framexrightmargin=0.15cm, framextopmargin=2pt, framexbottommargin=2pt,
+  aboveskip=0.12cm, belowskip=0.12cm
+}
+\lstdefinestyle{Rout}{
+  basicstyle=\ttfamily\tiny\color{black},
+  showstringspaces=false, numbers=none, breaklines=true,
+  columns=fullflexible,
+  backgroundcolor=\color{uniGris!10},
+  frame=leftline, framerule=1.2pt, rulecolor=\color{uniGris},
+  xleftmargin=0.35cm, framexleftmargin=0.35cm,
+  framexrightmargin=0.15cm, framextopmargin=2pt, framexbottommargin=2pt,
+  aboveskip=0.12cm, belowskip=0.12cm
+}
+
+\begin{document}
+
+\portada
+
+\begin{frame}{Orden del día}
+  \begin{enumerate}
+    \item Llamado a lista y revisión de los ejercicios propuestos
+    \item Repaso: dónde quedamos
+    \item \azul{Tema 2.3: distribución normal}
+    \item Estandarización y uso de la tabla $Z$
+    \item Ejercicios en clase
+    \item Cierre y ejercicios propuestos
+  \end{enumerate}
+\end{frame}
+
+\begin{frame}{Repaso: dónde quedamos}
+  En la sesión 7 modelamos variables \azul{discretas}: binomial (éxitos en $n$
+  ensayos) y Poisson (ocurrencias en un intervalo). En ambas se pregunta
+  $P(X=k)$ para valores aislados.
+
+  \vspace{0.25cm}
+  \begin{alertblock}{El cambio de hoy}
+    \footnotesize
+    Muchas variables no son contables sino \destacar{medibles}: tiempos, pesos,
+    ingresos, longitudes. Pueden tomar cualquier valor en un intervalo. Para
+    ellas $P(X=k)=0$ y solo tienen sentido preguntas del tipo
+    $P(a<X<b)$: \azul{la probabilidad es área bajo la curva}.
+  \end{alertblock}
+\end{frame}
+
+\seccion{2.3 Distribución normal}
+
+\begin{frame}{La distribución normal}
+  \begin{columns}[T,onlytextwidth]
+    \begin{column}{0.46\textwidth}
+      \footnotesize
+      \begin{block}{Características}
+        \begin{itemize}
+          \item Forma de campana, simétrica respecto a $\mu$.
+          \item Media, mediana y moda coinciden.
+          \item Queda definida por dos parámetros: $\mu$ y $\sigma$.
+          \item El área total bajo la curva es 1.
+          \item Se extiende de $-\infty$ a $+\infty$.
+        \end{itemize}
+      \end{block}
+      Se escribe $X\sim N(\mu,\sigma)$.
+    \end{column}
+    \begin{column}{0.52\textwidth}
+      \centering
+      \begin{tikzpicture}[scale=0.68]
+        \curvanormal{}
+        \draw[uniNaranja,dashed,thick] (0,0) -- (0,2.1);
+        \node[font=\scriptsize] at (0,-0.3) {$\mu$};
+        \node[font=\scriptsize] at (1,-0.3) {$+\sigma$};
+        \node[font=\scriptsize] at (-1,-0.3) {$-\sigma$};
+        \node[font=\scriptsize] at (2,-0.3) {$+2\sigma$};
+        \node[font=\scriptsize] at (-2,-0.3) {$-2\sigma$};
+      \end{tikzpicture}
+    \end{column}
+  \end{columns}
+
+  \vspace{0.02cm}
+  {\scriptsize\color{uniGris} Aparece por todas partes porque muchas
+  variables son la suma de muchos efectos pequeños e independientes. La razón
+  formal es el teorema del límite central, que veremos en la sesión 9.}
+\end{frame}
+
+\begin{frame}{Regla empírica: 68 -- 95 -- 99{,}7}
+  \begin{columns}[T,onlytextwidth]
+    \begin{column}{0.52\textwidth}
+      \centering
+      \begin{tikzpicture}[scale=0.68]
+        \fill[uniAzul,opacity=0.30,domain=-1:1,samples=60]
+          plot (\x,{2.1*exp(-0.5*\x*\x)}) -- (1,0) -- (-1,0) -- cycle;
+        \fill[uniNaranja,opacity=0.22,domain=-2:-1,samples=40]
+          plot (\x,{2.1*exp(-0.5*\x*\x)}) -- (-1,0) -- (-2,0) -- cycle;
+        \fill[uniNaranja,opacity=0.22,domain=1:2,samples=40]
+          plot (\x,{2.1*exp(-0.5*\x*\x)}) -- (2,0) -- (1,0) -- cycle;
+        \curvanormal{}
+        \node[font=\scriptsize] at (0,-0.3) {$\mu$};
+        \node[font=\scriptsize] at (1,-0.3) {$1\sigma$};
+        \node[font=\scriptsize] at (2,-0.3) {$2\sigma$};
+        \node[font=\scriptsize] at (-1,-0.3) {$-1\sigma$};
+        \node[font=\scriptsize] at (-2,-0.3) {$-2\sigma$};
+      \end{tikzpicture}
+    \end{column}
+    \begin{column}{0.44\textwidth}
+      \begin{block}{Áreas centrales}
+        \footnotesize
+        \begin{center}
+        \begin{tabular}{@{}lr@{}}
+          \toprule
+          Intervalo & Área \\
+          \midrule
+          $\mu\pm 1\sigma$ & 68{,}27\% \\
+          $\mu\pm 2\sigma$ & 95{,}45\% \\
+          $\mu\pm 3\sigma$ & 99{,}73\% \\
+          \bottomrule
+        \end{tabular}
+        \end{center}
+      \end{block}
+      {\footnotesize Un valor a más de $3\sigma$ de la media es \azul{muy}
+      raro: menos de 3 en 1\,000.}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{Estandarización: la variable $Z$}
+  \begin{block}{Transformación}
+    \[ Z=\frac{X-\mu}{\sigma} \qquad\Longrightarrow\qquad Z\sim N(0,1) \]
+    $Z$ indica \destacar{a cuántas desviaciones estándar} está el valor $X$ de
+    la media.
+  \end{block}
+
+  \vspace{0.2cm}
+  \begin{columns}[T,onlytextwidth]
+    \begin{column}{0.48\textwidth}
+      \begin{exampleblock}{Por qué sirve}
+        \footnotesize
+        Hay infinitas normales, una por cada par $(\mu,\sigma)$. Pero todas se
+        reducen a \azul{una sola} tabla: la de $Z$.
+      \end{exampleblock}
+    \end{column}
+    \begin{column}{0.48\textwidth}
+      \begin{alertblock}{Cómo se lee la tabla}
+        \footnotesize
+        La tabla da $P(Z<z)$, el área \azul{a la izquierda}. Por tanto:
+        \[ P(Z>z)=1-P(Z<z) \]
+        \[ P(a<Z<b)=P(Z<b)-P(Z<a) \]
+      \end{alertblock}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{Valores de $Z$ que conviene memorizar}
+  \footnotesize
+  \begin{center}
+  \begin{tabular}{@{}crll@{}}
+    \toprule
+    $z$ & $P(Z<z)$ & \textbf{Área central} & \textbf{Uso} \\
+    \midrule
+    $1{,}00$  & $0{,}8413$ & 68{,}27\% & regla empírica \\
+    $1{,}645$ & $0{,}9500$ & 90\% & confianza del 90\% \\
+    $1{,}96$  & $0{,}9750$ & 95\% & confianza del 95\% \\
+    $2{,}00$  & $0{,}9772$ & 95{,}45\% & regla empírica \\
+    $2{,}576$ & $0{,}9950$ & 99\% & confianza del 99\% \\
+    \bottomrule
+  \end{tabular}
+  \end{center}
+
+  \vspace{0.25cm}
+  \begin{alertblock}{Por simetría}
+    \footnotesize
+    $P(Z<-z)=1-P(Z<z)$. Por ejemplo $P(Z<-1)=1-0{,}8413=0{,}1587$. Las tablas
+    que solo traen valores positivos se usan así.
+  \end{alertblock}
+
+  \vspace{0.1cm}
+  {\scriptsize\color{uniGris} Estos son los mismos $z$ del tamaño de muestra de
+  la sesión 5. Ahora se entiende de dónde salían.}
+\end{frame}
+
+\begin{frame}{Ejercicio 1 — en clase}
+  \begin{alertblock}{Individual (9 minutos)}
+    El tiempo de entrega de una empresa de domicilios se distribuye normal con
+    media \destacar{$\mu=500$ minutos} y desviación \destacar{$\sigma=50$
+    minutos}.
+
+    \vspace{0.25cm}
+    \begin{enumerate}
+      \item $P(X<560)$
+      \item $P(X<450)$
+      \item $P(450<X<560)$
+      \item $P(X>600)$
+    \end{enumerate}
+  \end{alertblock}
+\end{frame}
+
+\begin{frame}{Ejercicio 1 — solución}
+  \small
+  \begin{block}{Primero se estandariza}
+    \begin{align*}
+      x=560 &\Rightarrow z=\tfrac{560-500}{50}=1{,}20
+        &&P(X<560)=\azul{0{,}8849}\\[0.2em]
+      x=450 &\Rightarrow z=\tfrac{450-500}{50}=-1{,}00
+        &&P(X<450)=\azul{0{,}1587}\\[0.2em]
+      x=600 &\Rightarrow z=\tfrac{600-500}{50}=2{,}00
+        &&P(X>600)=1-0{,}9772=\azul{0{,}0228}
+    \end{align*}
+  \end{block}
+
+  \vspace{0.1cm}
+  \begin{exampleblock}{Punto 3}
+    \footnotesize
+    $P(450<X<560)=0{,}8849-0{,}1587=\azul{0{,}7263}$: cerca del 73\% de los
+    pedidos se entrega entre 450 y 560 minutos.
+  \end{exampleblock}
+\end{frame}
+
+\begin{frame}{Ejercicio 2 — en clase}
+  \begin{alertblock}{En parejas (9 minutos)}
+    El peso neto de un producto empacado sigue una normal con
+    \destacar{$\mu=2{,}5$ kg} y \destacar{$\sigma=0{,}3$ kg}. La norma exige
+    que el contenido no baje de 2{,}0 kg.
+
+    \vspace{0.25cm}
+    \begin{enumerate}
+      \item ¿Qué porcentaje de empaques incumple la norma?
+      \item $P(2{,}2<X<2{,}8)$
+      \item $P(X>3{,}1)$
+      \item ¿Por debajo de qué peso está el 90\% de los empaques?
+    \end{enumerate}
+  \end{alertblock}
+\end{frame}
+
+\begin{frame}{Ejercicio 2 — solución}
+  \begin{columns}[T,onlytextwidth]
+    \begin{column}{0.52\textwidth}
+      \begin{block}{Cálculos directos}
+        \footnotesize
+        \begin{align*}
+          z&=\tfrac{2{,}0-2{,}5}{0{,}3}=-1{,}67 &&P(X<2{,}0)=\azul{0{,}0478}\\[0.2em]
+          &\text{$2{,}2$ y $2{,}8$ están a $\pm 1\sigma$} &&P=\azul{0{,}6827}\\[0.2em]
+          z&=\tfrac{3{,}1-2{,}5}{0{,}3}=2{,}00 &&P(X>3{,}1)=\azul{0{,}0228}
+        \end{align*}
+      \end{block}
+    \end{column}
+    \begin{column}{0.44\textwidth}
+      \begin{exampleblock}{Punto 4: problema inverso}
+        \footnotesize
+        Se busca $x$ tal que $P(X<x)=0{,}90$. En la tabla, $z=1{,}28$:
+        \[ x=\mu+z\sigma=2{,}5+1{,}28(0{,}3)=\azul{2{,}88\text{ kg}} \]
+      \end{exampleblock}
+      \begin{alertblock}{Ojo}
+        \footnotesize
+        Aquí se entra a la tabla \azul{por el área} y se sale con el $z$: es el
+        camino contrario al de los puntos 1 a 3.
+      \end{alertblock}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{Los dos tipos de problema}
+  \footnotesize
+  \begin{center}
+  \begin{tabular}{@{}p{4.6cm}p{3.2cm}p{3.6cm}@{}}
+    \toprule
+    \textbf{Pregunta} & \textbf{Camino} & \textbf{Ejemplo} \\
+    \midrule
+    Dado un valor, ¿qué probabilidad? &
+      $x \rightarrow z \rightarrow$ tabla $\rightarrow$ área &
+      ``¿qué \% pesa menos de 2 kg?'' \\
+    \addlinespace
+    Dada una probabilidad, ¿qué valor? &
+      área $\rightarrow$ tabla $\rightarrow z \rightarrow x=\mu+z\sigma$ &
+      ``¿bajo qué peso está el 90\%?'' \\
+    \bottomrule
+  \end{tabular}
+  \end{center}
+
+  \vspace{0.25cm}
+  \begin{alertblock}{Recomendación práctica}
+    \footnotesize
+    \destacar{Dibuje siempre la campana} y sombree lo que le piden antes de
+    buscar en la tabla. La mitad de los errores en el examen vienen de sombrear
+    la cola equivocada.
+  \end{alertblock}
+\end{frame}
+
+\begin{frame}[fragile]{La normal, en R: se acaba la tabla}
+  \scriptsize
+\begin{lstlisting}[style=Rmini]
+# Ejercicio 1: X ~ N(500, 50)
+pnorm(560, mean = 500, sd = 50)          # P(X < 560)
+pnorm(450, mean = 500, sd = 50)          # P(X < 450)
+1 - pnorm(600, mean = 500, sd = 50)      # P(X > 600)
+diff(pnorm(c(450, 560), 500, 50))        # P(450 < X < 560)
+
+# Ejercicio 2: X ~ N(2.5, 0.3)
+pnorm(2.0, 2.5, 0.3)                     # incumple la norma
+qnorm(0.90, 2.5, 0.3)                    # problema inverso: el percentil 90
+
+# Los z que memorizamos
+qnorm(c(0.95, 0.975, 0.995))
+\end{lstlisting}
+\begin{lstlisting}[style=Rout]
+[1] 0.8849303
+[1] 0.1586553
+[1] 0.02275013
+[1] 0.7262751
+[1] 0.04779035
+[1] 2.884466
+[1] 1.644854 1.959964 2.575829
+\end{lstlisting}
+
+  \vspace{-0.12cm}
+  \begin{alertblock}{Lo que cambia y lo que no}
+    \tiny
+    Con \fx{pnorm()} \destacar{ya no hace falta estandarizar}: se le pasan
+    $\mu$ y $\sigma$ y devuelve el área. Pero el examen se resuelve con tabla,
+    y sobre todo: \destacar{decidir si el problema es directo o inverso}
+    —área o valor— sigue siendo trabajo suyo.
+  \end{alertblock}
+\end{frame}
+
+\begin{frame}{Cierre de la sesión}
+  \begin{block}{Lo que debe quedar claro hoy}
+    \begin{itemize}
+      \item En variables continuas la probabilidad es \azul{área}, y
+            $P(X=k)=0$.
+      \item $Z=(X-\mu)/\sigma$ convierte cualquier normal en la estándar.
+      \item La tabla da el área a la izquierda; lo demás sale por complemento,
+            resta o simetría.
+      \item Problema inverso: de la probabilidad al valor, con
+            $x=\mu+z\sigma$.
+    \end{itemize}
+  \end{block}
+
+  \vspace{0.2cm}
+  \begin{alertblock}{Trabajo independiente para la próxima sesión}
+    \footnotesize
+    Resolver los \destacar{20 ejercicios de la lámina siguiente}. Traer impresa
+    la tabla de la normal estándar: la usaremos el resto del curso.
+  \end{alertblock}
+\end{frame}
+
+\begin{frame}{Ejercicios propuestos}
+  \vspace{-0.1cm}
+  \begin{beamercolorbox}[wd=\textwidth,sep=0.10cm]{block body}
+    \centering\scriptsize
+    \textbf{1--8:} $Z\sim N(0,1)$. \quad \textbf{9--20:} $X\sim N(70,10)$.
+  \end{beamercolorbox}
+  \listatiny
+  \vspace{0.15cm}
+  \begin{columns}[T,onlytextwidth]
+    \begin{column}{0.47\textwidth}
+      \begin{enumerate}\setlength{\itemsep}{0.16cm}
+        \item $P(Z<1{,}00)$
+        \item $P(Z<1{,}50)$
+        \item $P(Z<-1{,}00)$
+        \item $P(Z>1{,}96)$
+        \item $P(-1<Z<1)$
+        \item $P(-2<Z<2)$
+        \item $z$ tal que $P(Z<z)=0{,}95$
+        \item $z$ tal que $P(Z<z)=0{,}99$
+        \item $P(X<85)$
+        \item $P(X<60)$
+      \end{enumerate}
+    \end{column}
+    \begin{column}{0.50\textwidth}
+      \begin{enumerate}\setlength{\itemsep}{0.16cm}
+        \setcounter{enumi}{10}
+        \item $P(X<50)$
+        \item $P(X>90)$
+        \item $P(60<X<85)$
+        \item $P(50<X<90)$
+        \item $z$ correspondiente a $x=85$
+        \item $z$ correspondiente a $x=50$
+        \item Percentil 95 de $X$
+        \item Percentil 25 de $X$
+        \item Intervalo $\mu\pm 2\sigma$
+        \item \% de datos dentro de $\mu\pm 3\sigma$
+      \end{enumerate}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{Respuestas}{Autoevaluación de los ejercicios propuestos}
+  \listatiny
+  \vspace{0.15cm}
+  \begin{columns}[T,onlytextwidth]
+    \begin{column}{0.47\textwidth}
+      \begin{enumerate}\setlength{\itemsep}{0.16cm}
+        \item $0{,}8413$
+        \item $0{,}9332$
+        \item $0{,}1587$
+        \item $0{,}0250$
+        \item $0{,}6827$
+        \item $0{,}9545$
+        \item $1{,}645$
+        \item $2{,}326$
+        \item $0{,}9332$
+        \item $0{,}1587$
+      \end{enumerate}
+    \end{column}
+    \begin{column}{0.50\textwidth}
+      \begin{enumerate}\setlength{\itemsep}{0.16cm}
+        \setcounter{enumi}{10}
+        \item $0{,}0228$
+        \item $0{,}0228$
+        \item $0{,}7745$
+        \item $0{,}9545$
+        \item $z=1{,}5$
+        \item $z=-2{,}0$
+        \item $86{,}45$
+        \item $63{,}26$
+        \item $[50;\,90]$
+        \item $99{,}73\%$
+      \end{enumerate}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{Referencias}
+  \footnotesize
+  \begin{itemize}
+    \item[{[1]}] Díaz Rodríguez, M. (2022). \textit{Estadística inferencial
+      aplicada}. Universidad del Norte.
+      \texttt{https://elibro.net/es/lc/uniminuto/titulos/221614}
+    \item[{[2]}] Llinás Solano, H. (2014). \textit{Introducción a la
+      estadística con aplicaciones en ciencias sociales}. Universidad del
+      Norte. \texttt{https://elibro.net/es/lc/uniminuto/titulos/70062}
+    \item[{[3]}] Contento Rubio, M. R. (2019). \textit{Estadística con
+      aplicaciones en R}. Editorial Utadeo.
+      \texttt{https://elibro.net/es/lc/uniminuto/titulos/220926}
+  \end{itemize}
+
+  \vspace{0.35cm}
+  \begin{center}
+    {\Large\color{uniAzul}\textbf{¿Preguntas?}}
+  \end{center}
+\end{frame}
+
+\end{document}

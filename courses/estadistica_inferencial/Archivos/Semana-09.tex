@@ -1,0 +1,555 @@
+% ============================================================================
+%  ESTADÍSTICA INFERENCIAL — Sesión 9
+%  Semana 9: 5 al 10 de octubre de 2026
+%  2.4 Distribución t de Student
+%  2.5 Distribución de las medias muestrales y Teorema del Límite Central
+% ============================================================================
+\documentclass[aspectratio=169,10pt]{beamer}
+
+\usepackage[utf8]{inputenc}
+\IfFileExists{spanish.ldf}{\usepackage[spanish,es-noshorthands]{babel}}{}
+\usepackage{amsmath,amssymb}
+\usepackage{booktabs}
+\usepackage{tikz}
+\usepackage{listings}
+
+\usetheme{Uniminuto}
+
+\uniasignatura{Estadística inferencial}
+\uniprofesor{Andrés Felipe Puerta Velez}
+\unicorreo{andres.puerta-v@uniminuto.edu.co}
+\uninrc{CBASBL061}
+\unisemana{Sesión 9 — Semana 9 · 5 al 10 de octubre de 2026}
+
+\newcommand{\listatiny}{\setbeamerfont{itemize/enumerate body}{size=\tiny}\tiny}
+
+\newcommand{\fx}[1]{{\ttfamily\color{uniAzul}#1}}
+
+% ------------------------------------------------------------- CÓDIGO R ----
+\lstdefinestyle{Rcode}{
+  language=R,
+  basicstyle=\ttfamily\scriptsize,
+  keywordstyle=\color{uniAzul}\bfseries,
+  commentstyle=\color{uniGris}\itshape,
+  stringstyle=\color{uniTitulo},
+  showstringspaces=false, numbers=none, breaklines=true,
+  columns=fullflexible,
+  backgroundcolor=\color{uniCremaClaro},
+  frame=leftline, framerule=1.2pt, rulecolor=\color{uniNaranja},
+  xleftmargin=0.35cm, framexleftmargin=0.35cm,
+  framexrightmargin=0.15cm, framextopmargin=2pt, framexbottommargin=2pt,
+  aboveskip=0.15cm, belowskip=0.15cm
+}
+\lstdefinestyle{Rmini}{
+  language=R,
+  basicstyle=\ttfamily\tiny,
+  keywordstyle=\color{uniAzul}\bfseries,
+  commentstyle=\color{uniGris}\itshape,
+  stringstyle=\color{uniTitulo},
+  showstringspaces=false, numbers=none, breaklines=true,
+  columns=fullflexible,
+  backgroundcolor=\color{uniCremaClaro},
+  frame=leftline, framerule=1.2pt, rulecolor=\color{uniNaranja},
+  xleftmargin=0.35cm, framexleftmargin=0.35cm,
+  framexrightmargin=0.15cm, framextopmargin=2pt, framexbottommargin=2pt,
+  aboveskip=0.12cm, belowskip=0.12cm
+}
+\lstdefinestyle{Rout}{
+  basicstyle=\ttfamily\tiny\color{black},
+  showstringspaces=false, numbers=none, breaklines=true,
+  columns=fullflexible,
+  backgroundcolor=\color{uniGris!10},
+  frame=leftline, framerule=1.2pt, rulecolor=\color{uniGris},
+  xleftmargin=0.35cm, framexleftmargin=0.35cm,
+  framexrightmargin=0.15cm, framextopmargin=2pt, framexbottommargin=2pt,
+  aboveskip=0.12cm, belowskip=0.12cm
+}
+
+\begin{document}
+
+\portada
+
+\begin{frame}{Orden del día}
+  \begin{enumerate}
+    \item Llamado a lista y revisión de los ejercicios propuestos
+    \item Repaso: dónde quedamos
+    \item \azul{Tema 2.5: distribución de las medias muestrales y el TLC}
+    \item \azul{Tema 2.4: distribución $t$ de Student}
+    \item Ejercicios en clase
+    \item Cierre y ejercicios propuestos
+  \end{enumerate}
+\end{frame}
+
+\begin{frame}{Repaso: dónde quedamos}
+  Ya sabemos calcular probabilidades para \azul{un} dato: si
+  $X\sim N(500,50)$, ¿qué probabilidad hay de que \emph{un} pedido tarde más de
+  600 minutos?
+
+  \vspace{0.25cm}
+  \begin{alertblock}{La pregunta de hoy, que es la del curso entero}
+    \footnotesize
+    Ya no preguntamos por un dato sino por el \destacar{promedio de una
+    muestra}. Si tomo 36 pedidos, ¿qué probabilidad hay de que su promedio
+    $\bar{x}$ supere los 830 minutos? Esta es la pregunta que permite pasar de
+    la muestra a la población.
+  \end{alertblock}
+
+  \vspace{0.15cm}
+  {\footnotesize\color{uniGris} La respuesta se llama \azul{distribución
+  muestral de la media} y es la bisagra entre la probabilidad y la
+  inferencia\,[1].}
+\end{frame}
+
+\seccion{2.5 Distribución de las medias muestrales}
+
+\begin{frame}{La media muestral es una variable aleatoria}
+  Si de una misma población se toman muchas muestras de tamaño $n$, cada una da
+  un $\bar{x}$ distinto. Esos valores tienen su propia distribución.
+
+  \vspace{0.25cm}
+  \begin{block}{Media y error estándar de $\bar{X}$}
+    \[ E(\bar{X})=\mu \qquad\qquad
+       \sigma_{\bar{X}}=\frac{\sigma}{\sqrt{n}} \]
+  \end{block}
+
+  \vspace{0.2cm}
+  \begin{alertblock}{Lo que dicen estas dos fórmulas}
+    \footnotesize
+    \begin{itemize}
+      \item El promedio de los promedios da en el blanco: $\bar{X}$ es un
+            estimador \azul{insesgado} de $\mu$.
+      \item La dispersión de $\bar{X}$ es \destacar{menor} que la de $X$, y se
+            reduce con $\sqrt{n}$. Promediar suaviza.
+    \end{itemize}
+  \end{alertblock}
+\end{frame}
+
+\begin{frame}{Teorema del Límite Central (TLC)}
+  \begin{block}{Enunciado}
+    \small
+    Si el tamaño de muestra $n$ es suficientemente grande, la distribución de
+    $\bar{X}$ es \destacar{aproximadamente normal}
+    \[ \bar{X}\;\sim\;N\!\left(\mu,\;\frac{\sigma}{\sqrt{n}}\right) \]
+    \azul{sin importar cómo sea la distribución de la población original}.
+  \end{block}
+
+  \vspace{0.2cm}
+  \begin{columns}[T,onlytextwidth]
+    \begin{column}{0.48\textwidth}
+      \begin{exampleblock}{Regla práctica}
+        \footnotesize
+        $n\ge 30$ basta en la mayoría de los casos. Si la población ya es
+        normal, vale para cualquier $n$.
+      \end{exampleblock}
+    \end{column}
+    \begin{column}{0.48\textwidth}
+      \begin{alertblock}{Por qué es tan importante}
+        \footnotesize
+        Permite usar la tabla normal aunque no sepamos nada de la forma de la
+        población. Es lo que hace posible todo lo que viene: estimación,
+        intervalos y pruebas de hipótesis.
+      \end{alertblock}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{Estandarización de la media muestral}
+  \begin{block}{Un dato frente a un promedio}
+    \[ \text{Un dato: } Z=\frac{X-\mu}{\sigma}
+       \qquad\qquad
+       \text{Un promedio: } Z=\frac{\bar{X}-\mu}{\sigma/\sqrt{n}} \]
+  \end{block}
+
+  \vspace{0.25cm}
+  \begin{alertblock}{El error más frecuente del curso}
+    \footnotesize
+    Olvidar el $\sqrt{n}$ del denominador. Si la pregunta habla de
+    \destacar{un promedio, una media o un total de $n$ observaciones}, va
+    $\sigma/\sqrt{n}$. Si habla de \destacar{un solo elemento}, va $\sigma$.
+  \end{alertblock}
+
+  \vspace{0.2cm}
+  {\footnotesize\color{uniGris} Con $\sigma=120$ y $n=36$, el error estándar es
+  $120/6=20$: la dispersión de los promedios es seis veces menor que la de los
+  datos individuales.}
+\end{frame}
+
+\begin{frame}{Ejercicio 1 — en clase}
+  \begin{alertblock}{Individual (9 minutos)}
+    El gasto mensual de los clientes de una tienda tiene
+    \destacar{$\mu=800$} y \destacar{$\sigma=120$} (miles de pesos). Se toma
+    una muestra aleatoria de \destacar{$n=36$} clientes.
+
+    \vspace{0.25cm}
+    \begin{enumerate}
+      \item ¿Cuál es el error estándar de $\bar{X}$?
+      \item $P(\bar{X}>830)$
+      \item $P(770<\bar{X}<830)$
+      \item $P(\bar{X}<780)$
+    \end{enumerate}
+  \end{alertblock}
+\end{frame}
+
+\begin{frame}{Ejercicio 1 — solución}
+  \small
+  \begin{block}{Error estándar y estandarización}
+    \[ \sigma_{\bar{X}}=\frac{120}{\sqrt{36}}=\azul{20}
+       \qquad Z=\frac{\bar{x}-800}{20} \]
+    \begin{align*}
+      \bar{x}=830 &\Rightarrow z=1{,}50 &&P(\bar{X}>830)=1-0{,}9332=\azul{0{,}0668}\\
+      \bar{x}=770 &\Rightarrow z=-1{,}50 &&P(770<\bar{X}<830)=\azul{0{,}8664}\\
+      \bar{x}=780 &\Rightarrow z=-1{,}00 &&P(\bar{X}<780)=\azul{0{,}1587}
+    \end{align*}
+  \end{block}
+
+  \vspace{0.1cm}
+  {\footnotesize\color{uniGris} Compare: para \emph{un} cliente,
+  $P(X>830)$ daría $z=0{,}25$ y una probabilidad de $0{,}40$. El promedio de 36
+  clientes es mucho más estable que un cliente suelto.}
+\end{frame}
+
+\begin{frame}{Distribución muestral de la proporción}
+  \begin{block}{El mismo razonamiento con proporciones}
+    \[ E(\hat{p})=p \qquad
+       \sigma_{\hat p}=\sqrt{\frac{p(1-p)}{n}} \qquad
+       Z=\frac{\hat{p}-p}{\sqrt{p(1-p)/n}} \]
+  \end{block}
+
+  \vspace{0.2cm}
+  \begin{exampleblock}{Ejemplo}
+    \footnotesize
+    Si el 40\% de los clientes usa la app ($p=0{,}40$) y se toma una muestra
+    de $n=100$:
+    \[ \sigma_{\hat p}=\sqrt{\tfrac{0{,}4\cdot 0{,}6}{100}}=0{,}0490
+       \qquad P(\hat{p}>0{,}45)=\azul{0{,}1537} \]
+  \end{exampleblock}
+
+  \vspace{0.1cm}
+  {\scriptsize\color{uniGris} La aproximación normal vale si $np\ge 5$ y
+  $n(1-p)\ge 5$. Aquí $np=40$ y $n(1-p)=60$: sin problema.}
+\end{frame}
+
+\seccion{2.4 Distribución t de Student}
+
+\begin{frame}{El problema: casi nunca conocemos $\sigma$}
+  Para calcular $Z=(\bar{X}-\mu)/(\sigma/\sqrt{n})$ hace falta $\sigma$, un
+  parámetro poblacional. En la práctica no se conoce y hay que reemplazarlo por
+  la desviación muestral $s$.
+
+  \vspace{0.25cm}
+  \begin{block}{Lo que resulta ya no es normal}
+    \[ T=\frac{\bar{X}-\mu}{s/\sqrt{n}} \;\sim\; t_{\,n-1} \]
+    Distribución $t$ de Student con \destacar{$n-1$ grados de libertad}.
+  \end{block}
+
+  \vspace{0.2cm}
+  {\footnotesize\color{uniGris} Al estimar $\sigma$ con $s$ se introduce
+  incertidumbre adicional, y la distribución se vuelve más ancha en las colas
+  para compensarla.}
+\end{frame}
+
+\begin{frame}{Características de la $t$}
+  \begin{columns}[T,onlytextwidth]
+    \begin{column}{0.48\textwidth}
+      \begin{block}{Se parece a la normal, pero}
+        \footnotesize
+        \begin{itemize}
+          \item Es simétrica y centrada en 0.
+          \item Tiene \azul{colas más pesadas}: valores extremos son más
+                probables.
+          \item Depende de los grados de libertad $gl=n-1$.
+          \item A medida que $gl$ crece se acerca a la normal; con $gl>30$ la
+                diferencia es mínima.
+        \end{itemize}
+      \end{block}
+    \end{column}
+    \begin{column}{0.48\textwidth}
+      \begin{exampleblock}{Valores críticos bilaterales al 95\%}
+        \footnotesize
+        \begin{center}
+        \begin{tabular}{@{}cr@{}}
+          \toprule
+          $gl$ & $t$ \\
+          \midrule
+          9   & 2{,}262 \\
+          14  & 2{,}145 \\
+          19  & 2{,}093 \\
+          29  & 2{,}045 \\
+          $\infty$ & 1{,}960 \\
+          \bottomrule
+        \end{tabular}
+        \end{center}
+      \end{exampleblock}
+    \end{column}
+  \end{columns}
+
+  \vspace{0.15cm}
+  {\scriptsize\color{uniGris} Note cómo el valor crítico baja hacia 1{,}96: la
+  $t$ converge a la normal.}
+\end{frame}
+
+\begin{frame}{¿Cuándo $Z$ y cuándo $t$?}
+  \footnotesize
+  \begin{center}
+  \begin{tabular}{@{}llll@{}}
+    \toprule
+    \textbf{Situación} & \textbf{$\sigma$} & \textbf{$n$} & \textbf{Se usa} \\
+    \midrule
+    Población normal & Conocida   & cualquiera & $Z$ \\
+    Población normal & Desconocida & cualquiera & $t$ con $gl=n-1$ \\
+    Población cualquiera & Conocida & $n\ge 30$ & $Z$ (por TLC) \\
+    Población cualquiera & Desconocida & $n\ge 30$ & $t$; en la práctica
+      $\approx Z$ \\
+    Población cualquiera & Desconocida & $n<30$ & $t$, y hay que suponer
+      normalidad \\
+    \bottomrule
+  \end{tabular}
+  \end{center}
+
+  \vspace{0.25cm}
+  \begin{alertblock}{Regla de bolsillo}
+    \footnotesize
+    \destacar{Si en el enunciado aparece $s$ (desviación de la muestra), use
+    $t$. Si aparece $\sigma$ (de la población), use $Z$.}
+  \end{alertblock}
+\end{frame}
+
+\begin{frame}{Ejercicio 2 — en clase}
+  \begin{alertblock}{En parejas (9 minutos)}
+    Para cada situación indique si se usa $Z$ o $t$, y con cuántos grados de
+    libertad cuando corresponda.
+
+    \vspace{0.25cm}
+    \begin{enumerate}
+      \item $n=40$, población no normal, $\sigma=15$ conocida.
+      \item $n=12$, población normal, $s=4{,}2$.
+      \item $n=200$, $s=30$.
+      \item $n=8$, población normal, $\sigma=5$ conocida.
+      \item $n=25$, población normal, $s=6$.
+    \end{enumerate}
+  \end{alertblock}
+\end{frame}
+
+\begin{frame}{Ejercicio 2 — solución}
+  \small
+  \begin{block}{Respuestas}
+    \footnotesize
+    \begin{enumerate}
+      \item \azul{$Z$}: $\sigma$ conocida y $n\ge 30$, el TLC garantiza
+            normalidad de $\bar{X}$.
+      \item \azul{$t$ con $gl=11$}: $\sigma$ desconocida y población normal.
+      \item \azul{$t$ con $gl=199$}, prácticamente igual a $Z$ porque
+            $gl$ es enorme.
+      \item \azul{$Z$}: aunque $n$ es pequeño, la población es normal y
+            $\sigma$ se conoce.
+      \item \azul{$t$ con $gl=24$}, valor crítico bilateral al 95\%:
+            $2{,}064$.
+    \end{enumerate}
+  \end{block}
+
+  \vspace{0.1cm}
+  {\footnotesize\color{uniGris} Lo decisivo es siempre lo mismo: ¿el dato de
+  dispersión es $\sigma$ o es $s$?}
+\end{frame}
+
+\begin{frame}{Ejercicio 3 — en clase}
+  \begin{alertblock}{Individual (8 minutos)}
+    En una empresa, el \destacar{40\%} de los clientes usa la aplicación
+    móvil. Se toma una muestra de \destacar{$n=100$} clientes.
+
+    \vspace{0.25cm}
+    \begin{enumerate}
+      \item Calcule $\sigma_{\hat p}$.
+      \item Verifique que se puede usar la aproximación normal.
+      \item $P(\hat{p}>0{,}45)$
+      \item $P(0{,}35<\hat{p}<0{,}45)$
+    \end{enumerate}
+  \end{alertblock}
+\end{frame}
+
+\begin{frame}{Ejercicio 3 — solución}
+  \begin{columns}[T,onlytextwidth]
+    \begin{column}{0.52\textwidth}
+      \begin{block}{Cálculos}
+        \footnotesize
+        \[ \sigma_{\hat p}=\sqrt{\frac{0{,}40(0{,}60)}{100}}
+           =\sqrt{0{,}0024}=\azul{0{,}0490} \]
+        \begin{align*}
+          \hat p=0{,}45 &\Rightarrow z=\tfrac{0{,}05}{0{,}0490}=1{,}02\\
+          &\Rightarrow P(\hat p>0{,}45)=\azul{0{,}1537}\\[0.2em]
+          P(0{,}35<\hat p<0{,}45)&=\azul{0{,}6926}
+        \end{align*}
+      \end{block}
+    \end{column}
+    \begin{column}{0.44\textwidth}
+      \begin{exampleblock}{Punto 2}
+        \footnotesize
+        $np=100(0{,}40)=40\ge 5$ y $n(1-p)=60\ge 5$. La aproximación normal es
+        válida.
+      \end{exampleblock}
+      \begin{alertblock}{Lectura}
+        \footnotesize
+        Cerca del 69\% de las muestras de 100 clientes darán una proporción
+        entre 35\% y 45\%. Ese margen de $\pm 5$ puntos es, en esencia, un
+        intervalo de confianza: el tema de la próxima sesión.
+      \end{alertblock}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}[fragile]{La $t$ y el TLC, en R}
+  \scriptsize
+\begin{lstlisting}[style=Rmini]
+# Valores criticos de t (reemplazan la tabla)
+qt(0.975, df = 19)      # bilateral 95%, gl = 19
+qt(0.975, df = 24)      # bilateral 95%, gl = 24
+qt(0.975, df = 199)     # con gl grande se parece a 1.96
+pt(-2.5, df = 15)       # area a la izquierda de t = -2.5
+
+# El TLC, visto en vivo: 5000 medias de muestras de tamano 30
+set.seed(2026)
+poblacion <- rexp(100000, rate = 1/50)      # poblacion MUY asimetrica
+medias    <- replicate(5000, mean(sample(poblacion, 30)))
+hist(medias, main = "Distribucion de la media muestral", col = "steelblue")
+c(mean(medias), sd(medias), 50/sqrt(30))    # comparar con mu y sigma/raiz(n)
+\end{lstlisting}
+\begin{lstlisting}[style=Rout]
+[1] 2.093024
+[1] 2.063899
+[1] 1.971957
+[1] 0.01222196
+\end{lstlisting}
+
+  \vspace{-0.12cm}
+  \begin{alertblock}{Por qué vale la pena correr las cuatro últimas líneas}
+    \tiny
+    La población es exponencial —muy asimétrica— y aun así el histograma de las
+    5\,000 medias sale \destacar{acampanado}, con desviación cercana a
+    $\sigma/\sqrt{n}$. Eso es el Teorema del Límite Central dejando de ser un
+    enunciado y volviéndose una imagen.
+  \end{alertblock}
+\end{frame}
+
+\begin{frame}{Cierre de la sesión}
+  \begin{block}{Lo que debe quedar claro hoy}
+    \begin{itemize}
+      \item $\bar{X}$ es aleatoria: $E(\bar X)=\mu$ y
+            $\sigma_{\bar X}=\sigma/\sqrt{n}$.
+      \item TLC: con $n\ge 30$, $\bar{X}$ es aproximadamente normal sea cual
+            sea la población.
+      \item Si se usa $s$ en vez de $\sigma$, la distribución es $t$ con
+            $n-1$ grados de libertad.
+      \item Nunca olvide el $\sqrt{n}$ cuando la pregunta sea sobre un
+            promedio.
+    \end{itemize}
+  \end{block}
+
+  \vspace{0.2cm}
+  \begin{alertblock}{Trabajo independiente para la próxima sesión}
+    \footnotesize
+    Resolver los \destacar{20 ejercicios de la lámina siguiente}. En la sesión
+    10 empezamos a \azul{estimar}: estimación puntual e intervalos de
+    confianza.
+  \end{alertblock}
+\end{frame}
+
+\begin{frame}{Ejercicios propuestos}
+  \vspace{-0.1cm}
+  \begin{beamercolorbox}[wd=\textwidth,sep=0.10cm]{block body}
+    \centering\scriptsize
+    \textbf{1--10:} $\mu=800$, $\sigma=120$, $n=36$. \quad
+    \textbf{11--14:} $p=0{,}40$, $n=100$.
+  \end{beamercolorbox}
+  \listatiny
+  \vspace{0.15cm}
+  \begin{columns}[T,onlytextwidth]
+    \begin{column}{0.47\textwidth}
+      \begin{enumerate}\setlength{\itemsep}{0.16cm}
+        \item Error estándar $\sigma_{\bar X}$
+        \item $z$ para $\bar x=830$
+        \item $P(\bar X>830)$
+        \item $P(\bar X<780)$
+        \item $P(770<\bar X<830)$
+        \item $P(\bar X>800)$
+        \item Error estándar si $n=144$
+        \item $P(\bar X>830)$ con $n=144$
+        \item ¿Por cuánto hay que multiplicar $n$ para reducir el error
+              estándar a la mitad?
+        \item $P(X>830)$ para \emph{un} cliente
+      \end{enumerate}
+    \end{column}
+    \begin{column}{0.50\textwidth}
+      \begin{enumerate}\setlength{\itemsep}{0.16cm}
+        \setcounter{enumi}{10}
+        \item $\sigma_{\hat p}$
+        \item ¿Se cumple $np\ge 5$ y $n(1-p)\ge 5$?
+        \item $P(\hat p>0{,}45)$
+        \item $P(0{,}35<\hat p<0{,}45)$
+        \item ¿$Z$ o $t$? $n=40$, $\sigma$ conocida
+        \item ¿$Z$ o $t$? $n=12$, $s$ conocida
+        \item ¿$Z$ o $t$? $n=200$, $s$ conocida
+        \item $gl$ si $n=25$
+        \item $t$ bilateral 95\% con $gl=14$
+        \item $t$ bilateral 95\% con $gl=29$
+      \end{enumerate}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{Respuestas}{Autoevaluación de los ejercicios propuestos}
+  \listatiny
+  \vspace{0.15cm}
+  \begin{columns}[T,onlytextwidth]
+    \begin{column}{0.47\textwidth}
+      \begin{enumerate}\setlength{\itemsep}{0.16cm}
+        \item $20$
+        \item $1{,}50$
+        \item $0{,}0668$
+        \item $0{,}1587$
+        \item $0{,}8664$
+        \item $0{,}5000$
+        \item $10$
+        \item $0{,}0013$ \;{\color{uniGris}$z=3{,}0$}
+        \item Por $4$
+        \item $0{,}4013$ \;{\color{uniTitulo}$z=0{,}25$; sin $\sqrt{n}$}
+      \end{enumerate}
+    \end{column}
+    \begin{column}{0.50\textwidth}
+      \begin{enumerate}\setlength{\itemsep}{0.16cm}
+        \setcounter{enumi}{10}
+        \item $0{,}0490$
+        \item Sí: $40$ y $60$
+        \item $0{,}1537$
+        \item $0{,}6926$
+        \item $Z$
+        \item $t$ con $gl=11$
+        \item $t$ con $gl=199\approx Z$
+        \item $gl=24$
+        \item $2{,}145$
+        \item $2{,}045$
+      \end{enumerate}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{Referencias}
+  \footnotesize
+  \begin{itemize}
+    \item[{[1]}] Díaz Rodríguez, M. (2022). \textit{Estadística inferencial
+      aplicada}. Universidad del Norte.
+      \texttt{https://elibro.net/es/lc/uniminuto/titulos/221614}
+    \item[{[2]}] Llinás Solano, H. (2014). \textit{Introducción a la
+      estadística con aplicaciones en ciencias sociales}. Universidad del
+      Norte. \texttt{https://elibro.net/es/lc/uniminuto/titulos/70062}
+    \item[{[3]}] Contento Rubio, M. R. (2019). \textit{Estadística con
+      aplicaciones en R}. Editorial Utadeo.
+      \texttt{https://elibro.net/es/lc/uniminuto/titulos/220926}
+  \end{itemize}
+
+  \vspace{0.35cm}
+  \begin{center}
+    {\Large\color{uniAzul}\textbf{¿Preguntas?}}
+  \end{center}
+\end{frame}
+
+\end{document}

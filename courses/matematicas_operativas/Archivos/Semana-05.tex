@@ -1,0 +1,589 @@
+% ============================================================================
+%  MATEMÁTICAS OPERATIVAS — Sesión 5
+%  Semana 5: 7 al 12 de septiembre de 2026
+%  1.5 Razones y proporciones · Repaso integrador de la Unidad 1
+%  Duración prevista: 3 horas
+% ============================================================================
+\documentclass[aspectratio=169,10pt]{beamer}
+
+\usepackage[utf8]{inputenc}
+\IfFileExists{spanish.ldf}{\usepackage[spanish,es-noshorthands]{babel}}{}
+\usepackage{amsmath,amssymb}
+\usepackage{booktabs}
+\usepackage{tikz}
+
+\usetheme{Uniminuto}
+
+\uniasignatura{Matemáticas Operativas}
+\uniprofesor{Andrés Felipe Puerta Velez}
+\unicorreo{andres.puerta-v@uniminuto.edu.co}
+\uninrc{CBASBL011}
+\unisemana{Sesión 5 — Semana 5 · 7 al 12 de septiembre de 2026}
+
+\newcommand{\listatiny}{\setbeamerfont{itemize/enumerate body}{size=\tiny}\tiny}
+
+\begin{document}
+
+\portada
+
+\begin{frame}{Orden del día}
+  \begin{enumerate}
+    \item Revisión de los ejercicios propuestos de la sesión 4
+    \item \azul{Tema 1.5: razones, proporciones y regla de tres}
+    \item Porcentajes: los cuatro tipos de pregunta
+    \item Repartos proporcionales
+    \item \azul{Repaso integrador de la Unidad 1}
+    \item Simulacro del Examen 1 y recomendaciones
+  \end{enumerate}
+
+  \vspace{0.25cm}
+  {\footnotesize\color{uniGris} Sesión de 3 horas. Cerramos la unidad: el
+  \destacar{Examen 1 (35\%)} es la próxima semana (14--19 de septiembre) en
+  Aulas Virtuales, presencial en el aula.}
+\end{frame}
+
+% ===========================================================================
+\seccion{1.5 Razones y proporciones}
+% ===========================================================================
+
+\begin{frame}{Razón y proporción}
+  \scriptsize
+  \begin{columns}[T,onlytextwidth]
+    \begin{column}{0.48\textwidth}
+      \begin{block}{Razón}
+        \tiny
+        Es el \azul{cociente} de dos cantidades: $\dfrac{a}{b}$, también
+        escrito $a:b$. Compara \destacar{por división}, no por resta.
+
+        \vspace{0.05cm}
+        Si en un grupo hay $18$ mujeres y $12$ hombres, la razón es
+        $\tfrac{18}{12} = \tfrac{3}{2}$: \azul{3 mujeres por cada 2 hombres}.
+      \end{block}
+    \end{column}
+    \begin{column}{0.48\textwidth}
+      \begin{block}{Proporción}
+        \tiny
+        Es la \azul{igualdad} de dos razones:
+        \[ \frac{a}{b} = \frac{c}{d} \]
+        Y la propiedad que lo resuelve todo, el
+        \destacar{producto cruzado}:
+        \[ a\cdot d = b\cdot c \]
+      \end{block}
+    \end{column}
+  \end{columns}
+
+  \vspace{0.12cm}
+  \begin{exampleblock}{Ejemplo}
+    \tiny
+    Halle $x$ en $\dfrac{3}{5} = \dfrac{x}{45}$:
+    \[ 3\cdot 45 = 5x \;\Longrightarrow\; 135 = 5x
+       \;\Longrightarrow\; x = \destacar{27} \]
+    \azul{Verificación:} $\tfrac{27}{45} = \tfrac{3}{5}$ \checkmark
+  \end{exampleblock}
+
+  \vspace{0.06cm}
+  {\tiny\color{uniGris} \destacar{Una razón no es una fracción del total.}
+  ``3 a 2'' no significa que las mujeres sean $\tfrac{3}{2}$ del grupo, sino
+  $\tfrac{3}{5}$ de él. Confundir las dos cosas es el error clásico del tema.}
+\end{frame}
+
+\begin{frame}{Regla de tres: directa e inversa}
+  \scriptsize
+  \begin{columns}[T,onlytextwidth]
+    \begin{column}{0.48\textwidth}
+      \begin{block}{Directa: más da más}
+        \tiny
+        $8$ kg de un insumo cuestan $\$36\,000$. ¿Cuánto cuestan $14$ kg?
+        \[ \frac{8}{36\,000} = \frac{14}{x}
+           \;\Longrightarrow\; x = \frac{36\,000\cdot 14}{8} \]
+        \[ x = \destacar{\$63\,000} \]
+      \end{block}
+    \end{column}
+    \begin{column}{0.48\textwidth}
+      \begin{alertblock}{Inversa: más da menos}
+        \tiny
+        $6$ operarios tardan $15$ días. ¿Cuánto tardan $10$?
+        \[ 6\cdot 15 = 10\cdot x \;\Longrightarrow\;
+           x = \frac{90}{10} \]
+        \[ x = \destacar{9\ \text{días}} \]
+      \end{alertblock}
+    \end{column}
+  \end{columns}
+
+  \vspace{0.12cm}
+  \begin{block}{Cómo decidir cuál es}
+    \tiny
+    Pregúntese: \destacar{si una magnitud aumenta, ¿la otra aumenta o
+    disminuye?} Aumenta $\Rightarrow$ \azul{directa} (se multiplica en cruz).
+    Disminuye $\Rightarrow$ \azul{inversa} (el producto de cada pareja es
+    constante).
+  \end{block}
+
+  \vspace{0.06cm}
+  {\tiny\color{uniGris} \destacar{Control de sentido común:} si eran $6$
+  operarios en $15$ días y ahora son más operarios, la respuesta \azul{tiene}
+  que ser menos de $15$ días. Si le da más, aplicó la regla equivocada.}
+\end{frame}
+
+\begin{frame}{Porcentajes: los cuatro tipos de pregunta}
+  \scriptsize
+  \begin{center}
+  \begin{tabular}{@{}p{3.6cm}p{4.0cm}p{4.2cm}@{}}
+    \toprule
+    \textbf{Pregunta} & \textbf{Se resuelve} & \textbf{Ejemplo} \\
+    \midrule
+    ¿Cuánto es el $p\%$ de $N$? &
+      $N\cdot\dfrac{p}{100}$ &
+      $18\%$ de $2\,450 = \azul{441}$ \\
+    \addlinespace
+    ¿Qué porcentaje es $a$ de $N$? &
+      $\dfrac{a}{N}\cdot 100$ &
+      $63$ de $180 = \azul{35\%}$ \\
+    \addlinespace
+    Si $a$ es el $p\%$, ¿cuánto es el total? &
+      $\dfrac{a\cdot 100}{p}$ &
+      $125$ es el $25\% \Rightarrow \azul{500}$ \\
+    \addlinespace
+    ¿En qué porcentaje varió? &
+      $\dfrac{\text{final}-\text{inicial}}{\text{inicial}}\cdot 100$ &
+      De $45$ a $63$: $\azul{+40\%}$ \\
+    \bottomrule
+  \end{tabular}
+  \end{center}
+
+  \vspace{0.1cm}
+  \begin{alertblock}{El denominador de una variación es siempre el valor inicial}
+    \tiny
+    De $80$ a $68$: la variación es $\tfrac{-12}{80}\cdot 100
+    = \destacar{-15\%}$, no $\tfrac{-12}{68}\cdot 100 = -17{,}6\%$.
+    \azul{Se compara contra el punto de partida}, no contra el de llegada.
+  \end{alertblock}
+\end{frame}
+
+\begin{frame}{Los porcentajes no se suman}
+  \scriptsize
+  \begin{columns}[T,onlytextwidth]
+    \begin{column}{0.48\textwidth}
+      \begin{alertblock}{Dos descuentos sucesivos}
+        \tiny
+        Un $20\%$ y luego un $10\%$ sobre un precio de $100$:
+        \[ 100\cdot 0{,}80\cdot 0{,}90 = 72 \]
+        El descuento total es del \destacar{28\%}, no del $30\%$.
+        El segundo se aplica sobre lo ya rebajado.
+      \end{alertblock}
+    \end{column}
+    \begin{column}{0.48\textwidth}
+      \begin{alertblock}{Subir y bajar lo mismo}
+        \tiny
+        Un precio sube $20\%$ y luego baja $20\%$:
+        \[ 100\cdot 1{,}20\cdot 0{,}80 = 96 \]
+        \destacar{No se vuelve al precio original.} Se pierde un $4\%$,
+        porque la bajada se calcula sobre una base mayor.
+      \end{alertblock}
+    \end{column}
+  \end{columns}
+
+  \vspace{0.12cm}
+  \begin{block}{El truco del factor}
+    \tiny
+    Aumentar un $p\%$ es multiplicar por $\left(1+\tfrac{p}{100}\right)$;
+    disminuir, por $\left(1-\tfrac{p}{100}\right)$. Encadenar variaciones es
+    \destacar{multiplicar factores}, nunca sumar porcentajes.
+    \[ \text{Tres aumentos del } 10\%:\quad
+       100\cdot 1{,}1^{3} = \destacar{133{,}10} \quad
+       \text{(no } 130\text{)} \]
+  \end{block}
+
+  \vspace{0.06cm}
+  {\tiny\color{uniGris} \azul{Para quitar el IVA:} si un precio con IVA del
+  $19\%$ es $\$84\,000$, la base es $84\,000\div 1{,}19 \approx
+  \$70\,588$. \destacar{No} se le resta el $19\%$ a $84\,000$.}
+\end{frame}
+
+\begin{frame}{Repartos proporcionales}
+  \scriptsize
+  \begin{exampleblock}{Repartir $\$4\,200$ en la razón $2:3:5$}
+    \tiny
+    \textbf{1.} Sume las partes: $2+3+5 = 10$. \quad
+    \textbf{2.} Halle el valor de una parte: $4\,200\div 10 = 420$. \quad
+    \textbf{3.} Multiplique:
+    \[ 2\cdot 420 = \destacar{840} \qquad
+       3\cdot 420 = \destacar{1\,260} \qquad
+       5\cdot 420 = \destacar{2\,100} \]
+    \azul{Verificación:} $840+1\,260+2\,100 = 4\,200$ \checkmark
+  \end{exampleblock}
+
+  \vspace{0.1cm}
+  \begin{block}{Otro caso}
+    \tiny
+    Repartir $91$ en la razón $3:4$: las partes suman $7$, cada parte vale
+    $13$, y el reparto es $\destacar{39}$ y $\destacar{52}$.
+  \end{block}
+
+  \vspace{0.08cm}
+  {\tiny\color{uniGris} \destacar{La verificación es obligatoria y gratis:}
+  las partes repartidas siempre tienen que sumar el total. Si no suman, hubo
+  un error de división. Es el único ejercicio del examen que puede
+  comprobarse por completo en diez segundos.}
+\end{frame}
+
+\begin{frame}{Ejercicio 1 — proporciones y porcentajes}
+  \scriptsize
+  \begin{alertblock}{En parejas, 12 minutos}
+    \tiny
+    \textbf{1.} Halle $x$: \ $\tfrac{7}{12}=\tfrac{21}{x}$ \qquad
+    \textbf{2.} $35\%$ de $640$ \qquad
+    \textbf{3.} ¿Qué porcentaje es $63$ de $180$? \qquad
+    \textbf{4.} Reparta $60$ en la razón $1:2:3$ \qquad
+    \textbf{5.} Un artículo pasa de $\$45\,000$ a $\$63\,000$: ¿cuánto subió
+    en porcentaje?
+  \end{alertblock}
+
+  \vspace{0.05cm}
+  \begin{block}{Solución}
+    \tiny
+    \textbf{1.} $7x = 12\cdot 21 = 252 \Rightarrow x=\destacar{36}$ \qquad
+    \textbf{2.} $640\cdot 0{,}35 = \destacar{224}$ \qquad
+    \textbf{3.} $\tfrac{63}{180}\cdot 100 = \destacar{35\%}$
+
+    \vspace{0.08cm}
+    \textbf{4.} Partes: $1+2+3=6$; cada parte $=10$:
+    $\destacar{10,\ 20,\ 30}$ \qquad
+    \textbf{5.} $\tfrac{63\,000-45\,000}{45\,000}\cdot 100
+    = \tfrac{18}{45}\cdot 100 = \destacar{+40\%}$
+  \end{block}
+\end{frame}
+
+% ===========================================================================
+\seccion{Repaso integrador de la Unidad 1}
+% ===========================================================================
+
+\begin{frame}{Mapa de la Unidad 1}
+  \scriptsize
+  \begin{center}
+  \begin{tabular}{@{}clp{7.6cm}@{}}
+    \toprule
+    \textbf{Tema} & \textbf{Sesión} & \textbf{Lo que se evalúa} \\
+    \midrule
+    1.1 & 1 &
+      Clasificar en $\mathbb{N},\mathbb{Z},\mathbb{Q},\mathbb{I}$; decimal a
+      fracción; propiedades; orden; intervalos; valor absoluto \\
+    \addlinespace
+    1.2 & 2 &
+      Ley de los signos; potencias de enteros; jerarquía de operaciones;
+      factorización, MCD y mcm \\
+    \addlinespace
+    1.3 & 3 &
+      Simplificar; sumar, restar, multiplicar y dividir fracciones;
+      fracciones complejas; jerarquía \\
+    \addlinespace
+    1.4 & 4 &
+      Extensión y comprensión; $\in$ y $\subseteq$; unión, intersección,
+      diferencia, complemento; Venn y conteo \\
+    \addlinespace
+    1.5 & 5 &
+      Razones, proporciones, regla de tres, porcentajes, repartos \\
+    \bottomrule
+  \end{tabular}
+  \end{center}
+
+  \vspace{0.08cm}
+  {\tiny\color{uniGris} El Examen 1 evalúa \destacar{los cinco temas}, no una
+  selección. Si algo quedó flojo, esta semana es el momento: la Unidad 2
+  arranca de cero en cuanto a temas, pero da por sabido todo lo de arriba.}
+\end{frame}
+
+\begin{frame}{Simulacro del Examen 1 — parte A}
+  \begin{alertblock}{Individual, 20 minutos, sin apuntes}
+    \scriptsize
+    \begin{enumerate}\setlength{\itemsep}{0.0cm}
+      \item Clasifique en $\mathbb{N},\mathbb{Z},\mathbb{Q},\mathbb{I}$: \
+            $\sqrt{121}$, \ $\sqrt{28}$, \ $-\tfrac{18}{6}$, \
+            $0{,}\overline{36}$
+      \item Convierta a fracción: \ $0{,}\overline{36}$ \ y \
+            $1{,}4\overline{3}$
+      \item Calcule: \ $-4^{2}+(-3)^{3}-20\div(-4)\cdot 3$
+      \item Calcule: \ $\dfrac{5}{8}+\dfrac{2}{3}-\dfrac{1}{4}$
+      \item Calcule: \ $\dfrac{2}{5}\div\dfrac{3}{10}$
+      \item Halle $\mathrm{MCD}(126,210)$ y $\mathrm{mcm}(126,210)$
+    \end{enumerate}
+  \end{alertblock}
+\end{frame}
+
+\begin{frame}{Simulacro — solución de la parte A}
+  \scriptsize
+  \begin{columns}[T,onlytextwidth]
+    \begin{column}{0.49\textwidth}
+      \begin{block}{Puntos 1 a 3}
+        \tiny
+        \textbf{1.} $\sqrt{121}=11$: $\mathbb{N},\mathbb{Z},\mathbb{Q}$. \
+        $\sqrt{28}=2\sqrt{7}$: $\mathbb{I}$. \
+        $-\tfrac{18}{6}=-3$: $\mathbb{Z},\mathbb{Q}$. \
+        $0{,}\overline{36}$: $\mathbb{Q}$.
+
+        \vspace{0.08cm}
+        \textbf{2.} $99x=36 \Rightarrow x=\destacar{\tfrac{4}{11}}$; \quad
+        $100x-10x = 143{,}\overline{3}-14{,}\overline{3} = 129
+        \Rightarrow x=\tfrac{129}{90}=\destacar{\tfrac{43}{30}}$
+
+        \vspace{0.08cm}
+        \textbf{3.} $-16 + (-27) - (-5)(3) = -16-27+15
+        = \destacar{-28}$
+      \end{block}
+    \end{column}
+    \begin{column}{0.49\textwidth}
+      \begin{block}{Puntos 4 a 6}
+        \tiny
+        \textbf{4.} m.c.d. $=24$:
+        $\tfrac{15+16-6}{24} = \destacar{\tfrac{25}{24}}$
+
+        \vspace{0.1cm}
+        \textbf{5.} $\tfrac{2}{5}\cdot\tfrac{10}{3}
+        = \tfrac{20}{15} = \destacar{\tfrac{4}{3}}$
+
+        \vspace{0.1cm}
+        \textbf{6.} $126=2\cdot 3^{2}\cdot 7$, \
+        $210 = 2\cdot 3\cdot 5\cdot 7$
+        \[ \mathrm{MCD}=\destacar{42} \qquad
+           \mathrm{mcm}=\destacar{630} \]
+      \end{block}
+    \end{column}
+  \end{columns}
+
+  \vspace{0.06cm}
+  {\tiny\color{uniGris} En el \destacar{3}, $20\div(-4)\cdot 3 = -5\cdot 3
+  = -15$, y como va restando queda $+15$. Verificación del \destacar{6}:
+  $42\cdot 630 = 26\,460 = 126\cdot 210$ \checkmark}
+\end{frame}
+
+\begin{frame}{Simulacro del Examen 1 — parte B}
+  \begin{alertblock}{Individual, 20 minutos}
+    \scriptsize
+    \begin{enumerate}\setlength{\itemsep}{0.0cm}
+      \setcounter{enumi}{6}
+      \item Calcule: \ $|6-14| - |-5|$
+      \item Escriba en notación de intervalo: ``desde $-3$ inclusive hasta
+            $8$ sin incluir''.
+      \item Con $U=\{1,\dots,10\}$, \ $A$ los pares y $B$ los múltiplos de
+            $3$: halle $A\cup B$, $A\cap B$ y $\#(A\cup B)$.
+      \item De $70$ usuarios, $40$ usan el canal virtual, $35$ el
+            presencial y $18$ los dos. ¿Cuántos no usan ninguno?
+      \item Halle $x$: \ $\dfrac{x}{9}=\dfrac{12}{27}$
+      \item Un precio de $\$120\,000$ recibe un descuento del $15\%$ y luego
+            otro del $10\%$. ¿Cuál es el precio final y cuál el descuento
+            total en porcentaje?
+    \end{enumerate}
+  \end{alertblock}
+\end{frame}
+
+\begin{frame}{Simulacro — solución de la parte B}
+  \scriptsize
+  \begin{columns}[T,onlytextwidth]
+    \begin{column}{0.49\textwidth}
+      \begin{block}{Puntos 7 a 9}
+        \tiny
+        \textbf{7.} $8-5 = \destacar{3}$
+
+        \vspace{0.08cm}
+        \textbf{8.} $\destacar{[-3,\ 8)}$
+
+        \vspace{0.08cm}
+        \textbf{9.} $A=\{2,4,6,8,10\}$, $B=\{3,6,9\}$
+        \[ A\cup B = \{2,3,4,6,8,9,10\},\quad A\cap B=\{6\} \]
+        $\#(A\cup B) = 5+3-1 = \destacar{7}$
+      \end{block}
+    \end{column}
+    \begin{column}{0.49\textwidth}
+      \begin{block}{Puntos 10 a 12}
+        \tiny
+        \textbf{10.} $40+35-18 = 57$; \
+        $70-57 = \destacar{13}$
+
+        \vspace{0.08cm}
+        \textbf{11.} $27x = 108 \Rightarrow x=\destacar{4}$
+
+        \vspace{0.08cm}
+        \textbf{12.} $120\,000\cdot 0{,}85\cdot 0{,}90
+        = \destacar{\$91\,800}$; \
+        descuento total $= 23{,}5\%$ \azul{(no 25\%)}
+      \end{block}
+    \end{column}
+  \end{columns}
+
+  \vspace{0.06cm}
+  {\tiny\color{uniGris} El punto \destacar{12} es el que separa: $0{,}85\cdot
+  0{,}90 = 0{,}765$, es decir se paga el $76{,}5\%$ y se descuenta el
+  $23{,}5\%$. \azul{Los porcentajes encadenados se multiplican, no se
+  suman.}}
+\end{frame}
+
+\begin{frame}{Errores frecuentes de toda la Unidad 1}
+  \scriptsize
+  \begin{center}
+  \begin{tabular}{@{}p{5.4cm}p{6.6cm}@{}}
+    \toprule
+    \textbf{Error} & \textbf{Cómo evitarlo} \\
+    \midrule
+    $-5 > -2$ &
+      Con negativos el orden se invierte \\
+    \addlinespace
+    $-2^{4}=16$ &
+      Sin paréntesis el menos no se eleva: $-16$ \\
+    \addlinespace
+    $\frac{3}{4}+\frac{5}{6}=\frac{8}{10}$ &
+      Iguale denominadores; nunca los sume \\
+    \addlinespace
+    Invertir la primera fracción al dividir &
+      Se invierte la segunda \\
+    \addlinespace
+    $\#(A\cup B)=\#A+\#B$ &
+      Reste $\#(A\cap B)$ salvo que sean disjuntos \\
+    \addlinespace
+    Sumar porcentajes sucesivos &
+      Multiplique factores: $0{,}85\cdot 0{,}90$ \\
+    \addlinespace
+    Usar el valor final como denominador &
+      La variación se calcula sobre el valor \azul{inicial} \\
+    \bottomrule
+  \end{tabular}
+  \end{center}
+\end{frame}
+
+\begin{frame}{Cierre y preparación del Examen 1}
+  \scriptsize
+  \begin{alertblock}{Examen 1 (35\%) — semana 6, 14 al 19 de septiembre}
+    \tiny
+    Individual, en \azul{Aulas Virtuales (Moodle)}, presencial en el aula, con
+    tiempo límite. Evalúa los cinco temas de la Unidad 1.
+  \end{alertblock}
+
+  \vspace{0.1cm}
+  \begin{block}{Cómo prepararlo esta semana}
+    \tiny
+    \textbf{1.} Rehaga el simulacro de hoy \azul{cronometrado} y sin mirar las
+    soluciones. \quad
+    \textbf{2.} Repase los ejercicios propuestos de las sesiones 1 a 5; las
+    respuestas están en las diapositivas. \quad
+    \textbf{3.} Resuelva la guía de la unidad en Moodle. \quad
+    \textbf{4.} Lleve calculadora, aunque casi todo se puede hacer a mano.
+  \end{block}
+
+  \vspace{0.1cm}
+  \begin{exampleblock}{Lo que viene después}
+    \tiny
+    En la sesión 7 empieza la \azul{Unidad 2}: potenciación, radicación,
+    racionalización y logaritmos. Es la unidad más ``mecánica'' del curso —hay
+    reglas claras que se aplican— y por eso suele subir el promedio de quien
+    practica.
+  \end{exampleblock}
+
+  \vspace{0.06cm}
+  {\tiny\color{uniGris} Consultas y asesorías: hasta el día anterior al
+  examen, por correo o al final de la clase.}
+\end{frame}
+
+\begin{frame}{Ejercicios propuestos}
+  \vspace{-0.1cm}
+  \begin{beamercolorbox}[wd=\textwidth,sep=0.10cm]{block body}
+    \centering\scriptsize
+    \textbf{1--6:} proporciones y regla de tres. \quad
+    \textbf{7--14:} porcentajes. \quad
+    \textbf{15--20:} repaso de toda la unidad.
+  \end{beamercolorbox}
+  \listatiny
+  \vspace{0.15cm}
+  \begin{columns}[T,onlytextwidth]
+    \begin{column}{0.47\textwidth}
+      \begin{enumerate}\setlength{\itemsep}{0.16cm}
+        \item $\tfrac{x}{8}=\tfrac{15}{24}$
+        \item $\tfrac{5}{x}=\tfrac{20}{36}$
+        \item $12$ kg cuestan $\$54\,000$: ¿$20$ kg?
+        \item $4$ máquinas tardan $18$ h: ¿$6$ máquinas?
+        \item Reparta \$3\,600 en razón $1:3:5$
+        \item Reparta $84$ en razón $2:5$
+        \item $24\%$ de $1\,750$
+        \item ¿Qué \% es $56$ de $224$?
+        \item $90$ es el $15\%$ de\dots
+        \item De $250$ a $310$: variación \%
+      \end{enumerate}
+    \end{column}
+    \begin{column}{0.50\textwidth}
+      \begin{enumerate}\setlength{\itemsep}{0.16cm}
+        \setcounter{enumi}{10}
+        \item De $60$ a $48$: variación \%
+        \item Precio $\$95\,200$ con IVA $19\%$: base
+        \item Descuentos del $30\%$ y luego $20\%$: \% total
+        \item Sube $25\%$ y luego baja $25\%$: \% neto
+        \item Convierta $0{,}\overline{54}$ a fracción
+        \item Calcule $-3^{2}+(-4)^{2}-18\div(-3)$
+        \item Calcule $\tfrac{3}{4}-\tfrac{5}{6}\cdot\tfrac{3}{10}$
+        \item $\mathrm{mcm}(15,20,24)$
+        \item Con $U=\{1,\dots,12\}$, $A$ múltiplos de $4$, $B$ múltiplos
+              de $6$: halle $A\cap B$
+        \item Calcule $|3-11|+|-4|-|2-2|$
+      \end{enumerate}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{Respuestas}{Autoevaluación de los ejercicios propuestos}
+  \listatiny
+  \vspace{0.15cm}
+  \begin{columns}[T,onlytextwidth]
+    \begin{column}{0.47\textwidth}
+      \begin{enumerate}\setlength{\itemsep}{0.16cm}
+        \item $x=5$
+        \item $x=9$
+        \item $\$90\,000$
+        \item $12$ h
+        \item $400,\ 1\,200,\ 2\,000$
+        \item $24$ y $60$
+        \item $420$
+        \item $25\%$
+        \item $600$
+        \item $+24\%$
+      \end{enumerate}
+    \end{column}
+    \begin{column}{0.50\textwidth}
+      \begin{enumerate}\setlength{\itemsep}{0.16cm}
+        \setcounter{enumi}{10}
+        \item $-20\%$
+        \item $\$80\,000$
+        \item $44\%$ \ {\color{uniGris}($0{,}7\cdot 0{,}8=0{,}56$)}
+        \item $-6{,}25\%$
+        \item $\tfrac{6}{11}$
+        \item $13$
+        \item $\tfrac{1}{2}$
+        \item $120$
+        \item $\{12\}$
+        \item $12$
+      \end{enumerate}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{Referencias}
+  \footnotesize
+  \begin{itemize}
+    \item[{[1]}] Ramos del Olmo, Á. M. (2016). \textit{Matemáticas básicas
+      para el acceso a la universidad}. Ediciones Pirámide.
+      \texttt{https://elibro.net/es/ereader/uniminuto/49134}
+    \item[{[2]}] González Pulido, J. W., Chacón Benavides, J. A. \&
+      Fonseca Correa, L. Á. (2023). \textit{Matemática básica}
+      (1.\textsuperscript{a} ed.). Universidad Mariana.
+      \texttt{https://elibro.net/es/ereader/uniminuto/280647}
+    \item[{[3]}] Torrijos, M. (2018). \textit{Apuntes de matemática básica}.
+      Universidad Católica de Colombia.
+      \texttt{https://elibro.net/es/ereader/uniminuto/197048}
+    \item[{[4]}] Ramírez, A. \& Rojas, L. (2016). \textit{Matemáticas básicas
+      con aplicaciones a la ingeniería}. Ecoe Ediciones.
+      \texttt{https://elibro.net/es/ereader/uniminuto/114355}
+  \end{itemize}
+
+  \vspace{0.3cm}
+  \begin{center}
+    {\Large\color{uniAzul}\textbf{¿Preguntas?}}
+  \end{center}
+\end{frame}
+
+\end{document}

@@ -1,0 +1,565 @@
+% ============================================================================
+%  PRECÁLCULO — Sesión 8
+%  Semana 8: 28 de septiembre al 3 de octubre de 2026
+%  2.2 Radicación y sus propiedades
+%  Duración prevista: 3 horas
+% ============================================================================
+\documentclass[aspectratio=169,10pt]{beamer}
+
+\usepackage[utf8]{inputenc}
+\IfFileExists{spanish.ldf}{\usepackage[spanish,es-noshorthands]{babel}}{}
+\usepackage{amsmath,amssymb}
+\usepackage{booktabs}
+\usepackage{tikz}
+
+\usetheme{Uniminuto}
+
+\uniasignatura{Precálculo}
+\uniprofesor{Andrés Felipe Puerta Velez}
+\unicorreo{andres.puerta-v@uniminuto.edu.co}
+\uninrc{MATE1161}
+\unisemana{Sesión 8 — Semana 8 · 28 de septiembre al 3 de octubre de 2026}
+
+\newcommand{\listatiny}{\setbeamerfont{itemize/enumerate body}{size=\tiny}\tiny}
+
+\begin{document}
+
+\portada
+
+\begin{frame}{Orden del día}
+  \begin{enumerate}
+    \item Llamado a lista y revisión de los ejercicios propuestos
+    \item Repaso: dónde quedamos
+    \item \azul{Tema 2.2: definición y propiedades de la radicación}
+    \item Simplificación de radicales y radicales semejantes
+    \item Producto y cociente de radicales
+    \item Ejercicios guiados, taller y cierre
+  \end{enumerate}
+
+  \vspace{0.25cm}
+  {\footnotesize\color{uniGris} Sesión de 3 horas. Hoy \destacar{no hay
+  propiedades nuevas}: son las cinco de la sesión 7, escritas con el símbolo
+  $\sqrt[n]{\ }$ en lugar de exponentes fraccionarios.}
+\end{frame}
+
+\begin{frame}{Repaso: dónde quedamos}
+  \footnotesize
+  En la sesión 7 vimos las propiedades de la potenciación y el exponente
+  fraccionario $a^{m/n} = \sqrt[n]{a^{m}}$.
+
+  \vspace{0.2cm}
+  \begin{alertblock}{La idea que gobierna toda la sesión}
+    \footnotesize
+    \[ \sqrt[n]{a} = a^{1/n} \]
+    \destacar{Radicación y potenciación son la misma operación.} Cada vez que
+    una propiedad de radicales no le salga, \azul{pásela a exponente
+    fraccionario} y use lo de la semana pasada.
+  \end{alertblock}
+
+  \vspace{0.2cm}
+  \begin{block}{Por qué existe la radicación}
+    \footnotesize
+    Porque la potenciación no es reversible con las operaciones que ya
+    teníamos: si $x^2 = 49$, ninguna suma ni producto despeja $x$. Hacía falta
+    una \azul{operación inversa}.
+  \end{block}
+\end{frame}
+
+\seccion{2.2 Radicación y sus propiedades}
+
+\begin{frame}{Definición y existencia}
+  \scriptsize
+  \[ \sqrt[n]{a} = b \quad\Longleftrightarrow\quad b^{n} = a
+     \qquad n \text{ es el \azul{índice}},\quad a \text{ el \azul{radicando}} \]
+
+  \vspace{0.08cm}
+  \begin{center}
+  \begin{tabular}{@{}p{2.6cm}p{3.4cm}p{5.6cm}@{}}
+    \toprule
+    \textbf{Índice} & \textbf{Radicando} & \textbf{¿Existe en $\mathbb{R}$?} \\
+    \midrule
+    Par & Positivo & Sí, y hay \azul{dos}: $\sqrt{25} = 5$ es la
+      \destacar{raíz principal} (la positiva) \\
+    Par & Negativo & \destacar{No}: ningún real al cuadrado da negativo \\
+    Impar & Positivo & Sí, una sola: $\sqrt[3]{8} = 2$ \\
+    Impar & Negativo & Sí, una sola: $\sqrt[3]{-8} = -2$ \\
+    \bottomrule
+  \end{tabular}
+  \end{center}
+
+  \vspace{0.08cm}
+  \begin{alertblock}{Dos detalles que valen puntos}
+    \tiny
+    (1) $\sqrt{25} = 5$, \destacar{no} $\pm 5$. El $\pm$ aparece al resolver
+    $x^2 = 25$, que es otra cosa. \quad
+    (2) $\sqrt{a^{2}} = |a|$, \destacar{no} $a$: si $a = -3$,
+    $\sqrt{(-3)^2} = \sqrt{9} = 3 = |-3|$.
+  \end{alertblock}
+\end{frame}
+
+\begin{frame}{Las propiedades, en las dos notaciones}
+  \tiny
+  \begin{center}
+  \begin{tabular}{@{}p{3.2cm}p{3.6cm}p{4.6cm}@{}}
+    \toprule
+    \textbf{Propiedad} & \textbf{Con radicales} & \textbf{Con exponentes} \\
+    \midrule
+    Raíz de un producto &
+      $\sqrt[n]{ab} = \sqrt[n]{a}\cdot\sqrt[n]{b}$ &
+      $(ab)^{1/n} = a^{1/n}b^{1/n}$ \\
+    Raíz de un cociente &
+      $\sqrt[n]{\dfrac{a}{b}} = \dfrac{\sqrt[n]{a}}{\sqrt[n]{b}}$ &
+      $\left(\dfrac{a}{b}\right)^{1/n}$ \\
+    Raíz de una potencia &
+      $\sqrt[n]{a^{m}} = \left(\sqrt[n]{a}\right)^{m}$ &
+      $a^{m/n}$ \\
+    Raíz de una raíz &
+      $\sqrt[m]{\sqrt[n]{a}} = \sqrt[mn]{a}$ &
+      $\left(a^{1/n}\right)^{1/m} = a^{1/mn}$ \\
+    Potencia de una raíz &
+      $\left(\sqrt[n]{a}\right)^{n} = a$ &
+      $\left(a^{1/n}\right)^{n} = a$ \\
+    \bottomrule
+  \end{tabular}
+  \end{center}
+
+  \vspace{0.08cm}
+  \begin{alertblock}{La propiedad que NO existe}
+    \scriptsize
+    \[ \sqrt{a+b} \;\neq\; \sqrt{a}+\sqrt{b} \]
+    Con $a=9$ y $b=16$: \ $\sqrt{25} = 5$, pero $3+4 = 7$. \destacar{La raíz
+    se reparte sobre productos y cocientes, nunca sobre sumas.} Es el mismo
+    error de las potencias, con otro disfraz.
+  \end{alertblock}
+\end{frame}
+
+\begin{frame}{Simplificar un radical: extraer factores}
+  \scriptsize
+  \begin{block}{El procedimiento}
+    \tiny
+    \textbf{1.} Descomponer el radicando en factores primos. \quad
+    \textbf{2.} Agrupar en potencias del \azul{índice}. \quad
+    \textbf{3.} Sacar cada grupo completo.
+  \end{block}
+
+  \vspace{0.08cm}
+  \begin{columns}[T,onlytextwidth]
+    \begin{column}{0.48\textwidth}
+      \begin{exampleblock}{Numéricos}
+        \tiny
+        \[ \sqrt{50} = \sqrt{5^{2}\cdot 2} = \destacar{5\sqrt{2}} \]
+        \[ \sqrt{72} = \sqrt{2^{3}3^{2}} = \sqrt{2^2 3^2 \cdot 2}
+           = \destacar{6\sqrt{2}} \]
+        \[ \sqrt[3]{54} = \sqrt[3]{3^{3}\cdot 2} = \destacar{3\sqrt[3]{2}} \]
+      \end{exampleblock}
+    \end{column}
+    \begin{column}{0.48\textwidth}
+      \begin{exampleblock}{Con letras}
+        \tiny
+        \[ \sqrt{48x^{5}} = \sqrt{2^{4}\cdot 3\cdot x^{4}\cdot x} \]
+        \[ = 2^{2}x^{2}\sqrt{3x} = \destacar{4x^{2}\sqrt{3x}} \]
+        {\color{uniGris} Se supone $x \ge 0$ para que la raíz exista.}
+      \end{exampleblock}
+    \end{column}
+  \end{columns}
+
+  \vspace{0.08cm}
+  \begin{alertblock}{El truco para no equivocarse}
+    \tiny
+    En una raíz cuadrada se sacan los factores \destacar{de dos en dos}; en una
+    cúbica, \destacar{de tres en tres}. Con exponentes: se divide el exponente
+    entre el índice; \azul{el cociente sale y el residuo se queda}.
+    En $x^5$ con índice 2: $5 \div 2 = 2$ con residuo 1, luego sale $x^2$ y
+    queda $x$ adentro.
+  \end{alertblock}
+\end{frame}
+
+\begin{frame}{Suma y resta: solo entre radicales semejantes}
+  \scriptsize
+  \begin{block}{Radicales semejantes}
+    \tiny
+    Son los que tienen \azul{el mismo índice y el mismo radicando} después de
+    simplificar. Solo esos se pueden sumar, y se suman \destacar{los
+    coeficientes}, igual que $2x + 3x = 5x$.
+  \end{block}
+
+  \vspace{0.08cm}
+  \begin{exampleblock}{Ejemplo guiado}
+    \scriptsize
+    \[ 2\sqrt{12} + 3\sqrt{27} - \sqrt{75} \]
+    Simplificar cada uno primero:
+    \[ \sqrt{12} = 2\sqrt{3} \qquad \sqrt{27} = 3\sqrt{3}
+       \qquad \sqrt{75} = 5\sqrt{3} \]
+    \[ = 2(2\sqrt{3}) + 3(3\sqrt{3}) - 5\sqrt{3}
+       = 4\sqrt{3} + 9\sqrt{3} - 5\sqrt{3} = \destacar{8\sqrt{3}} \]
+  \end{exampleblock}
+
+  \vspace{0.05cm}
+  \begin{alertblock}{Lo que hay que hacer antes de decidir}
+    \tiny
+    A primera vista $\sqrt{12}$, $\sqrt{27}$ y $\sqrt{75}$ no se parecen en
+    nada. \destacar{Solo después de simplificar} se ve que los tres son
+    múltiplos de $\sqrt{3}$. \azul{Nunca decida si son semejantes antes de
+    simplificar.}
+  \end{alertblock}
+\end{frame}
+
+\begin{frame}{Producto y cociente de radicales}
+  \scriptsize
+  \begin{columns}[T,onlytextwidth]
+    \begin{column}{0.48\textwidth}
+      \begin{block}{Mismo índice}
+        \tiny
+        Se opera dentro de una sola raíz:
+        \[ \sqrt{8}\cdot\sqrt{6} = \sqrt{48} = \destacar{4\sqrt{3}} \]
+        \[ \sqrt[3]{16}\cdot\sqrt[3]{4} = \sqrt[3]{64} = \destacar{4} \]
+        \[ \frac{\sqrt{50}}{\sqrt{2}} = \sqrt{25} = \destacar{5} \]
+      \end{block}
+    \end{column}
+    \begin{column}{0.48\textwidth}
+      \begin{block}{Distinto índice}
+        \tiny
+        Se pasa a exponentes y se busca denominador común:
+        \[ \sqrt{2}\cdot\sqrt[3]{2} = 2^{1/2}\cdot 2^{1/3}
+           = 2^{5/6} = \destacar{\sqrt[6]{2^{5}}} \]
+        \[ \sqrt[3]{\sqrt{64}} = \sqrt[6]{64} = \destacar{2} \]
+      \end{block}
+    \end{column}
+  \end{columns}
+
+  \vspace{0.1cm}
+  \begin{alertblock}{Por qué conviene la notación de exponentes}
+    \scriptsize
+    Con radicales de distinto índice no hay regla que memorizar:
+    \destacar{se pasa todo a exponente fraccionario, se aplica
+    $a^{m}a^{n}=a^{m+n}$ y se devuelve a radical}. Es un camino mecánico y sin
+    excepciones.
+  \end{alertblock}
+\end{frame}
+
+\begin{frame}{Ejercicio 1 — en clase}
+  \begin{alertblock}{Individual (12 minutos)}
+    \scriptsize
+    Simplifique al máximo:
+
+    \vspace{0.25cm}
+    \centering
+    \begin{tabular}{@{}llll@{}}
+      1. \ $\sqrt{180}$ &
+      2. \ $\sqrt{200}-\sqrt{18}$ &
+      3. \ $\sqrt[3]{54}$ &
+      4. \ $\sqrt[4]{81}$ \\[1.0em]
+      5. \ $\sqrt{32x^{3}}$ &
+      6. \ $\sqrt{8}\cdot\sqrt{6}$ &
+      7. \ $\dfrac{\sqrt{50}}{\sqrt{2}}$ &
+      8. \ $\sqrt[3]{-8}$ \\[1.0em]
+      9. \ $\left(\sqrt{7}\right)^{2}$ &
+      10. \ $\sqrt{(-4)^{2}}$ &
+      11. \ $\sqrt[3]{\sqrt{64}}$ &
+      12. \ $\sqrt{-9}$ \\
+    \end{tabular}
+  \end{alertblock}
+\end{frame}
+
+\begin{frame}{Ejercicio 1 — solución}
+  \scriptsize
+  \begin{center}
+  \begin{tabular}{@{}llllllll@{}}
+    \toprule
+    1 & $6\sqrt{5}$ & 2 & $7\sqrt{2}$ & 3 & $3\sqrt[3]{2}$ & 4 & $3$ \\
+    5 & $4x\sqrt{2x}$ & 6 & $4\sqrt{3}$ & 7 & $5$ & 8 & $-2$ \\
+    9 & $7$ & 10 & $4$ & 11 & $2$ & 12 & No existe en $\mathbb{R}$ \\
+    \bottomrule
+  \end{tabular}
+  \end{center}
+
+  \vspace{0.12cm}
+  \begin{alertblock}{Los cuatro que hay que discutir}
+    \tiny
+    \textbf{2.} $\sqrt{200}=10\sqrt2$ y $\sqrt{18}=3\sqrt2$: son semejantes,
+    luego $10\sqrt2-3\sqrt2 = 7\sqrt2$. \quad
+    \textbf{8.} Índice \azul{impar}: sí existe y da $-2$. \quad
+    \textbf{10.} Da $4$, no $-4$: $\sqrt{a^2}=|a|$. \quad
+    \textbf{12.} Índice \azul{par} con radicando negativo:
+    \destacar{no existe en los reales}. Aparecerá en Cálculo, con los
+    complejos.
+  \end{alertblock}
+\end{frame}
+
+\begin{frame}{Ejercicio 2 — en clase}
+  \begin{alertblock}{En parejas (18 minutos)}
+    \scriptsize
+    Opere y simplifique:
+
+    \vspace{0.25cm}
+    \begin{columns}[T,onlytextwidth]
+      \begin{column}{0.48\textwidth}
+        \begin{enumerate}\setlength{\itemsep}{0.2cm}
+          \item $3\sqrt{20} + \sqrt{45} - 2\sqrt{80}$
+          \item $\sqrt{12}\cdot\sqrt{15}$
+          \item $\dfrac{\sqrt[3]{108}}{\sqrt[3]{4}}$
+        \end{enumerate}
+      \end{column}
+      \begin{column}{0.48\textwidth}
+        \begin{enumerate}\setlength{\itemsep}{0.2cm}
+          \setcounter{enumi}{3}
+          \item $\sqrt{50a^{4}b^{3}}$
+          \item $\left(2\sqrt{3}\right)^{2}$
+          \item $\sqrt{5}\cdot\sqrt[3]{5}$
+        \end{enumerate}
+      \end{column}
+    \end{columns}
+  \end{alertblock}
+\end{frame}
+
+\begin{frame}{Ejercicio 2 — solución}
+  \tiny
+  \begin{columns}[T,onlytextwidth]
+    \begin{column}{0.49\textwidth}
+      \begin{block}{Puntos 1 a 3}
+        \tiny
+        \begin{align*}
+          1)\;& 3(2\sqrt5) + 3\sqrt5 - 2(4\sqrt5) \\
+              &= 6\sqrt5 + 3\sqrt5 - 8\sqrt5 = \destacar{\sqrt5} \\[0.3em]
+          2)\;& \sqrt{180} = \destacar{6\sqrt{5}} \\[0.3em]
+          3)\;& \sqrt[3]{27} = \destacar{3}
+        \end{align*}
+      \end{block}
+    \end{column}
+    \begin{column}{0.49\textwidth}
+      \begin{block}{Puntos 4 a 6}
+        \tiny
+        \begin{align*}
+          4)\;& \sqrt{5^{2}\cdot 2\cdot a^{4}\cdot b^{2}\cdot b}
+                = \destacar{5a^{2}b\sqrt{2b}} \\[0.3em]
+          5)\;& 2^{2}\left(\sqrt3\right)^{2} = 4(3) = \destacar{12} \\[0.3em]
+          6)\;& 5^{1/2}5^{1/3} = 5^{5/6} = \destacar{\sqrt[6]{5^{5}}}
+        \end{align*}
+      \end{block}
+    \end{column}
+  \end{columns}
+
+  \vspace{0.1cm}
+  \begin{alertblock}{El punto 1, con detalle}
+    \tiny
+    $\sqrt{20}=2\sqrt5$, \ $\sqrt{45}=3\sqrt5$, \ $\sqrt{80}=4\sqrt5$.
+    \destacar{Los tres se vuelven semejantes solo después de simplificar}, y
+    entonces la suma es trivial. Sin ese paso previo el ejercicio parece
+    imposible.
+  \end{alertblock}
+\end{frame}
+
+\begin{frame}{Ejercicio 3 — en clase (taller principal)}
+  \begin{alertblock}{En grupos de 3 (20 minutos)}
+    \tiny
+    \setbeamerfont{itemize/enumerate body}{size=\tiny}
+    \begin{enumerate}\setlength{\itemsep}{0.04cm}
+      \item Simplifique: \ $\sqrt{98} + \sqrt{50} - \sqrt{8}$
+      \item Simplifique: \ $\sqrt{75x^{3}y^{2}}$ \ (con $x,y \ge 0$)
+      \item Opere: \ $\left(3\sqrt{2}\right)\left(5\sqrt{6}\right)$
+      \item Opere: \ $\left(\sqrt{5}+\sqrt{3}\right)\left(\sqrt{5}-\sqrt{3}\right)$
+      \item La diagonal de un cuadrado de lado $L$ mide $L\sqrt{2}$.
+            Si el lado es 6 cm, ¿cuánto mide la diagonal? Deje la respuesta
+            \destacar{exacta} y luego aproximada a dos decimales.
+      \item Encuentre el error: \ $\sqrt{16+9} = \sqrt{16}+\sqrt{9} = 7$
+      \item ¿Verdadero o falso? \ $\sqrt{x^{2}} = x$ para todo real $x$.
+    \end{enumerate}
+  \end{alertblock}
+\end{frame}
+
+\begin{frame}{Ejercicio 3 — solución}
+  \scriptsize
+  \begin{columns}[T,onlytextwidth]
+    \begin{column}{0.48\textwidth}
+      \begin{block}{Puntos 1 a 4}
+        \tiny
+        \textbf{1.} $7\sqrt2 + 5\sqrt2 - 2\sqrt2 = \destacar{10\sqrt{2}}$
+
+        \vspace{0.06cm}
+        \textbf{2.} $\sqrt{5^2\cdot 3\cdot x^2\cdot x\cdot y^2}
+        = \destacar{5xy\sqrt{3x}}$
+
+        \vspace{0.06cm}
+        \textbf{3.} $15\sqrt{12} = 15(2\sqrt3) = \destacar{30\sqrt{3}}$
+
+        \vspace{0.06cm}
+        \textbf{4.} Diferencia de cuadrados: $5 - 3 = \destacar{2}$
+      \end{block}
+    \end{column}
+    \begin{column}{0.50\textwidth}
+      \begin{alertblock}{Puntos 5 a 7}
+        \tiny
+        \textbf{5.} $6\sqrt{2}$ cm exacto $\approx \destacar{8{,}49}$ cm.
+        \azul{La forma exacta es la que se entrega}; la decimal solo si el
+        problema pide una medida.
+
+        \vspace{0.06cm}
+        \textbf{6.} $\sqrt{25} = 5 \neq 7$. \destacar{La raíz no se reparte
+        sobre sumas.}
+
+        \vspace{0.06cm}
+        \textbf{7.} \destacar{Falso}: $\sqrt{x^2} = |x|$. Con $x=-5$ da $5$, no
+        $-5$.
+      \end{alertblock}
+    \end{column}
+  \end{columns}
+
+  \vspace{0.05cm}
+  {\tiny\color{uniGris} El punto \destacar{4} es un adelanto de la sesión 13
+  (productos notables) y es la clave de la racionalización con conjugado que
+  veremos la próxima semana.}
+\end{frame}
+
+\begin{frame}{Errores frecuentes en esta sesión}
+  \scriptsize
+  \begin{center}
+  \begin{tabular}{@{}p{5.2cm}p{6.6cm}@{}}
+    \toprule
+    \textbf{Error} & \textbf{Corrección} \\
+    \midrule
+    $\sqrt{a+b} = \sqrt{a}+\sqrt{b}$ &
+      Falso. Solo vale para productos y cocientes \\
+    \addlinespace
+    $\sqrt{x^{2}} = x$ &
+      Es $|x|$: la raíz principal nunca es negativa \\
+    \addlinespace
+    $\sqrt{25} = \pm 5$ &
+      La raíz es $5$; el $\pm$ aparece al resolver $x^2 = 25$ \\
+    \addlinespace
+    Sumar $\sqrt{2}+\sqrt{3}$ como $\sqrt{5}$ &
+      No son semejantes: la suma se deja indicada \\
+    \addlinespace
+    Decidir si son semejantes sin simplificar &
+      $\sqrt{12}$ y $\sqrt{75}$ sí lo son, tras simplificar \\
+    \addlinespace
+    Creer que $\sqrt[3]{-8}$ no existe &
+      Con índice \azul{impar} sí existe: $-2$ \\
+    \bottomrule
+  \end{tabular}
+  \end{center}
+\end{frame}
+
+\begin{frame}{Cierre de la sesión}
+  \begin{block}{Lo que debe quedar claro hoy}
+    \scriptsize
+    \begin{itemize}\setlength{\itemsep}{0.02cm}
+      \item $\sqrt[n]{a} = a^{1/n}$: radicación y potenciación son
+            \azul{la misma operación}.
+      \item Índice par exige radicando $\ge 0$; índice impar admite negativos.
+      \item $\sqrt{a^{2}} = |a|$, y $\sqrt{25}=5$ (no $\pm5$).
+      \item Simplificar es \azul{extraer factores} agrupados según el índice.
+      \item Solo se suman radicales \azul{semejantes}, y hay que simplificar
+            antes de decidirlo.
+      \item La raíz \destacar{nunca} se reparte sobre sumas ni restas.
+    \end{itemize}
+  \end{block}
+
+  \vspace{0.08cm}
+  \begin{alertblock}{Trabajo independiente}
+    \tiny
+    Resolver los 20 ejercicios de la lámina siguiente. En la sesión 9 vemos
+    \destacar{racionalización}: cómo quitar las raíces del denominador, con la
+    diferencia de cuadrados del punto 4 de hoy como herramienta principal.
+  \end{alertblock}
+\end{frame}
+
+\begin{frame}{Ejercicios propuestos}
+  \vspace{-0.1cm}
+  \begin{beamercolorbox}[wd=\textwidth,sep=0.10cm]{block body}
+    \centering\scriptsize
+    \textbf{1--8:} simplificación. \quad \textbf{9--14:} suma, producto y
+    cociente. \quad \textbf{15--20:} conceptos y aplicaciones.
+  \end{beamercolorbox}
+  \listatiny
+  \vspace{0.15cm}
+  \begin{columns}[T,onlytextwidth]
+    \begin{column}{0.47\textwidth}
+      \begin{enumerate}\setlength{\itemsep}{0.16cm}
+        \item $\sqrt{128}$
+        \item $\sqrt{147}$
+        \item $\sqrt[3]{250}$
+        \item $\sqrt[4]{162}$
+        \item $\sqrt{27a^{5}}$
+        \item $\sqrt{12x^{2}y^{4}}$
+        \item $\sqrt[3]{-125}$
+        \item $\sqrt[5]{32}$
+        \item $\sqrt{18}+\sqrt{32}$
+        \item $5\sqrt{6}-2\sqrt{24}$
+      \end{enumerate}
+    \end{column}
+    \begin{column}{0.50\textwidth}
+      \begin{enumerate}\setlength{\itemsep}{0.16cm}
+        \setcounter{enumi}{10}
+        \item $\sqrt{6}\cdot\sqrt{10}$
+        \item $\dfrac{\sqrt{72}}{\sqrt{2}}$
+        \item $\left(4\sqrt{5}\right)^{2}$
+        \item $\left(\sqrt{7}+\sqrt{2}\right)\left(\sqrt{7}-\sqrt{2}\right)$
+        \item $\sqrt{3}\cdot\sqrt[4]{3}$
+        \item $\sqrt[4]{\sqrt{16}}$
+        \item ¿Existe $\sqrt[6]{-64}$ en $\mathbb{R}$?
+        \item ¿Cuánto vale $\sqrt{(-7)^{2}}$?
+        \item La diagonal de un cuadrado de lado 9 cm
+        \item ¿Por qué $\sqrt{9+16}\neq 3+4$?
+      \end{enumerate}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{Respuestas}{Autoevaluación de los ejercicios propuestos}
+  \listatiny
+  \vspace{0.15cm}
+  \begin{columns}[T,onlytextwidth]
+    \begin{column}{0.47\textwidth}
+      \begin{enumerate}\setlength{\itemsep}{0.16cm}
+        \item $8\sqrt{2}$
+        \item $7\sqrt{3}$
+        \item $5\sqrt[3]{2}$
+        \item $3\sqrt[4]{2}$
+        \item $3a^{2}\sqrt{3a}$
+        \item $2xy^{2}\sqrt{3}$
+        \item $-5$
+        \item $2$
+        \item $3\sqrt2+4\sqrt2 = 7\sqrt{2}$
+        \item $5\sqrt6-4\sqrt6 = \sqrt{6}$
+      \end{enumerate}
+    \end{column}
+    \begin{column}{0.50\textwidth}
+      \begin{enumerate}\setlength{\itemsep}{0.16cm}
+        \setcounter{enumi}{10}
+        \item $\sqrt{60} = 2\sqrt{15}$
+        \item $\sqrt{36} = 6$
+        \item $16(5) = 80$
+        \item $7-2 = 5$
+        \item $3^{1/2}3^{1/4} = 3^{3/4} = \sqrt[4]{27}$
+        \item $\sqrt[8]{16} = \sqrt{2}$
+        \item No: índice par con radicando negativo
+        \item $7$
+        \item $9\sqrt{2} \approx 12{,}73$ cm
+        \item Porque la raíz no se reparte sobre sumas: da $5$, no $7$
+      \end{enumerate}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{Referencias}
+  \footnotesize
+  \begin{itemize}
+    \item[{[1]}] Ramos del Olmo, Á. M. (2016). \textit{Matemáticas básicas
+      para el acceso a la universidad}. Ediciones Pirámide.
+      \texttt{https://elibro.net/es/ereader/uniminuto/49134}
+    \item[{[2]}] González Pulido, J. W., Chacón Benavides, J. A. \&
+      Fonseca Correa, L. Á. (2023). \textit{Matemática básica} (1.\textsuperscript{a} ed.).
+      Universidad Mariana.
+      \texttt{https://elibro.net/es/ereader/uniminuto/280647}
+    \item[{[3]}] Placencia Valero, J. (2008). \textit{Compendio de matemática
+      básica elemental} (1.\textsuperscript{a} ed.). Editorial Tébar Flores.
+      \texttt{https://elibro.net/es/ereader/uniminuto/269758}
+  \end{itemize}
+
+  \vspace{0.35cm}
+  \begin{center}
+    {\Large\color{uniAzul}\textbf{¿Preguntas?}}
+  \end{center}
+\end{frame}
+
+\end{document}

@@ -1,0 +1,878 @@
+% ============================================================================
+%  ESTADÍSTICA INFERENCIAL — Sesión 4
+%  Semana 4: 31 de agosto al 5 de septiembre de 2026
+%  1.5 Probabilidad condicional e independencia estadística
+%  1.6 Fundamentos del muestreo
+% ============================================================================
+\documentclass[aspectratio=169,10pt]{beamer}
+
+\usepackage[utf8]{inputenc}
+\IfFileExists{spanish.ldf}{\usepackage[spanish,es-noshorthands]{babel}}{}
+\usepackage{amsmath,amssymb}
+\usepackage{booktabs}
+\usepackage{tikz}
+\usepackage{listings}
+
+\usetheme{Uniminuto}
+
+\uniasignatura{Estadística inferencial}
+\uniprofesor{Andrés Felipe Puerta Velez}
+\unicorreo{andres.puerta-v@uniminuto.edu.co}
+\uninrc{CBASBL061}
+\unisemana{Sesión 4 — Semana 4 · 31 de agosto al 5 de septiembre de 2026}
+
+\newcommand{\listatiny}{\setbeamerfont{itemize/enumerate body}{size=\tiny}\tiny}
+
+\newcommand{\fx}[1]{{\ttfamily\color{uniAzul}#1}}
+
+% ------------------------------------------------------------- CÓDIGO R ----
+\lstdefinestyle{Rcode}{
+  language=R,
+  basicstyle=\ttfamily\scriptsize,
+  keywordstyle=\color{uniAzul}\bfseries,
+  commentstyle=\color{uniGris}\itshape,
+  stringstyle=\color{uniTitulo},
+  showstringspaces=false, numbers=none, breaklines=true,
+  columns=fullflexible,
+  backgroundcolor=\color{uniCremaClaro},
+  frame=leftline, framerule=1.2pt, rulecolor=\color{uniNaranja},
+  xleftmargin=0.35cm, framexleftmargin=0.35cm,
+  framexrightmargin=0.15cm, framextopmargin=2pt, framexbottommargin=2pt,
+  aboveskip=0.15cm, belowskip=0.15cm
+}
+\lstdefinestyle{Rmini}{
+  language=R,
+  basicstyle=\ttfamily\tiny,
+  keywordstyle=\color{uniAzul}\bfseries,
+  commentstyle=\color{uniGris}\itshape,
+  stringstyle=\color{uniTitulo},
+  showstringspaces=false, numbers=none, breaklines=true,
+  columns=fullflexible,
+  backgroundcolor=\color{uniCremaClaro},
+  frame=leftline, framerule=1.2pt, rulecolor=\color{uniNaranja},
+  xleftmargin=0.35cm, framexleftmargin=0.35cm,
+  framexrightmargin=0.15cm, framextopmargin=2pt, framexbottommargin=2pt,
+  aboveskip=0.12cm, belowskip=0.12cm
+}
+\lstdefinestyle{Rout}{
+  basicstyle=\ttfamily\tiny\color{black},
+  showstringspaces=false, numbers=none, breaklines=true,
+  columns=fullflexible,
+  backgroundcolor=\color{uniGris!10},
+  frame=leftline, framerule=1.2pt, rulecolor=\color{uniGris},
+  xleftmargin=0.35cm, framexleftmargin=0.35cm,
+  framexrightmargin=0.15cm, framextopmargin=2pt, framexbottommargin=2pt,
+  aboveskip=0.12cm, belowskip=0.12cm
+}
+
+\begin{document}
+
+\portada
+
+\begin{frame}{Orden del día}
+  \begin{enumerate}
+    \item Llamado a lista y revisión de los ejercicios propuestos
+    \item Repaso: dónde quedamos
+    \item \azul{Tema 1.5: probabilidad condicional e independencia estadística}
+    \item \azul{Teorema de Bayes: el caso de la prueba médica del 99\%}
+    \item Actualización bayesiana: qué pasa al repetir la prueba
+    \item \azul{Tema 1.6: fundamentos del muestreo}
+    \item Ejercicios en clase
+    \item Cierre y ejercicios propuestos
+  \end{enumerate}
+\end{frame}
+
+\begin{frame}{Repaso: dónde quedamos}
+  En la sesión 3 quedó pendiente una pieza de la regla de la suma:
+  \[ P(A\cup B)=P(A)+P(B)-\azul{P(A\cap B)} \]
+
+  \vspace{0.2cm}
+  \begin{alertblock}{La pregunta de hoy}
+    \footnotesize
+    ¿Cómo se calcula $P(A\cap B)$ cuando no nos la dan? La respuesta es la
+    \destacar{probabilidad condicional}: qué tanto cambia la probabilidad de un
+    evento cuando ya sabemos que ocurrió otro.
+  \end{alertblock}
+
+  \vspace{0.2cm}
+  {\footnotesize\color{uniGris} Esta es la herramienta que hace posible todo lo
+  que viene después: si observar una muestra no cambiara nada sobre la
+  población, la inferencia estadística no existiría.}
+\end{frame}
+
+\seccion{1.5 Probabilidad condicional e independencia}
+
+\begin{frame}{Probabilidad condicional}
+  \begin{block}{Definición}
+    \[ P(A\mid B)=\frac{P(A\cap B)}{P(B)}, \qquad P(B)>0 \]
+    Se lee ``probabilidad de $A$ \destacar{dado que} ocurrió $B$''.
+  \end{block}
+
+  \vspace{0.2cm}
+  \begin{columns}[T,onlytextwidth]
+    \begin{column}{0.46\textwidth}
+      \centering
+      \begin{tikzpicture}[scale=0.62]
+        \draw[uniGris,thick] (-2.3,-1.5) rectangle (2.3,1.5);
+        \fill[uniNaranja,opacity=0.22] (0.6,0) circle (1.15);
+        \begin{scope}
+          \clip (-0.6,0) circle (1.15);
+          \fill[uniAzul,opacity=0.45] (0.6,0) circle (1.15);
+        \end{scope}
+        \draw[thick,uniAzul] (-0.6,0) circle (1.15);
+        \draw[thick,uniNaranja] (0.6,0) circle (1.15);
+        \node at (-1.35,0) {$A$}; \node at (1.35,0) {$B$};
+        \node[font=\scriptsize] at (1.95,1.25) {$\Omega$};
+      \end{tikzpicture}
+    \end{column}
+    \begin{column}{0.50\textwidth}
+      \footnotesize
+      Condicionar es \azul{cambiar el espacio muestral}: ya no miramos todo
+      $\Omega$, sino solo $B$.
+
+      \vspace{0.25cm}
+      Por eso se divide entre $P(B)$: se está calculando qué fracción de $B$
+      corresponde también a $A$.
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{Regla de la multiplicación}
+  \begin{block}{Despejando de la definición}
+    \[ P(A\cap B)=P(B)\,P(A\mid B)=P(A)\,P(B\mid A) \]
+  \end{block}
+
+  \vspace{0.2cm}
+  \begin{exampleblock}{Ejemplo: extracción sin reemplazo}
+    \footnotesize
+    En una caja hay 12 productos, 4 defectuosos. Se extraen 2 sin devolver el
+    primero:
+    \[ P(\text{ambos defectuosos})=\frac{4}{12}\times\frac{3}{11}
+       =\frac{12}{132}=0{,}0909 \]
+    La segunda fracción ya está condicionada: quedan 11 productos y 3
+    defectuosos.
+  \end{exampleblock}
+
+  \vspace{0.15cm}
+  {\footnotesize\color{uniGris} Sin reemplazo las extracciones son
+  dependientes; con reemplazo serían independientes.}
+\end{frame}
+
+\begin{frame}{Independencia estadística}
+  \begin{block}{Definición}
+    \small
+    $A$ y $B$ son \destacar{independientes} si saber que ocurrió uno no cambia
+    la probabilidad del otro:
+    \[ P(A\mid B)=P(A) \iff P(A\cap B)=P(A)\,P(B) \]
+  \end{block}
+
+  \vspace{0.2cm}
+  \begin{alertblock}{Independiente NO es lo mismo que excluyente}
+    \footnotesize
+    \begin{itemize}
+      \item \azul{Excluyentes:} $P(A\cap B)=0$. Si ocurre uno, el otro es
+            imposible. Son \emph{máximamente} dependientes.
+      \item \azul{Independientes:} $P(A\cap B)=P(A)P(B)$. Ocurra o no uno, el
+            otro no se entera.
+    \end{itemize}
+    Dos eventos con probabilidad positiva no pueden ser ambas cosas a la vez.
+  \end{alertblock}
+\end{frame}
+
+\begin{frame}{Ejercicio 1 — en clase}
+  \begin{alertblock}{En parejas (8 minutos)}
+    De \destacar{500 empleados}, 200 están en Ventas y 300 en Operaciones. Han
+    recibido capacitación 180: \destacar{90 de Ventas y 90 de Operaciones}. Se
+    elige un empleado al azar.
+
+    \vspace{0.25cm}
+    \begin{enumerate}
+      \item $P(V)$, $P(C)$ y $P(V\cap C)$
+      \item $P(C\mid V)$ y $P(C\mid O)$
+      \item $P(V\mid C)$
+      \item ¿Son independientes ``estar en Ventas'' y ``estar capacitado''?
+    \end{enumerate}
+  \end{alertblock}
+\end{frame}
+
+\begin{frame}{Ejercicio 1 — solución}
+  \begin{columns}[T,onlytextwidth]
+    \begin{column}{0.42\textwidth}
+      \footnotesize
+      \begin{center}
+      \begin{tabular}{@{}lccc@{}}
+        \toprule
+         & Capac. & No & Total \\
+        \midrule
+        Ventas      & 90  & 110 & 200 \\
+        Operaciones & 90  & 210 & 300 \\
+        \midrule
+        Total       & 180 & 320 & 500 \\
+        \bottomrule
+      \end{tabular}
+      \end{center}
+      \vspace{0.2cm}
+      {\scriptsize $P(V)=0{,}40$ \quad $P(C)=0{,}36$ \quad
+       $P(V\cap C)=0{,}18$}
+    \end{column}
+    \begin{column}{0.54\textwidth}
+      \begin{block}{Condicionales}
+        \footnotesize
+        \[ P(C\mid V)=\frac{90}{200}=\azul{0{,}450} \qquad
+           P(C\mid O)=\frac{90}{300}=\azul{0{,}300} \]
+        \[ P(V\mid C)=\frac{90}{180}=\azul{0{,}500} \]
+      \end{block}
+      \begin{alertblock}{Punto 4}
+        \footnotesize
+        $P(V)P(C)=0{,}40\times 0{,}36=0{,}144 \neq 0{,}18=P(V\cap C)$.
+        \destacar{No son independientes:} en Ventas se capacita más.
+      \end{alertblock}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{Teorema de Bayes}
+  \scriptsize
+  \begin{block}{Para invertir el condicionamiento}
+    \scriptsize
+    \[ P(A\mid B)=\frac{P(B\mid A)\,P(A)}
+                       {P(B\mid A)P(A)+P(B\mid A^{c})P(A^{c})} \]
+    El denominador \azul{no es nuevo}: es la probabilidad total de $B$ que
+    acabamos de ver. Bayes solo divide \destacar{el camino que nos interesa}
+    entre \destacar{todos los caminos que llevan a $B$}.
+  \end{block}
+
+  \vspace{0.1cm}
+  \begin{alertblock}{Por qué importa}
+    \tiny
+    Casi siempre se conoce $P(\text{síntoma}\mid\text{causa})$ —lo que mide un
+    laboratorio— pero lo que se necesita para decidir es
+    $P(\text{causa}\mid\text{síntoma})$. \destacar{No son lo mismo}, y
+    confundirlos es el error que hoy vamos a desmontar con un caso real.
+  \end{alertblock}
+
+  \vspace{0.08cm}
+  {\tiny\color{uniGris} El vocabulario que usaremos: $P(A)$ es la
+  \azul{probabilidad a priori} (lo que se creía antes del dato), $P(B\mid A)$
+  es la \azul{verosimilitud} (lo que aporta el dato) y $P(A\mid B)$ es la
+  \azul{probabilidad a posteriori} (la creencia ya actualizada).}
+\end{frame}
+
+% ---------------------------------------------------------- CASO MÉDICO ----
+\begin{frame}{El caso: una prueba médica ``99\% confiable''}
+  \scriptsize
+  \begin{block}{Los tres datos del problema}
+    \tiny
+    \begin{center}
+    \begin{tabular}{@{}p{4.6cm}p{3.2cm}p{4.0cm}@{}}
+      \toprule
+      \textbf{Dato} & \textbf{En símbolos} & \textbf{Valor} \\
+      \midrule
+      La enfermedad afecta a 1 de cada 1\,000 personas &
+        $P(D)$ & $0{,}001$ \ (0,1\%) \\
+      Si usted está enfermo, la prueba acierta el 99\% &
+        $P(+\mid D)$ & $0{,}99$ \ \azul{(sensibilidad)} \\
+      Si usted está sano, la prueba se equivoca el 1\% &
+        $P(+\mid D^{c})$ & $0{,}01$ \ \azul{(falso positivo)} \\
+      \bottomrule
+    \end{tabular}
+    \end{center}
+  \end{block}
+
+  \vspace{0.1cm}
+  \begin{alertblock}{La pregunta}
+    \tiny
+    Usted se hace la prueba \destacar{sin ningún síntoma}, por rutina, y sale
+    \destacar{positiva}. ¿Cuál es la probabilidad de que realmente esté
+    enfermo?
+
+    \vspace{0.05cm}
+    \azul{Antes de calcular, apueste un número.} Casi todo el mundo —incluidos
+    médicos -- responde ``99\%''.
+  \end{alertblock}
+\end{frame}
+
+\begin{frame}{Paso 1 — el árbol y la probabilidad total}
+  \scriptsize
+  \begin{columns}[T,onlytextwidth]
+    \begin{column}{0.46\textwidth}
+      \vspace{0.05cm}
+      \begin{center}
+      \begin{tikzpicture}[scale=0.80,every node/.style={font=\tiny}]
+        \node (r) at (0,0) {};
+        \node[uniAzul] (d)  at (2.0,1.5)  {$D$};
+        \node[uniAzul] (nd) at (2.0,-1.5) {$D^{c}$};
+        \node[uniTitulo] (dp) at (4.3,2.2)  {$+$};
+        \node (dm) at (4.3,0.8)  {$-$};
+        \node[uniTitulo] (np) at (4.3,-0.8) {$+$};
+        \node (nm) at (4.3,-2.2) {$-$};
+        \draw[uniGris] (r)--(d)  node[midway,above,sloped] {$0{,}001$};
+        \draw[uniGris] (r)--(nd) node[midway,below,sloped] {$0{,}999$};
+        \draw[uniGris] (d)--(dp) node[midway,above,sloped] {$0{,}99$};
+        \draw[uniGris] (d)--(dm) node[midway,below,sloped] {$0{,}01$};
+        \draw[uniGris] (nd)--(np) node[midway,above,sloped] {$0{,}01$};
+        \draw[uniGris] (nd)--(nm) node[midway,below,sloped] {$0{,}99$};
+        \node[uniTitulo,right] at (4.6,2.2)  {$0{,}00099$};
+        \node[uniGris,right]   at (4.6,0.8)  {$0{,}00001$};
+        \node[uniTitulo,right] at (4.6,-0.8) {$0{,}00999$};
+        \node[uniGris,right]   at (4.6,-2.2) {$0{,}98901$};
+      \end{tikzpicture}
+      \end{center}
+    \end{column}
+    \begin{column}{0.51\textwidth}
+      \begin{block}{Los dos caminos que dan positivo}
+        \tiny
+        \textbf{Enfermo y positivo:}
+        \[ P(D)\cdot P(+\mid D) = 0{,}001\times 0{,}99
+           = \azul{0{,}00099} \]
+        \textbf{Sano y positivo (falsa alarma):}
+        \[ P(D^{c})\cdot P(+\mid D^{c}) = 0{,}999\times 0{,}01
+           = \azul{0{,}00999} \]
+        \textbf{Probabilidad total de dar positivo:}
+        \[ P(+) = 0{,}00099+0{,}00999 = \destacar{0{,}01098} \]
+      \end{block}
+    \end{column}
+  \end{columns}
+
+  \vspace{0.06cm}
+  {\tiny\color{uniGris} \destacar{Fíjese en el desequilibrio:} las falsas
+  alarmas ($0{,}00999$) son \azul{diez veces más} que las detecciones
+  correctas ($0{,}00099$). No porque la prueba sea mala, sino porque
+  \destacar{hay muchísima más gente sana que enferma}.}
+\end{frame}
+
+\begin{frame}{Paso 2 — Bayes, con cada número a la vista}
+  \scriptsize
+  \begin{exampleblock}{Sustituyendo en la fórmula}
+    \tiny
+    \[ P(D\mid +) \;=\;
+       \frac{P(+\mid D)\,P(D)}
+            {P(+\mid D)P(D)+P(+\mid D^{c})P(D^{c})} \]
+    \[ =\;\frac{0{,}99\times 0{,}001}
+              {\underbrace{0{,}99\times 0{,}001}_{0{,}00099}
+               \;+\;\underbrace{0{,}01\times 0{,}999}_{0{,}00999}}
+       \;=\;\frac{0{,}00099}{0{,}01098}
+       \;=\;\destacar{0{,}0902} \]
+  \end{exampleblock}
+
+  \vspace{0.08cm}
+  \begin{alertblock}{La respuesta: 9,02\%, no 99\%}
+    \tiny
+    Con una prueba que acierta el $99\%$ de las veces y un resultado
+    positivo, la probabilidad de estar enfermo es de apenas un
+    \destacar{9\%}. \azul{Más de nueve de cada diez positivos son falsas
+    alarmas.}
+  \end{alertblock}
+
+  \vspace{0.06cm}
+  {\tiny\color{uniGris} \destacar{De dónde viene la ilusión:} el $99\%$ es
+  $P(+\mid D)$ —``si estoy enfermo, la prueba lo dice''—, pero lo que uno
+  quiere saber es $P(D\mid +)$ —``la prueba lo dijo, ¿estoy enfermo?''—.
+  \azul{Invertir la condición sin hacer la cuenta es la trampa.}}
+\end{frame}
+
+\begin{frame}{El mismo resultado, contando personas}
+  \scriptsize
+  \begin{block}{Imagine 100\,000 personas que se hacen la prueba}
+    \tiny
+    \begin{center}
+    \begin{tabular}{@{}lrrr@{}}
+      \toprule
+      & \textbf{Prueba $+$} & \textbf{Prueba $-$} & \textbf{Total} \\
+      \midrule
+      Enfermos ($0{,}1\%$) &
+        \azul{99} & 1 & 100 \\
+      Sanos ($99{,}9\%$) &
+        \azul{999} & 98\,901 & 99\,900 \\
+      \midrule
+      \textbf{Total} & \destacar{1\,098} & 98\,902 & 100\,000 \\
+      \bottomrule
+    \end{tabular}
+    \end{center}
+  \end{block}
+
+  \vspace{0.1cm}
+  \begin{exampleblock}{Leer la tabla es hacer Bayes}
+    \tiny
+    De las $1\,098$ personas que dieron positivo, solo $99$ están enfermas:
+    \[ \frac{99}{1\,098} = \destacar{0{,}0902}
+       \qquad\text{es decir, } \azul{1 de cada 11} \text{ positivos.} \]
+  \end{exampleblock}
+
+  \vspace{0.06cm}
+  {\tiny\color{uniGris} \destacar{Esta tabla y la fórmula son lo mismo}, pero
+  la tabla convence más rápido. Si alguna vez duda de un resultado bayesiano,
+  \azul{invente una población grande y cuente cabezas}: es imposible
+  equivocarse de intuición.}
+\end{frame}
+
+% ------------------------------------------------------ SEGUNDA PRUEBA ----
+\begin{frame}{¿Y si repito la prueba? — el prior se actualiza}
+  \scriptsize
+  \begin{alertblock}{La idea clave de toda la inferencia}
+    \tiny
+    El médico pide una \destacar{segunda prueba en otro laboratorio} y vuelve
+    a salir positiva. Ahora usted \azul{ya no es una persona cualquiera de la
+    población}: es alguien que ya dio positivo una vez.
+
+    \vspace{0.05cm}
+    \destacar{El posterior de ayer es el prior de hoy:} se entra a la segunda
+    cuenta con $P(D) = 0{,}0902$, no con $0{,}001$.
+  \end{alertblock}
+
+  \vspace{0.1cm}
+  \begin{center}
+  \begin{tikzpicture}[scale=0.95,every node/.style={font=\tiny,align=center},
+    nodo/.style={draw=uniAzul,fill=uniAzul!10,rounded corners,inner sep=3pt,
+                 minimum width=2.2cm,minimum height=0.6cm},
+    flecha/.style={->,>=latex,uniGris,thick}]
+    \node[nodo] (a) at (0,0) {Prior inicial\\ $0{,}001$};
+    \node[nodo,fill=uniCrema,draw=uniTitulo] (b) at (3.4,0)
+      {1.\textsuperscript{a} prueba $+$\\ $\longrightarrow 0{,}0902$};
+    \node[nodo,fill=uniCrema,draw=uniTitulo] (c) at (7.0,0)
+      {2.\textsuperscript{a} prueba $+$\\ $\longrightarrow 0{,}9075$};
+    \node[nodo] (d) at (10.4,0) {Cada dato\\ mueve la creencia};
+    \draw[flecha] (a)--(b); \draw[flecha] (b)--(c); \draw[flecha] (c)--(d);
+  \end{tikzpicture}
+  \end{center}
+
+  \vspace{0.04cm}
+  {\tiny\color{uniGris} Los datos \destacar{no se acumulan sumando}: cada uno
+  se aplica sobre la creencia que dejó el anterior. Eso es
+  \azul{actualización bayesiana}.}
+\end{frame}
+
+\begin{frame}{Segunda prueba — el cálculo completo}
+  \scriptsize
+  \begin{block}{Los datos de esta ronda}
+    \tiny
+    Prior: $P(D) = 0{,}0902$ \ (el posterior anterior). \quad
+    Por lo tanto $P(D^{c}) = 1-0{,}0902 = 0{,}9098$. \quad
+    La prueba no cambió: $P(+\mid D)=0{,}99$ y $P(+\mid D^{c})=0{,}01$.
+  \end{block}
+
+  \vspace{0.06cm}
+  \begin{exampleblock}{Bayes otra vez, término por término}
+    \tiny
+    \textbf{Camino ``enfermo y positivo'':} \quad
+    $0{,}0902\times 0{,}99 = \azul{0{,}08930}$
+
+    \vspace{0.04cm}
+    \textbf{Camino ``sano y positivo'':} \quad
+    $0{,}9098\times 0{,}01 = \azul{0{,}00910}$
+
+    \vspace{0.04cm}
+    \textbf{Probabilidad total del segundo positivo:} \quad
+    $0{,}08930+0{,}00910 = \destacar{0{,}09840}$
+    \[ P(D\mid ++) \;=\; \frac{0{,}08930}{0{,}09840}
+       \;=\; \destacar{0{,}9075} \]
+  \end{exampleblock}
+
+  \vspace{0.06cm}
+  {\tiny\color{uniGris} \destacar{De 9\% a 90,75\% con el mismo dato
+  repetido.} La segunda prueba no es más precisa que la primera: lo que cambió
+  es que \azul{ya no se compara contra 999 sanos, sino contra 9}. El
+  desequilibrio que arruinaba la primera cuenta casi desapareció.}
+\end{frame}
+
+\begin{frame}{Dos comprobaciones que vale la pena hacer}
+  \scriptsize
+  \begin{columns}[T,onlytextwidth]
+    \begin{column}{0.49\textwidth}
+      \begin{exampleblock}{1. Las dos rutas coinciden}
+        \tiny
+        Si se tratan las dos pruebas \azul{de una sola vez}, con
+        $P(++\mid D) = 0{,}99^{2}$ y $P(++\mid D^{c}) = 0{,}01^{2}$:
+        \[ \frac{0{,}001\times 0{,}9801}
+                {0{,}001\times 0{,}9801 + 0{,}999\times 0{,}0001} \]
+        \[ = \frac{0{,}0009801}{0{,}00108}
+           = \destacar{0{,}9075} \ \checkmark \]
+        {\color{uniGris}Idéntico. Actualizar por partes o de golpe da lo
+        mismo.}
+      \end{exampleblock}
+    \end{column}
+    \begin{column}{0.49\textwidth}
+      \begin{alertblock}{2. ¿Y si la segunda da negativo?}
+        \tiny
+        Prior $0{,}0902$; ahora interesa $P(-\mid D)=0{,}01$ y
+        $P(-\mid D^{c})=0{,}99$:
+        \[ \frac{0{,}0902\times 0{,}01}
+                {0{,}0902\times 0{,}01+0{,}9098\times 0{,}99} \]
+        \[ = \frac{0{,}000902}{0{,}901604}
+           = \destacar{0{,}001} \]
+        {\color{uniGris}Vuelve \azul{exactamente} al 0,1\% de partida: un
+        positivo y un negativo se cancelan.}
+      \end{alertblock}
+    \end{column}
+  \end{columns}
+
+  \vspace{0.08cm}
+  \begin{block}{La moraleja para el resto del curso}
+    \tiny
+    \destacar{Un dato aislado casi nunca decide; lo que decide es la
+    acumulación de datos sobre una creencia previa honesta.} Por eso ningún
+    diagnóstico serio se hace con una sola prueba, y por eso en la unidad 3 no
+    aceptaremos una conclusión por un solo valor $p$ sin mirar el contexto.
+  \end{block}
+\end{frame}
+
+\begin{frame}{Ejercicio 2 — en clase}
+  \begin{alertblock}{En parejas (12 minutos). Escriba cada producto.}
+    \scriptsize
+    Una prueba de tamizaje para una condición que afecta al \destacar{2\%}
+    de la población detecta al \destacar{95\%} de quienes la tienen, pero
+    marca como positivo al \destacar{8\%} de quienes no la tienen.
+
+    \vspace{0.2cm}
+    \begin{enumerate}\setlength{\itemsep}{0.02cm}
+      \item ¿Cuál es la probabilidad de que una persona cualquiera dé
+            positivo?
+      \item Si una persona da positivo, ¿cuál es la probabilidad de que
+            realmente tenga la condición?
+      \item Le repiten la prueba y vuelve a dar positivo.
+            \azul{Actualice} la probabilidad.
+      \item Interprete los dos resultados en una frase.
+    \end{enumerate}
+  \end{alertblock}
+\end{frame}
+
+\begin{frame}{Ejercicio 2 — solución}
+  \scriptsize
+  \begin{columns}[T,onlytextwidth]
+    \begin{column}{0.49\textwidth}
+      \begin{block}{Puntos 1 y 2 — primera prueba}
+        \tiny
+        \textbf{1.} $P(+) = \underbrace{0{,}02\times 0{,}95}_{0{,}0190}
+        + \underbrace{0{,}98\times 0{,}08}_{0{,}0784}
+        = \azul{0{,}0974}$
+
+        \vspace{0.1cm}
+        \textbf{2.} $P(C\mid +) = \dfrac{0{,}0190}{0{,}0974}
+        = \destacar{0{,}1951}$ \ (19,51\%)
+      \end{block}
+    \end{column}
+    \begin{column}{0.49\textwidth}
+      \begin{block}{Punto 3 — segunda prueba}
+        \tiny
+        Prior nuevo: $0{,}1951$; \ $P(C^{c}) = 0{,}8049$.
+
+        \vspace{0.06cm}
+        $0{,}1951\times 0{,}95 = \azul{0{,}18535}$
+
+        $0{,}8049\times 0{,}08 = \azul{0{,}06439}$
+
+        Total $= \destacar{0{,}24974}$
+        \[ P(C\mid ++) = \frac{0{,}18535}{0{,}24974}
+           \approx \destacar{0{,}742} \]
+      \end{block}
+    \end{column}
+  \end{columns}
+
+  \vspace{0.08cm}
+  \begin{alertblock}{Punto 4 — interpretación}
+    \tiny
+    Con un positivo, \destacar{cuatro de cada cinco} personas marcadas están
+    sanas: no es motivo para alarmarse, es motivo para \azul{confirmar}. Con
+    el segundo positivo la probabilidad sube al $74\%$ y ya sí cambia la
+    conducta clínica. \destacar{El tamizaje no diagnostica: solo decide a
+    quién vale la pena estudiar mejor.}
+  \end{alertblock}
+\end{frame}
+
+\seccion{1.6 Fundamentos del muestreo}
+
+\begin{frame}{Conceptos básicos del muestreo}
+  \footnotesize
+  \begin{center}
+  \begin{tabular}{@{}p{2.9cm}p{8.4cm}@{}}
+    \toprule
+    \textbf{Término} & \textbf{Significado} \\
+    \midrule
+    Población & Conjunto completo de elementos sobre los que se quiere
+      concluir. Su tamaño se denota $N$. \\
+    Muestra & Subconjunto de la población que sí se observa. Su tamaño es $n$. \\
+    Unidad de muestreo & El elemento individual que se selecciona: un cliente,
+      un pedido, una factura. \\
+    Marco muestral & La lista de la que se extrae la muestra: base de datos,
+      censo, registro. \\
+    Parámetro & Número que describe a la \azul{población}: $\mu$, $\sigma$, $p$.
+      Es fijo y desconocido. \\
+    Estadístico & Número calculado en la \azul{muestra}: $\bar{x}$, $s$,
+      $\hat{p}$. Cambia con cada muestra. \\
+    Error muestral & Diferencia entre el estadístico y el parámetro, debida a
+      que se observó solo una parte. \\
+    \bottomrule
+  \end{tabular}
+  \end{center}
+\end{frame}
+
+\begin{frame}{Parámetro y estadístico: la distinción central del curso}
+  \begin{columns}[T,onlytextwidth]
+    \begin{column}{0.48\textwidth}
+      \begin{block}{Población ($N$)}
+        \footnotesize
+        \begin{itemize}
+          \item Media $\mu$
+          \item Desviación $\sigma$
+          \item Proporción $p$
+        \end{itemize}
+        Valores \azul{fijos} que casi nunca conocemos.
+      \end{block}
+    \end{column}
+    \begin{column}{0.48\textwidth}
+      \begin{exampleblock}{Muestra ($n$)}
+        \footnotesize
+        \begin{itemize}
+          \item Media $\bar{x}$
+          \item Desviación $s$
+          \item Proporción $\hat{p}$
+        \end{itemize}
+        Valores \azul{aleatorios}: cambian de muestra en muestra.
+      \end{exampleblock}
+    \end{column}
+  \end{columns}
+
+  \vspace{0.3cm}
+  \begin{alertblock}{Todo el curso en una frase}
+    \footnotesize
+    Usamos un estadístico \emph{aleatorio} para decir algo sobre un parámetro
+    \emph{fijo} y desconocido, y cuantificamos con probabilidad qué tan lejos
+    podemos estar. \destacar{Esa cuantificación es la inferencia estadística.}
+  \end{alertblock}
+\end{frame}
+
+\begin{frame}{Por qué muestrear en vez de censar}
+  \begin{columns}[T,onlytextwidth]
+    \begin{column}{0.48\textwidth}
+      \begin{block}{Razones}
+        \footnotesize
+        \begin{itemize}
+          \item Costo y tiempo
+          \item Poblaciones muy grandes o infinitas
+          \item Pruebas destructivas (no se puede quemar todo el lote)
+          \item Con buen diseño, la precisión es suficiente
+        \end{itemize}
+      \end{block}
+    \end{column}
+    \begin{column}{0.48\textwidth}
+      \begin{alertblock}{Riesgos}
+        \footnotesize
+        \begin{itemize}
+          \item Marco muestral incompleto
+          \item Sesgo de selección
+          \item No respuesta
+          \item Muestra demasiado pequeña
+        \end{itemize}
+      \end{alertblock}
+    \end{column}
+  \end{columns}
+
+  \vspace{0.25cm}
+  {\footnotesize\color{uniGris} Una muestra grande mal elegida es peor que una
+  pequeña bien elegida: el tamaño reduce el error \emph{aleatorio}, pero no
+  corrige el \emph{sesgo}. En la sesión 5 veremos cómo elegir bien.}
+\end{frame}
+
+\begin{frame}{Ejercicio 3 — en clase}
+  \begin{alertblock}{Individual (7 minutos)}
+    Una caja contiene \destacar{10 bolas: 6 blancas y 4 negras}. Se extraen 2
+    al azar \emph{sin reemplazo}.
+
+    \vspace{0.25cm}
+    \begin{enumerate}
+      \item $P(\text{ambas blancas})$
+      \item $P(\text{ambas negras})$
+      \item $P(\text{una de cada color})$
+      \item $P(\text{al menos una blanca})$
+      \item Si la primera fue blanca, ¿cuál es la probabilidad de que la
+            segunda también lo sea?
+    \end{enumerate}
+  \end{alertblock}
+\end{frame}
+
+\begin{frame}{Ejercicio 3 — solución}
+  \begin{columns}[T,onlytextwidth]
+    \begin{column}{0.52\textwidth}
+      \begin{block}{Cálculos}
+        \footnotesize
+        \begin{align*}
+          P(BB) &= \tfrac{6}{10}\cdot\tfrac{5}{9}=\azul{0{,}3333}\\[0.2em]
+          P(NN) &= \tfrac{4}{10}\cdot\tfrac{3}{9}=\azul{0{,}1333}\\[0.2em]
+          P(\text{una de cada}) &= \tfrac{6}{10}\tfrac{4}{9}+\tfrac{4}{10}\tfrac{6}{9}
+             =\azul{0{,}5333}\\[0.2em]
+          P(\ge 1\,\text{blanca}) &= 1-P(NN)=\azul{0{,}8667}\\[0.2em]
+          P(B_2\mid B_1) &= \tfrac{5}{9}=\azul{0{,}5556}
+        \end{align*}
+      \end{block}
+    \end{column}
+    \begin{column}{0.44\textwidth}
+      \begin{exampleblock}{Verificación}
+        \footnotesize
+        Los tres primeros casos son excluyentes y agotan todo:
+        \[ 0{,}3333+0{,}1333+0{,}5333=1 \]
+      \end{exampleblock}
+      \begin{alertblock}{Punto 5}
+        \footnotesize
+        $0{,}5556 \neq 0{,}60=P(B_1)$: sacar una blanca \azul{sí} cambia la
+        probabilidad de la siguiente. Sin reemplazo no hay independencia.
+      \end{alertblock}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}[fragile]{Probabilidad condicional y muestreo, en R}
+  \scriptsize
+\begin{lstlisting}[style=Rmini]
+# Una tabla de doble entrada y sus probabilidades
+tabla <- matrix(c(30, 20, 25, 25), nrow = 2,
+                dimnames = list(Genero = c("M", "F"),
+                                Compra = c("Si", "No")))
+prop.table(tabla)                  # probabilidades conjuntas
+prop.table(tabla, margin = 1)      # condicionales P(Compra | Genero)
+addmargins(tabla)                  # con totales
+
+# Muestreo aleatorio simple
+set.seed(2026)                     # para que el resultado sea reproducible
+sample(1:500, size = 30)           # 30 unidades sin reemplazo
+\end{lstlisting}
+\begin{lstlisting}[style=Rout]
+      Compra
+Genero  Si  No
+     M 0.6 0.4
+     F 0.5 0.5
+\end{lstlisting}
+
+  \vspace{-0.1cm}
+  \begin{alertblock}{Dos detalles}
+    \tiny
+    \fx{margin = 1} condiciona \destacar{por filas}: cada fila suma 1 y es
+    justamente $P(\text{Compra} \mid \text{Género})$. \quad
+    \fx{set.seed()} fija el azar: sin él, cada corrida da una muestra distinta
+    y el trabajo deja de ser reproducible.
+  \end{alertblock}
+\end{frame}
+
+\begin{frame}{Cierre de la sesión}
+  \begin{block}{Lo que debe quedar claro hoy}
+    \begin{itemize}
+      \item $P(A\mid B)=P(A\cap B)/P(B)$: condicionar es reducir el espacio
+            muestral a $B$.
+      \item $P(A\cap B)=P(B)P(A\mid B)$, y si son independientes
+            $P(A\cap B)=P(A)P(B)$.
+      \item Independiente $\neq$ excluyente.
+      \item Parámetro (población, fijo) frente a estadístico (muestra,
+            aleatorio).
+    \end{itemize}
+  \end{block}
+
+  \vspace{0.2cm}
+  \begin{alertblock}{Trabajo independiente para la próxima sesión}
+    \footnotesize
+    Resolver los \destacar{20 ejercicios de la lámina siguiente}; las
+    respuestas están en la lámina posterior. La sesión 5 cierra la unidad 1 con
+    los tipos de muestreo y el tamaño de la muestra, y hay repaso para el
+    examen 1.
+  \end{alertblock}
+\end{frame}
+
+\begin{frame}{Ejercicios propuestos}
+  \vspace{-0.1cm}
+  \begin{beamercolorbox}[wd=\textwidth,sep=0.14cm]{block body}
+    \centering\scriptsize
+    \textbf{Del 1 al 10:} 600 clientes. Canal: 360 usan la app ($A$), 240 van a
+    la oficina. Producto: 210 tienen crédito ($C$), de los cuales 150 usan la app.
+  \end{beamercolorbox}
+  \vspace{0.05cm}
+  \listatiny
+  \vspace{0.15cm}
+  \begin{columns}[T,onlytextwidth]
+    \begin{column}{0.47\textwidth}
+      \begin{enumerate}\setlength{\itemsep}{0.16cm}
+        \item $P(A)$
+        \item $P(C)$
+        \item $P(A\cap C)$
+        \item $P(C\mid A)$
+        \item $P(C\mid A^{c})$
+        \item $P(A\mid C)$
+        \item $P(A\cap C^{c})$
+        \item $P(C^{c})$
+        \item $P(A)\cdot P(C)$
+        \item ¿Son $A$ y $C$ independientes?
+      \end{enumerate}
+    \end{column}
+    \begin{column}{0.50\textwidth}
+      \begin{enumerate}\setlength{\itemsep}{0.16cm}
+        \setcounter{enumi}{10}
+        \item Urna (6 blancas, 4 negras, sin reemplazo): $P(\text{2 blancas})$
+        \item $P(\text{2 negras})$
+        \item $P(\text{una de cada color})$
+        \item $P(\text{al menos una blanca})$
+        \item $P(B_2\mid B_1)$
+        \item Dos dados: $P(\text{ambos } 6)$
+        \item Dos dados: $P(\text{2.º es }6 \mid \text{1.º es }6)$
+        \item Dos monedas: $P(\text{ambas cara})$
+        \item Prueba: 2\% defectuosas, 95\% detección, 4\% falsos
+              positivos. $P(T^{+})$
+        \item Del 19: $P(D\mid T^{+})$
+      \end{enumerate}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{Respuestas}{Autoevaluación de los ejercicios propuestos}
+  \listatiny
+  \vspace{0.15cm}
+  \begin{columns}[T,onlytextwidth]
+    \begin{column}{0.47\textwidth}
+      \begin{enumerate}\setlength{\itemsep}{0.16cm}
+        \item $0{,}6000$
+        \item $0{,}3500$
+        \item $0{,}2500$
+        \item $150/360=0{,}4167$
+        \item $60/240=0{,}2500$
+        \item $150/210=0{,}7143$
+        \item $210/600=0{,}3500$
+        \item $0{,}6500$
+        \item $0{,}2100$
+        \item No: $0{,}2100\neq 0{,}2500$
+      \end{enumerate}
+    \end{column}
+    \begin{column}{0.50\textwidth}
+      \begin{enumerate}\setlength{\itemsep}{0.16cm}
+        \setcounter{enumi}{10}
+        \item $0{,}3333$
+        \item $0{,}1333$
+        \item $0{,}5333$
+        \item $0{,}8667$
+        \item $0{,}5556$
+        \item $0{,}0278$
+        \item $0{,}1667$ \;{\color{uniTitulo}independientes}
+        \item $0{,}2500$
+        \item $0{,}0582$
+        \item $0{,}3265$
+      \end{enumerate}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{Referencias}
+  \footnotesize
+  \begin{itemize}
+    \item[{[1]}] Díaz Rodríguez, M. (2022). \textit{Estadística inferencial
+      aplicada}. Universidad del Norte.
+      \texttt{https://elibro.net/es/lc/uniminuto/titulos/221614}
+    \item[{[2]}] Llinás Solano, H. (2014). \textit{Introducción a la
+      estadística con aplicaciones en ciencias sociales}. Universidad del
+      Norte. \texttt{https://elibro.net/es/lc/uniminuto/titulos/70062}
+    \item[{[3]}] Contento Rubio, M. R. (2019). \textit{Estadística con
+      aplicaciones en R}. Editorial Utadeo.
+      \texttt{https://elibro.net/es/lc/uniminuto/titulos/220926}
+  \end{itemize}
+
+  \vspace{0.35cm}
+  \begin{center}
+    {\Large\color{uniAzul}\textbf{¿Preguntas?}}
+  \end{center}
+\end{frame}
+
+\end{document}

@@ -1,0 +1,728 @@
+% ============================================================================
+%  MATEMÁTICAS OPERATIVAS — Sesión 2
+%  Semana 2: 17 al 22 de agosto de 2026  (lunes 17: festivo, Asunción)
+%  1.2 Operaciones básicas con números enteros
+%  Duración prevista: 3 horas
+% ============================================================================
+\documentclass[aspectratio=169,10pt]{beamer}
+
+\usepackage[utf8]{inputenc}
+\IfFileExists{spanish.ldf}{\usepackage[spanish,es-noshorthands]{babel}}{}
+\usepackage{amsmath,amssymb}
+\usepackage{booktabs}
+\usepackage{tikz}
+
+\usetheme{Uniminuto}
+
+\uniasignatura{Matemáticas Operativas}
+\uniprofesor{Andrés Felipe Puerta Velez}
+\unicorreo{andres.puerta-v@uniminuto.edu.co}
+\uninrc{CBASBL011}
+\unisemana{Sesión 2 — Semana 2 · 17 al 22 de agosto de 2026}
+
+\newcommand{\listatiny}{\setbeamerfont{itemize/enumerate body}{size=\tiny}\tiny}
+
+\begin{document}
+	
+	\portada
+	
+	\begin{frame}{Orden del día}
+		\begin{enumerate}
+			\item Revisión de los ejercicios propuestos de la sesión 1
+			\item \azul{Tema 1.2: suma, resta, producto y cociente de enteros}
+			\item Potencias de enteros y la jerarquía de operaciones
+			\item Divisibilidad, números primos, MCD y mcm
+			\item Taller principal, errores frecuentes y cierre
+		\end{enumerate}
+		
+		\vspace{0.25cm}
+		{\footnotesize\color{uniGris} Sesión de 3 horas.
+			\destacar{Lunes 17 fue festivo} (Asunción). Esta es la sesión donde más
+			puntos se pierden en el examen, y casi nunca por no saber la regla: por
+			aplicarla con prisa.}
+	\end{frame}
+	
+	\begin{frame}{Repaso: dónde quedamos}
+		\scriptsize
+		\begin{columns}[T,onlytextwidth]
+			\begin{column}{0.48\textwidth}
+				\begin{block}{De la sesión 1}
+					\tiny
+					$\mathbb{N}\subset\mathbb{Z}\subset\mathbb{Q}\subset\mathbb{R}$; un
+					número es racional si su decimal es finito o periódico; el valor
+					absoluto es una distancia.
+				\end{block}
+			\end{column}
+			\begin{column}{0.48\textwidth}
+				\begin{alertblock}{Lo que hay que tener claro hoy}
+					\tiny
+					Los enteros $\mathbb{Z}$ son los naturales, sus opuestos y el cero.
+					Se cierran bajo suma, resta y producto, pero \destacar{no bajo
+						división}: $7\div 2$ ya no es entero.
+				\end{alertblock}
+			\end{column}
+		\end{columns}
+		
+		\vspace{0.12cm}
+		\begin{exampleblock}{Por qué los negativos son útiles y no un capricho}
+			\tiny
+			Un saldo bancario, una temperatura bajo cero, una profundidad respecto al
+			nivel del mar, una pérdida en un balance, una devolución de mercancía:
+			todas son magnitudes que \azul{tienen dos sentidos}. El signo no es un
+			adorno, \destacar{codifica el sentido}.
+		\end{exampleblock}
+	\end{frame}
+	
+	% ===========================================================================
+	\seccion{1.2 Operaciones con números enteros}
+	% ===========================================================================
+	
+	\begin{frame}{Suma y resta: dos reglas y nada más}
+		\scriptsize
+		\begin{columns}[T,onlytextwidth]
+			\begin{column}{0.48\textwidth}
+				\begin{block}{Mismo signo}
+					\tiny
+					Se \azul{suman} los valores absolutos y se conserva el signo.
+					\[ -7 + (-12) = -19 \qquad 7+12 = 19 \]
+				\end{block}
+			\end{column}
+			\begin{column}{0.48\textwidth}
+				\begin{block}{Signos distintos}
+					\tiny
+					Se \azul{restan} los valores absolutos y manda el signo del mayor en
+					valor absoluto.
+					\[ -7 + 12 = 5 \qquad 7 + (-12) = -5 \]
+				\end{block}
+			\end{column}
+		\end{columns}
+		
+		\vspace{0.12cm}
+		\begin{exampleblock}{Restar es sumar el opuesto}
+			\tiny
+			\[ a - b = a + (-b) \qquad\Longrightarrow\qquad
+			15 - (-8) = 15 + 8 = \destacar{23} \]
+			Por eso \destacar{dos signos menos seguidos dan más}: quitar una deuda es
+			ganar. Si le condonan una deuda de \$8\,000, su saldo \azul{sube}
+			\$8\,000.
+		\end{exampleblock}
+		
+		\vspace{0.06cm}
+		{\tiny\color{uniGris} \azul{Truco de la recta:} sumar un positivo es
+			caminar a la derecha; sumar un negativo, a la izquierda. Restar es caminar
+			en sentido contrario al que indica el número.}
+	\end{frame}
+	
+	\begin{frame}{Producto y cociente: la ley de los signos}
+		\scriptsize
+		\begin{columns}[T,onlytextwidth]
+			\begin{column}{0.42\textwidth}
+				\begin{center}
+					\begin{tabular}{@{}ccc@{}}
+						\toprule
+						& \textbf{Producto} & \textbf{Resultado} \\
+						\midrule
+						$(+)\cdot(+)$ & $6\cdot 7$ & $+42$ \\
+						$(+)\cdot(-)$ & $6\cdot(-7)$ & $-42$ \\
+						$(-)\cdot(+)$ & $(-6)\cdot 7$ & $-42$ \\
+						$(-)\cdot(-)$ & $(-6)(-7)$ & $+42$ \\
+						\bottomrule
+					\end{tabular}
+				\end{center}
+			\end{column}
+			\begin{column}{0.55\textwidth}
+				\begin{block}{La regla en una línea}
+					\tiny
+					\destacar{Signos iguales dan más; signos distintos dan menos.}
+					Vale igual para la división:
+					\[ \frac{-72}{9} = -8 \qquad \frac{-72}{-9} = 8 \]
+					Y para varios factores: cuente los negativos. \azul{Cantidad par
+						de negativos $\Rightarrow$ positivo}; impar $\Rightarrow$ negativo.
+				\end{block}
+			\end{column}
+		\end{columns}
+		
+		\vspace{0.1cm}
+		\begin{alertblock}{No confunda la regla del producto con la de la suma}
+			\tiny
+			$(-3)\cdot(-4) = +12$, \quad pero \quad $(-3)+(-4) = -7$.
+			\destacar{``Menos por menos da más'' es solo para multiplicar y dividir.}
+			Este cruce de reglas es el error número uno del primer examen.
+		\end{alertblock}
+	\end{frame}
+	
+	\begin{frame}{Potencias de enteros: la trampa del paréntesis}
+		\scriptsize
+		\begin{center}
+			\begin{tabular}{@{}llp{6.0cm}@{}}
+				\toprule
+				\textbf{Expresión} & \textbf{Valor} & \textbf{Por qué} \\
+				\midrule
+				$(-2)^{5}$ & $-32$ & Base $-2$, exponente impar \\
+				$(-2)^{6}$ & $+64$ & Base $-2$, exponente par \\
+				$-2^{6}$ & $\destacar{-64}$ &
+				Base $2$; el menos \azul{no} está elevado \\
+				$-5^{2} + (-5)^{2}$ & $-25+25 = 0$ &
+				Las dos expresiones \azul{no} son iguales \\
+				\bottomrule
+			\end{tabular}
+		\end{center}
+		
+		\vspace{0.12cm}
+		\begin{block}{La regla del signo en potencias}
+			\tiny
+			Si la base es negativa \azul{y está entre paréntesis}: exponente
+			\destacar{par} $\Rightarrow$ resultado positivo; exponente
+			\destacar{impar} $\Rightarrow$ resultado negativo. Si \azul{no} hay
+			paréntesis, el signo menos queda fuera y multiplica al final.
+		\end{block}
+		
+		\vspace{0.08cm}
+		{\tiny\color{uniGris} \destacar{Cómo verlo:} $-2^{6}$ se lee ``el opuesto de
+			$2^{6}$''. Primero se eleva, después se cambia el signo, porque la
+			potenciación tiene más prioridad que el signo.}
+	\end{frame}
+	
+	\begin{frame}{Jerarquía de operaciones}
+		\scriptsize
+		\begin{center}
+			\begin{tikzpicture}[scale=0.95,every node/.style={font=\tiny,align=center},
+				nodo/.style={draw=uniAzul,fill=uniAzul!10,rounded corners,inner sep=3pt,
+					minimum width=2.3cm,minimum height=0.6cm},
+				flecha/.style={->,>=latex,uniGris,thick}]
+				\node[nodo,fill=uniCrema,draw=uniTitulo] (a) at (0,0)
+				{1. Paréntesis\\ (de dentro afuera)};
+				\node[nodo] (b) at (3.0,0) {2. Potencias\\ y raíces};
+				\node[nodo] (c) at (6.0,0) {3. Productos\\ y cocientes};
+				\node[nodo] (d) at (9.0,0) {4. Sumas\\ y restas};
+				\draw[flecha] (a)--(b); \draw[flecha] (b)--(c); \draw[flecha] (c)--(d);
+			\end{tikzpicture}
+		\end{center}
+		
+		\vspace{0.1cm}
+		\begin{alertblock}{La regla que casi nadie recuerda}
+			\tiny
+			Dentro del \azul{mismo nivel} se opera \destacar{de izquierda a derecha}.
+			Por eso $12\div 3\cdot 2 = 4\cdot 2 = 8$, y \azul{no} $12\div 6 = 2$.
+			Multiplicar no tiene prioridad sobre dividir: van juntos, en el orden en
+			que aparecen.
+		\end{alertblock}
+		
+		\vspace{0.08cm}
+		{\tiny\color{uniGris} Los signos de agrupación se resuelven
+			\destacar{del más interno al más externo}: primero $(\ )$, luego $[\ ]$,
+			luego $\{\ \}$. Si solo hay paréntesis anidados, del centro hacia afuera.}
+	\end{frame}
+	
+	\begin{frame}{Ejemplo guiado 1 — paso a paso}
+		\scriptsize
+		\begin{exampleblock}{Calcule \ $-3 + 2\cdot(-4)^{2} - 10\div(-5)$}
+			\tiny
+			\textbf{Paso 1 — potencias:} \quad
+			$(-4)^{2} = +16$
+			\[ -3 + 2\cdot 16 - 10\div(-5) \]
+			\textbf{Paso 2 — productos y cocientes, de izquierda a derecha:}
+			\[ -3 + 32 - (-2) \]
+			\textbf{Paso 3 — sumas y restas:}
+			\[ -3 + 32 + 2 = \destacar{31} \]
+		\end{exampleblock}
+		
+		\vspace{0.08cm}
+		\begin{alertblock}{Los dos puntos donde se pierde el examen}
+			\tiny
+			\textbf{(1)} Elevar $-4$ sin paréntesis y obtener $-16$. \quad
+			\textbf{(2)} Olvidar que $10\div(-5) = -2$ y que restar $-2$ es
+			\destacar{sumar} $2$. Ambos errores dan $-35$ o $27$ en vez de $31$.
+		\end{alertblock}
+	\end{frame}
+	
+	\begin{frame}{Ejemplo guiado 2 — con agrupación anidada}
+		\scriptsize
+		\begin{exampleblock}{Calcule \ $\big\{12 - [\,5 - (8-11)\,]\big\}\cdot(-2)$}
+			\tiny
+			\textbf{Paso 1 — el paréntesis más interno:} \quad $8-11 = -3$
+			\[ \big\{12 - [\,5 - (-3)\,]\big\}\cdot(-2) \]
+			\textbf{Paso 2 — el corchete:} \quad $5-(-3) = 5+3 = 8$
+			\[ \{12 - 8\}\cdot(-2) \]
+			\textbf{Paso 3 — la llave y el producto:}
+			\[ 4\cdot(-2) = \destacar{-8} \]
+		\end{exampleblock}
+		
+		\vspace{0.08cm}
+		{\tiny\color{uniGris} \azul{Recomendación práctica:} reescriba la expresión
+			completa en cada paso, aunque parezca perder tiempo. Los errores aparecen
+			cuando se hacen dos pasos mentalmente a la vez, y después es imposible
+			encontrar dónde se torció.}
+	\end{frame}
+	
+	\begin{frame}{Ejercicio 1 — signos y potencias}
+		\scriptsize
+		\begin{alertblock}{Individual, 10 minutos}
+			\tiny
+			\begin{enumerate}\setlength{\itemsep}{-0.02cm}
+				\item $-20 + 6 - (-14)$
+				\item $(-4)^{2} - (-4)^{3}$
+				\item $-2^{4} + (-2)^{4}$
+				\item $\dfrac{40}{-8} + (-3)(-6) - 2^{3}$
+				\item $18 - 4\cdot(7-10)$
+			\end{enumerate}
+		\end{alertblock}
+		
+		\vspace{0.06cm}
+		\begin{block}{Solución}
+			\tiny
+			\textbf{1.} $-20+6+14 = \destacar{0}$ \qquad
+			\textbf{2.} $16 - (-64) = 16+64 = \destacar{80}$ \qquad
+			\textbf{3.} $-16 + 16 = \destacar{0}$
+			
+			\vspace{0.08cm}
+			\textbf{4.} $-5 + 18 - 8 = \destacar{5}$ \qquad
+			\textbf{5.} $18 - 4\cdot(-3) = 18+12 = \destacar{30}$
+		\end{block}
+		
+		\vspace{0.05cm}
+		{\tiny\color{uniGris} En el \destacar{3}, los dos términos son distintos
+			($-16$ y $+16$) y por eso se cancelan. En el \destacar{5}, el error típico
+			es hacer $18-4=14$ antes que el paréntesis.}
+	\end{frame}
+	
+	% ===========================================================================
+	\seccion{Divisibilidad, MCD y mcm}
+	% ===========================================================================
+	
+	\begin{frame}{Múltiplos, divisores y números primos}
+		\scriptsize
+		\begin{block}{Vocabulario}
+			\tiny
+			$b$ \azul{divide} a $a$ (se escribe $b\mid a$) si la división es exacta.
+			Entonces $a$ es \azul{múltiplo} de $b$, y $b$ es \azul{divisor} de $a$.
+			Ejemplo: $9\mid 36$, luego $36$ es múltiplo de $9$ y $9$ es divisor
+			de $36$.
+		\end{block}
+		
+		\vspace{0.08cm}
+		\begin{columns}[T,onlytextwidth]
+			\begin{column}{0.47\textwidth}
+				\begin{exampleblock}{Criterios rápidos}
+					\tiny
+					\azul{2:} termina en cifra par. \quad
+					\azul{3:} la suma de sus cifras es múltiplo de 3. \quad
+					\azul{5:} termina en 0 o 5. \quad
+					\azul{9:} la suma de sus cifras es múltiplo de 9. \quad
+					\azul{10:} termina en 0.
+				\end{exampleblock}
+			\end{column}
+			\begin{column}{0.49\textwidth}
+				\begin{block}{Primos y factorización}
+					\tiny
+					Un \azul{primo} tiene exactamente dos divisores: $1$ y él mismo.
+					$2,3,5,7,11,13,17,19,23,29\dots$
+					\[ 504 = 2^{3}\cdot 3^{2}\cdot 7 \qquad
+					840 = 2^{3}\cdot 3\cdot 5\cdot 7 \]
+					\destacar{$1$ no es primo} y $2$ es el único primo par.
+				\end{block}
+			\end{column}
+		\end{columns}
+		
+		\vspace{0.08cm}
+		{\tiny\color{uniGris} \azul{Compruebe el criterio del 3 con 504:}
+			$5+0+4 = 9$, múltiplo de 3 (y de 9). En efecto $504 = 3\cdot 168$ y
+			$504 = 9\cdot 56$.}
+	\end{frame}
+	
+	\begin{frame}{MCD y mcm: método clásico (divisiones simultáneas)}
+		\scriptsize
+		\begin{block}{La idea: una sola tabla para los dos}
+			\tiny
+			Se escriben los números en fila y se van dividiendo por primos, todos
+			\azul{a la vez}. Si un primo divide a \destacar{todos} los números de la
+			fila, se marca \checkmark. Si divide solo a \destacar{algunos}, se marca
+			$\ast$ y el número que no se pudo dividir \azul{se copia igual} en la
+			fila siguiente. Se termina cuando toda la fila queda en $1$.
+		\end{block}
+		
+		\vspace{0.1cm}
+		\begin{columns}[T,onlytextwidth]
+			\begin{column}{0.42\textwidth}
+				\begin{exampleblock}{Calcule MCD y mcm de $25,\,30,\,150$}
+					\tiny
+					\[
+					\begin{array}{ccc|cl}
+						25 & 30  & 150 & 2 & {\color{red}\ast}\\
+						25 & 15  & 75  & 3 & {\color{red}\ast}\\
+						25 & 5   & 25  & 5 & {\color{uniAzul}\checkmark}\\
+						5  & 1   & 5   & 5 & {\color{red}\ast}\\
+						1  & 1   & 1   &   &
+					\end{array}
+					\]
+				\end{exampleblock}
+			\end{column}
+			\begin{column}{0.55\textwidth}
+				\begin{block}{Cómo se lee la tabla}
+					\tiny
+					\azul{MCD:} producto de los divisores marcados \checkmark\ (los que
+					partieron a los tres a la vez).
+					\[ \mathrm{MCD} = \destacar{5} \]
+					\azul{mcm:} producto de \destacar{todos} los divisores usados,
+					\checkmark\ y $\ast$ por igual.
+					\[ \mathrm{mcm} = 2\cdot 3\cdot 5\cdot 5 = \destacar{150} \]
+				\end{block}
+			\end{column}
+		\end{columns}
+		
+		\vspace{0.06cm}
+		{\tiny\color{uniGris} \azul{Por qué funciona:} los \checkmark\ son los
+			primos que están en los tres números a la vez (el MCD); reunir además los
+			$\ast$ agrega los primos que faltan para que el resultado sea múltiplo de
+			los tres (el mcm). Es la misma lógica de la factorización, solo que
+			ordenada en una tabla y sin tener que acordarse de exponentes.}
+	\end{frame}
+	
+	\begin{frame}{MCD y mcm: cuál se usa cuándo}
+		\scriptsize
+		\begin{center}
+			\begin{tabular}{@{}p{1.6cm}p{4.6cm}p{5.6cm}@{}}
+				\toprule
+				& \textbf{Cómo se calcula} & \textbf{Cuándo se usa} \\
+				\midrule
+				\textbf{MCD} &
+				Factores \azul{comunes} con el \azul{menor} exponente &
+				Repartir en grupos iguales lo más grandes posible; simplificar
+				fracciones \\
+				\addlinespace
+				\textbf{mcm} &
+				\azul{Todos} los factores con el \azul{mayor} exponente &
+				Cuándo vuelven a coincidir dos ciclos; común denominador \\
+				\bottomrule
+			\end{tabular}
+		\end{center}
+		
+		\vspace{0.1cm}
+		\begin{columns}[T,onlytextwidth]
+			\begin{column}{0.40\textwidth}
+				\begin{exampleblock}{Con la tabla, $504$ y $840$}
+					\tiny
+					\[
+					\begin{array}{cc|cl}
+						504 & 840 & 2 & {\color{uniAzul}\checkmark}\\
+						252 & 420 & 2 & {\color{uniAzul}\checkmark}\\
+						126 & 210 & 2 & {\color{uniAzul}\checkmark}\\
+						63  & 105 & 3 & {\color{uniAzul}\checkmark}\\
+						21  & 35  & 3 & {\color{red}\ast}\\
+						7   & 35  & 5 & {\color{red}\ast}\\
+						7   & 7   & 7 & {\color{uniAzul}\checkmark}\\
+						1   & 1   &   &
+					\end{array}
+					\]
+				\end{exampleblock}
+			\end{column}
+			\begin{column}{0.57\textwidth}
+				\begin{block}{Se lee igual que antes}
+					\tiny
+					\azul{MCD} = producto de los \checkmark:
+					\[ \mathrm{MCD}=2\cdot2\cdot2\cdot3\cdot7=\destacar{168} \]
+					\azul{mcm} = producto de \checkmark\ y $\ast$ juntos:
+					\[ \mathrm{mcm}=2\cdot2\cdot2\cdot3\cdot3\cdot5\cdot7=\destacar{2\,520} \]
+				\end{block}
+			\end{column}
+		\end{columns}
+		
+		\vspace{0.06cm}
+		{\tiny\color{uniGris} \azul{Verificación que siempre funciona:}
+			$\mathrm{MCD}\cdot\mathrm{mcm} = a\cdot b$. Aquí
+			$168\cdot 2\,520 = 423\,360 = 504\cdot 840$ \checkmark \ Si no cuadra, hay
+			un error en alguna división de la tabla.}
+	\end{frame}
+	
+	\begin{frame}{Ejercicio 2 — divisibilidad aplicada}
+		\scriptsize
+		\begin{alertblock}{En parejas, 12 minutos}
+			\tiny
+			\begin{enumerate}\setlength{\itemsep}{-0.02cm}
+				\item Factorice $90$ y $126$; halle $\mathrm{MCD}$ y $\mathrm{mcm}$.
+				\item Se tienen dos rollos de cinta de $90$ cm y $126$ cm. Hay que
+				cortarlos en trozos iguales, lo \azul{más largos posible}, sin que
+				sobre nada. ¿Cuánto mide cada trozo y cuántos salen?
+				\item Dos rutas de reparto salen de la misma bodega: una cada $8$ días y
+				otra cada $12$. Si hoy coincidieron, ¿en cuántos días vuelven a
+				coincidir?
+				\item Halle $\mathrm{MCD}(24,60,84)$.
+			\end{enumerate}
+		\end{alertblock}
+		
+		\vspace{0.05cm}
+		{\tiny\color{uniGris} Pregúntese siempre: ¿me piden \azul{partir} algo
+			(MCD) o \azul{esperar} a que coincida (mcm)?}
+	\end{frame}
+	
+	\begin{frame}{Ejercicio 2 — solución}
+		\scriptsize
+		\begin{columns}[T,onlytextwidth]
+			\begin{column}{0.49\textwidth}
+				\begin{block}{Puntos 1 y 2}
+					\tiny
+					\textbf{1.}
+					\[
+					\begin{array}{cc|cl}
+						90 & 126 & 2 & {\color{uniAzul}\checkmark}\\
+						45 & 63  & 3 & {\color{uniAzul}\checkmark}\\
+						15 & 21  & 3 & {\color{uniAzul}\checkmark}\\
+						5  & 7   & 5 & {\color{red}\ast}\\
+						1  & 7   & 7 & {\color{red}\ast}\\
+						1  & 1   &   &
+					\end{array}
+					\]
+					$\mathrm{MCD}=2\cdot 3\cdot 3=\destacar{18} \quad
+					\mathrm{mcm}=2\cdot 3\cdot 3\cdot 5\cdot 7=\destacar{630}$
+					
+					\vspace{0.05cm}
+					\textbf{2.} Es un MCD: trozos de $\destacar{18}$ cm.
+					Salen $90/18 = 5$ y $126/18 = 7$, en total $\destacar{12}$ trozos.
+				\end{block}
+			\end{column}
+			\begin{column}{0.49\textwidth}
+				\begin{block}{Puntos 3 y 4}
+					\tiny
+					\textbf{3.} Es un mcm: $8 = 2^{3}$, $12 = 2^{2}\cdot 3$,
+					\[ \mathrm{mcm} = 2^{3}\cdot 3 = \destacar{24 \text{ días}} \]
+					
+					\vspace{0.1cm}
+					\textbf{4.} $24=2^{3}\cdot 3$, $60=2^{2}\cdot 3\cdot 5$,
+					$84=2^{2}\cdot 3\cdot 7$
+					\[ \mathrm{MCD} = 2^{2}\cdot 3 = \destacar{12} \]
+				\end{block}
+			\end{column}
+		\end{columns}
+		
+		\vspace{0.08cm}
+		{\tiny\color{uniGris} \destacar{Cómo distinguirlos sin dudar:} si la
+			respuesta debe ser \azul{menor o igual} que los datos, es MCD (partir). Si
+			debe ser \azul{mayor o igual}, es mcm (esperar). En el 2 la respuesta
+			($18$) es menor que $90$; en el 3 ($24$) es mayor que $12$.}
+	\end{frame}
+	
+	\begin{frame}{Ejercicio 3 — taller principal}
+		\begin{alertblock}{En grupos de tres, 20 minutos. Se socializa en el tablero.}
+			\scriptsize
+			\begin{enumerate}\setlength{\itemsep}{0.02cm}
+				\item Calcule: \ $100 - \big\{30 - [\,12 - (5-9)\,]\big\}$
+				\item Calcule: \ $-\big[\,6 - (9-15)\,\big] + 4$
+				\item Una cuenta arranca en $-\$120\,000$. Entra un pago de
+				$\$450\,000$ y sale un cargo de $\$85\,000$. ¿Cuál es el saldo?
+				\item Un buzo está a $-5$ m y desciende tres tramos de $18$ m cada uno.
+				¿A qué profundidad queda?
+				\item En un mismo día abren tres puntos de atención: uno cada $8$ días,
+				otro cada $12$ y otro cada $18$. ¿Cuándo vuelven a abrir los tres
+				el mismo día?
+			\end{enumerate}
+		\end{alertblock}
+	\end{frame}
+	
+	\begin{frame}{Ejercicio 3 — solución}
+		\scriptsize
+		\begin{columns}[T,onlytextwidth]
+			\begin{column}{0.49\textwidth}
+				\begin{block}{Puntos 1 a 3}
+					\tiny
+					\textbf{1.} $5-9=-4$; \ $12-(-4)=16$; \ $30-16=14$;
+					\ $100-14=\destacar{86}$
+					
+					\vspace{0.08cm}
+					\textbf{2.} $9-15=-6$; \ $6-(-6)=12$; \ $-12+4=\destacar{-8}$
+					
+					\vspace{0.08cm}
+					\textbf{3.} $-120\,000 + 450\,000 - 85\,000
+					= \destacar{\$245\,000}$
+				\end{block}
+			\end{column}
+			\begin{column}{0.49\textwidth}
+				\begin{block}{Puntos 4 y 5}
+					\tiny
+					\textbf{4.} $-5 + 3\cdot(-18) = -5-54
+					= \destacar{-59\ \text{m}}$
+					
+					\vspace{0.1cm}
+					\textbf{5.}
+					\[
+					\begin{array}{ccc|cl}
+						8 & 12 & 18 & 2 & {\color{uniAzul}\checkmark}\\
+						4 & 6  & 9  & 2 & {\color{red}\ast}\\
+						2 & 3  & 9  & 3 & {\color{red}\ast}\\
+						2 & 1  & 3  & 2 & {\color{red}\ast}\\
+						1 & 1  & 3  & 3 & {\color{red}\ast}\\
+						1 & 1  & 1  &   &
+					\end{array}
+					\]
+					\[ \mathrm{mcm}=2\cdot2\cdot3\cdot2\cdot3=\destacar{72\ \text{días}} \]
+				\end{block}
+			\end{column}
+		\end{columns}
+		
+		\vspace{0.08cm}
+		{\tiny\color{uniGris} En el \destacar{4}, el signo del resultado tiene
+			sentido físico: sigue bajo el agua. \azul{Siempre pregúntese si el signo de
+				la respuesta es razonable}: un saldo, una profundidad o una temperatura
+			avisan solos cuando el cálculo salió mal.}
+	\end{frame}
+	
+	\begin{frame}{Errores frecuentes en esta sesión}
+		\scriptsize
+		\begin{center}
+			\begin{tabular}{@{}p{5.4cm}p{6.6cm}@{}}
+				\toprule
+				\textbf{Error} & \textbf{Lo correcto} \\
+				\midrule
+				$(-3)+(-4) = 12$ &
+				$=-7$. La ley de los signos es del \azul{producto}, no de la suma \\
+				\addlinespace
+				$-2^{4} = 16$ &
+				$=-16$. Sin paréntesis, el menos no se eleva \\
+				\addlinespace
+				$12\div 3\cdot 2 = 2$ &
+				$=8$. Mismo nivel $\Rightarrow$ izquierda a derecha \\
+				\addlinespace
+				Resolver la llave antes que el paréntesis &
+				Siempre \azul{de dentro hacia afuera} \\
+				\addlinespace
+				Usar mcm donde se pide repartir &
+				Repartir en partes iguales es \azul{MCD} \\
+				\addlinespace
+				Decir que $1$ es primo &
+				Tiene un solo divisor; los primos tienen dos \\
+				\bottomrule
+			\end{tabular}
+		\end{center}
+	\end{frame}
+	
+	\begin{frame}{Cierre de la sesión}
+		\scriptsize
+		\begin{block}{Lo que hay que llevarse}
+			\tiny
+			\textbf{1.} Restar es sumar el opuesto; por eso dos menos seguidos dan
+			más. \quad
+			\textbf{2.} La ley de los signos vale para $\times$ y $\div$,
+			\destacar{no} para $+$ y $-$. \quad
+			\textbf{3.} $-a^{n}$ y $(-a)^{n}$ son cosas distintas. \quad
+			\textbf{4.} Jerarquía: paréntesis, potencias, $\times\div$, $+-$; dentro
+			del mismo nivel, de izquierda a derecha. \quad
+			\textbf{5.} MCD para repartir, mcm para coincidir.
+		\end{block}
+		
+		\vspace{0.1cm}
+		\begin{alertblock}{Para la próxima sesión}
+			\tiny
+			Resolver los \destacar{20 ejercicios propuestos} y la guía de la unidad en
+			Aulas Virtuales.
+			
+			\vspace{0.05cm}
+			En la sesión 3 pasamos a los \azul{números racionales}: sumar, restar,
+			multiplicar y dividir fracciones, y las fracciones complejas. El mcm de
+			hoy será el mínimo común denominador de la próxima semana:
+			\destacar{es la misma herramienta con otro nombre}.
+		\end{alertblock}
+	\end{frame}
+	
+	\begin{frame}{Ejercicios propuestos}
+		\vspace{-0.1cm}
+		\begin{beamercolorbox}[wd=\textwidth,sep=0.10cm]{block body}
+			\centering\scriptsize
+			\textbf{1--8:} calcule. \quad \textbf{9--12:} potencias. \quad
+			\textbf{13--16:} factorice, MCD y mcm. \quad
+			\textbf{17--20:} problemas.
+		\end{beamercolorbox}
+		\listatiny
+		\vspace{0.15cm}
+		\begin{columns}[T,onlytextwidth]
+			\begin{column}{0.47\textwidth}
+				\begin{enumerate}\setlength{\itemsep}{0.16cm}
+					\item $-15 + 23 - 8$
+					\item $-9 - (-14) + (-6)$
+					\item $(-5)(-3)(-2)$
+					\item $\dfrac{-96}{-12}$
+					\item $7 - 3(4-9)$
+					\item $\dfrac{-45}{9} + (-2)(7)$
+					\item $-[\,10-(4-13)\,]$
+					\item $\{20-[6-(2-8)]\}\div(-4)$
+					\item $(-3)^{4}$
+					\item $-3^{4}$
+				\end{enumerate}
+			\end{column}
+			\begin{column}{0.50\textwidth}
+				\begin{enumerate}\setlength{\itemsep}{0.16cm}
+					\setcounter{enumi}{10}
+					\item $(-1)^{27}$
+					\item $-5^{2}-(-5)^{2}$
+					\item Factorice $180$ y $300$
+					\item $\mathrm{MCD}(180,300)$ y $\mathrm{mcm}(180,300)$
+					\item $\mathrm{mcm}(6,10,15)$
+					\item $\mathrm{MCD}(72,120,168)$
+					\item Saldo: $-\$85\,000$, entra $\$300\,000$, sale $\$140\,000$
+					\item Temperatura: $-8\,^{\circ}$C sube $17$ y baja $6$
+					\item Cortar tablas de $180$ y $300$ cm en trozos iguales máximos
+					\item Tres alarmas suenan cada $6$, $10$ y $15$ minutos
+				\end{enumerate}
+			\end{column}
+		\end{columns}
+	\end{frame}
+	
+	\begin{frame}{Respuestas}{Autoevaluación de los ejercicios propuestos}
+		\listatiny
+		\vspace{0.15cm}
+		\begin{columns}[T,onlytextwidth]
+			\begin{column}{0.47\textwidth}
+				\begin{enumerate}\setlength{\itemsep}{0.16cm}
+					\item $0$
+					\item $-1$
+					\item $-30$
+					\item $8$
+					\item $22$
+					\item $-19$
+					\item $-19$
+					\item $-2$
+					\item $81$
+					\item $-81$
+				\end{enumerate}
+			\end{column}
+			\begin{column}{0.50\textwidth}
+				\begin{enumerate}\setlength{\itemsep}{0.16cm}
+					\setcounter{enumi}{10}
+					\item $-1$
+					\item $-50$
+					\item $180=2^{2}3^{2}5$, \ $300=2^{2}\cdot 3\cdot 5^{2}$
+					\item $\mathrm{MCD}=60$, \ $\mathrm{mcm}=900$
+					\item $30$
+					\item $24$
+					\item $\$75\,000$
+					\item $3\,^{\circ}$C
+					\item $60$ cm: salen $3+5=8$ trozos
+					\item Cada $30$ minutos
+				\end{enumerate}
+			\end{column}
+		\end{columns}
+	\end{frame}
+	
+	\begin{frame}{Referencias}
+		\footnotesize
+		\begin{itemize}
+			\item[{[1]}] Ramos del Olmo, Á. M. (2016). \textit{Matemáticas básicas
+				para el acceso a la universidad}. Ediciones Pirámide.
+			\texttt{https://elibro.net/es/ereader/uniminuto/49134}
+			\item[{[2]}] González Pulido, J. W., Chacón Benavides, J. A. \&
+			Fonseca Correa, L. Á. (2023). \textit{Matemática básica}
+			(1.\textsuperscript{a} ed.). Universidad Mariana.
+			\texttt{https://elibro.net/es/ereader/uniminuto/280647}
+			\item[{[3]}] Torrijos, M. (2018). \textit{Apuntes de matemática básica}.
+			Universidad Católica de Colombia.
+			\texttt{https://elibro.net/es/ereader/uniminuto/197048}
+			\item[{[4]}] Ramírez, A. \& Rojas, L. (2016). \textit{Matemáticas básicas
+				con aplicaciones a la ingeniería}. Ecoe Ediciones.
+			\texttt{https://elibro.net/es/ereader/uniminuto/114355}
+		\end{itemize}
+		
+		\vspace{0.3cm}
+		\begin{center}
+			{\Large\color{uniAzul}\textbf{¿Preguntas?}}
+		\end{center}
+	\end{frame}
+	
+\end{document}

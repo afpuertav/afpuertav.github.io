@@ -1,0 +1,502 @@
+% ============================================================================
+%  ESTADÍSTICA INFERENCIAL — Sesión 7
+%  Semana 7: 21 al 26 de septiembre de 2026
+%  2.1 Distribución binomial · 2.2 Distribución de Poisson
+% ============================================================================
+\documentclass[aspectratio=169,10pt]{beamer}
+
+\usepackage[utf8]{inputenc}
+\IfFileExists{spanish.ldf}{\usepackage[spanish,es-noshorthands]{babel}}{}
+\usepackage{amsmath,amssymb}
+\usepackage{booktabs}
+\usepackage{tikz}
+\usepackage{listings}
+
+\usetheme{Uniminuto}
+
+\uniasignatura{Estadística inferencial}
+\uniprofesor{Andrés Felipe Puerta Velez}
+\unicorreo{andres.puerta-v@uniminuto.edu.co}
+\uninrc{CBASBL061}
+\unisemana{Sesión 7 — Semana 7 · 21 al 26 de septiembre de 2026}
+
+\newcommand{\listatiny}{\setbeamerfont{itemize/enumerate body}{size=\tiny}\tiny}
+
+\newcommand{\fx}[1]{{\ttfamily\color{uniAzul}#1}}
+
+% ------------------------------------------------------------- CÓDIGO R ----
+\lstdefinestyle{Rcode}{
+  language=R,
+  basicstyle=\ttfamily\scriptsize,
+  keywordstyle=\color{uniAzul}\bfseries,
+  commentstyle=\color{uniGris}\itshape,
+  stringstyle=\color{uniTitulo},
+  showstringspaces=false, numbers=none, breaklines=true,
+  columns=fullflexible,
+  backgroundcolor=\color{uniCremaClaro},
+  frame=leftline, framerule=1.2pt, rulecolor=\color{uniNaranja},
+  xleftmargin=0.35cm, framexleftmargin=0.35cm,
+  framexrightmargin=0.15cm, framextopmargin=2pt, framexbottommargin=2pt,
+  aboveskip=0.15cm, belowskip=0.15cm
+}
+\lstdefinestyle{Rmini}{
+  language=R,
+  basicstyle=\ttfamily\tiny,
+  keywordstyle=\color{uniAzul}\bfseries,
+  commentstyle=\color{uniGris}\itshape,
+  stringstyle=\color{uniTitulo},
+  showstringspaces=false, numbers=none, breaklines=true,
+  columns=fullflexible,
+  backgroundcolor=\color{uniCremaClaro},
+  frame=leftline, framerule=1.2pt, rulecolor=\color{uniNaranja},
+  xleftmargin=0.35cm, framexleftmargin=0.35cm,
+  framexrightmargin=0.15cm, framextopmargin=2pt, framexbottommargin=2pt,
+  aboveskip=0.12cm, belowskip=0.12cm
+}
+\lstdefinestyle{Rout}{
+  basicstyle=\ttfamily\tiny\color{black},
+  showstringspaces=false, numbers=none, breaklines=true,
+  columns=fullflexible,
+  backgroundcolor=\color{uniGris!10},
+  frame=leftline, framerule=1.2pt, rulecolor=\color{uniGris},
+  xleftmargin=0.35cm, framexleftmargin=0.35cm,
+  framexrightmargin=0.15cm, framextopmargin=2pt, framexbottommargin=2pt,
+  aboveskip=0.12cm, belowskip=0.12cm
+}
+
+\begin{document}
+
+\portada
+
+\begin{frame}{Orden del día}
+  \begin{enumerate}
+    \item Llamado a lista y retroalimentación del Examen 1
+    \item Presentación de la Unidad 2
+    \item \azul{Tema 2.1: distribución de probabilidad discreta binomial}
+    \item \azul{Tema 2.2: distribución de probabilidad discreta de Poisson}
+    \item Ejercicios en clase
+    \item Cierre y ejercicios propuestos
+  \end{enumerate}
+\end{frame}
+
+\begin{frame}{Dónde estamos: empieza la Unidad 2}
+  En la unidad 1 aprendimos a \azul{calcular} probabilidades caso por caso. Eso
+  funciona con dados y barajas, pero no con preguntas como ``¿cuál es la
+  probabilidad de que entre 200 pedidos haya más de 15 devoluciones?''.
+
+  \vspace{0.2cm}
+  \begin{alertblock}{La idea de la Unidad 2}
+    \footnotesize
+    Ciertos fenómenos se repiten con una estructura conocida. Si identificamos
+    esa estructura, existe un \destacar{modelo} —una fórmula— que da todas las
+    probabilidades de una vez. Eso es una \azul{distribución de probabilidad}.
+  \end{alertblock}
+
+  \vspace{0.15cm}
+  {\footnotesize\color{uniGris} Unidad 2: binomial y Poisson (discretas),
+  normal y $t$ de Student (continuas), teorema del límite central, estimación e
+  intervalos de confianza. \destacar{Examen 2: semana 12}.}
+\end{frame}
+
+\seccion{2.1 Distribución binomial}
+
+\begin{frame}{Variable aleatoria discreta}
+  \begin{block}{Definición}
+    \small
+    Una \azul{variable aleatoria} $X$ asigna un número a cada resultado del
+    experimento. Es \azul{discreta} si toma valores aislados: $0,1,2,\dots$
+  \end{block}
+
+  \vspace{0.2cm}
+  \begin{columns}[T,onlytextwidth]
+    \begin{column}{0.48\textwidth}
+      \begin{exampleblock}{Esperanza (media)}
+        \[ E(X)=\mu=\sum x_i\,P(X=x_i) \]
+        \footnotesize Es el valor promedio a la larga.
+      \end{exampleblock}
+    \end{column}
+    \begin{column}{0.48\textwidth}
+      \begin{exampleblock}{Varianza}
+        \[ V(X)=\sigma^{2}=\sum (x_i-\mu)^{2}P(X=x_i) \]
+        \footnotesize Mide la dispersión alrededor de $\mu$.
+      \end{exampleblock}
+    \end{column}
+  \end{columns}
+
+  \vspace{0.25cm}
+  {\footnotesize\color{uniGris} Toda distribución debe cumplir
+  $P(X=x_i)\ge 0$ y $\sum P(X=x_i)=1$: son los axiomas de la sesión 3
+  aplicados a una variable.}
+\end{frame}
+
+\begin{frame}{Distribución binomial}
+  \begin{block}{Cuándo se usa: cuatro condiciones}
+    \footnotesize
+    Número fijo $n$ de ensayos; cada ensayo con solo dos resultados (éxito o
+    fracaso); probabilidad de éxito $p$ constante; ensayos
+    \azul{independientes}.
+  \end{block}
+
+  \vspace{0.15cm}
+  \begin{block}{Fórmula}
+    \[ P(X=k)=\binom{n}{k}p^{k}(1-p)^{n-k},\qquad k=0,1,\dots,n \]
+    \[ E(X)=np \qquad V(X)=np(1-p) \qquad \sigma=\sqrt{np(1-p)} \]
+  \end{block}
+
+  \vspace{0.1cm}
+  {\scriptsize\color{uniGris} El $\binom{n}{k}$ es la combinación de la sesión
+  2: cuenta \emph{en cuáles} de los $n$ ensayos ocurrieron los $k$ éxitos.}
+\end{frame}
+
+\begin{frame}{De dónde sale la fórmula}
+  \small
+  Una secuencia concreta con $k$ éxitos y $n-k$ fracasos tiene probabilidad
+  \[ \underbrace{p\cdot p\cdots p}_{k}\;\cdot\;
+     \underbrace{(1-p)\cdots(1-p)}_{n-k} = p^{k}(1-p)^{n-k} \]
+  por independencia (regla de la multiplicación, sesión 4).
+
+  \vspace{0.2cm}
+  Pero hay muchas secuencias distintas con $k$ éxitos: exactamente
+  $\binom{n}{k}$. Como son mutuamente excluyentes, se suman (sesión 3):
+  \[ P(X=k)=\binom{n}{k}p^{k}(1-p)^{n-k} \]
+
+  \vspace{0.15cm}
+  {\footnotesize\color{uniGris} Toda la unidad 1 está condensada en esta línea:
+  conteo, independencia y regla de la suma.}
+\end{frame}
+
+\begin{frame}{Ejercicio 1 — en clase}
+  \begin{alertblock}{Individual (8 minutos)}
+    En una línea de producción, el \destacar{20\%} de las piezas sale
+    defectuosa. Se toman \destacar{10 piezas} al azar de forma independiente.
+    Sea $X$ el número de defectuosas.
+
+    \vspace{0.25cm}
+    \begin{enumerate}
+      \item $P(X=0)$ y $P(X=2)$
+      \item $P(X\le 2)$
+      \item $P(X\ge 1)$, usando el complemento
+      \item $E(X)$ y $\sigma$
+    \end{enumerate}
+  \end{alertblock}
+\end{frame}
+
+\begin{frame}{Ejercicio 1 — solución}
+  \begin{columns}[T,onlytextwidth]
+    \begin{column}{0.52\textwidth}
+      \begin{block}{Con $n=10$ y $p=0{,}20$}
+        \footnotesize
+        \begin{align*}
+          P(X=0)&=\binom{10}{0}(0{,}2)^{0}(0{,}8)^{10}=\azul{0{,}1074}\\[0.2em]
+          P(X=2)&=\binom{10}{2}(0{,}2)^{2}(0{,}8)^{8}=\azul{0{,}3020}\\[0.2em]
+          P(X\le 2)&=0{,}1074+0{,}2684+0{,}3020=\azul{0{,}6778}\\[0.2em]
+          P(X\ge 1)&=1-0{,}1074=\azul{0{,}8926}
+        \end{align*}
+      \end{block}
+    \end{column}
+    \begin{column}{0.44\textwidth}
+      \begin{exampleblock}{Media y desviación}
+        \footnotesize
+        \[ E(X)=10(0{,}2)=\azul{2} \text{ piezas} \]
+        \[ \sigma=\sqrt{10(0{,}2)(0{,}8)}=\sqrt{1{,}6}=\azul{1{,}2649} \]
+      \end{exampleblock}
+      \begin{alertblock}{Lectura}
+        \footnotesize
+        En lotes de 10 piezas se esperan 2 defectuosas en promedio, y es casi
+        seguro (89\%) que aparezca al menos una.
+      \end{alertblock}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\seccion{2.2 Distribución de Poisson}
+
+\begin{frame}{Distribución de Poisson}
+  \begin{block}{Cuándo se usa}
+    \footnotesize
+    Cuenta cuántas veces ocurre un evento en un \azul{intervalo fijo} de
+    tiempo, espacio o volumen, si ocurren de forma independiente y a una tasa
+    media constante $\lambda$.
+  \end{block}
+
+  \vspace{0.1cm}
+  \begin{block}{Fórmula}
+    \[ P(X=k)=\frac{e^{-\lambda}\lambda^{k}}{k!},\quad k=0,1,2,\dots
+       \qquad E(X)=V(X)=\lambda \]
+  \end{block}
+
+  \begin{alertblock}{Detalle importante}
+    \footnotesize
+    $\lambda$ debe corresponder al \destacar{mismo intervalo} de la pregunta:
+    si llegan 4 llamadas por hora y se pregunta por media hora, $\lambda=2$.
+  \end{alertblock}
+\end{frame}
+
+\begin{frame}{Binomial y Poisson: en qué se diferencian}
+  \footnotesize
+  \begin{center}
+  \begin{tabular}{@{}lll@{}}
+    \toprule
+     & \textbf{Binomial} & \textbf{Poisson} \\
+    \midrule
+    Qué cuenta & Éxitos en $n$ ensayos & Ocurrencias en un intervalo \\
+    Valores de $X$ & $0,1,\dots,n$ (acotado) & $0,1,2,\dots$ (sin tope) \\
+    Parámetros & $n$ y $p$ & $\lambda$ \\
+    Media & $np$ & $\lambda$ \\
+    Varianza & $np(1-p)$ & $\lambda$ \\
+    Pregunta típica & ``de 10 piezas, ¿cuántas fallan?'' &
+      ``en una hora, ¿cuántas llamadas entran?'' \\
+    \bottomrule
+  \end{tabular}
+  \end{center}
+
+  \vspace{0.2cm}
+  \begin{exampleblock}{Aproximación}
+    \footnotesize
+    Si $n$ es grande y $p$ pequeño ($n\ge 20$, $p\le 0{,}05$), la binomial se
+    aproxima bien con Poisson tomando $\lambda=np$. Es el caso de los eventos
+    raros: fallas, accidentes, reclamos.
+  \end{exampleblock}
+\end{frame}
+
+\begin{frame}{Ejercicio 2 — en clase}
+  \begin{alertblock}{En parejas (8 minutos)}
+    A un centro de atención llegan en promedio \destacar{4 llamadas por hora},
+    de forma independiente. Sea $X$ el número de llamadas en una hora.
+
+    \vspace{0.25cm}
+    \begin{enumerate}
+      \item $P(X=0)$ y $P(X=3)$
+      \item $P(X\le 2)$
+      \item $P(X\ge 3)$
+      \item ¿Cuál es la probabilidad de que no entre ninguna llamada en
+            \emph{media} hora?
+    \end{enumerate}
+  \end{alertblock}
+\end{frame}
+
+\begin{frame}{Ejercicio 2 — solución}
+  \begin{columns}[T,onlytextwidth]
+    \begin{column}{0.52\textwidth}
+      \begin{block}{Con $\lambda=4$ por hora}
+        \footnotesize
+        \begin{align*}
+          P(X=0)&=e^{-4}=\azul{0{,}0183}\\[0.2em]
+          P(X=3)&=\frac{e^{-4}4^{3}}{3!}=\azul{0{,}1954}\\[0.2em]
+          P(X\le 2)&=0{,}0183+0{,}0733+0{,}1465=\azul{0{,}2381}\\[0.2em]
+          P(X\ge 3)&=1-0{,}2381=\azul{0{,}7619}
+        \end{align*}
+      \end{block}
+    \end{column}
+    \begin{column}{0.44\textwidth}
+      \begin{exampleblock}{Punto 4}
+        \footnotesize
+        Media hora $\Rightarrow \lambda=2$:
+        \[ P(X=0)=e^{-2}=\azul{0{,}1353} \]
+        Es mucho mayor que $0{,}0183$: en menos tiempo es más fácil que no
+        llegue nada.
+      \end{exampleblock}
+      \begin{alertblock}{Error frecuente}
+        \footnotesize
+        Dejar $\lambda=4$ y luego ``dividir el resultado entre 2''. El ajuste
+        va en $\lambda$, no en la probabilidad.
+      \end{alertblock}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{Ejercicio 3 — en clase}
+  \begin{alertblock}{Individual (8 minutos)}
+    Una empresa sabe que el \destacar{35\%} de sus cotizaciones termina en
+    venta. En una semana se envían \destacar{8 cotizaciones} independientes.
+
+    \vspace{0.25cm}
+    \begin{enumerate}
+      \item ¿Qué modelo corresponde y por qué?
+      \item $P(\text{exactamente 3 ventas})$
+      \item $P(\text{al menos una venta})$
+      \item ¿Cuántas ventas se esperan en promedio?
+    \end{enumerate}
+  \end{alertblock}
+\end{frame}
+
+\begin{frame}{Ejercicio 3 — solución}
+  \begin{columns}[T,onlytextwidth]
+    \begin{column}{0.50\textwidth}
+      \begin{block}{Binomial con $n=8$, $p=0{,}35$}
+        \footnotesize
+        Se cumplen las cuatro condiciones: número fijo de cotizaciones, dos
+        resultados, $p$ constante e independencia.
+        \begin{align*}
+          P(X=3)&=\binom{8}{3}(0{,}35)^{3}(0{,}65)^{5}=\azul{0{,}2786}\\[0.2em]
+          P(X\ge 1)&=1-(0{,}65)^{8}=\azul{0{,}9681}\\[0.2em]
+          E(X)&=8(0{,}35)=\azul{2{,}8}\text{ ventas}
+        \end{align*}
+      \end{block}
+    \end{column}
+    \begin{column}{0.46\textwidth}
+      \begin{alertblock}{Sobre el valor esperado}
+        \footnotesize
+        $2{,}8$ ventas no es un resultado posible: nadie vende 2,8 veces. Es un
+        \azul{promedio a la larga}: si la empresa repitiera muchas semanas
+        iguales, promediaría 2,8 ventas por semana.
+      \end{alertblock}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}[fragile]{Binomial y Poisson, en R}
+  \scriptsize
+  Los dos ejercicios de hoy, sin tablas y sin calculadora:
+\begin{lstlisting}[style=Rmini]
+# Binomial: n = 10, p = 0.20   (ejercicio 1)
+dbinom(0, size = 10, prob = 0.2)      # P(X = 0)
+dbinom(2, size = 10, prob = 0.2)      # P(X = 2)
+pbinom(2, size = 10, prob = 0.2)      # P(X <= 2)  acumulada
+1 - pbinom(0, size = 10, prob = 0.2)  # P(X >= 1)
+
+# Poisson: lambda = 4 por hora   (ejercicio 2)
+dpois(0, lambda = 4);  dpois(3, lambda = 4)
+ppois(2, lambda = 4)                  # P(X <= 2)
+1 - ppois(2, lambda = 4)              # P(X >= 3)
+dpois(0, lambda = 2)                  # media hora: lambda se ajusta
+\end{lstlisting}
+\begin{lstlisting}[style=Rout]
+[1] 0.1073742
+[1] 0.3019899
+[1] 0.6777995
+[1] 0.8926258
+[1] 0.01831564
+[1] 0.1953668
+[1] 0.2381033
+[1] 0.7618967
+[1] 0.1353353
+\end{lstlisting}
+
+  \vspace{-0.12cm}
+  {\tiny\color{uniGris} La regla es siempre la misma: \fx{d} para
+  \destacar{densidad} ($P(X=k)$), \fx{p} para \destacar{probabilidad
+  acumulada} ($P(X\le k)$), \fx{q} para el \destacar{cuantil} y \fx{r} para
+  \destacar{generar} datos al azar. Sirve para toda distribución en R.}
+\end{frame}
+
+\begin{frame}{Cierre de la sesión}
+  \begin{block}{Lo que debe quedar claro hoy}
+    \begin{itemize}
+      \item Binomial: $n$ ensayos fijos, dos resultados, $p$ constante,
+            independencia. $E=np$, $V=np(1-p)$.
+      \item Poisson: conteos en un intervalo, tasa $\lambda$. $E=V=\lambda$, y
+            $\lambda$ se ajusta al intervalo de la pregunta.
+      \item Identificar el modelo correcto es más importante que la fórmula: la
+            fórmula está en el formulario.
+    \end{itemize}
+  \end{block}
+
+  \vspace{0.2cm}
+  \begin{alertblock}{Trabajo independiente para la próxima sesión}
+    \footnotesize
+    Resolver los \destacar{20 ejercicios de la lámina siguiente}; las
+    respuestas están en la lámina posterior. En la sesión 8 pasamos a
+    variables continuas con la \azul{distribución normal}.
+  \end{alertblock}
+\end{frame}
+
+\begin{frame}{Ejercicios propuestos}
+  \vspace{-0.1cm}
+  \begin{beamercolorbox}[wd=\textwidth,sep=0.10cm]{block body}
+    \centering\scriptsize
+    \textbf{1--8:} binomial con $n=10$ y $p=0{,}30$. \quad
+    \textbf{9--16:} Poisson con $\lambda=3$. \quad Redondee a 4 decimales.
+  \end{beamercolorbox}
+  \listatiny
+  \vspace{0.15cm}
+  \begin{columns}[T,onlytextwidth]
+    \begin{column}{0.47\textwidth}
+      \begin{enumerate}\setlength{\itemsep}{0.16cm}
+        \item $P(X=0)$
+        \item $P(X=1)$
+        \item $P(X=2)$
+        \item $P(X=3)$
+        \item $P(X\le 2)$
+        \item $P(X\ge 1)$
+        \item $E(X)$
+        \item $V(X)$
+        \item $P(X=0)$
+        \item $P(X=1)$
+      \end{enumerate}
+    \end{column}
+    \begin{column}{0.50\textwidth}
+      \begin{enumerate}\setlength{\itemsep}{0.16cm}
+        \setcounter{enumi}{10}
+        \item $P(X=2)$
+        \item $P(X=3)$
+        \item $P(X\le 2)$
+        \item $P(X\ge 1)$
+        \item $E(X)$
+        \item $V(X)$
+        \item Binomial $n=5$, $p=0{,}5$: $P(X=3)$
+        \item Binomial $n=20$, $p=0{,}05$: $P(X=0)$
+        \item Poisson $\lambda=1{,}5$: $P(X=2)$
+        \item Si $\lambda=3$ por hora, en 2 horas: $P(X=0)$
+      \end{enumerate}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{Respuestas}{Autoevaluación de los ejercicios propuestos}
+  \listatiny
+  \vspace{0.15cm}
+  \begin{columns}[T,onlytextwidth]
+    \begin{column}{0.47\textwidth}
+      \begin{enumerate}\setlength{\itemsep}{0.16cm}
+        \item $0{,}0282$
+        \item $0{,}1211$
+        \item $0{,}2335$
+        \item $0{,}2668$
+        \item $0{,}3828$
+        \item $0{,}9718$
+        \item $3{,}0$
+        \item $2{,}10$
+        \item $0{,}0498$
+        \item $0{,}1494$
+      \end{enumerate}
+    \end{column}
+    \begin{column}{0.50\textwidth}
+      \begin{enumerate}\setlength{\itemsep}{0.16cm}
+        \setcounter{enumi}{10}
+        \item $0{,}2240$
+        \item $0{,}2240$ \;{\color{uniTitulo}igual al 11}
+        \item $0{,}4232$
+        \item $0{,}9502$
+        \item $3{,}0$
+        \item $3{,}0$ \;{\color{uniTitulo}en Poisson $E=V$}
+        \item $0{,}3125$
+        \item $0{,}3585$
+        \item $0{,}2510$
+        \item $e^{-6}=0{,}0025$
+      \end{enumerate}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{Referencias}
+  \footnotesize
+  \begin{itemize}
+    \item[{[1]}] Díaz Rodríguez, M. (2022). \textit{Estadística inferencial
+      aplicada}. Universidad del Norte.
+      \texttt{https://elibro.net/es/lc/uniminuto/titulos/221614}
+    \item[{[2]}] Llinás Solano, H. (2014). \textit{Introducción a la
+      estadística con aplicaciones en ciencias sociales}. Universidad del
+      Norte. \texttt{https://elibro.net/es/lc/uniminuto/titulos/70062}
+    \item[{[3]}] Contento Rubio, M. R. (2019). \textit{Estadística con
+      aplicaciones en R}. Editorial Utadeo.
+      \texttt{https://elibro.net/es/lc/uniminuto/titulos/220926}
+  \end{itemize}
+
+  \vspace{0.35cm}
+  \begin{center}
+    {\Large\color{uniAzul}\textbf{¿Preguntas?}}
+  \end{center}
+\end{frame}
+
+\end{document}

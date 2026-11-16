@@ -1,0 +1,641 @@
+% ============================================================================
+%  PRECÁLCULO — Sesión 3
+%  Semana 3: 24 al 29 de agosto de 2026
+%  1.3 Operaciones básicas con números racionales
+%  Duración prevista: 3 horas
+% ============================================================================
+\documentclass[aspectratio=169,10pt]{beamer}
+
+\usepackage[utf8]{inputenc}
+\IfFileExists{spanish.ldf}{\usepackage[spanish,es-noshorthands]{babel}}{}
+\usepackage{amsmath,amssymb}
+\usepackage{booktabs}
+\usepackage{tikz}
+
+\usetheme{Uniminuto}
+
+\uniasignatura{Precálculo}
+\uniprofesor{Andrés Felipe Puerta Velez}
+\unicorreo{andres.puerta-v@uniminuto.edu.co}
+\uninrc{MATE1161}
+\unisemana{Sesión 3 — Semana 3 · 24 al 29 de agosto de 2026}
+
+\newcommand{\listatiny}{\setbeamerfont{itemize/enumerate body}{size=\tiny}\tiny}
+
+\begin{document}
+
+\portada
+
+\begin{frame}{Orden del día}
+  \begin{enumerate}
+    \item Llamado a lista y revisión de los ejercicios propuestos
+    \item Repaso: dónde quedamos
+    \item \azul{Tema 1.3: simplificar, comparar, sumar y restar fracciones}
+    \item Producto, cociente y fracciones complejas
+    \item Fracción, decimal y porcentaje: tres formas del mismo número
+    \item Talleres guiados, errores frecuentes y cierre
+  \end{enumerate}
+
+  \vspace{0.25cm}
+  {\footnotesize\color{uniGris} Sesión de 3 horas. El mcm que calculamos la
+  semana pasada \destacar{es la herramienta central de hoy}: sin él no hay
+  suma de fracciones.}
+\end{frame}
+
+\begin{frame}{Repaso: dónde quedamos}
+  \footnotesize
+  En la sesión 2 dominamos los signos, la jerarquía de operaciones y el cálculo
+  de MCD y mcm.
+
+  \vspace{0.2cm}
+  \begin{alertblock}{La pregunta de hoy}
+    \footnotesize
+    Los enteros no bastan: $3 \div 5$ no es entero. \destacar{¿Cómo se opera
+    cuando los números vienen partidos?} Todo lo de la sesión 2 sigue
+    valiendo —signos y jerarquía— y encima se agregan las reglas de las
+    fracciones.
+  \end{alertblock}
+
+  \vspace{0.2cm}
+  \begin{block}{Lo que se usa hoy de la sesión anterior}
+    \footnotesize
+    El \azul{MCD} para \destacar{simplificar} y el \azul{mcm} para
+    \destacar{sumar y restar}. Si esos dos no salen rápido, hoy va a costar el
+    doble.
+  \end{block}
+\end{frame}
+
+\seccion{1.3 Números racionales}
+
+\begin{frame}{Fracciones equivalentes y simplificación}
+  \scriptsize
+  \begin{columns}[T,onlytextwidth]
+    \begin{column}{0.48\textwidth}
+      \begin{block}{Equivalencia}
+        \tiny
+        Multiplicar o dividir \azul{arriba y abajo} por el mismo número
+        ($\neq 0$) no cambia el valor:
+        \[ \frac{2}{3} = \frac{4}{6} = \frac{20}{30} = \frac{2k}{3k} \]
+      \end{block}
+    \end{column}
+    \begin{column}{0.48\textwidth}
+      \begin{block}{Simplificar a la mínima expresión}
+        \tiny
+        Se divide numerador y denominador entre su \azul{MCD}:
+        \[ \frac{84}{126} \quad \mathrm{MCD} = 42 \quad
+           \Rightarrow \quad \destacar{\frac{2}{3}} \]
+      \end{block}
+    \end{column}
+  \end{columns}
+
+  \vspace{0.12cm}
+  \begin{exampleblock}{Comparar fracciones: dos caminos}
+    \scriptsize
+    \textbf{(a) Denominador común:} \ $\tfrac{5}{8}$ y $\tfrac{2}{3}$ con
+    mcm $=24$: \ $\tfrac{15}{24} < \tfrac{16}{24}$, luego
+    $\tfrac{5}{8} < \tfrac{2}{3}$.
+
+    \vspace{0.08cm}
+    \textbf{(b) Productos cruzados:} \ $5\cdot 3 = 15$ y $8\cdot 2 = 16$;
+    como $15 < 16$, \ $\tfrac{5}{8} < \tfrac{2}{3}$.
+  \end{exampleblock}
+
+  \vspace{0.05cm}
+  {\tiny\color{uniGris} El camino (b) es más rápido para \azul{dos}
+  fracciones; el (a) es el único práctico cuando hay \azul{tres o más}. Y ojo:
+  los productos cruzados solo funcionan directamente si ambos denominadores son
+  positivos.}
+\end{frame}
+
+\begin{frame}{Suma y resta: el mcm manda}
+  \scriptsize
+  \begin{block}{El procedimiento, en tres pasos}
+    \tiny
+    \textbf{1.} Calcular el mcm de los denominadores. \quad
+    \textbf{2.} Convertir cada fracción a ese denominador. \quad
+    \textbf{3.} Sumar o restar \azul{solo los numeradores} y simplificar.
+  \end{block}
+
+  \vspace{0.08cm}
+  \begin{columns}[T,onlytextwidth]
+    \begin{column}{0.50\textwidth}
+      \begin{exampleblock}{Ejemplo guiado 1}
+        \tiny
+        \[ \frac{3}{4} + \frac{5}{6} - \frac{2}{3} \]
+        $4=2^2$, \ $6=2\cdot 3$, \ $3=3$ \ $\Rightarrow$ \
+        $\mathrm{mcm}=12$
+        \[ = \frac{9}{12} + \frac{10}{12} - \frac{8}{12}
+           = \destacar{\frac{11}{12}} \]
+      \end{exampleblock}
+    \end{column}
+    \begin{column}{0.46\textwidth}
+      \begin{alertblock}{El error que hay que erradicar}
+        \tiny
+        \[ \frac{a}{b} + \frac{c}{d} \;\neq\; \frac{a+c}{b+d} \]
+        Si fuera cierto, $\tfrac{1}{2}+\tfrac{1}{2}$ daría $\tfrac{1}{2}$, y
+        medio más medio es \destacar{uno}.
+      \end{alertblock}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{Producto y cociente: aquí no hace falta el mcm}
+  \scriptsize
+  \begin{columns}[T,onlytextwidth]
+    \begin{column}{0.46\textwidth}
+      \begin{block}{Producto}
+        \tiny
+        Recto: numerador por numerador, denominador por denominador.
+        \[ \frac{a}{b}\cdot\frac{c}{d} = \frac{ac}{bd} \]
+        \[ \frac{3}{5}\cdot\frac{10}{9}
+           = \frac{30}{45} = \destacar{\frac{2}{3}} \]
+      \end{block}
+    \end{column}
+    \begin{column}{0.50\textwidth}
+      \begin{block}{Cociente}
+        \tiny
+        Se multiplica por el \azul{recíproco} del divisor.
+        \[ \frac{a}{b} \div \frac{c}{d} = \frac{a}{b}\cdot\frac{d}{c} \]
+        \[ \frac{2}{3} \div \frac{8}{9}
+           = \frac{2}{3}\cdot\frac{9}{8} = \frac{18}{24}
+           = \destacar{\frac{3}{4}} \]
+      \end{block}
+    \end{column}
+  \end{columns}
+
+  \vspace{0.08cm}
+  \begin{exampleblock}{Ejemplo guiado 2 — simplificar antes de multiplicar}
+    \tiny
+    \[ \left(-\frac{2}{5}\right)\cdot\frac{15}{8}\div\frac{3}{4}
+       = -\frac{2\cdot 15\cdot 4}{5\cdot 8\cdot 3} = -\frac{120}{120}
+       = \destacar{-1} \]
+    \destacar{Simplificar antes} de multiplicar evita números enormes y reduce
+    los errores a la mitad.
+  \end{exampleblock}
+\end{frame}
+
+\begin{frame}{Fracciones complejas}
+  \scriptsize
+  \begin{columns}[T,onlytextwidth]
+    \begin{column}{0.50\textwidth}
+      \begin{block}{Ejemplo guiado 3}
+        \tiny
+        \[ \cfrac{\ \dfrac{2}{3} - \dfrac{1}{4}\ }
+                 {\ \dfrac{1}{2} + \dfrac{5}{6}\ } \]
+        \textbf{Arriba:} \ $\tfrac{8}{12}-\tfrac{3}{12} = \tfrac{5}{12}$
+
+        \textbf{Abajo:} \ $\tfrac{3}{6}+\tfrac{5}{6} = \tfrac{8}{6}
+        = \tfrac{4}{3}$
+        \[ = \frac{5}{12}\div\frac{4}{3}
+           = \frac{5}{12}\cdot\frac{3}{4} = \frac{15}{48}
+           = \destacar{\frac{5}{16}} \]
+      \end{block}
+    \end{column}
+    \begin{column}{0.46\textwidth}
+      \begin{alertblock}{La regla de oro}
+        \tiny
+        \destacar{Primero se resuelve el numerador completo, después el
+        denominador completo, y solo al final se divide.}
+
+        \vspace{0.1cm}
+        La raya principal de la fracción es \azul{una división}, y como toda
+        división exige que sus dos lados estén ya reducidos a un solo número.
+      \end{alertblock}
+    \end{column}
+  \end{columns}
+
+  \vspace{0.08cm}
+  \begin{exampleblock}{Cómo saber cuál es la raya principal}
+    \tiny
+    Es la que está \destacar{más larga} y a la altura del signo igual. Si al
+    escribir a mano las rayas quedan del mismo tamaño, la expresión es
+    ambigua: por eso en el examen conviene usar paréntesis.
+  \end{exampleblock}
+\end{frame}
+
+\begin{frame}{Ejercicio 1 — en clase}
+  \begin{alertblock}{Individual (12 minutos)}
+    \scriptsize
+    Opere y simplifique al máximo:
+
+    \vspace{0.25cm}
+    \centering
+    \begin{tabular}{@{}llll@{}}
+      1. \ $\dfrac{3}{8} + \dfrac{1}{6}$ &
+      2. \ $\dfrac{5}{6} - \dfrac{3}{4}$ &
+      3. \ $-\dfrac{2}{3} + \dfrac{5}{9}$ &
+      4. \ $\dfrac{7}{10} - \left(-\dfrac{1}{5}\right)$ \\[1.1em]
+      5. \ $\dfrac{3}{5}\cdot\dfrac{10}{9}$ &
+      6. \ $-\dfrac{4}{7}\cdot\dfrac{21}{8}$ &
+      7. \ $\dfrac{2}{3} \div \dfrac{8}{9}$ &
+      8. \ $\dfrac{-5/12}{-15/4}$ \\
+    \end{tabular}
+  \end{alertblock}
+\end{frame}
+
+\begin{frame}{Ejercicio 1 — solución}
+  \scriptsize
+  \begin{center}
+  \begin{tabular}{@{}clc@{\hspace{1.2cm}}clc@{}}
+    \toprule
+    \textbf{\#} & \textbf{Procedimiento} & \textbf{Resultado} &
+    \textbf{\#} & \textbf{Procedimiento} & \textbf{Resultado} \\
+    \midrule
+    1 & $\tfrac{9}{24}+\tfrac{4}{24}$ & $\tfrac{13}{24}$ &
+    5 & $\tfrac{30}{45}$ & $\tfrac{2}{3}$ \\[0.35em]
+    2 & $\tfrac{10}{12}-\tfrac{9}{12}$ & $\tfrac{1}{12}$ &
+    6 & $-\tfrac{84}{56}$ & $-\tfrac{3}{2}$ \\[0.35em]
+    3 & $-\tfrac{6}{9}+\tfrac{5}{9}$ & $-\tfrac{1}{9}$ &
+    7 & $\tfrac{2}{3}\cdot\tfrac{9}{8}$ & $\tfrac{3}{4}$ \\[0.35em]
+    4 & $\tfrac{7}{10}+\tfrac{2}{10}$ & $\tfrac{9}{10}$ &
+    8 & $-\tfrac{5}{12}\cdot\left(-\tfrac{4}{15}\right)$ & $\tfrac{1}{9}$ \\
+    \bottomrule
+  \end{tabular}
+  \end{center}
+
+  \vspace{0.12cm}
+  \begin{alertblock}{Los dos que hay que revisar}
+    \scriptsize
+    En el \destacar{4}, restar un negativo es sumar: $-(-\tfrac{1}{5})
+    = +\tfrac{1}{5}$. \quad
+    En el \destacar{8}, dos negativos dan positivo y el resultado es
+    $+\tfrac{1}{9}$: \azul{la ley de signos de la sesión 2 no desaparece
+    porque haya fracciones}.
+  \end{alertblock}
+\end{frame}
+
+\begin{frame}{Ejercicio 2 — en clase}
+  \begin{alertblock}{En parejas (15 minutos)}
+    \scriptsize
+    Aplique la jerarquía de operaciones. Muestre los pasos.
+
+    \vspace{0.25cm}
+    \begin{columns}[T,onlytextwidth]
+      \begin{column}{0.48\textwidth}
+        \begin{enumerate}\setlength{\itemsep}{0.22cm}
+          \item $\dfrac{1}{2} + \dfrac{2}{3}\cdot\dfrac{3}{4}$
+          \item $\left(\dfrac{1}{2} + \dfrac{2}{3}\right)\cdot\dfrac{3}{4}$
+          \item $\left(\dfrac{3}{4}\right)^{2} - \dfrac{1}{8}$
+        \end{enumerate}
+      \end{column}
+      \begin{column}{0.48\textwidth}
+        \begin{enumerate}\setlength{\itemsep}{0.22cm}
+          \setcounter{enumi}{3}
+          \item $2 - \dfrac{\ \frac{1}{3}+\frac{1}{6}\ }{\ \frac{1}{2}\ }$
+          \item $\left(-\dfrac{1}{2}\right)^{3} + \dfrac{1}{4}$
+          \item $\dfrac{\ \frac{5}{6}-\frac{1}{3}\ }{\ \frac{2}{9}\ }$
+        \end{enumerate}
+      \end{column}
+    \end{columns}
+  \end{alertblock}
+\end{frame}
+
+\begin{frame}{Ejercicio 2 — solución}
+  \tiny
+  \begin{columns}[T,onlytextwidth]
+    \begin{column}{0.49\textwidth}
+      \begin{block}{Puntos 1 a 3}
+        \tiny
+        \begin{align*}
+          1)\;& \tfrac{1}{2} + \tfrac{6}{12}
+                = \tfrac{1}{2}+\tfrac{1}{2} = \destacar{1} \\[0.3em]
+          2)\;& \tfrac{7}{6}\cdot\tfrac{3}{4} = \tfrac{21}{24}
+                = \destacar{\tfrac{7}{8}} \\[0.3em]
+          3)\;& \tfrac{9}{16}-\tfrac{2}{16} = \destacar{\tfrac{7}{16}}
+        \end{align*}
+      \end{block}
+    \end{column}
+    \begin{column}{0.49\textwidth}
+      \begin{block}{Puntos 4 a 6}
+        \tiny
+        \begin{align*}
+          4)\;& 2 - \tfrac{1/2}{1/2} = 2 - 1 = \destacar{1} \\[0.3em]
+          5)\;& -\tfrac{1}{8}+\tfrac{2}{8} = \destacar{\tfrac{1}{8}} \\[0.3em]
+          6)\;& \tfrac{1}{2}\div\tfrac{2}{9}
+                = \tfrac{1}{2}\cdot\tfrac{9}{2} = \destacar{\tfrac{9}{4}}
+        \end{align*}
+      \end{block}
+    \end{column}
+  \end{columns}
+
+  \vspace{0.1cm}
+  \begin{alertblock}{Compare el 1 con el 2}
+    \tiny
+    Los mismos tres números dan $1$ y $\tfrac{7}{8}$: \destacar{el paréntesis
+    cambia el resultado}. Sin él, primero se multiplica; con él, primero se
+    suma. Es exactamente la jerarquía de la sesión 2, ahora con fracciones.
+  \end{alertblock}
+\end{frame}
+
+\begin{frame}{Fracción, decimal y porcentaje}
+  \scriptsize
+  \begin{center}
+  \begin{tabular}{@{}p{3.2cm}p{3.2cm}p{2.4cm}p{3.0cm}@{}}
+    \toprule
+    \textbf{Fracción} & \textbf{Decimal} & \textbf{Porcentaje} &
+    \textbf{Cómo se pasa} \\
+    \midrule
+    $\dfrac{1}{4}$ & $0{,}25$ & $25\%$ & Dividir arriba entre abajo \\
+    \addlinespace
+    $\dfrac{2}{5}$ & $0{,}4$ & $40\%$ & Decimal $\times 100$ \\
+    \addlinespace
+    $\dfrac{1}{8}$ & $0{,}125$ & $12{,}5\%$ & Porcentaje $\div 100$ \\
+    \addlinespace
+    $\dfrac{2}{3}$ & $0{,}\overline{6}$ & $66{,}\overline{6}\%$ &
+      Periódico: se redondea al reportar \\
+    \bottomrule
+  \end{tabular}
+  \end{center}
+
+  \vspace{0.1cm}
+  \begin{alertblock}{Cómo se calcula un porcentaje de algo}
+    \scriptsize
+    ``El $15\%$ de $80$'' significa $\tfrac{15}{100}\cdot 80 = \destacar{12}$.
+    La palabra \azul{``de''} siempre se traduce en \azul{multiplicación}.
+  \end{alertblock}
+
+  {\tiny\color{uniGris} Un porcentaje \destacar{no es} un número suelto: es
+  una fracción de algo. ``Subió 20\%'' obliga a preguntar: ¿de qué?}
+\end{frame}
+
+\begin{frame}{Ejercicio 3 — en clase}
+  \begin{alertblock}{Individual (10 minutos)}
+    \scriptsize
+    \textbf{Parte A.} Ordene de menor a mayor, justificando el método usado:
+    \[ \frac{5}{8}, \qquad \frac{7}{12}, \qquad \frac{2}{3},
+       \qquad \frac{3}{5} \]
+
+    \vspace{0.15cm}
+    \textbf{Parte B.} Complete la tabla:
+
+    \vspace{0.1cm}
+    \centering
+    \begin{tabular}{@{}lccc@{}}
+      \toprule
+      & \textbf{Fracción} & \textbf{Decimal} & \textbf{Porcentaje} \\
+      \midrule
+      1 & $\dfrac{3}{4}$ & & \\[0.5em]
+      2 & & $0{,}6$ & \\[0.4em]
+      3 & & & $35\%$ \\[0.3em]
+      4 & $\dfrac{5}{8}$ & & \\
+      \bottomrule
+    \end{tabular}
+  \end{alertblock}
+\end{frame}
+
+\begin{frame}{Ejercicio 3 — solución}
+  \scriptsize
+  \begin{columns}[T,onlytextwidth]
+    \begin{column}{0.46\textwidth}
+      \begin{block}{Parte A}
+        \tiny
+        Con mcm $(8,12,3,5) = 120$:
+        \[ \tfrac{75}{120},\quad \tfrac{70}{120},\quad \tfrac{80}{120},
+           \quad \tfrac{72}{120} \]
+        \[ \destacar{\tfrac{7}{12} < \tfrac{3}{5} < \tfrac{5}{8}
+           < \tfrac{2}{3}} \]
+        En decimal: $0{,}583 < 0{,}6 < 0{,}625 < 0{,}667$.
+      \end{block}
+    \end{column}
+    \begin{column}{0.50\textwidth}
+      \begin{block}{Parte B}
+        \tiny
+        \begin{tabular}{@{}lccc@{}}
+          \toprule
+          & \textbf{Fracción} & \textbf{Decimal} & \textbf{\%} \\
+          \midrule
+          1 & $\tfrac{3}{4}$ & $0{,}75$  & $75\%$ \\[0.3em]
+          2 & $\tfrac{3}{5}$ & $0{,}6$   & $60\%$ \\[0.3em]
+          3 & $\tfrac{7}{20}$& $0{,}35$  & $35\%$ \\[0.3em]
+          4 & $\tfrac{5}{8}$ & $0{,}625$ & $62{,}5\%$ \\
+          \bottomrule
+        \end{tabular}
+      \end{block}
+    \end{column}
+  \end{columns}
+
+  \vspace{0.08cm}
+  \begin{alertblock}{El método más seguro para ordenar}
+    \tiny
+    Pasar todo a \destacar{decimal} y comparar. Es infalible y rapidísimo con
+    calculadora. El denominador común se usa cuando hay que \azul{mostrar el
+    procedimiento} o cuando los decimales son periódicos y se parecen mucho.
+  \end{alertblock}
+\end{frame}
+
+\begin{frame}{Ejercicio 4 — en clase (taller principal)}
+  \begin{alertblock}{En grupos de 3 (20 minutos)}
+    \scriptsize
+    \begin{enumerate}\setlength{\itemsep}{0.06cm}
+      \item Un proyecto de software lleva $\tfrac{2}{5}$ del trabajo hecho en
+            el primer sprint y $\tfrac{1}{3}$ en el segundo.
+            \destacar{¿Qué fracción falta?}
+      \item El presupuesto de un proyecto es de 24 millones. Se destina
+            $\tfrac{3}{8}$ a personal. ¿Cuánto es, en millones?
+      \item Un equipo cerró $\tfrac{5}{6}$ de las 48 tareas del sprint.
+            ¿Cuántas cerró y cuántas quedaron abiertas?
+      \item Una receta pide $\tfrac{3}{4}$ de taza de azúcar, pero solo se
+            preparará $\tfrac{2}{3}$ de la receta. ¿Cuánta azúcar se usa?
+      \item Encuentre el error: \\
+            \hspace*{0.3cm}
+            $\dfrac{1}{3}+\dfrac{1}{4} = \dfrac{1+1}{3+4} = \dfrac{2}{7}$
+    \end{enumerate}
+  \end{alertblock}
+\end{frame}
+
+\begin{frame}{Ejercicio 4 — solución}
+  \scriptsize
+  \begin{columns}[T,onlytextwidth]
+    \begin{column}{0.50\textwidth}
+      \begin{block}{Puntos 1 a 4}
+        \tiny
+        \textbf{1.} $1 - \tfrac{2}{5} - \tfrac{1}{3}
+        = \tfrac{15}{15}-\tfrac{6}{15}-\tfrac{5}{15}
+        = \destacar{\tfrac{4}{15}}$
+
+        \vspace{0.08cm}
+        \textbf{2.} $\tfrac{3}{8}\cdot 24 = \destacar{9}$ millones
+
+        \vspace{0.08cm}
+        \textbf{3.} $\tfrac{5}{6}\cdot 48 = \destacar{40}$ cerradas;
+        quedan $\destacar{8}$ abiertas
+
+        \vspace{0.08cm}
+        \textbf{4.} $\tfrac{2}{3}\cdot\tfrac{3}{4} = \tfrac{6}{12}
+        = \destacar{\tfrac{1}{2}}$ taza
+      \end{block}
+    \end{column}
+    \begin{column}{0.46\textwidth}
+      \begin{alertblock}{Punto 5: el error}
+        \tiny
+        \destacar{Los denominadores no se suman.} Lo correcto:
+        \[ \frac{1}{3}+\frac{1}{4} = \frac{4}{12}+\frac{3}{12}
+           = \destacar{\frac{7}{12}} \]
+        Verificación con decimales: $0{,}333 + 0{,}25 = 0{,}583$, que es
+        $\tfrac{7}{12}$. En cambio $\tfrac{2}{7} = 0{,}286$, \azul{menos que
+        cualquiera de los dos sumandos}: imposible.
+      \end{alertblock}
+    \end{column}
+  \end{columns}
+
+  \vspace{0.05cm}
+  {\tiny\color{uniGris} Ese chequeo del punto 5 vale para todo el curso:
+  \destacar{si suma dos positivos y le da menos que uno de ellos, hay un
+  error}. Estimar antes de operar ahorra correcciones.}
+\end{frame}
+
+\begin{frame}{Errores frecuentes en esta sesión}
+  \scriptsize
+  \begin{center}
+  \begin{tabular}{@{}p{5.2cm}p{6.6cm}@{}}
+    \toprule
+    \textbf{Error} & \textbf{Corrección} \\
+    \midrule
+    $\dfrac{a}{b}+\dfrac{c}{d} = \dfrac{a+c}{b+d}$ &
+      Hay que llevar a denominador común con el mcm \\
+    \addlinespace
+    Buscar denominador común para multiplicar &
+      En el producto no se necesita: se multiplica recto \\
+    \addlinespace
+    Invertir la primera fracción al dividir &
+      Se invierte \azul{la segunda}: $\frac{a}{b}\cdot\frac{d}{c}$ \\
+    \addlinespace
+    Dejar el resultado sin simplificar &
+      Siempre se entrega en la mínima expresión \\
+    \addlinespace
+    Cancelar sumandos: $\dfrac{2+x}{2}=x$ &
+      Solo se cancelan \azul{factores}, nunca términos de una suma \\
+    \addlinespace
+    Perder el signo al operar con negativos &
+      El signo viaja con toda la fracción \\
+    \bottomrule
+  \end{tabular}
+  \end{center}
+\end{frame}
+
+\begin{frame}{Cierre de la sesión}
+  \begin{block}{Lo que debe quedar claro hoy}
+    \scriptsize
+    \begin{itemize}\setlength{\itemsep}{0.02cm}
+      \item Simplificar es dividir arriba y abajo entre el \azul{MCD}.
+      \item Sumar y restar exige \azul{denominador común}: ahí entra el mcm.
+      \item Multiplicar es recto; dividir es multiplicar por el
+            \azul{recíproco}.
+      \item En una fracción compleja: primero arriba, después abajo, y al final
+            se divide.
+      \item Fracción, decimal y porcentaje son \destacar{tres formas de
+            escribir el mismo número}.
+      \item Solo se cancelan \destacar{factores}, nunca sumandos.
+    \end{itemize}
+  \end{block}
+
+  \vspace{0.08cm}
+  \begin{alertblock}{Trabajo independiente}
+    \tiny
+    Resolver los 20 ejercicios de la lámina siguiente. En la sesión 4 vemos
+    \destacar{teoría de conjuntos}: unión, intersección, diferencia y diagramas
+    de Venn, que es la base de las estructuras discretas y de las consultas a
+    bases de datos.
+  \end{alertblock}
+\end{frame}
+
+\begin{frame}{Ejercicios propuestos}
+  \vspace{-0.1cm}
+  \begin{beamercolorbox}[wd=\textwidth,sep=0.10cm]{block body}
+    \centering\scriptsize
+    \textbf{1--7:} operaciones básicas. \quad \textbf{8--13:} jerarquía y
+    simplificación. \quad \textbf{14--20:} conversión y aplicaciones.
+  \end{beamercolorbox}
+  \listatiny
+  \vspace{0.15cm}
+  \begin{columns}[T,onlytextwidth]
+    \begin{column}{0.47\textwidth}
+      \begin{enumerate}\setlength{\itemsep}{0.16cm}
+        \item $\dfrac{1}{4}+\dfrac{2}{5}$
+        \item $\dfrac{7}{9}-\dfrac{1}{3}$
+        \item $-\dfrac{3}{8}+\dfrac{5}{6}$
+        \item $\dfrac{4}{9}\cdot\dfrac{3}{8}$
+        \item $-\dfrac{7}{10}\cdot\dfrac{5}{14}$
+        \item $\dfrac{3}{5}\div\dfrac{9}{20}$
+        \item $-\dfrac{2}{7}\div\dfrac{4}{21}$
+        \item $\left(\dfrac{2}{3}\right)^{2}$
+        \item $\dfrac{1}{2}+\dfrac{1}{3}\cdot\dfrac{6}{5}$
+        \item $\left(\dfrac{1}{2}+\dfrac{1}{3}\right)\cdot\dfrac{6}{5}$
+      \end{enumerate}
+    \end{column}
+    \begin{column}{0.50\textwidth}
+      \begin{enumerate}\setlength{\itemsep}{0.16cm}
+        \setcounter{enumi}{10}
+        \item $\dfrac{\ \frac{3}{4}-\frac{1}{2}\ }{\ \frac{1}{8}\ }$
+        \item Simplifique $\dfrac{84}{126}$
+        \item Simplifique $-\dfrac{45}{60}$
+        \item Escriba $0{,}4$ como fracción
+        \item Escriba $0{,}125$ como fracción
+        \item ¿Cuánto es el $15\%$ de $80$?
+        \item Ordene $\tfrac{4}{7}$, $\tfrac{3}{5}$, $\tfrac{5}{9}$
+        \item ¿Qué fracción de 60 es 45?
+        \item Si $\tfrac{3}{7}$ de un grupo son 21 personas, ¿cuántas hay?
+        \item ¿Por qué $\dfrac{3+x}{3} \neq x$?
+      \end{enumerate}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{Respuestas}{Autoevaluación de los ejercicios propuestos}
+  \listatiny
+  \vspace{0.15cm}
+  \begin{columns}[T,onlytextwidth]
+    \begin{column}{0.47\textwidth}
+      \begin{enumerate}\setlength{\itemsep}{0.16cm}
+        \item $\tfrac{13}{20}$
+        \item $\tfrac{4}{9}$
+        \item $\tfrac{11}{24}$
+        \item $\tfrac{1}{6}$
+        \item $-\tfrac{1}{4}$
+        \item $\tfrac{4}{3}$
+        \item $-\tfrac{3}{2}$
+        \item $\tfrac{4}{9}$
+        \item $\tfrac{9}{10}$
+        \item $1$
+      \end{enumerate}
+    \end{column}
+    \begin{column}{0.50\textwidth}
+      \begin{enumerate}\setlength{\itemsep}{0.16cm}
+        \setcounter{enumi}{10}
+        \item $2$
+        \item $\tfrac{2}{3}$
+        \item $-\tfrac{3}{4}$
+        \item $\tfrac{2}{5}$
+        \item $\tfrac{1}{8}$
+        \item $12$
+        \item $\tfrac{5}{9} < \tfrac{4}{7} < \tfrac{3}{5}$
+        \item $\tfrac{45}{60} = \tfrac{3}{4}$
+        \item $21 \div \tfrac{3}{7} = 49$ personas
+        \item Porque el $3$ es un \azul{sumando}, no un factor
+      \end{enumerate}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{Referencias}
+  \footnotesize
+  \begin{itemize}
+    \item[{[1]}] Ramos del Olmo, Á. M. (2016). \textit{Matemáticas básicas
+      para el acceso a la universidad}. Ediciones Pirámide.
+      \texttt{https://elibro.net/es/ereader/uniminuto/49134}
+    \item[{[2]}] González Pulido, J. W., Chacón Benavides, J. A. \&
+      Fonseca Correa, L. Á. (2023). \textit{Matemática básica} (1.\textsuperscript{a} ed.).
+      Universidad Mariana.
+      \texttt{https://elibro.net/es/ereader/uniminuto/280647}
+    \item[{[3]}] Placencia Valero, J. (2008). \textit{Compendio de matemática
+      básica elemental} (1.\textsuperscript{a} ed.). Editorial Tébar Flores.
+      \texttt{https://elibro.net/es/ereader/uniminuto/269758}
+  \end{itemize}
+
+  \vspace{0.35cm}
+  \begin{center}
+    {\Large\color{uniAzul}\textbf{¿Preguntas?}}
+  \end{center}
+\end{frame}
+
+\end{document}

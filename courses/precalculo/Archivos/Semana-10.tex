@@ -1,0 +1,596 @@
+% ============================================================================
+%  PRECÁLCULO — Sesión 10
+%  Semana 10: 12 al 17 de octubre de 2026   (lunes 12: festivo)
+%  2.4 Logaritmos
+%  Duración prevista: 3 horas
+% ============================================================================
+\documentclass[aspectratio=169,10pt]{beamer}
+
+\usepackage[utf8]{inputenc}
+\IfFileExists{spanish.ldf}{\usepackage[spanish,es-noshorthands]{babel}}{}
+\usepackage{amsmath,amssymb}
+\usepackage{booktabs}
+\usepackage{tikz}
+
+\usetheme{Uniminuto}
+
+\uniasignatura{Precálculo}
+\uniprofesor{Andrés Felipe Puerta Velez}
+\unicorreo{andres.puerta-v@uniminuto.edu.co}
+\uninrc{MATE1161}
+\unisemana{Sesión 10 — Semana 10 · 12 al 17 de octubre de 2026}
+
+\newcommand{\listatiny}{\setbeamerfont{itemize/enumerate body}{size=\tiny}\tiny}
+
+\begin{document}
+
+\portada
+
+\begin{frame}{Orden del día}
+  \begin{enumerate}
+    \item Llamado a lista y revisión de los ejercicios propuestos
+    \item Repaso: dónde quedamos
+    \item \azul{Tema 2.4: qué es un logaritmo y de dónde sale}
+    \item Forma exponencial y forma logarítmica
+    \item Logaritmo decimal, natural y en base 2
+    \item Ecuaciones exponenciales simples; taller y cierre
+  \end{enumerate}
+
+  \vspace{0.25cm}
+  {\footnotesize\color{uniGris} Sesión de 3 horas. El logaritmo es la
+  \destacar{tercera operación inversa} del curso: la resta deshace la suma, la
+  división deshace el producto, y el logaritmo deshace la potencia.}
+\end{frame}
+
+\begin{frame}{Repaso: dónde quedamos}
+  \scriptsize
+  \begin{block}{Las tres preguntas que se pueden hacer sobre $2^{3}=8$}
+    \scriptsize
+    \begin{center}
+    \begin{tabular}{@{}p{3.6cm}p{3.4cm}p{4.4cm}@{}}
+      \toprule
+      \textbf{Se busca} & \textbf{Operación} & \textbf{Notación} \\
+      \midrule
+      El resultado: $2^{3} = ?$ & Potenciación & $8$ \\
+      La base: $?^{3} = 8$ & \azul{Radicación} & $\sqrt[3]{8} = 2$ \\
+      El exponente: $2^{?} = 8$ & \destacar{Logaritmación} &
+        $\log_{2}8 = 3$ \\
+      \bottomrule
+    \end{tabular}
+    \end{center}
+  \end{block}
+
+  \vspace{0.15cm}
+  \begin{alertblock}{Por eso hay dos operaciones inversas y no una}
+    \scriptsize
+    Porque en $a^{b}$ la base y el exponente \destacar{no son
+    intercambiables}: $2^{3} = 8$ pero $3^{2} = 9$. La suma y el producto sí
+    son conmutativos, y por eso les basta con una sola inversa.
+  \end{alertblock}
+\end{frame}
+
+\seccion{2.4 Logaritmos}
+
+\begin{frame}{Definición}
+  \scriptsize
+  \[ \boxed{\ \log_{b} a = c \quad\Longleftrightarrow\quad b^{c} = a\ } \]
+
+  \vspace{0.08cm}
+  \begin{columns}[T,onlytextwidth]
+    \begin{column}{0.48\textwidth}
+      \begin{block}{Cómo se lee}
+        \tiny
+        ``El logaritmo de $a$ en base $b$ es $c$'' equivale a
+        \destacar{``a qué potencia hay que elevar $b$ para obtener $a$''}.
+
+        \vspace{0.08cm}
+        $\log_{2}8 = 3$ porque $2^{3}=8$.
+      \end{block}
+    \end{column}
+    \begin{column}{0.48\textwidth}
+      \begin{alertblock}{Las tres condiciones}
+        \tiny
+        \textbf{Base:} $b > 0$ y $b \neq 1$. \\
+        \textbf{Argumento:} $a > 0$.
+
+        \vspace{0.06cm}
+        \destacar{No existe el logaritmo de cero ni de un número negativo}: no
+        hay exponente que haga $2^{c} = -8$, porque una potencia de base
+        positiva siempre es positiva.
+      \end{alertblock}
+    \end{column}
+  \end{columns}
+
+  \vspace{0.1cm}
+  \begin{exampleblock}{Tres valores que salen de la definición, sin calcular}
+    \scriptsize
+    \[ \log_{b} 1 = 0 \quad (b^{0}=1) \qquad
+       \log_{b} b = 1 \quad (b^{1}=b) \qquad
+       \log_{b} b^{n} = n \]
+  \end{exampleblock}
+\end{frame}
+
+\begin{frame}{Pasar de una forma a la otra}
+  \scriptsize
+  \begin{center}
+  \begin{tabular}{@{}p{4.2cm}p{4.2cm}p{3.6cm}@{}}
+    \toprule
+    \textbf{Forma exponencial} & \textbf{Forma logarítmica} &
+    \textbf{Se lee} \\
+    \midrule
+    $3^{4} = 81$ & $\log_{3}81 = 4$ & Base 3, exponente 4 \\
+    $5^{-2} = \tfrac{1}{25}$ & $\log_{5}\tfrac{1}{25} = -2$ &
+      Argumento menor que 1 $\Rightarrow$ log negativo \\
+    $10^{3} = 1\,000$ & $\log 1\,000 = 3$ & Base 10: se omite \\
+    $e^{4}$ & $\ln e^{4} = 4$ & Base $e$: se escribe $\ln$ \\
+    $2^{10} = 1\,024$ & $\log_{2}1\,024 = 10$ & Base 2 \\
+    \bottomrule
+  \end{tabular}
+  \end{center}
+
+  \vspace{0.1cm}
+  \begin{alertblock}{El truco para no equivocarse nunca}
+    \scriptsize
+    \destacar{La base del logaritmo es la base de la potencia, y el resultado
+    del logaritmo es el exponente.} Dibuje una flecha desde la base hasta el
+    resultado: $\log_{\azul{3}}81 = \destacar{4}$ se convierte en
+    $\azul{3}^{\destacar{4}} = 81$.
+  \end{alertblock}
+\end{frame}
+
+\begin{frame}{Las tres bases que se usan}
+  \scriptsize
+  \begin{center}
+  \begin{tabular}{@{}p{2.4cm}p{2.0cm}p{3.0cm}p{4.4cm}@{}}
+    \toprule
+    \textbf{Nombre} & \textbf{Notación} & \textbf{Base} &
+    \textbf{Dónde se usa} \\
+    \midrule
+    Decimal o común & $\log a$ & $10$ &
+      pH, decibeles, escala Richter, órdenes de magnitud \\
+    \addlinespace
+    Natural & $\ln a$ & $e \approx 2{,}71828$ &
+      Crecimiento continuo, cálculo, interés compuesto \\
+    \addlinespace
+    Binario & $\log_{2} a$ & $2$ &
+      \destacar{Complejidad de algoritmos}, bits, árboles \\
+    \bottomrule
+  \end{tabular}
+  \end{center}
+
+  \vspace{0.1cm}
+  \begin{exampleblock}{Por qué a un ingeniero de software le importa $\log_2$}
+    \scriptsize
+    Buscar un dato entre \azul{un millón} con búsqueda binaria toma
+    $\log_{2}(1\,000\,000) \approx 19{,}9$, es decir \destacar{20 pasos}.
+    Recorriendo uno por uno serían un millón. \azul{Esa diferencia es el
+    logaritmo.}
+  \end{exampleblock}
+
+  \vspace{0.05cm}
+  {\tiny\color{uniGris} La calculadora solo trae \fbox{log} y \fbox{ln}. Para
+  cualquier otra base se usa el \destacar{cambio de base} que veremos en la
+  sesión 11.}
+\end{frame}
+
+\begin{frame}{Ejemplo guiado — calcular logaritmos sin calculadora}
+  \scriptsize
+  \begin{center}
+  \begin{tabular}{@{}lp{4.6cm}l@{}}
+    \toprule
+    \textbf{Logaritmo} & \textbf{Se pregunta} & \textbf{Resultado} \\
+    \midrule
+    $\log_{2}64$ & ¿$2$ a la cuánto da $64$? \ $2^{6}=64$ & $6$ \\
+    $\log_{3}81$ & $3^{4}=81$ & $4$ \\
+    $\log_{5}\tfrac{1}{25}$ & $5^{-2}=\tfrac{1}{25}$ & $-2$ \\
+    $\log 0{,}001$ & $10^{-3}=0{,}001$ & $-3$ \\
+    $\log_{4}2$ & $4^{1/2}=2$ & $\tfrac{1}{2}$ \\
+    $\log_{1/2}8$ & $\left(\tfrac{1}{2}\right)^{-3}=8$ & $-3$ \\
+    $\log_{7}1$ & $7^{0}=1$ & $0$ \\
+    \bottomrule
+  \end{tabular}
+  \end{center}
+
+  \vspace{0.08cm}
+  \begin{alertblock}{El método, siempre el mismo}
+    \tiny
+    \destacar{Escriba el argumento como potencia de la base.} Si logra hacerlo,
+    el logaritmo es ese exponente y no hace falta calculadora. Los tres casos
+    difíciles son los de arriba: \azul{argumento fraccionario} (log negativo),
+    \azul{argumento menor que la base} (log fraccionario) y \azul{base
+    fraccionaria} (invierte el signo).
+  \end{alertblock}
+\end{frame}
+
+\begin{frame}{Ejercicio 1 — en clase}
+  \begin{alertblock}{Individual (12 minutos)}
+    \scriptsize
+    \textbf{Parte A.} Calcule sin calculadora:
+
+    \vspace{0.15cm}
+    \centering
+    \begin{tabular}{@{}llll@{}}
+      1. \ $\log_{2}32$ & 2. \ $\log_{3}\dfrac{1}{9}$ &
+      3. \ $\log 10\,000$ & 4. \ $\log_{9}3$ \\[0.9em]
+      5. \ $\ln e^{7}$ & 6. \ $\log_{6}1$ &
+      7. \ $\log_{2}\dfrac{1}{16}$ & 8. \ $\log_{5}5$ \\
+    \end{tabular}
+
+    \vspace{0.2cm}
+    \raggedright
+    \textbf{Parte B.} Escriba en la otra forma:
+
+    \vspace{0.1cm}
+    \begin{columns}[T,onlytextwidth]
+      \begin{column}{0.48\textwidth}
+        \begin{enumerate}\setlength{\itemsep}{-0.02cm}
+          \item $4^{3} = 64$
+          \item $10^{-2} = 0{,}01$
+        \end{enumerate}
+      \end{column}
+      \begin{column}{0.48\textwidth}
+        \begin{enumerate}\setlength{\itemsep}{-0.02cm}
+          \setcounter{enumi}{2}
+          \item $\log_{7}49 = 2$
+          \item $\ln x = 5$
+        \end{enumerate}
+      \end{column}
+    \end{columns}
+  \end{alertblock}
+\end{frame}
+
+\begin{frame}{Ejercicio 1 — solución}
+  \scriptsize
+  \begin{columns}[T,onlytextwidth]
+    \begin{column}{0.49\textwidth}
+      \begin{block}{Parte A}
+        \tiny
+        \begin{center}
+        \begin{tabular}{@{}llll@{}}
+          1 & $5$ & 2 & $-2$ \\
+          3 & $4$ & 4 & $\tfrac{1}{2}$ \\
+          5 & $7$ & 6 & $0$ \\
+          7 & $-4$ & 8 & $1$ \\
+        \end{tabular}
+        \end{center}
+      \end{block}
+    \end{column}
+    \begin{column}{0.49\textwidth}
+      \begin{block}{Parte B}
+        \tiny
+        \textbf{1.} $\log_{4}64 = 3$
+
+        \textbf{2.} $\log 0{,}01 = -2$
+
+        \textbf{3.} $7^{2} = 49$
+
+        \textbf{4.} $e^{5} = x$
+      \end{block}
+    \end{column}
+  \end{columns}
+
+  \vspace{0.1cm}
+  \begin{alertblock}{Los dos que hay que revisar}
+    \tiny
+    \textbf{A4.} $\log_{9}3 = \tfrac{1}{2}$ porque $9^{1/2}=3$: cuando el
+    argumento es \azul{menor} que la base, el logaritmo está entre 0 y 1. \quad
+    \textbf{A7.} $\log_{2}\tfrac{1}{16} = -4$: argumento \azul{menor que 1}
+    siempre da logaritmo \destacar{negativo}.
+  \end{alertblock}
+\end{frame}
+
+\begin{frame}{Ecuaciones exponenciales sencillas}
+  \scriptsize
+  \begin{columns}[T,onlytextwidth]
+    \begin{column}{0.48\textwidth}
+      \begin{block}{Método 1 — igualar bases}
+        \tiny
+        Si se logra escribir los dos lados con la \azul{misma base}, los
+        exponentes son iguales.
+        \[ 2^{x} = 32 \;\Rightarrow\; 2^{x} = 2^{5}
+           \;\Rightarrow\; \destacar{x = 5} \]
+        \[ 3^{x+1} = 27 \;\Rightarrow\; 3^{x+1}=3^{3}
+           \;\Rightarrow\; x+1 = 3 \;\Rightarrow\; \destacar{x=2} \]
+      \end{block}
+    \end{column}
+    \begin{column}{0.48\textwidth}
+      \begin{block}{Método 2 — aplicar logaritmo}
+        \tiny
+        Cuando las bases no se pueden igualar:
+        \[ 2^{x} = 50 \;\Rightarrow\; x = \log_{2}50 \]
+        \[ x = \frac{\log 50}{\log 2} \approx \destacar{5{,}64} \]
+        {\color{uniGris} El cambio de base se justifica en la sesión 11; hoy
+        basta con saber que existe.}
+      \end{block}
+    \end{column}
+  \end{columns}
+
+  \vspace{0.1cm}
+  \begin{alertblock}{Cuál usar}
+    \scriptsize
+    \destacar{Siempre se intenta primero igualar bases}: da un resultado exacto
+    y sin calculadora. Solo si el argumento no es una potencia de la base
+    ($50$ no lo es de $2$) se recurre al logaritmo.
+  \end{alertblock}
+\end{frame}
+
+\begin{frame}{Ejercicio 2 — en clase}
+  \begin{alertblock}{En parejas (15 minutos)}
+    \scriptsize
+    Resuelva igualando bases:
+
+    \vspace{0.25cm}
+    \begin{columns}[T,onlytextwidth]
+      \begin{column}{0.48\textwidth}
+        \begin{enumerate}\setlength{\itemsep}{0.16cm}
+          \item $5^{x} = 125$
+          \item $2^{x-3} = 16$
+          \item $3^{2x} = 81$
+        \end{enumerate}
+      \end{column}
+      \begin{column}{0.48\textwidth}
+        \begin{enumerate}\setlength{\itemsep}{0.16cm}
+          \setcounter{enumi}{3}
+          \item $\left(\dfrac{1}{2}\right)^{x} = 8$
+          \item $4^{x} = 2$
+          \item $10^{x} = 0{,}001$
+        \end{enumerate}
+      \end{column}
+    \end{columns}
+  \end{alertblock}
+\end{frame}
+
+\begin{frame}{Ejercicio 2 — solución}
+  \tiny
+  \begin{columns}[T,onlytextwidth]
+    \begin{column}{0.49\textwidth}
+      \begin{block}{Puntos 1 a 3}
+        \tiny
+        \begin{align*}
+          1)\;& 5^{x}=5^{3} \Rightarrow \destacar{x=3} \\[0.3em]
+          2)\;& 2^{x-3}=2^{4} \Rightarrow x-3=4 \Rightarrow
+                \destacar{x=7} \\[0.3em]
+          3)\;& 3^{2x}=3^{4} \Rightarrow 2x=4 \Rightarrow \destacar{x=2}
+        \end{align*}
+      \end{block}
+    \end{column}
+    \begin{column}{0.49\textwidth}
+      \begin{block}{Puntos 4 a 6}
+        \tiny
+        \begin{align*}
+          4)\;& 2^{-x}=2^{3} \Rightarrow -x=3 \Rightarrow
+                \destacar{x=-3} \\[0.3em]
+          5)\;& 2^{2x}=2^{1} \Rightarrow 2x=1 \Rightarrow
+                \destacar{x=\tfrac{1}{2}} \\[0.3em]
+          6)\;& 10^{x}=10^{-3} \Rightarrow \destacar{x=-3}
+        \end{align*}
+      \end{block}
+    \end{column}
+  \end{columns}
+
+  \vspace{0.1cm}
+  \begin{alertblock}{Los dos trucos que aparecen}
+    \tiny
+    En el \destacar{4}, $\left(\tfrac{1}{2}\right)^{x} = 2^{-x}$: la base
+    fraccionaria se vuelve exponente negativo. \quad
+    En el \destacar{5}, $4 = 2^{2}$: hay que \azul{cambiar la base para que
+    coincida con el otro lado}, y ahí aparece el exponente fraccionario.
+  \end{alertblock}
+\end{frame}
+
+\begin{frame}{Ejercicio 3 — en clase (taller principal)}
+  \begin{alertblock}{En grupos de 3 (20 minutos)}
+    \tiny
+    \setbeamerfont{itemize/enumerate body}{size=\tiny}
+    \begin{enumerate}\setlength{\itemsep}{0.05cm}
+      \item Calcule: \ $\log_{2}128$, \ $\log_{4}64$, \ $\log_{8}2$, \
+            $\log_{3}\tfrac{1}{81}$.
+      \item ¿Para qué valores de $x$ está definido $\log_{5}(x-3)$?
+      \item Un arreglo tiene 4\,096 elementos. ¿Cuántos pasos toma una búsqueda
+            binaria? (Calcule $\log_{2}4\,096$.)
+      \item ¿Y si el arreglo tuviera el doble de elementos? ¿Cuántos pasos
+            más?
+      \item Una población de bacterias se duplica cada hora y empieza en 500.
+            Escriba la expresión del número de bacterias tras $t$ horas, y
+            plantee (sin resolver) la ecuación para saber cuándo llega a
+            32\,000.
+      \item Encuentre el error: \ $\log_{2}(-8) = -3$
+    \end{enumerate}
+  \end{alertblock}
+\end{frame}
+
+\begin{frame}{Ejercicio 3 — solución}
+  \scriptsize
+  \begin{columns}[T,onlytextwidth]
+    \begin{column}{0.48\textwidth}
+      \begin{block}{Puntos 1 a 4}
+        \tiny
+        \textbf{1.} $7$; \ $3$; \ $\tfrac{1}{3}$; \ $-4$
+
+        \vspace{0.06cm}
+        \textbf{2.} Se exige $x-3 > 0$, luego $\destacar{x > 3}$.
+
+        \vspace{0.06cm}
+        \textbf{3.} $\log_{2}4\,096 = \destacar{12}$ pasos, porque
+        $2^{12}=4\,096$.
+
+        \vspace{0.06cm}
+        \textbf{4.} $8\,192 = 2^{13}$: \destacar{un solo paso más}. Duplicar
+        los datos cuesta un paso: eso es el crecimiento logarítmico.
+      \end{block}
+    \end{column}
+    \begin{column}{0.50\textwidth}
+      \begin{alertblock}{Puntos 5 y 6}
+        \tiny
+        \textbf{5.} $N(t) = 500\cdot 2^{t}$. Para llegar a 32\,000:
+        \[ 500\cdot 2^{t} = 32\,000 \;\Rightarrow\; 2^{t} = 64 \]
+        (y de ahí $t = 6$ horas).
+
+        \vspace{0.08cm}
+        \textbf{6.} \destacar{No existe}: el argumento de un logaritmo debe ser
+        positivo. Lo que sí es cierto es $\log_{2}\tfrac{1}{8} = -3$.
+        \azul{Un logaritmo puede ser negativo; su argumento, nunca.}
+      \end{alertblock}
+    \end{column}
+  \end{columns}
+
+  \vspace{0.05cm}
+  {\tiny\color{uniGris} El punto \destacar{4} es la razón por la que la
+  búsqueda binaria escala: pasar de mil a un millón de datos sube de 10 a 20
+  pasos, no de mil a un millón.}
+\end{frame}
+
+\begin{frame}{Errores frecuentes en esta sesión}
+  \scriptsize
+  \begin{center}
+  \begin{tabular}{@{}p{5.2cm}p{6.6cm}@{}}
+    \toprule
+    \textbf{Error} & \textbf{Corrección} \\
+    \midrule
+    Calcular $\log_{2}(-8)$ &
+      No existe: el argumento debe ser \azul{positivo} \\
+    \addlinespace
+    Creer que un logaritmo no puede ser negativo &
+      Sí puede: $\log_{2}\tfrac{1}{8} = -3$ \\
+    \addlinespace
+    Confundir base con argumento &
+      En $\log_{3}81$, la base es 3 y el argumento 81 \\
+    \addlinespace
+    Escribir $\log 100 = 10$ &
+      Es $2$: $10^{2}=100$. El log \azul{es el exponente} \\
+    \addlinespace
+    Usar base 1 &
+      $1^{c}=1$ siempre: no se puede despejar nada \\
+    \addlinespace
+    Olvidar el dominio al resolver $\log(x-3)$ &
+      Hay que exigir $x-3>0$ antes de operar \\
+    \bottomrule
+  \end{tabular}
+  \end{center}
+\end{frame}
+
+\begin{frame}{Cierre de la sesión}
+  \begin{block}{Lo que debe quedar claro hoy}
+    \scriptsize
+    \begin{itemize}\setlength{\itemsep}{0.02cm}
+      \item $\log_{b}a = c \Leftrightarrow b^{c}=a$: \destacar{el logaritmo es
+            el exponente}.
+      \item Base $b>0$, $b\neq 1$; argumento $a>0$.
+      \item $\log_{b}1 = 0$, \ $\log_{b}b = 1$, \ $\log_{b}b^{n} = n$.
+      \item Tres bases usuales: $\log$ (10), $\ln$ ($e$) y $\log_2$
+            (informática).
+      \item Ecuaciones exponenciales: primero \azul{igualar bases}; si no se
+            puede, aplicar logaritmo.
+      \item Un logaritmo \azul{puede} ser negativo; su argumento \destacar{no}.
+    \end{itemize}
+  \end{block}
+
+  \vspace{0.08cm}
+  \begin{alertblock}{Trabajo independiente}
+    \tiny
+    Resolver los 20 ejercicios de la lámina siguiente. En la sesión 11 vemos
+    las \destacar{propiedades de los logaritmos} —producto, cociente, potencia
+    y cambio de base—, y hacemos el repaso y el simulacro del Examen 2.
+  \end{alertblock}
+\end{frame}
+
+\begin{frame}{Ejercicios propuestos}
+  \vspace{-0.1cm}
+  \begin{beamercolorbox}[wd=\textwidth,sep=0.10cm]{block body}
+    \centering\scriptsize
+    \textbf{1--8:} calcular. \quad \textbf{9--14:} cambiar de forma. \quad
+    \textbf{15--20:} ecuaciones y aplicaciones.
+  \end{beamercolorbox}
+  \listatiny
+  \vspace{0.15cm}
+  \begin{columns}[T,onlytextwidth]
+    \begin{column}{0.47\textwidth}
+      \begin{enumerate}\setlength{\itemsep}{0.16cm}
+        \item $\log_{2}256$
+        \item $\log_{3}243$
+        \item $\log_{10}100\,000$
+        \item $\log_{5}\dfrac{1}{125}$
+        \item $\log_{16}4$
+        \item $\log_{8}1$
+        \item $\ln e^{9}$
+        \item $\log_{1/3}9$
+        \item Escriba $\log_{2}64 = 6$ en forma exponencial
+        \item Escriba $6^{3}=216$ en forma logarítmica
+      \end{enumerate}
+    \end{column}
+    \begin{column}{0.50\textwidth}
+      \begin{enumerate}\setlength{\itemsep}{0.16cm}
+        \setcounter{enumi}{10}
+        \item Escriba $10^{-4}=0{,}0001$ en forma logarítmica
+        \item Escriba $\ln x = 3$ en forma exponencial
+        \item ¿Existe $\log_{5}0$?
+        \item ¿Para qué $x$ existe $\log_{2}(x+4)$?
+        \item Resuelva $3^{x}=243$
+        \item Resuelva $2^{x+1}=64$
+        \item Resuelva $\left(\tfrac{1}{5}\right)^{x}=25$
+        \item Resuelva $9^{x}=3$
+        \item ¿Cuántos pasos toma una búsqueda binaria en 1\,024 datos?
+        \item ¿Por qué la base no puede ser 1?
+      \end{enumerate}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{Respuestas}{Autoevaluación de los ejercicios propuestos}
+  \listatiny
+  \vspace{0.15cm}
+  \begin{columns}[T,onlytextwidth]
+    \begin{column}{0.47\textwidth}
+      \begin{enumerate}\setlength{\itemsep}{0.16cm}
+        \item $8$
+        \item $5$
+        \item $5$
+        \item $-3$
+        \item $\tfrac{1}{2}$
+        \item $0$
+        \item $9$
+        \item $-2$
+        \item $2^{6}=64$
+        \item $\log_{6}216 = 3$
+      \end{enumerate}
+    \end{column}
+    \begin{column}{0.50\textwidth}
+      \begin{enumerate}\setlength{\itemsep}{0.16cm}
+        \setcounter{enumi}{10}
+        \item $\log 0{,}0001 = -4$
+        \item $e^{3}=x$
+        \item No: el argumento debe ser positivo
+        \item $x > -4$
+        \item $x = 5$
+        \item $x = 5$
+        \item $x = -2$
+        \item $x = \tfrac{1}{2}$
+        \item $\log_{2}1\,024 = 10$ pasos
+        \item Porque $1^{c}=1$ para todo $c$: no habría un único exponente
+      \end{enumerate}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{Referencias}
+  \footnotesize
+  \begin{itemize}
+    \item[{[1]}] Ramos del Olmo, Á. M. (2016). \textit{Matemáticas básicas
+      para el acceso a la universidad}. Ediciones Pirámide.
+      \texttt{https://elibro.net/es/ereader/uniminuto/49134}
+    \item[{[2]}] González Pulido, J. W., Chacón Benavides, J. A. \&
+      Fonseca Correa, L. Á. (2023). \textit{Matemática básica} (1.\textsuperscript{a} ed.).
+      Universidad Mariana.
+      \texttt{https://elibro.net/es/ereader/uniminuto/280647}
+    \item[{[3]}] Placencia Valero, J. (2008). \textit{Compendio de matemática
+      básica elemental} (1.\textsuperscript{a} ed.). Editorial Tébar Flores.
+      \texttt{https://elibro.net/es/ereader/uniminuto/269758}
+  \end{itemize}
+
+  \vspace{0.35cm}
+  \begin{center}
+    {\Large\color{uniAzul}\textbf{¿Preguntas?}}
+  \end{center}
+\end{frame}
+
+\end{document}

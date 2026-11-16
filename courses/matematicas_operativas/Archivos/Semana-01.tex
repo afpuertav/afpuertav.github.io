@@ -1,0 +1,806 @@
+% ============================================================================
+%  MATEMÁTICAS OPERATIVAS — Sesión 1
+%  Semana 1: 10 al 15 de agosto de 2026
+%  Presentación del curso · 1.1 Conjuntos numéricos y sus propiedades
+%  Duración prevista: 3 horas
+% ============================================================================
+\documentclass[aspectratio=169,10pt]{beamer}
+
+\usepackage[utf8]{inputenc}
+\IfFileExists{spanish.ldf}{\usepackage[spanish,es-noshorthands]{babel}}{}
+\usepackage{amsmath,amssymb}
+\usepackage{booktabs}
+\usepackage{tikz}
+
+\usetheme{Uniminuto}
+
+\uniasignatura{Matemáticas Operativas}
+\uniprofesor{Andrés Felipe Puerta Velez}
+\unicorreo{andres.puerta-v@uniminuto.edu.co}
+\uninrc{CBASBL011}
+\unisemana{Sesión 1 — Semana 1 · 10 al 15 de agosto de 2026}
+
+\newcommand{\listatiny}{\setbeamerfont{itemize/enumerate body}{size=\tiny}\tiny}
+
+\begin{document}
+
+\portada
+
+\begin{frame}{Orden del día}
+  \begin{enumerate}
+    \item Presentación del profesor y del grupo
+    \item ¿Para qué sirve esta asignatura?
+    \item El curso en tres unidades, evaluación y acuerdos
+    \item \azul{Tema 1.1: los conjuntos numéricos}
+    \item Propiedades, orden y recta numérica
+    \item Taller en clase, errores frecuentes y cierre
+  \end{enumerate}
+
+  \vspace{0.25cm}
+  {\footnotesize\color{uniGris} Sesión de 3 horas. Hoy no se evalúa nada: se
+  trata de \destacar{poner a todos en el mismo punto de partida}, sin importar
+  cuánto tiempo haya pasado desde su último curso de matemáticas.}
+\end{frame}
+
+\begin{frame}{¿Para qué sirve Matemáticas Operativas?}
+  \scriptsize
+  \begin{block}{Es una asignatura transversal}
+    \tiny
+    La ven programas distintos —Psicología, Trabajo Social, Logística,
+    Administración— porque el problema que resuelve es el mismo en todos:
+    \destacar{operar con números sin equivocarse y saber por qué el
+    procedimiento funciona}.
+  \end{block}
+
+  \vspace{0.1cm}
+  \begin{center}
+  \begin{tabular}{@{}p{5.4cm}p{6.6cm}@{}}
+    \toprule
+    \textbf{Situación real} & \textbf{Qué matemática hay detrás} \\
+    \midrule
+    Un descuento del 20\% y luego otro del 10\% &
+      Razones y porcentajes: \azul{no} es un 30\% \\
+    \addlinespace
+    Repartir una carga entre tres vehículos &
+      Divisibilidad, fracciones, proporcionalidad \\
+    \addlinespace
+    Leer que una tasa ``creció el doble'' &
+      Potencias y crecimiento exponencial \\
+    \addlinespace
+    Una escala de un test que va de 0 a 100 &
+      Intervalos, orden y valor absoluto \\
+    \bottomrule
+  \end{tabular}
+  \end{center}
+
+  \vspace{0.1cm}
+  {\tiny\color{uniGris} El objetivo no es que aprenda fórmulas nuevas: casi
+  todas ya las vio. Es que \destacar{deje de dudar} al aplicarlas y pueda
+  explicar el procedimiento a otra persona.}
+\end{frame}
+
+\begin{frame}{El curso en tres unidades}
+  \scriptsize
+  \begin{center}
+  \begin{tabular}{@{}p{0.9cm}p{4.4cm}p{6.6cm}@{}}
+    \toprule
+    & \textbf{Unidad} & \textbf{Temas} \\
+    \midrule
+    1 & Campos numéricos &
+      Conjuntos numéricos, enteros, racionales, conjuntos, razones y
+      proporciones \\
+    \addlinespace
+    2 & Potenciación, radicación y logaritmación &
+      Potencias, radicales, racionalización, logaritmos y exponenciales,
+      propiedades \\
+    \addlinespace
+    3 & Expresiones algebraicas y ecuaciones &
+      Polinomios, productos notables, factorización, fracciones algebraicas,
+      ecuaciones de primer y segundo grado \\
+    \bottomrule
+  \end{tabular}
+  \end{center}
+
+  \vspace{0.12cm}
+  \begin{alertblock}{Cómo se encadenan}
+    \tiny
+    La Unidad 1 es el \azul{terreno}: los números y cómo se comportan. La
+    Unidad 2 son las \azul{operaciones potentes} que se construyen sobre ellos.
+    La Unidad 3 cambia los números por letras y llega a resolver ecuaciones.
+    \destacar{Si la Unidad 1 queda floja, las otras dos se caen.}
+  \end{alertblock}
+\end{frame}
+
+\begin{frame}{Evaluación: tres exámenes, nada más}
+  \scriptsize
+  \begin{center}
+  \begin{tabular}{@{}lllr@{}}
+    \toprule
+    \textbf{Evidencia} & \textbf{Semana} & \textbf{Contenido} &
+    \textbf{Peso} \\
+    \midrule
+    Examen 1 & 6 \ (14--19 sep) & Unidad 1 completa & 35\% \\
+    Examen 2 & 12 \ (26--31 oct) & Unidad 2 completa & 35\% \\
+    Examen 3 & 16 \ (23--28 nov) & Unidad 3 completa & 30\% \\
+    \midrule
+    & & \textbf{Total} & \textbf{100\%} \\
+    \bottomrule
+  \end{tabular}
+  \end{center}
+
+  \vspace{0.12cm}
+  \begin{block}{Lo que hay que saber de los exámenes}
+    \tiny
+    Son \azul{individuales}, se presentan en \azul{Aulas Virtuales (Moodle)}
+    de forma \azul{presencial en el aula} y tienen tiempo límite. Evalúan
+    \destacar{toda} la unidad, no una selección. En las semanas 5 y 11 haremos
+    un \destacar{simulacro} con la misma estructura.
+  \end{block}
+
+  \vspace{0.08cm}
+  {\tiny\color{uniGris} No hay quices sorpresa, ni trabajos calificables, ni
+  puntos por asistencia. Los talleres de clase son \azul{formativos}: sirven
+  para que usted detecte a tiempo qué no entendió.}
+\end{frame}
+
+\begin{frame}{Acuerdos mínimos}
+  \scriptsize
+  \begin{columns}[T,onlytextwidth]
+    \begin{column}{0.48\textwidth}
+      \begin{block}{De mi parte}
+        \tiny
+        \begin{itemize}\setlength{\itemsep}{0.02cm}
+          \item Empezar y terminar a la hora.
+          \item Subir las diapositivas a Moodle.
+          \item Resolver en el tablero los ejercicios propuestos.
+          \item Responder dudas por correo en 48 horas hábiles.
+        \end{itemize}
+      \end{block}
+    \end{column}
+    \begin{column}{0.48\textwidth}
+      \begin{block}{De su parte}
+        \tiny
+        \begin{itemize}\setlength{\itemsep}{0.02cm}
+          \item Traer calculadora y con qué escribir.
+          \item Intentar los ejercicios \azul{antes} de ver la solución.
+          \item Preguntar en el momento, no la semana del examen.
+          \item Avisar si algo del curso no está funcionando.
+        \end{itemize}
+      \end{block}
+    \end{column}
+  \end{columns}
+
+  \vspace{0.12cm}
+  \begin{alertblock}{Una advertencia honesta}
+    \tiny
+    Esta asignatura se aprende \destacar{haciendo ejercicios}, no viéndolos
+    hacer. Media hora diaria rinde muchísimo más que cinco horas la víspera del
+    examen. \azul{Es la única recomendación de estudio que voy a repetir todo
+    el semestre.}
+  \end{alertblock}
+\end{frame}
+
+% ===========================================================================
+\seccion{1.1 Conjuntos numéricos y sus propiedades}
+% ===========================================================================
+
+\begin{frame}{Los números no aparecieron todos al tiempo}
+  \scriptsize
+  \begin{center}
+  \begin{tabular}{@{}cp{3.4cm}p{6.2cm}@{}}
+    \toprule
+    & \textbf{Conjunto} & \textbf{Apareció para poder\dots} \\
+    \midrule
+    $\mathbb{N}$ & Naturales: $1,2,3,\dots$ &
+      \azul{Contar} objetos \\
+    \addlinespace
+    $\mathbb{Z}$ & Enteros: $\dots,-2,-1,0,1,\dots$ &
+      Registrar \azul{deudas} y restar siempre ($3-7$) \\
+    \addlinespace
+    $\mathbb{Q}$ & Racionales: $\tfrac{a}{b}$, $b\neq 0$ &
+      \azul{Repartir} y dividir siempre ($3\div 4$) \\
+    \addlinespace
+    $\mathbb{I}$ & Irracionales &
+      \azul{Medir} la diagonal de un cuadrado ($\sqrt{2}$) \\
+    \addlinespace
+    $\mathbb{R}$ & Reales $=\mathbb{Q}\cup\mathbb{I}$ &
+      Llenar la recta \azul{sin dejar huecos} \\
+    \bottomrule
+  \end{tabular}
+  \end{center}
+
+  \vspace{0.1cm}
+  {\tiny\color{uniGris} Cada ampliación resolvió una operación que antes
+  ``no se podía''. \destacar{Ese es el patrón}: cuando una operación se sale
+  del conjunto, se inventa un conjunto más grande. Lo veremos otra vez en la
+  Unidad 2 con las raíces de números negativos.}
+\end{frame}
+
+\begin{frame}{Cómo se anidan}
+  \scriptsize
+  \begin{center}
+  \begin{tikzpicture}[scale=0.92,every node/.style={font=\tiny}]
+    \draw[uniAzul,thick,fill=uniAzul!5]  (0,0) rectangle (10.6,3.0);
+    \node[uniAzul,anchor=north west] at (0.12,2.95) {$\mathbb{R}$ \ reales};
+    \draw[uniTitulo,thick,fill=uniCrema!45] (0.3,0.25) rectangle (6.6,2.4);
+    \node[uniTitulo,anchor=north west] at (0.42,2.33) {$\mathbb{Q}$ \ racionales};
+    \draw[uniNaranja,thick,fill=uniCremaClaro] (0.7,0.5) rectangle (4.6,1.9);
+    \node[anchor=north west] at (0.82,1.83) {$\mathbb{Z}$ \ enteros};
+    \draw[uniGris,thick,fill=white] (1.1,0.72) rectangle (3.2,1.5);
+    \node[anchor=north west] at (1.2,1.44) {$\mathbb{N}$};
+    \node at (2.15,1.0) {$1,\,2,\,3$};
+    \node at (5.6,1.2) {$-7,\ 0$};
+    \node at (5.6,0.8) {$\tfrac{3}{4},\ 0{,}25$};
+    \node[uniAzul] at (8.6,1.6) {$\mathbb{I}$ \ irracionales};
+    \node at (8.6,1.1) {$\sqrt{2},\ \pi,\ e$};
+  \end{tikzpicture}
+  \end{center}
+
+  \vspace{0.08cm}
+  \begin{alertblock}{Dos lecturas de este dibujo}
+    \tiny
+    \textbf{(1)} $\mathbb{N}\subset\mathbb{Z}\subset\mathbb{Q}\subset
+    \mathbb{R}$: todo natural es entero, todo entero es racional. \quad
+    \textbf{(2)} $\mathbb{Q}$ e $\mathbb{I}$ \destacar{no se tocan}: ningún
+    número es racional e irracional a la vez, y juntos llenan $\mathbb{R}$.
+  \end{alertblock}
+\end{frame}
+
+\begin{frame}{Cómo reconocer un racional}
+  \scriptsize
+  \begin{block}{La prueba definitiva: mire su expresión decimal}
+    \tiny
+    Un número es \azul{racional} si y solo si su decimal es \destacar{finito}
+    o \destacar{infinito periódico}. Si es infinito y \azul{no} se repite
+    ningún bloque, es irracional.
+  \end{block}
+
+  \vspace{0.08cm}
+  \begin{center}
+  \begin{tabular}{@{}p{3.0cm}p{3.4cm}p{5.0cm}@{}}
+    \toprule
+    \textbf{Número} & \textbf{Decimal} & \textbf{Tipo} \\
+    \midrule
+    $\tfrac{7}{8}$ & $0{,}875$ & Finito $\Rightarrow$ \azul{racional} \\
+    $\tfrac{1}{7}$ & $0{,}\overline{142857}$ &
+      Periódico $\Rightarrow$ \azul{racional} \\
+    $\sqrt{144}$ & $12$ & Es $12$: natural, entero y racional \\
+    $\sqrt{2}$ & $1{,}41421356\dots$ &
+      Sin periodo $\Rightarrow$ \destacar{irracional} \\
+    $\pi$ & $3{,}14159265\dots$ & \destacar{Irracional} \\
+    \bottomrule
+  \end{tabular}
+  \end{center}
+
+  \vspace{0.08cm}
+  {\tiny\color{uniGris} \destacar{Cuidado con la calculadora:} muestra
+  $0{,}1428571429$ y parece finito. No lo es: la pantalla se acabó. Y
+  $3{,}1416$ \azul{no es} $\pi$, es una aproximación racional de $\pi$.}
+\end{frame}
+
+\begin{frame}{De decimal periódico a fracción}
+  \scriptsize
+  \begin{exampleblock}{El truco, con $0{,}\overline{27}$}
+    \tiny
+    \textbf{1.} Llame $x=0{,}272727\dots$ \quad
+    \textbf{2.} El periodo tiene 2 cifras, multiplique por $100$:
+    $100x = 27{,}272727\dots$ \quad
+    \textbf{3.} Reste: el rabo infinito se cancela.
+    \[ 100x - x = 27 \;\Longrightarrow\; 99x = 27
+       \;\Longrightarrow\; x = \frac{27}{99} = \destacar{\frac{3}{11}} \]
+  \end{exampleblock}
+
+  \vspace{0.08cm}
+  \begin{block}{Con anteperiodo: $0{,}41\overline{6}$}
+    \tiny
+    Hay 2 cifras antes del periodo y 1 en el periodo, así que se usan
+    $1\,000$ y $100$:
+    \[ 1000x = 416{,}666\dots \qquad 100x = 41{,}666\dots \]
+    \[ 900x = 375 \;\Longrightarrow\;
+       x = \frac{375}{900} = \destacar{\frac{5}{12}} \]
+  \end{block}
+
+  \vspace{0.06cm}
+  {\tiny\color{uniGris} \azul{Verificación:} $5\div 12 = 0{,}41666\dots$
+  \checkmark \ Siempre divida al final para comprobar; toma cinco segundos y
+  detecta el error.}
+\end{frame}
+
+\begin{frame}{Ejercicio 1 — clasificar}
+  \begin{alertblock}{En parejas, 10 minutos}
+    \scriptsize
+    Diga a cuáles de $\mathbb{N},\ \mathbb{Z},\ \mathbb{Q},\ \mathbb{I}$
+    pertenece cada número. Un número puede estar en varios.
+    \begin{enumerate}\setlength{\itemsep}{-0.02cm}
+      \item $\dfrac{121}{11}$
+      \item $-\sqrt{64}$
+      \item $\sqrt{50}$
+      \item $0{,}\overline{27}$
+      \item $-\dfrac{9}{4}$
+      \item $\pi - \pi$
+    \end{enumerate}
+  \end{alertblock}
+
+  \vspace{0.04cm}
+  {\tiny\color{uniGris} Pista: en el 1 y el 2, \azul{opere primero}. En el 6,
+  no se deje impresionar por el símbolo.}
+\end{frame}
+
+\begin{frame}{Ejercicio 1 — solución}
+  \scriptsize
+  \begin{columns}[T,onlytextwidth]
+    \begin{column}{0.49\textwidth}
+      \begin{block}{Puntos 1 a 3}
+        \tiny
+        \textbf{1.} $\tfrac{121}{11}=11$:
+        $\ \mathbb{N},\ \mathbb{Z},\ \mathbb{Q}$
+
+        \vspace{0.1cm}
+        \textbf{2.} $-\sqrt{64}=-8$: $\ \mathbb{Z},\ \mathbb{Q}$
+        \ {\color{uniGris}(no natural: es negativo)}
+
+        \vspace{0.1cm}
+        \textbf{3.} $\sqrt{50}=5\sqrt{2}=7{,}071\dots$:
+        $\ \destacar{\mathbb{I}}$
+      \end{block}
+    \end{column}
+    \begin{column}{0.49\textwidth}
+      \begin{block}{Puntos 4 a 6}
+        \tiny
+        \textbf{4.} $0{,}\overline{27}=\tfrac{3}{11}$: $\ \mathbb{Q}$
+
+        \vspace{0.1cm}
+        \textbf{5.} $-\tfrac{9}{4}=-2{,}25$: $\ \mathbb{Q}$
+
+        \vspace{0.1cm}
+        \textbf{6.} $\pi-\pi = 0$:
+        $\ \mathbb{Z},\ \mathbb{Q}$
+        \ {\color{uniGris}($0$ no es natural en este curso)}
+      \end{block}
+    \end{column}
+  \end{columns}
+
+  \vspace{0.1cm}
+  {\tiny\color{uniGris} \destacar{La lección de los puntos 1, 2 y 6:} la
+  \azul{forma} en que está escrito un número no dice a qué conjunto pertenece.
+  $\tfrac{121}{11}$ parece fracción y es natural; $\pi-\pi$ tiene un
+  irracional y da cero.}
+\end{frame}
+
+\begin{frame}{Propiedades de las operaciones en $\mathbb{R}$}
+  \scriptsize
+  \begin{center}
+  \begin{tabular}{@{}p{2.5cm}p{4.6cm}p{4.6cm}@{}}
+    \toprule
+    \textbf{Propiedad} & \textbf{Suma} & \textbf{Producto} \\
+    \midrule
+    Conmutativa & $a+b = b+a$ & $a\cdot b = b\cdot a$ \\
+    Asociativa & $(a+b)+c = a+(b+c)$ & $(ab)c = a(bc)$ \\
+    Elemento neutro & $a+0 = a$ & $a\cdot 1 = a$ \\
+    Inverso & $a + (-a) = 0$ &
+      $a\cdot \tfrac{1}{a} = 1$ \ \azul{si $a\neq 0$} \\
+    \addlinespace
+    \multicolumn{3}{@{}l}{Distributiva: \quad
+      $a(b+c) = ab + ac$} \\
+    \bottomrule
+  \end{tabular}
+  \end{center}
+
+  \vspace{0.1cm}
+  \begin{alertblock}{Las dos que la gente da por hechas y no valen}
+    \tiny
+    \textbf{(1)} La resta y la división \destacar{no son conmutativas}:
+    $7-3 \neq 3-7$, \ $8\div 2 \neq 2\div 8$. \quad
+    \textbf{(2)} El $0$ \destacar{no tiene inverso multiplicativo}: por eso no
+    se divide entre cero. No es una prohibición caprichosa, es que no existe
+    ningún número que multiplicado por $0$ dé $1$.
+  \end{alertblock}
+
+  \vspace{0.06cm}
+  {\tiny\color{uniGris} La distributiva es la más rentable de todas: es la que
+  permite factorizar (Unidad 3) y la que se usa mal cuando alguien escribe
+  $(a+b)^{2}=a^{2}+b^{2}$.}
+\end{frame}
+
+\begin{frame}{Ejercicio 2 — usar las propiedades}
+  \scriptsize
+  \begin{alertblock}{Individual, 8 minutos}
+    \tiny
+    Diga qué propiedad justifica cada igualdad, y calcule mentalmente los
+    puntos 4 y 5 usándola.
+    \begin{enumerate}\setlength{\itemsep}{-0.02cm}
+      \item $5 + (3+8) = (5+3) + 8$
+      \item $7\cdot(2+9) = 7\cdot 2 + 7\cdot 9$
+      \item $\tfrac{4}{9}\cdot\tfrac{9}{4} = 1$
+      \item $25\cdot 17 \cdot 4$
+      \item $98 \cdot 7$
+    \end{enumerate}
+  \end{alertblock}
+
+  \vspace{0.06cm}
+  \begin{block}{Solución}
+    \tiny
+    \textbf{1.} Asociativa de la suma. \quad
+    \textbf{2.} Distributiva. \quad
+    \textbf{3.} Inverso multiplicativo.
+
+    \vspace{0.08cm}
+    \textbf{4.} Conmutativa + asociativa: $(25\cdot 4)\cdot 17
+    = 100\cdot 17 = \destacar{1\,700}$
+
+    \vspace{0.08cm}
+    \textbf{5.} Distributiva: $(100-2)\cdot 7 = 700 - 14
+    = \destacar{686}$
+  \end{block}
+\end{frame}
+
+\begin{frame}{Orden en $\mathbb{R}$: la recta numérica}
+  \scriptsize
+  \begin{center}
+  \begin{tikzpicture}[scale=0.95,every node/.style={font=\tiny}]
+    \draw[uniGris,->,thick] (-5.6,0)--(5.6,0);
+    \foreach \x in {-5,-4,-3,-2,-1,0,1,2,3,4,5}
+      \draw[uniGris] (\x,0.10)--(\x,-0.10) node[below] {$\x$};
+    \fill[uniTitulo] (-2.25,0) circle (2pt);
+    \node[above,uniTitulo] at (-2.25,0.1) {$-\tfrac{9}{4}$};
+    \fill[uniAzul] (1.4142,0) circle (2pt);
+    \node[above,uniAzul] at (1.55,0.1) {$\sqrt{2}$};
+    \fill[uniNaranja] (3.1416,0) circle (2pt);
+    \node[above,uniNaranja] at (3.25,0.1) {$\pi$};
+  \end{tikzpicture}
+  \end{center}
+
+  \vspace{0.08cm}
+  \begin{columns}[T,onlytextwidth]
+    \begin{column}{0.48\textwidth}
+      \begin{block}{Lo que hay que retener}
+        \tiny
+        A la izquierda es \azul{menor}. Entre dos reales cualesquiera
+        siempre cabe otro real: la recta \destacar{no tiene huecos}.
+      \end{block}
+    \end{column}
+    \begin{column}{0.48\textwidth}
+      \begin{alertblock}{La trampa de los negativos}
+        \tiny
+        $-8 < -3$, aunque $8>3$. Y al multiplicar por un negativo,
+        \destacar{la desigualdad se voltea}:
+        de $2<5$ se pasa a $-2>-5$.
+      \end{alertblock}
+    \end{column}
+  \end{columns}
+
+  \vspace{0.08cm}
+  {\tiny\color{uniGris} Para comparar fracciones sin calculadora: llévelas a
+  común denominador, o compare los productos cruzados.
+  $\tfrac{5}{7}$ vs $\tfrac{7}{9}$: \ $5\cdot 9 = 45 < 7\cdot 7 = 49$, luego
+  $\tfrac{5}{7} < \tfrac{7}{9}$.}
+\end{frame}
+
+\begin{frame}{Intervalos y valor absoluto}
+  \scriptsize
+  \begin{columns}[T,onlytextwidth]
+    \begin{column}{0.53\textwidth}
+      \begin{block}{Intervalos}
+        \tiny
+        \begin{center}
+        \begin{tabular}{@{}llp{2.2cm}@{}}
+          \toprule
+          \textbf{Notación} & \textbf{Significa} & \textbf{Extremos} \\
+          \midrule
+          $[2,7]$ & $2\le x\le 7$ & Ambos dentro \\
+          $(2,7)$ & $2 < x < 7$ & Ambos fuera \\
+          $[2,7)$ & $2\le x < 7$ & Solo el $2$ \\
+          $(-\infty,7]$ & $x\le 7$ & Solo el $7$ \\
+          \bottomrule
+        \end{tabular}
+        \end{center}
+        \vspace{0.04cm}
+        {\color{uniGris} El infinito \destacar{siempre} lleva paréntesis: no
+        es un número, no se puede alcanzar.}
+      \end{block}
+    \end{column}
+    \begin{column}{0.44\textwidth}
+      \begin{block}{Valor absoluto}
+        \tiny
+        \[ |a| = \begin{cases} a & \text{si } a\ge 0 \\
+                               -a & \text{si } a<0 \end{cases} \]
+        Es la \azul{distancia al cero}, y por eso nunca es negativo.
+        \[ |-8| = 8 \qquad |0| = 0 \qquad |3-10| = 7 \]
+      \end{block}
+    \end{column}
+  \end{columns}
+
+  \vspace{0.08cm}
+  \begin{alertblock}{El error de leer $-a$ como ``negativo''}
+    \tiny
+    En la definición, si $a=-8$ entonces $-a = -(-8) = 8$.
+    \destacar{$-a$ no significa ``un número negativo''}, significa ``el
+    opuesto de $a$''. Con $a$ negativo, su opuesto es positivo.
+  \end{alertblock}
+\end{frame}
+
+\begin{frame}{Ejercicio 3 — orden, intervalos y valor absoluto}
+  \scriptsize
+  \begin{alertblock}{En parejas, 12 minutos}
+    \tiny
+    \begin{enumerate}\setlength{\itemsep}{-0.02cm}
+      \item Ordene de menor a mayor: \ $-\tfrac{7}{2}$, \ $-3{,}4$, \
+            $\sqrt{9}$, \ $0{,}\overline{3}$, \ $-\tfrac{1}{4}$
+      \item Escriba en notación de intervalo: ``las edades desde 18 hasta 25
+            años inclusive''.
+      \item Escriba como desigualdad: $(-\infty, -2)$
+      \item Calcule: \ $|4-11| + |-3| - |0-5|$
+      \item ¿Es cierto que $|a+b| = |a|+|b|$ siempre? Dé un ejemplo.
+    \end{enumerate}
+  \end{alertblock}
+
+  \vspace{0.05cm}
+  {\tiny\color{uniGris} En el 1, pase todo a decimal antes de comparar. En el
+  5, pruebe con un positivo y un negativo.}
+\end{frame}
+
+\begin{frame}{Ejercicio 3 — solución}
+  \scriptsize
+  \begin{columns}[T,onlytextwidth]
+    \begin{column}{0.49\textwidth}
+      \begin{block}{Puntos 1 a 3}
+        \tiny
+        \textbf{1.} $-3{,}5 < -3{,}4 < -0{,}25 < 0{,}\overline{3} < 3$:
+        \[ -\tfrac{7}{2} < -3{,}4 < -\tfrac{1}{4}
+           < 0{,}\overline{3} < \sqrt{9} \]
+
+        \vspace{0.06cm}
+        \textbf{2.} $[18,\ 25]$ \ {\color{uniGris}(``inclusive'' $\Rightarrow$
+        corchetes)}
+
+        \vspace{0.08cm}
+        \textbf{3.} $x < -2$
+      \end{block}
+    \end{column}
+    \begin{column}{0.49\textwidth}
+      \begin{block}{Puntos 4 y 5}
+        \tiny
+        \textbf{4.} $|{-7}| + 3 - |{-5}| = 7+3-5
+        = \destacar{5}$
+
+        \vspace{0.1cm}
+        \textbf{5.} \destacar{No.} Con $a=5$, $b=-3$:
+        \[ |5-3| = 2 \qquad |5|+|-3| = 8 \]
+        Solo son iguales si $a$ y $b$ tienen \azul{el mismo signo}.
+      \end{block}
+    \end{column}
+  \end{columns}
+
+  \vspace{0.08cm}
+  {\tiny\color{uniGris} El punto \destacar{1} es el más fallado del examen:
+  con negativos, \azul{más cifras no significa mayor}. $-3{,}5$ es menor que
+  $-3{,}4$ porque está más a la izquierda.}
+\end{frame}
+
+\begin{frame}{Ejercicio 4 — taller principal}
+  \begin{alertblock}{En grupos de tres, 20 minutos. Se socializa en el tablero.}
+    \scriptsize
+    \begin{enumerate}\setlength{\itemsep}{0.02cm}
+      \item Convierta a fracción: \ $0{,}\overline{45}$ \ y \ $2{,}3\overline{1}$
+      \item Clasifique: \ $\sqrt{81}$, \ $\sqrt{20}$, \ $-\tfrac{15}{5}$, \
+            $1{,}010010001\dots$ (nunca se repite)
+      \item Justifique con una propiedad: ¿por qué $0\cdot 493 = 0$?
+      \item Escriba en intervalo: ``un puntaje de al menos 60 y menos de 90''.
+      \item Un termómetro marca $-4\,^{\circ}$C en la madrugada y
+            $19\,^{\circ}$C al mediodía. ¿Cuál fue la variación? Escríbala con
+            valor absoluto.
+    \end{enumerate}
+  \end{alertblock}
+\end{frame}
+
+\begin{frame}{Ejercicio 4 — solución}
+  \scriptsize
+  \begin{columns}[T,onlytextwidth]
+    \begin{column}{0.49\textwidth}
+      \begin{block}{Puntos 1 a 3}
+        \tiny
+        \textbf{1.} $99x=45 \Rightarrow x=\tfrac{45}{99}
+        =\destacar{\tfrac{5}{11}}$; \quad
+        $100x-10x = 231{,}\overline{1}-23{,}\overline{1} = 208
+        \Rightarrow x=\tfrac{208}{90}=\destacar{\tfrac{104}{45}}$
+
+        \vspace{0.08cm}
+        \textbf{2.} $\sqrt{81}=9$: $\mathbb{N},\mathbb{Z},\mathbb{Q}$. \
+        $\sqrt{20}$: $\mathbb{I}$. \
+        $-\tfrac{15}{5}=-3$: $\mathbb{Z},\mathbb{Q}$. \
+        $1{,}0100100\dots$: $\mathbb{I}$
+
+        \vspace{0.08cm}
+        \textbf{3.} Porque $0$ es el neutro de la suma:
+        $0\cdot a = (0+0)a = 0\cdot a + 0\cdot a$, luego $0\cdot a = 0$.
+      \end{block}
+    \end{column}
+    \begin{column}{0.49\textwidth}
+      \begin{block}{Puntos 4 y 5}
+        \tiny
+        \textbf{4.} $[60,\ 90)$ \ {\color{uniGris}(``al menos'' incluye;
+        ``menos de'' excluye)}
+
+        \vspace{0.1cm}
+        \textbf{5.} $|19-(-4)| = |23| = \destacar{23\,^{\circ}\text{C}}$
+
+        \vspace{0.06cm}
+        {\color{uniGris} El valor absoluto se usa justamente porque la
+        variación es una \azul{distancia}: da lo mismo restar en un orden o en
+        el otro.}
+      \end{block}
+    \end{column}
+  \end{columns}
+
+  \vspace{0.06cm}
+  {\tiny\color{uniGris} \azul{Verificación del 1:} $104\div 45 = 2{,}3111\dots$
+  \checkmark \ Y $5\div 11 = 0{,}4545\dots$ \checkmark \ Fíjese en los
+  multiplicadores: \destacar{una cifra de periodo} exige $100$ y $10$, no
+  $1000$ y $100$.}
+\end{frame}
+
+\begin{frame}{Errores frecuentes en esta sesión}
+  \scriptsize
+  \begin{center}
+  \begin{tabular}{@{}p{5.8cm}p{6.2cm}@{}}
+    \toprule
+    \textbf{Error} & \textbf{Por qué está mal} \\
+    \midrule
+    ``$\sqrt{16}$ es irracional porque tiene raíz'' &
+      $\sqrt{16}=4$. Lo que importa es \azul{el resultado}, no el símbolo \\
+    \addlinespace
+    ``$3{,}1416$ es $\pi$'' &
+      Es una aproximación \azul{racional}; $\pi$ no tiene decimal finito \\
+    \addlinespace
+    ``$-5$ es mayor que $-2$ porque 5 $>$ 2'' &
+      Con negativos el orden se invierte: $-5 < -2$ \\
+    \addlinespace
+    ``$|{-a}| = a$ siempre'' &
+      Solo si $a\ge 0$. Con $a=-3$: $|-(-3)|=3\neq -3$ \\
+    \addlinespace
+    Escribir $[3,\infty]$ &
+      El infinito nunca lleva corchete: $[3,\infty)$ \\
+    \addlinespace
+    Dividir entre cero ``porque da infinito'' &
+      No da infinito: \azul{no está definido} \\
+    \bottomrule
+  \end{tabular}
+  \end{center}
+\end{frame}
+
+\begin{frame}{Cierre de la sesión}
+  \scriptsize
+  \begin{block}{Lo que hay que llevarse}
+    \tiny
+    \textbf{1.} Los conjuntos numéricos están \azul{anidados}, y cada uno
+    nació para poder hacer una operación nueva. \quad
+    \textbf{2.} Un número es racional si su decimal es finito o periódico:
+    \destacar{es la única prueba que hay que aplicar}. \quad
+    \textbf{3.} Las propiedades (conmutativa, asociativa, distributiva) no son
+    adorno: sirven para calcular mentalmente. \quad
+    \textbf{4.} El valor absoluto es una distancia.
+  \end{block}
+
+  \vspace{0.1cm}
+  \begin{alertblock}{Para la próxima sesión}
+    \tiny
+    Resolver los \destacar{20 ejercicios propuestos} de la lámina siguiente y
+    la guía de la unidad en Aulas Virtuales. Los que tengan dudas los
+    resolvemos en el tablero al empezar la semana 2.
+
+    \vspace{0.05cm}
+    En la sesión 2 vemos \azul{operaciones con enteros}: la ley de los signos,
+    la jerarquía de operaciones y la divisibilidad. Es la sesión donde más
+    puntos se pierden por descuido, no por desconocimiento.
+  \end{alertblock}
+
+  \vspace{0.05cm}
+  {\tiny\color{uniGris} Recuerde: \azul{lunes 17 de agosto es festivo}
+  (Asunción). Si su grupo es de lunes, el tema se recupera con la guía de
+  Moodle.}
+\end{frame}
+
+\begin{frame}{Ejercicios propuestos}
+  \vspace{-0.1cm}
+  \begin{beamercolorbox}[wd=\textwidth,sep=0.10cm]{block body}
+    \centering\scriptsize
+    \textbf{1--6:} clasifique. \quad \textbf{7--10:} convierta a fracción.
+    \quad \textbf{11--14:} ordene o compare. \quad
+    \textbf{15--20:} intervalos y valor absoluto.
+  \end{beamercolorbox}
+  \listatiny
+  \vspace{0.15cm}
+  \begin{columns}[T,onlytextwidth]
+    \begin{column}{0.47\textwidth}
+      \begin{enumerate}\setlength{\itemsep}{0.16cm}
+        \item $\sqrt{169}$
+        \item $-\tfrac{22}{7}$
+        \item $\sqrt{32}$
+        \item $0{,}\overline{6}$
+        \item $\sqrt{5}-\sqrt{5}$
+        \item $\tfrac{\pi}{2}$
+        \item $0{,}\overline{81}$
+        \item $0{,}\overline{123}$
+        \item $1{,}2\overline{5}$
+        \item $0{,}875$
+      \end{enumerate}
+    \end{column}
+    \begin{column}{0.50\textwidth}
+      \begin{enumerate}\setlength{\itemsep}{0.16cm}
+        \setcounter{enumi}{10}
+        \item Ordene: $-\tfrac{5}{2},\ -2{,}4,\ -\tfrac{12}{5}$
+        \item ¿Cuál es mayor: $\tfrac{4}{7}$ o $\tfrac{5}{9}$?
+        \item ¿Cuál es mayor: $-\tfrac{3}{8}$ o $-\tfrac{2}{5}$?
+        \item Escriba tres racionales entre $\tfrac{1}{3}$ y $\tfrac{1}{2}$
+        \item Intervalo de ``más de 12 y hasta 30''
+        \item Desigualdad de $[-4,\,1)$
+        \item Calcule $|7-15|-|{-2}|$
+        \item Calcule $|{-3}|\cdot|5-9|$
+        \item ¿Para qué valores de $x$ es $|x| = 6$?
+        \item ¿Puede $|x|$ valer $-2$? Justifique
+      \end{enumerate}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{Respuestas}{Autoevaluación de los ejercicios propuestos}
+  \listatiny
+  \vspace{0.15cm}
+  \begin{columns}[T,onlytextwidth]
+    \begin{column}{0.47\textwidth}
+      \begin{enumerate}\setlength{\itemsep}{0.16cm}
+        \item $13$: $\mathbb{N},\mathbb{Z},\mathbb{Q}$
+        \item $\mathbb{Q}$ \ {\color{uniGris}(no es $\pi$)}
+        \item $4\sqrt{2}$: $\mathbb{I}$
+        \item $\tfrac{2}{3}$: $\mathbb{Q}$
+        \item $0$: $\mathbb{Z},\mathbb{Q}$
+        \item $\mathbb{I}$
+        \item $\tfrac{81}{99}=\tfrac{9}{11}$
+        \item $\tfrac{123}{999}=\tfrac{41}{333}$
+        \item $\tfrac{113}{90}$
+        \item $\tfrac{7}{8}$
+      \end{enumerate}
+    \end{column}
+    \begin{column}{0.50\textwidth}
+      \begin{enumerate}\setlength{\itemsep}{0.16cm}
+        \setcounter{enumi}{10}
+        \item $-\tfrac{5}{2} < -2{,}4 = -\tfrac{12}{5}$
+        \item $\tfrac{4}{7}$ \ {\color{uniGris}($36>35$)}
+        \item $-\tfrac{3}{8}$ \ {\color{uniGris}($-0{,}375 > -0{,}4$)}
+        \item Por ejemplo $0{,}35;\ 0{,}4;\ \tfrac{5}{12}$
+        \item $(12,\ 30]$
+        \item $-4 \le x < 1$
+        \item $8-2 = 6$
+        \item $3\cdot 4 = 12$
+        \item $x=6$ o $x=-6$
+        \item No: es una distancia, nunca es negativa
+      \end{enumerate}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{Referencias}
+  \footnotesize
+  \begin{itemize}
+    \item[{[1]}] Ramos del Olmo, Á. M. (2016). \textit{Matemáticas básicas
+      para el acceso a la universidad}. Ediciones Pirámide.
+      \texttt{https://elibro.net/es/ereader/uniminuto/49134}
+    \item[{[2]}] González Pulido, J. W., Chacón Benavides, J. A. \&
+      Fonseca Correa, L. Á. (2023). \textit{Matemática básica}
+      (1.\textsuperscript{a} ed.). Universidad Mariana.
+      \texttt{https://elibro.net/es/ereader/uniminuto/280647}
+    \item[{[3]}] Torrijos, M. (2018). \textit{Apuntes de matemática básica}.
+      Universidad Católica de Colombia.
+      \texttt{https://elibro.net/es/ereader/uniminuto/197048}
+    \item[{[4]}] Ramírez, A. \& Rojas, L. (2016). \textit{Matemáticas básicas
+      con aplicaciones a la ingeniería}. Ecoe Ediciones.
+      \texttt{https://elibro.net/es/ereader/uniminuto/114355}
+  \end{itemize}
+
+  \vspace{0.3cm}
+  \begin{center}
+    {\Large\color{uniAzul}\textbf{¿Preguntas?}}
+  \end{center}
+\end{frame}
+
+\end{document}

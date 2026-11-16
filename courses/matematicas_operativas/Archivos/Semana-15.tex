@@ -1,0 +1,637 @@
+% ============================================================================
+%  MATEMÁTICAS OPERATIVAS — Sesión 15
+%  Semana 15: 16 al 21 de noviembre de 2026
+%  (lunes 16: festivo, Independencia de Cartagena)
+%  3.5 Ecuaciones de primer grado · 3.6 Ecuaciones cuadráticas
+%  Repaso integrador de la Unidad 3 y simulacro del Examen 3
+%  Duración prevista: 3 horas
+% ============================================================================
+\documentclass[aspectratio=169,10pt]{beamer}
+
+\usepackage[utf8]{inputenc}
+\IfFileExists{spanish.ldf}{\usepackage[spanish,es-noshorthands]{babel}}{}
+\usepackage{amsmath,amssymb}
+\usepackage{booktabs}
+\usepackage{tikz}
+
+\usetheme{Uniminuto}
+
+\uniasignatura{Matemáticas Operativas}
+\uniprofesor{Andrés Felipe Puerta Velez}
+\unicorreo{andres.puerta-v@uniminuto.edu.co}
+\uninrc{CBASBL011}
+\unisemana{Sesión 15 — Semana 15 · 16 al 21 de noviembre de 2026}
+
+\newcommand{\listatiny}{\setbeamerfont{itemize/enumerate body}{size=\tiny}\tiny}
+
+\begin{document}
+
+\portada
+
+\begin{frame}{Orden del día}
+  \begin{enumerate}
+    \item Revisión de los ejercicios propuestos de la sesión 14
+    \item \azul{Tema 3.5: ecuaciones de primer grado y aplicaciones}
+    \item \azul{Tema 3.6: ecuaciones cuadráticas y aplicaciones}
+    \item Repaso integrador de la Unidad 3
+    \item Simulacro del Examen 3 y recomendaciones
+  \end{enumerate}
+
+  \vspace{0.25cm}
+  {\footnotesize\color{uniGris} Última sesión de clase del semestre.
+  \destacar{Lunes 16 fue festivo} (Independencia de Cartagena). Hoy cerramos
+  los dos temas que faltan: el \destacar{Examen 3 (30\%)} se presenta la
+  próxima semana en Aulas Virtuales.}
+\end{frame}
+
+% ===========================================================================
+\seccion{3.5 Ecuaciones de primer grado}
+% ===========================================================================
+
+\begin{frame}{Resolver es aislar la incógnita}
+  \scriptsize
+  \begin{block}{El principio}
+    \tiny
+    Una ecuación es una \azul{balanza}: lo que se le haga a un lado hay que
+    hacérselo al otro. Se puede sumar, restar, multiplicar y dividir por lo
+    mismo —\destacar{salvo por cero}— sin cambiar las soluciones.
+  \end{block}
+
+  \vspace{0.04cm}
+  \begin{columns}[T,onlytextwidth]
+    \begin{column}{0.48\textwidth}
+      \begin{exampleblock}{Ejemplo básico}
+        \tiny
+        \[ 5(x-2) = 3x+8 \]
+        \[ 5x-10 = 3x+8 \]
+        \[ 5x-3x = 8+10 \;\Longrightarrow\; 2x = 18 \]
+        \[ x = \destacar{9} \]
+        \azul{Verif.:} $5(7)=35$ y $3(9)+8=35$ \checkmark
+      \end{exampleblock}
+    \end{column}
+    \begin{column}{0.48\textwidth}
+      \begin{exampleblock}{Con fracciones: quite denominadores}
+        \tiny
+        \[ \frac{x-1}{2}+\frac{x+3}{5} = 4 \]
+        Multiplique todo por el m.c.d. $=10$:
+        \[ 5(x-1)+2(x+3) = 40 \]
+        \[ 7x+1 = 40 \;\Longrightarrow\; x = \destacar{\tfrac{39}{7}} \]
+      \end{exampleblock}
+    \end{column}
+  \end{columns}
+
+  \vspace{0.0cm}
+  {\tiny\color{uniGris} \destacar{El orden que menos errores produce:}
+  (1) quitar denominadores, (2) quitar paréntesis, (3) pasar las $x$ a un lado
+  y los números al otro, (4) despejar, (5) \azul{verificar}. La verificación
+  no es opcional: es gratis.}
+\end{frame}
+
+\begin{frame}{Traducir un problema a una ecuación}
+  \scriptsize
+  \begin{center}
+  \begin{tabular}{@{}p{5.6cm}p{6.4cm}@{}}
+    \toprule
+    \textbf{En palabras} & \textbf{En símbolos} \\
+    \midrule
+    Un número aumentado en 7 & $x+7$ \\
+    El doble de un número, menos 5 & $2x-5$ \\
+    Tres números enteros consecutivos & $x$, \ $x+1$, \ $x+2$ \\
+    El $19\%$ más sobre un precio & $1{,}19x$ \\
+    La edad dentro de 4 años & $x+4$ \\
+    Un rectángulo $7$ m más largo que ancho & ancho $x$, largo $x+7$ \\
+    \bottomrule
+  \end{tabular}
+  \end{center}
+
+  \vspace{0.02cm}
+  \begin{exampleblock}{Ejemplo desarrollado}
+    \tiny
+    Un artículo con IVA del $19\%$ cuesta $\$297\,500$. ¿Cuál es el precio
+    sin IVA? \ $1{,}19x = 297\,500 \Rightarrow
+    x = \tfrac{297\,500}{1{,}19} = \destacar{\$250\,000}$.
+    \ \azul{Verificación:} $250\,000\cdot 0{,}19 = 47\,500$ y
+    $250\,000+47\,500 = 297\,500$ \checkmark
+  \end{exampleblock}
+
+  \vspace{0.02cm}
+  {\tiny\color{uniGris} \destacar{Lo más difícil de un problema no es
+  resolverlo, es plantearlo.} Empiece siempre escribiendo \azul{``sea $x$ =
+  \dots''} con toda claridad; la mitad de los errores vienen de no saber qué
+  representa la incógnita.}
+\end{frame}
+
+\begin{frame}{Ejercicio 1 — primer grado}
+  \scriptsize
+  \begin{alertblock}{En parejas, 12 minutos. Verifique cada respuesta.}
+    \tiny
+    \textbf{1.} $2x+3 = 7x-12$ \qquad
+    \textbf{2.} $4(x+1)-2(x-3) = 18$ \qquad
+    \textbf{3.} $\tfrac{x}{3}+\tfrac{x}{4} = 7$ \qquad
+    \textbf{4.} Tres enteros consecutivos suman $129$: ¿cuáles son? \qquad
+    \textbf{5.} Un rectángulo mide $7$ m más de largo que de ancho y su
+    perímetro es $54$ m: halle las dimensiones.
+  \end{alertblock}
+
+  \vspace{0.05cm}
+  \begin{block}{Solución}
+    \tiny
+    \textbf{1.} $-5x=-15 \Rightarrow x=\destacar{3}$ \qquad
+    \textbf{2.} $2x+10=18 \Rightarrow x=\destacar{4}$ \qquad
+    \textbf{3.} m.c.d. $12$: $4x+3x=84 \Rightarrow x=\destacar{12}$
+
+    \vspace{0.08cm}
+    \textbf{4.} $x+(x+1)+(x+2)=129 \Rightarrow 3x+3=129
+    \Rightarrow x=42$: \destacar{42, 43 y 44}
+
+    \vspace{0.08cm}
+    \textbf{5.} $2(x)+2(x+7)=54 \Rightarrow 4x+14=54
+    \Rightarrow x=10$: \destacar{10 m de ancho y 17 m de largo}
+  \end{block}
+\end{frame}
+
+% ===========================================================================
+\seccion{3.6 Ecuaciones cuadráticas}
+% ===========================================================================
+
+\begin{frame}{Tres formas de resolver una cuadrática}
+  \scriptsize
+  \begin{block}{Forma general: $ax^{2}+bx+c=0$, con $a\neq 0$}
+    \tiny
+    \textbf{Antes de nada}, iguale a cero y ordene. Si no está igualada a
+    cero, ningún método funciona.
+  \end{block}
+
+  \vspace{0.04cm}
+  \begin{columns}[T,onlytextwidth]
+    \begin{column}{0.32\textwidth}
+      \begin{exampleblock}{1. Factorizando}
+        \tiny
+        Si $ab=0$, entonces $a=0$ o $b=0$.
+
+        \vspace{0.04cm}
+        $x^{2}-7x+12=0$
+
+        $(x-3)(x-4)=0$
+
+        $x=\destacar{3}$ \ o \ $x=\destacar{4}$
+      \end{exampleblock}
+    \end{column}
+    \begin{column}{0.32\textwidth}
+      \begin{exampleblock}{2. Despejando}
+        \tiny
+        Cuando falta el término en $x$.
+
+        \vspace{0.04cm}
+        $2x^{2}-8=0$
+
+        $x^{2}=4$
+
+        $x=\destacar{\pm 2}$ \ {\color{uniGris}(aquí sí va el $\pm$)}
+      \end{exampleblock}
+    \end{column}
+    \begin{column}{0.32\textwidth}
+      \begin{exampleblock}{3. Fórmula general}
+        \tiny
+        Sirve siempre:
+
+        \vspace{0.04cm}
+        $x = \dfrac{-b\pm\sqrt{b^{2}-4ac}}{2a}$
+
+        \vspace{0.04cm}
+        {\color{uniGris}Se usa cuando no se ve la factorización.}
+      \end{exampleblock}
+    \end{column}
+  \end{columns}
+
+  \vspace{0.02cm}
+  \begin{alertblock}{Si falta el término independiente, saque factor común}
+    \tiny
+    $x^{2}+6x = 0 \Rightarrow x(x+6)=0 \Rightarrow x=\destacar{0}$ \ o \
+    $x=\destacar{-6}$. \quad
+    \destacar{Nunca divida entre $x$}: perdería la solución $x=0$. Es el error
+    silencioso más común del tema, porque el resultado parece razonable.
+  \end{alertblock}
+\end{frame}
+
+\begin{frame}{El discriminante: cuántas soluciones hay}
+  \scriptsize
+  \begin{block}{$\Delta = b^{2}-4ac$}
+    \tiny
+    Es lo que va dentro de la raíz. Como en la sesión 8, \destacar{una raíz
+    par de un negativo no existe en $\mathbb{R}$}, y de ahí sale todo.
+  \end{block}
+
+  \vspace{0.04cm}
+  \begin{center}\tiny
+  \begin{tabular}{@{}p{2.0cm}p{3.0cm}p{6.4cm}@{}}
+    \toprule
+    \textbf{Si\dots} & \textbf{Soluciones reales} & \textbf{Ejemplo} \\
+    \midrule
+    $\Delta > 0$ & \azul{Dos} distintas &
+      $x^{2}-5x-24=0$: $\Delta=121$, \ $x=8$ o $x=-3$ \\
+    $\Delta = 0$ & \azul{Una} (doble) &
+      $x^{2}-10x+25=0$: $\Delta=0$, \ $x=5$ \\
+    $\Delta < 0$ & \destacar{Ninguna} real &
+      $x^{2}+2x+5=0$: $\Delta=-16$ \\
+    \bottomrule
+  \end{tabular}
+  \end{center}
+
+  \vspace{0.04cm}
+  \begin{exampleblock}{La fórmula aplicada: $3x^{2}-5x-2=0$}
+    \tiny
+    $a=3$, $b=-5$, $c=-2$; \ $\Delta = 25+24 = 49$; \
+    $x = \tfrac{5\pm 7}{6}$, luego
+    $x = \destacar{2}$ \ o \ $x = \destacar{-\tfrac{1}{3}}$.
+    \ \azul{Verificación con $x=2$:} $12-10-2=0$ \checkmark
+  \end{exampleblock}
+\end{frame}
+
+\begin{frame}{Ejercicio 2 — cuadráticas}
+  \scriptsize
+  \begin{alertblock}{Individual, 12 minutos. Diga qué método usa.}
+    \tiny
+    \textbf{1.} $x^{2}-2x-15=0$ \qquad
+    \textbf{2.} $4x^{2}-12x+9=0$ \qquad
+    \textbf{3.} $2x^{2}+7x-4=0$ \qquad
+    \textbf{4.} $x^{2}+6x=0$ \qquad
+    \textbf{5.} $x^{2}+2x+5=0$
+  \end{alertblock}
+
+  \vspace{0.05cm}
+  \begin{block}{Solución}
+    \tiny
+    \textbf{1.} Factorizando: $(x-5)(x+3)=0$;
+    $x=\destacar{5}$ o $x=\destacar{-3}$ \qquad
+    \textbf{2.} $\Delta=0$: $(2x-3)^{2}=0$;
+    $x=\destacar{\tfrac{3}{2}}$ (doble)
+
+    \vspace{0.08cm}
+    \textbf{3.} Fórmula: $\Delta=49+32=81$;
+    $x=\tfrac{-7\pm 9}{4}$: $x=\destacar{\tfrac{1}{2}}$ o
+    $x=\destacar{-4}$ \qquad
+    \textbf{4.} Factor común: $x(x+6)=0$;
+    $x=\destacar{0}$ o $x=\destacar{-6}$
+
+    \vspace{0.08cm}
+    \textbf{5.} $\Delta=4-20=-16 < 0$: \destacar{no tiene solución real}
+  \end{block}
+\end{frame}
+
+\begin{frame}{Problemas con cuadráticas}
+  \scriptsize
+  \begin{exampleblock}{Ejemplo desarrollado}
+    \tiny
+    Un terreno rectangular tiene $5$ m más de largo que de ancho y su área es
+    $84$ m$^{2}$. Sea $x$ el ancho; entonces $x(x+5) = 84$:
+    \[ x^{2}+5x-84 = 0
+       \;\Longrightarrow\; (x+12)(x-7)=0
+       \;\Longrightarrow\; x=-12 \ \text{o} \ x=7 \]
+    \destacar{$x=-12$ se descarta}: un ancho no puede ser negativo. El terreno
+    mide $\destacar{7}$ m $\times$ $\destacar{12}$ m.
+  \end{exampleblock}
+
+  \vspace{0.02cm}
+  \begin{alertblock}{La lección: la ecuación da dos respuestas, el problema una}
+    \tiny
+    Una cuadrática casi siempre devuelve \azul{dos} soluciones matemáticas,
+    pero el contexto suele admitir \destacar{solo una}. Longitudes, edades,
+    cantidades de personas y precios \azul{no pueden ser negativos}.
+    \destacar{Descartar con argumento es parte de la respuesta}, no un
+    detalle.
+  \end{alertblock}
+
+  \vspace{0.0cm}
+  {\tiny\color{uniGris} Es la misma disciplina de la sesión 11 con los
+  logaritmos y de la 14 con las fracciones: \azul{resolver, y después
+  verificar cuáles soluciones son admisibles}.}
+\end{frame}
+
+% ===========================================================================
+\seccion{Repaso integrador de la Unidad 3}
+% ===========================================================================
+
+\begin{frame}{Mapa de la Unidad 3}
+  \scriptsize
+  \begin{center}
+  \begin{tabular}{@{}clp{7.8cm}@{}}
+    \toprule
+    \textbf{Tema} & \textbf{Sesión} & \textbf{Lo que se evalúa} \\
+    \midrule
+    3.1 & 13 &
+      Términos semejantes; sumar, restar y multiplicar polinomios \\
+    \addlinespace
+    3.2 & 13 &
+      Los cinco productos notables y el cálculo mental \\
+    \addlinespace
+    3.3 & 14 &
+      Factor común, diferencia de cuadrados, trinomios, agrupación, cubos;
+      factorización \azul{completa} \\
+    \addlinespace
+    3.4 & 14 &
+      Simplificar y operar fracciones algebraicas; restricciones \\
+    \addlinespace
+    3.5--3.6 & 15 &
+      Ecuaciones de primer grado y cuadráticas; discriminante; problemas en
+      contexto \\
+    \bottomrule
+  \end{tabular}
+  \end{center}
+
+  \vspace{0.08cm}
+  {\tiny\color{uniGris} Los cinco temas están \destacar{encadenados}: sin
+  productos notables no hay factorización, sin factorización no hay fracciones
+  algebraicas ni cuadráticas resueltas por factoreo. Si algo del 3.3 quedó
+  flojo, es lo primero que hay que repasar esta semana.}
+\end{frame}
+
+\begin{frame}{Simulacro del Examen 3 — parte A}
+  \begin{alertblock}{Individual, 20 minutos, sin apuntes}
+    \scriptsize
+    \begin{enumerate}\setlength{\itemsep}{0.0cm}
+      \item Reduzca: \ $(6x^{2}-4x+1)-(2x^{2}+3x-5)$
+      \item Desarrolle: \ $(4x-3)^{2}$ \ y \ $(x+5)(x-5)$
+      \item Factorice completamente: \ $2x^{3}-18x$
+      \item Factorice completamente: \ $3x^{2}-12x+12$
+      \item Simplifique y declare restricciones: \
+            $\dfrac{x^{2}-25}{x^{2}+10x+25}$
+      \item Efectúe: \ $\dfrac{2}{x-3}+\dfrac{5}{x+2}$
+    \end{enumerate}
+  \end{alertblock}
+\end{frame}
+
+\begin{frame}{Simulacro — solución de la parte A}
+  \scriptsize
+  \begin{columns}[T,onlytextwidth]
+    \begin{column}{0.49\textwidth}
+      \begin{block}{Puntos 1 a 3}
+        \tiny
+        \textbf{1.} $6x^{2}-4x+1-2x^{2}-3x+5
+        = \destacar{4x^{2}-7x+6}$
+
+        \vspace{0.1cm}
+        \textbf{2.} $\destacar{16x^{2}-24x+9}$; \
+        $\destacar{x^{2}-25}$
+
+        \vspace{0.1cm}
+        \textbf{3.} $2x(x^{2}-9)
+        = \destacar{2x(x-3)(x+3)}$
+      \end{block}
+    \end{column}
+    \begin{column}{0.49\textwidth}
+      \begin{block}{Puntos 4 a 6}
+        \tiny
+        \textbf{4.} $3(x^{2}-4x+4)
+        = \destacar{3(x-2)^{2}}$
+
+        \vspace{0.1cm}
+        \textbf{5.} $\dfrac{(x-5)(x+5)}{(x+5)^{2}}
+        = \destacar{\dfrac{x-5}{x+5}}$, \ $x\neq -5$
+
+        \vspace{0.1cm}
+        \textbf{6.} $\dfrac{2(x+2)+5(x-3)}{(x-3)(x+2)}
+        = \destacar{\dfrac{7x-11}{x^{2}-x-6}}$
+      \end{block}
+    \end{column}
+  \end{columns}
+
+  \vspace{0.08cm}
+  {\tiny\color{uniGris} En el \destacar{3} y el \destacar{4}, quedarse en
+  $2x(x^{2}-9)$ o $3(x^{2}-4x+4)$ es factorización \azul{incompleta}: vale
+  media respuesta. En el \destacar{5}, olvidar la restricción $x\neq -5$ es el
+  descuento más común de todo el examen.}
+\end{frame}
+
+\begin{frame}{Simulacro del Examen 3 — parte B}
+  \begin{alertblock}{Individual, 20 minutos}
+    \scriptsize
+    \begin{enumerate}\setlength{\itemsep}{0.0cm}
+      \setcounter{enumi}{6}
+      \item Resuelva: \ $3x-7 = 14$
+      \item Resuelva: \ $\dfrac{x-1}{2}+\dfrac{x+3}{5} = 4$
+      \item Resuelva factorizando: \ $x^{2}-7x+12 = 0$
+      \item Resuelva con la fórmula: \ $2x^{2}+7x-4 = 0$
+      \item Sin resolver, diga cuántas soluciones reales tiene
+            $x^{2}+2x+5=0$ y por qué.
+      \item Un terreno rectangular es $5$ m más largo que ancho y su área es
+            $84$ m$^{2}$. Halle las dimensiones.
+    \end{enumerate}
+  \end{alertblock}
+\end{frame}
+
+\begin{frame}{Simulacro — solución de la parte B}
+  \scriptsize
+  \begin{columns}[T,onlytextwidth]
+    \begin{column}{0.49\textwidth}
+      \begin{block}{Puntos 7 a 9}
+        \tiny
+        \textbf{7.} $3x=21 \Rightarrow x=\destacar{7}$
+
+        \vspace{0.1cm}
+        \textbf{8.} Por $10$: $5(x-1)+2(x+3)=40$;
+        $7x+1=40 \Rightarrow x=\destacar{\tfrac{39}{7}}$
+
+        \vspace{0.1cm}
+        \textbf{9.} $(x-3)(x-4)=0$;
+        $x=\destacar{3}$ o $x=\destacar{4}$
+      \end{block}
+    \end{column}
+    \begin{column}{0.49\textwidth}
+      \begin{block}{Puntos 10 a 12}
+        \tiny
+        \textbf{10.} $\Delta=49+32=81$; $x=\tfrac{-7\pm 9}{4}$:
+        $\destacar{\tfrac{1}{2}}$ y $\destacar{-4}$
+
+        \vspace{0.1cm}
+        \textbf{11.} $\Delta = 4-20 = -16 < 0$:
+        \destacar{ninguna} real
+
+        \vspace{0.1cm}
+        \textbf{12.} $x(x+5)=84 \Rightarrow (x+12)(x-7)=0$;
+        se descarta $-12$: \destacar{7 m $\times$ 12 m}
+      \end{block}
+    \end{column}
+  \end{columns}
+
+  \vspace{0.08cm}
+  {\tiny\color{uniGris} \azul{Verificaciones que caben en el margen:} en el
+  \destacar{8}, $\tfrac{39}{7}\approx 5{,}571$ y
+  $\tfrac{4{,}571}{2}+\tfrac{8{,}571}{5} = 2{,}286+1{,}714 = 4$ \checkmark; en
+  el \destacar{10}, $2(\tfrac14)+7(\tfrac12)-4 = 0{,}5+3{,}5-4 = 0$
+  \checkmark}
+\end{frame}
+
+\begin{frame}{Errores frecuentes de toda la Unidad 3}
+  \scriptsize
+  \begin{center}
+  \begin{tabular}{@{}p{5.2cm}p{6.8cm}@{}}
+    \toprule
+    \textbf{Error} & \textbf{Cómo evitarlo} \\
+    \midrule
+    $(a+b)^{2}=a^{2}+b^{2}$ &
+      Falta $2ab$. Compruebe con $a=b=1$ \\
+    \addlinespace
+    Cancelar sumandos: $\tfrac{x+3}{x}=3$ &
+      Solo se cancelan \azul{factores}; factorice primero \\
+    \addlinespace
+    Factorización incompleta &
+      Pregúntese si cada factor todavía factoriza \\
+    \addlinespace
+    No declarar restricciones &
+      Anótelas \azul{antes} de simplificar \\
+    \addlinespace
+    Dividir entre $x$ en $x^{2}+6x=0$ &
+      Se pierde $x=0$: saque factor común \\
+    \addlinespace
+    Resolver sin igualar a cero &
+      La forma $ax^{2}+bx+c=0$ es obligatoria \\
+    \addlinespace
+    Dar las dos raíces en un problema de área &
+      Descarte la negativa \azul{con argumento} \\
+    \bottomrule
+  \end{tabular}
+  \end{center}
+\end{frame}
+
+\begin{frame}{Cierre del curso}
+  \scriptsize
+  \begin{block}{Lo que se lleva de Matemáticas Operativas}
+    \tiny
+    \textbf{Unidad 1:} los campos numéricos y cómo operar con ellos sin
+    calculadora, más razones, proporciones y porcentajes. \quad
+    \textbf{Unidad 2:} potencias, radicales, racionalización y logaritmos.
+    \quad
+    \textbf{Unidad 3:} el lenguaje algebraico completo y la resolución de
+    ecuaciones.
+
+    \vspace{0.06cm}
+    Todo esto es el \destacar{prerrequisito operativo} de los cursos que
+    siguen —Cálculo, Estadística, Finanzas—: allí no se vuelve a explicar cómo
+    factorizar ni cómo despejar, se da por sabido.
+  \end{block}
+
+  \vspace{0.1cm}
+  \begin{alertblock}{Para preparar el Examen 3 (30\%) — semana 16}
+    \tiny
+    \textbf{1.} Rehaga el simulacro de hoy \azul{cronometrado} y sin mirar las
+    soluciones. \quad
+    \textbf{2.} Repase los seis casos de factorización de la sesión 14: son la
+    base de casi todos los puntos. \quad
+    \textbf{3.} Memorice los cinco productos notables y la fórmula general.
+    \quad
+    \textbf{4.} En cada ejercicio, \destacar{verifique} reemplazando.
+  \end{alertblock}
+
+  \vspace{0.08cm}
+  \begin{center}
+    {\footnotesize\color{uniAzul}\textbf{Gracias por el semestre.}
+    \ \ Consultas y asesorías: hasta el día anterior al examen.}
+  \end{center}
+\end{frame}
+
+\begin{frame}{Ejercicios propuestos}
+  \vspace{-0.1cm}
+  \begin{beamercolorbox}[wd=\textwidth,sep=0.10cm]{block body}
+    \centering\scriptsize
+    \textbf{1--7:} primer grado. \quad \textbf{8--15:} cuadráticas. \quad
+    \textbf{16--20:} problemas.
+  \end{beamercolorbox}
+  \listatiny
+  \vspace{0.15cm}
+  \begin{columns}[T,onlytextwidth]
+    \begin{column}{0.47\textwidth}
+      \begin{enumerate}\setlength{\itemsep}{0.16cm}
+        \item $7x-4 = 3x+16$
+        \item $5(x-3) = 2(x+6)$
+        \item $\tfrac{x}{2}-\tfrac{x}{5} = 3$
+        \item $\tfrac{2x+1}{3} = \tfrac{x-2}{2}$
+        \item $3(x-1)-4(x+2) = -15$
+        \item $0{,}25x + 0{,}1(x-40) = 45$
+        \item $\tfrac{x}{4}+\tfrac{x+4}{6} = 4$
+        \item $x^{2}-9x+18 = 0$
+        \item $x^{2}+4x-21 = 0$
+        \item $x^{2}-49 = 0$
+      \end{enumerate}
+    \end{column}
+    \begin{column}{0.50\textwidth}
+      \begin{enumerate}\setlength{\itemsep}{0.16cm}
+        \setcounter{enumi}{10}
+        \item $x^{2}-8x = 0$
+        \item $x^{2}+6x+9 = 0$
+        \item $2x^{2}-5x-3 = 0$
+        \item $3x^{2}+2x+5 = 0$
+        \item $x^{2}-4x+1 = 0$ \ (deje la raíz indicada)
+        \item Tres enteros consecutivos suman $174$
+        \item Un número más su triple es $92$
+        \item Un rectángulo es $3$ m más largo que ancho y su área es
+              $70$ m$^{2}$
+        \item Con IVA del $19\%$ un artículo cuesta $\$178\,500$: halle la
+              base
+        \item Dos números suman $20$ y su producto es $91$
+      \end{enumerate}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{Respuestas}{Autoevaluación de los ejercicios propuestos}
+  \listatiny
+  \vspace{0.15cm}
+  \begin{columns}[T,onlytextwidth]
+    \begin{column}{0.47\textwidth}
+      \begin{enumerate}\setlength{\itemsep}{0.16cm}
+        \item $x=5$
+        \item $x=9$
+        \item $x=10$
+        \item $x=-8$
+        \item $x=4$
+        \item $x=140$
+        \item $x=8$
+        \item $x=3$ o $x=6$
+        \item $x=3$ o $x=-7$
+        \item $x=\pm 7$
+      \end{enumerate}
+    \end{column}
+    \begin{column}{0.50\textwidth}
+      \begin{enumerate}\setlength{\itemsep}{0.16cm}
+        \setcounter{enumi}{10}
+        \item $x=0$ o $x=8$
+        \item $x=-3$ (doble)
+        \item $x=3$ o $x=-\tfrac{1}{2}$
+        \item Ninguna real ($\Delta=-56$)
+        \item $x=2\pm\sqrt{3}$
+        \item $57,\ 58,\ 59$
+        \item $23$
+        \item $7$ m $\times$ $10$ m
+        \item $\$150\,000$
+        \item $7$ y $13$
+      \end{enumerate}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{Referencias}
+  \footnotesize
+  \begin{itemize}
+    \item[{[1]}] Ramos del Olmo, Á. M. (2016). \textit{Matemáticas básicas
+      para el acceso a la universidad}. Ediciones Pirámide.
+      \texttt{https://elibro.net/es/ereader/uniminuto/49134}
+    \item[{[2]}] González Pulido, J. W., Chacón Benavides, J. A. \&
+      Fonseca Correa, L. Á. (2023). \textit{Matemática básica}
+      (1.\textsuperscript{a} ed.). Universidad Mariana.
+      \texttt{https://elibro.net/es/ereader/uniminuto/280647}
+    \item[{[3]}] Torrijos, M. (2018). \textit{Apuntes de matemática básica}.
+      Universidad Católica de Colombia.
+      \texttt{https://elibro.net/es/ereader/uniminuto/197048}
+    \item[{[4]}] Ramírez, A. \& Rojas, L. (2016). \textit{Matemáticas básicas
+      con aplicaciones a la ingeniería}. Ecoe Ediciones.
+      \texttt{https://elibro.net/es/ereader/uniminuto/114355}
+  \end{itemize}
+
+  \vspace{0.3cm}
+  \begin{center}
+    {\Large\color{uniAzul}\textbf{¿Preguntas?}}
+  \end{center}
+\end{frame}
+
+\end{document}

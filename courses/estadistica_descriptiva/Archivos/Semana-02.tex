@@ -1,0 +1,732 @@
+% ============================================================================
+%  ESTADÍSTICA DESCRIPTIVA — Sesión 2
+%  Semana 2: 17 al 22 de agosto de 2026   (lunes 17: festivo)
+%  1.2 Población, muestra, parámetros y estadísticos
+%  1.3 Tipos de variables · 1.4 Escalas de medición
+% ============================================================================
+\documentclass[aspectratio=169,10pt]{beamer}
+
+\usepackage[utf8]{inputenc}
+\IfFileExists{spanish.ldf}{\usepackage[spanish,es-noshorthands]{babel}}{}
+\usepackage{amsmath,amssymb}
+\usepackage{booktabs}
+\usepackage{tikz}
+\usepackage{listings}
+
+\usetheme{Uniminuto}
+
+\uniasignatura{Estadística descriptiva}
+\uniprofesor{Andrés Felipe Puerta Velez}
+\unicorreo{andres.puerta-v@uniminuto.edu.co}
+\uninrc{CBASBL031 - CBASBL141}
+\unisemana{Sesión 2 — Semana 2 · 17 al 22 de agosto de 2026}
+
+
+\newcommand{\fx}[1]{{\ttfamily\color{uniAzul}#1}}
+\newcommand{\listatiny}{\setbeamerfont{itemize/enumerate body}{size=\tiny}\tiny}
+
+% ------------------------------------------------------------- CÓDIGO R ----
+\lstdefinestyle{Rmini}{
+  language=R,
+  basicstyle=\ttfamily\tiny,
+  keywordstyle=\color{uniAzul}\bfseries,
+  commentstyle=\color{uniGris}\itshape,
+  stringstyle=\color{uniTitulo},
+  showstringspaces=false, numbers=none, breaklines=true,
+  columns=fullflexible,
+  backgroundcolor=\color{uniCremaClaro},
+  frame=leftline, framerule=1.2pt, rulecolor=\color{uniNaranja},
+  xleftmargin=0.35cm, framexleftmargin=0.35cm,
+  framexrightmargin=0.15cm, framextopmargin=2pt, framexbottommargin=2pt,
+  aboveskip=0.12cm, belowskip=0.12cm
+}
+\lstdefinestyle{Rout}{
+  basicstyle=\ttfamily\tiny\color{black},
+  showstringspaces=false, numbers=none, breaklines=true,
+  columns=fullflexible,
+  backgroundcolor=\color{uniGris!10},
+  frame=leftline, framerule=1.2pt, rulecolor=\color{uniGris},
+  xleftmargin=0.35cm, framexleftmargin=0.35cm,
+  framexrightmargin=0.15cm, framextopmargin=2pt, framexbottommargin=2pt,
+  aboveskip=0.12cm, belowskip=0.12cm
+}
+
+\begin{document}
+
+\portada
+
+\begin{frame}{Orden del día}
+  \begin{enumerate}
+    \item Llamado a lista y revisión de los ejercicios propuestos
+    \item Repaso: dónde quedamos
+    \item \azul{Tema 1.2: parámetros y estadísticos}
+    \item \azul{Tema 1.3: tipos de variables} y los números que no son cantidades
+    \item \azul{Tema 1.4: escalas de medición} y qué permite cada una
+    \item Taller de clasificación, errores frecuentes y cierre
+  \end{enumerate}
+
+  \vspace{0.25cm}
+  {\footnotesize\color{uniGris} Sesión de 3 horas. Lo de hoy decide
+  \destacar{qué tabla, qué gráfico y qué medida} se podrán usar en el resto
+  del curso.}
+\end{frame}
+
+\begin{frame}{Repaso: dónde quedamos}
+  En la sesión 1 quedó claro qué son población, muestra, unidad de observación,
+  variable y dato.
+
+  \vspace{0.25cm}
+  \begin{alertblock}{Las preguntas de hoy}
+    \footnotesize
+    Si calculo un promedio, ¿ese número describe a la población o a la muestra?
+    Y sobre todo: \destacar{¿todas las variables se pueden tratar igual?} La
+    respuesta a la segunda determina qué tabla, qué gráfico y qué medida se
+    puede usar en el resto del curso.
+  \end{alertblock}
+\end{frame}
+
+\seccion{1.2 Parámetros y estadísticos}
+
+\begin{frame}{La distinción que hay que memorizar}
+  \begin{columns}[T,onlytextwidth]
+    \begin{column}{0.48\textwidth}
+      \begin{block}{Parámetro}
+        \footnotesize
+        Número que describe a la \azul{población}. Es fijo y casi siempre
+        desconocido.
+        \vspace{0.1cm}
+        \[ \mu \quad \sigma \quad p \quad N \]
+      \end{block}
+    \end{column}
+    \begin{column}{0.48\textwidth}
+      \begin{exampleblock}{Estadístico}
+        \footnotesize
+        Número que se calcula con la \azul{muestra}. Se conoce, pero cambia con
+        cada muestra.
+        \vspace{0.1cm}
+        \[ \bar{x} \quad s \quad \hat{p} \quad n \]
+      \end{exampleblock}
+    \end{column}
+  \end{columns}
+
+  \vspace{0.3cm}
+  \begin{alertblock}{Regla mnemotécnica}
+    \footnotesize
+    \destacar{Letras griegas para la población, letras latinas para la
+    muestra.} Población y parámetro empiezan por P; muestra y muestral, por M.
+  \end{alertblock}
+
+  \vspace{0.1cm}
+  {\footnotesize\color{uniGris} En este curso trabajamos casi siempre con
+  estadísticos: describimos lo que tenemos a la mano.}
+\end{frame}
+
+\seccion{1.3 Tipos de variables}
+
+\begin{frame}{Clasificación de las variables}
+  \centering
+  \begin{tikzpicture}[scale=0.9,every node/.style={font=\scriptsize,align=center},
+                      nodo/.style={draw=uniAzul,fill=uniAzul!10,rounded corners,
+                                   inner sep=3pt,minimum width=2.1cm}]
+    \node[nodo] (v) at (0,0) {Variable};
+    \node[nodo] (cl) at (-3,-1.3) {Cualitativa\\(categórica)};
+    \node[nodo] (cn) at (3,-1.3) {Cuantitativa\\(numérica)};
+    \node[nodo] (no) at (-4.6,-2.8) {Nominal};
+    \node[nodo] (or) at (-1.6,-2.8) {Ordinal};
+    \node[nodo] (di) at (1.5,-2.8) {Discreta};
+    \node[nodo] (co) at (4.5,-2.8) {Continua};
+    \draw[uniGris] (v)--(cl); \draw[uniGris] (v)--(cn);
+    \draw[uniGris] (cl)--(no); \draw[uniGris] (cl)--(or);
+    \draw[uniGris] (cn)--(di); \draw[uniGris] (cn)--(co);
+  \end{tikzpicture}
+
+  \vspace{0.3cm}
+  \begin{alertblock}{La pregunta que decide}
+    \footnotesize
+    \destacar{¿El valor es un número con el que tiene sentido hacer
+    operaciones?} Si sí, es cuantitativa. Si es una etiqueta, es cualitativa,
+    aunque esté codificada con números (1 = hombre, 2 = mujer sigue siendo
+    cualitativa).
+  \end{alertblock}
+\end{frame}
+
+\begin{frame}{Los cuatro tipos, con ejemplos}
+  \footnotesize
+  \begin{center}
+  \begin{tabular}{@{}p{2.0cm}p{4.6cm}p{4.6cm}@{}}
+    \toprule
+    \textbf{Tipo} & \textbf{Característica} & \textbf{Ejemplos} \\
+    \midrule
+    Nominal & Categorías sin orden natural &
+      Canal de compra, ciudad, género, estado civil \\
+    \addlinespace
+    Ordinal & Categorías \azul{con} orden, pero sin distancia medible &
+      Nivel de satisfacción, estrato, nivel educativo \\
+    \addlinespace
+    Discreta & Números que resultan de \azul{contar}; valores aislados &
+      Número de hijos, pedidos por día, quejas \\
+    \addlinespace
+    Continua & Números que resultan de \azul{medir}; cualquier valor en un
+      intervalo & Gasto, peso, tiempo, estatura \\
+    \bottomrule
+  \end{tabular}
+  \end{center}
+
+  \vspace{0.2cm}
+  {\footnotesize\color{uniGris} Truco: si entre dos valores posibles siempre
+  cabe otro, es continua. Entre 2 y 3 hijos no cabe nada; entre 2 y 3 kg cabe
+  2{,}5.}
+\end{frame}
+
+\begin{frame}{Números que no son cantidades}
+  \scriptsize
+  \begin{center}
+  \begin{tabular}{@{}p{3.4cm}p{3.2cm}p{2.4cm}p{2.8cm}@{}}
+    \toprule
+    \textbf{Variable} & \textbf{Se registra como} & \textbf{¿Es número?} &
+    \textbf{Tipo real} \\
+    \midrule
+    Código de sucursal & 1, 2, 3 & Parece & Cualitativa nominal \\
+    Género & 1 = hombre, 2 = mujer & Parece & Cualitativa nominal \\
+    Estrato & 1 a 6 & Parece & Cualitativa ordinal \\
+    Satisfacción & 1 a 5 & Parece & Cualitativa ordinal \\
+    Número de hijos & 0, 1, 2, \dots & \azul{Sí} & Cuantitativa discreta \\
+    Gasto mensual & 227{,}5 & \azul{Sí} & Cuantitativa continua \\
+    \bottomrule
+  \end{tabular}
+  \end{center}
+
+  \vspace{0.1cm}
+  \begin{alertblock}{La prueba de los tres segundos}
+    \scriptsize
+    Pregúntese si \destacar{sumar dos valores produce algo con sentido}.
+    ``Sucursal 1 + sucursal 2 = sucursal 3'' no significa nada: el número es
+    una \azul{etiqueta}. En cambio ``2 hijos + 3 hijos = 5 hijos'' sí, y por
+    eso una es cualitativa y la otra cuantitativa.
+  \end{alertblock}
+\end{frame}
+
+\seccion{1.4 Escalas de medición}
+
+\begin{frame}{Las cuatro escalas}
+  \scriptsize
+  \begin{center}
+  \begin{tabular}{@{}p{1.8cm}p{3.2cm}p{2.9cm}p{2.9cm}@{}}
+    \toprule
+    \textbf{Escala} & \textbf{Permite} & \textbf{No permite} & \textbf{Ejemplo} \\
+    \midrule
+    Nominal & Clasificar, contar frecuencias & Ordenar ni operar &
+      Canal de compra \\
+    \addlinespace
+    Ordinal & Clasificar y \azul{ordenar} & Restar: las distancias no son
+      iguales & Satisfacción: malo, regular, bueno \\
+    \addlinespace
+    Intervalar & Ordenar y \azul{restar} & Dividir: el cero es arbitrario &
+      Temperatura en $^\circ$C, año calendario \\
+    \addlinespace
+    De razón & Ordenar, restar y \azul{dividir} & --- (cero absoluto) &
+      Gasto, peso, edad, tiempo \\
+    \bottomrule
+  \end{tabular}
+  \end{center}
+
+  \vspace{0.2cm}
+  \begin{alertblock}{Por qué importa el cero absoluto}
+    \footnotesize
+    En razón, 40 mil es \destacar{el doble} de 20 mil. En intervalar no:
+    $20^\circ$C no es el doble de calor que $10^\circ$C, porque el $0^\circ$C
+    es una convención, no la ausencia de temperatura.
+  \end{alertblock}
+\end{frame}
+
+\begin{frame}{Qué se puede calcular en cada escala}
+  \footnotesize
+  \begin{center}
+  \begin{tabular}{@{}lcccc@{}}
+    \toprule
+    \textbf{Medida} & \textbf{Nominal} & \textbf{Ordinal} &
+    \textbf{Intervalar} & \textbf{Razón} \\
+    \midrule
+    Frecuencias y moda      & Sí & Sí & Sí & Sí \\
+    Mediana y percentiles   & No & Sí & Sí & Sí \\
+    Media y desviación      & No & No & Sí & Sí \\
+    Coeficiente de variación& No & No & No & Sí \\
+    \bottomrule
+  \end{tabular}
+  \end{center}
+
+  \vspace{0.25cm}
+  \begin{alertblock}{Esta tabla es el mapa del curso}
+    \footnotesize
+    Cada vez que veamos una medida nueva, la pregunta será la misma:
+    \destacar{¿la escala de esta variable me permite calcularla?} Promediar
+    códigos de ciudad (1 = Bello, 2 = Medellín) da un número, pero no significa
+    nada.
+  \end{alertblock}
+\end{frame}
+
+\begin{frame}{El instrumento decide la escala}
+  \scriptsize
+  La misma característica cambia de escala según \destacar{cómo se pregunte}:
+  \vspace{0.1cm}
+  \begin{center}
+  \begin{tabular}{@{}p{5.8cm}p{3.0cm}p{3.0cm}@{}}
+    \toprule
+    \textbf{Cómo se pregunta la edad} & \textbf{Tipo} & \textbf{Escala} \\
+    \midrule
+    ``¿Cuántos años cumplidos tiene?'' & Cuantitativa discreta & Razón \\
+    ``¿En qué rango está: 18--25, 26--40, 41+?'' & Cualitativa ordinal &
+      Ordinal \\
+    ``¿Es usted mayor de edad? Sí / No'' & Cualitativa nominal & Nominal \\
+    \bottomrule
+  \end{tabular}
+  \end{center}
+
+  \vspace{0.15cm}
+  \begin{alertblock}{Lo que se pierde en cada paso}
+    \scriptsize
+    De arriba abajo se \destacar{pierde información y nunca se recupera}: de la
+    edad exacta se puede construir el rango, pero del rango no se puede
+    recuperar la edad. \azul{Regla práctica: registre siempre en la escala más
+    fina que pueda} y agrupe después, si hace falta.
+  \end{alertblock}
+\end{frame}
+
+\begin{frame}{De la escala al gráfico y a la medida}
+  \scriptsize
+  \begin{center}
+  \begin{tabular}{@{}p{2.0cm}p{3.2cm}p{3.2cm}p{3.4cm}@{}}
+    \toprule
+    \textbf{Escala} & \textbf{Tabla} & \textbf{Gráfico} &
+    \textbf{Medida de centro} \\
+    \midrule
+    Nominal & Frecuencias, sin acumular &
+      Barras, circular & Solo la moda \\
+    \addlinespace
+    Ordinal & Frecuencias \azul{con} acumuladas &
+      Barras en orden natural & Mediana o moda \\
+    \addlinespace
+    Intervalar & Agrupada en clases &
+      Histograma, polígono, ojiva & Media, mediana, moda \\
+    \addlinespace
+    De razón & Agrupada en clases &
+      Histograma, polígono, ojiva & Todas, más el $CV$ \\
+    \bottomrule
+  \end{tabular}
+  \end{center}
+
+  \vspace{0.1cm}
+  \begin{alertblock}{Este cuadro es el índice del curso}
+    \scriptsize
+    La columna \azul{Tabla} es la sesión 3; la de \azul{Gráfico}, la sesión 4;
+    la de \azul{Medida}, toda la unidad 2. \destacar{Todo lo que sigue depende
+    de haber clasificado bien la variable hoy.}
+  \end{alertblock}
+\end{frame}
+
+\begin{frame}{Ejercicio 1 — en clase}
+  \begin{alertblock}{En parejas (8 minutos)}
+    Clasifique cada variable (cualitativa nominal / ordinal, cuantitativa
+    discreta / continua) e indique su escala de medición.
+
+    \vspace{0.25cm}
+    \begin{columns}[T,onlytextwidth]
+      \begin{column}{0.48\textwidth}
+        \begin{enumerate}
+          \item Gasto mensual del cliente
+          \item Canal de compra
+          \item Número de compras del mes
+          \item Nivel de satisfacción (1 a 5)
+        \end{enumerate}
+      \end{column}
+      \begin{column}{0.48\textwidth}
+        \begin{enumerate}
+          \setcounter{enumi}{4}
+          \item Estrato socioeconómico
+          \item Temperatura del local en $^\circ$C
+          \item Tiempo de espera en minutos
+          \item Código de la sucursal
+        \end{enumerate}
+      \end{column}
+    \end{columns}
+  \end{alertblock}
+\end{frame}
+
+\begin{frame}{Ejercicio 1 — solución}
+  \scriptsize
+  \begin{center}
+  \begin{tabular}{@{}clll@{}}
+    \toprule
+    \textbf{\#} & \textbf{Variable} & \textbf{Tipo} & \textbf{Escala} \\
+    \midrule
+    1 & Gasto mensual        & Cuantitativa continua & Razón \\
+    2 & Canal de compra      & Cualitativa nominal   & Nominal \\
+    3 & Número de compras    & Cuantitativa discreta & Razón \\
+    4 & Nivel de satisfacción& Cualitativa ordinal   & Ordinal \\
+    5 & Estrato              & Cualitativa ordinal   & Ordinal \\
+    6 & Temperatura ($^\circ$C) & Cuantitativa continua & Intervalar \\
+    7 & Tiempo de espera     & Cuantitativa continua & Razón \\
+    8 & Código de sucursal   & Cualitativa nominal   & Nominal \\
+    \bottomrule
+  \end{tabular}
+  \end{center}
+
+  \vspace{0.2cm}
+  \begin{alertblock}{Las dos trampas}
+    \footnotesize
+    El \destacar{4 y el 5} vienen con números, pero la distancia entre
+    satisfacción 1 y 2 no es la misma que entre 4 y 5: son ordinales. El
+    \destacar{8} es un número que solo identifica: es nominal, y promediarlo no
+    tiene sentido.
+  \end{alertblock}
+\end{frame}
+
+\begin{frame}{Ejercicio 2 — en clase}
+  \begin{alertblock}{Individual (7 minutos)}
+    Para cada afirmación, diga si es \azul{parámetro} o \azul{estadístico} y
+    escriba el símbolo correspondiente.
+
+    \vspace{0.25cm}
+    \begin{enumerate}
+      \item El gasto promedio de los 40 clientes encuestados es 42{,}5.
+      \item El gasto promedio de los 1\,200 clientes registrados.
+      \item La desviación estándar calculada con la muestra.
+      \item La proporción real de clientes que usan la app.
+      \item ¿Cuál de los cuatro se conoce con certeza y por qué?
+    \end{enumerate}
+  \end{alertblock}
+\end{frame}
+
+\begin{frame}{Ejercicio 2 — solución}
+  \begin{columns}[T,onlytextwidth]
+    \begin{column}{0.52\textwidth}
+      \begin{block}{Respuestas}
+        \footnotesize
+        \begin{enumerate}
+          \item Estadístico: $\bar{x}=42{,}5$
+          \item Parámetro: $\mu$
+          \item Estadístico: $s$
+          \item Parámetro: $p$
+        \end{enumerate}
+      \end{block}
+    \end{column}
+    \begin{column}{0.44\textwidth}
+      \begin{exampleblock}{Punto 5}
+        \footnotesize
+        Se conocen \azul{1 y 3}, los estadísticos, porque se calculan con datos
+        que sí tenemos.
+
+        \vspace{0.15cm}
+        Los parámetros exigirían medir a los 1\,200 clientes.
+      \end{exampleblock}
+    \end{column}
+  \end{columns}
+
+  \vspace{0.2cm}
+  {\footnotesize\color{uniGris} En este curso describimos la muestra y nos
+  detenemos ahí: calculamos $\bar{x}$, no $\mu$. \destacar{Los parámetros se
+  nombran para saber qué no se está calculando.}}
+\end{frame}
+
+\begin{frame}{Ejercicio 3 — en clase}
+  \begin{alertblock}{Individual (9 minutos)}
+    Una encuesta de clima laboral recoge estas cuatro variables:
+
+    \vspace{0.2cm}
+    \centering\footnotesize
+    \begin{tabular}{@{}ll@{}}
+      \toprule
+      \textbf{Variable} & \textbf{Cómo se registró} \\
+      \midrule
+      Área de trabajo        & Ventas / Operaciones / Administración \\
+      Satisfacción general   & 1 = muy baja \dots\ 5 = muy alta \\
+      Antigüedad             & Años cumplidos \\
+      Salario mensual        & Pesos \\
+      \bottomrule
+    \end{tabular}
+
+    \vspace{0.2cm}
+    \raggedright
+    \begin{enumerate}
+      \item Clasifique cada una y diga su escala.
+      \item ¿En cuáles tiene sentido la \emph{media}? ¿Y la \emph{moda}?
+      \item Un informe reporta ``satisfacción promedio = 3{,}7''.
+            ¿Es correcto? Justifique.
+    \end{enumerate}
+  \end{alertblock}
+\end{frame}
+
+\begin{frame}{Ejercicio 3 — solución}
+  \scriptsize
+  \begin{center}
+  \begin{tabular}{@{}lllcc@{}}
+    \toprule
+    \textbf{Variable} & \textbf{Tipo} & \textbf{Escala} &
+    \textbf{¿Media?} & \textbf{¿Moda?} \\
+    \midrule
+    Área de trabajo      & Cualitativa nominal   & Nominal & No & Sí \\
+    Satisfacción (1--5)  & Cualitativa ordinal   & Ordinal & No & Sí \\
+    Antigüedad           & Cuantitativa discreta & Razón   & Sí & Sí \\
+    Salario mensual      & Cuantitativa continua & Razón   & Sí & Sí \\
+    \bottomrule
+  \end{tabular}
+  \end{center}
+
+  \vspace{0.2cm}
+  \begin{alertblock}{Punto 3: la discusión que importa}
+    \footnotesize
+    Estrictamente \destacar{no es correcto}: en una escala ordinal la distancia
+    entre 1 y 2 no es necesariamente igual a la que hay entre 4 y 5, así que
+    sumar y dividir no está justificado.
+
+    En la práctica se hace mucho, y no siempre es indefendible si la escala
+    tiene 5 o más niveles. Lo \azul{seguro} es reportar la \azul{mediana} y la
+    distribución de frecuencias.
+  \end{alertblock}
+\end{frame}
+
+\begin{frame}{Ejercicio 4 — en clase (taller principal)}
+  \begin{alertblock}{En grupos de 3 (20 minutos)}
+    \scriptsize
+    Una EPS arma una base con estas ocho variables de sus afiliados:
+
+    \vspace{0.12cm}
+    \centering
+    \begin{tabular}{@{}llll@{}}
+      \toprule
+      1. Número de afiliación & 2. Edad en años & 3. Sexo &
+      4. Estrato (1 a 6) \\
+      5. Peso en kg & 6. Ciudad & 7. Consultas del año &
+      8. Estado del caso \\
+      \bottomrule
+    \end{tabular}
+    {\tiny (8: leve / moderado / grave)}
+
+    \vspace{0.18cm}
+    \raggedright
+    \begin{enumerate}\setlength{\itemsep}{-0.06cm}
+      \item Clasifique cada una: tipo y escala.
+      \item ¿En cuáles tiene sentido la media? ¿En cuáles la mediana?
+      \item ¿En cuáles se pueden usar frecuencias acumuladas?
+      \item Un informe reporta ``estrato promedio 3,4''. ¿Es defendible?
+      \item ¿Cuál de las ocho \destacar{no debería} entrar en ningún análisis
+            estadístico, y por qué?
+    \end{enumerate}
+  \end{alertblock}
+\end{frame}
+
+\begin{frame}{Ejercicio 4 — solución}
+  \tiny
+  \begin{center}
+  \begin{tabular}{@{}clllccc@{}}
+    \toprule
+    \textbf{\#} & \textbf{Variable} & \textbf{Tipo} & \textbf{Escala} &
+    \textbf{¿Media?} & \textbf{¿Mediana?} & \textbf{¿Acumular?} \\
+    \midrule
+    1 & N.\ de afiliación & Cualitativa nominal & Nominal & No & No & No \\
+    2 & Edad (años)       & Cuantitativa discreta & Razón & Sí & Sí & Sí \\
+    3 & Sexo              & Cualitativa nominal & Nominal & No & No & No \\
+    4 & Estrato           & Cualitativa ordinal & Ordinal & No & Sí & Sí \\
+    5 & Peso (kg)         & Cuantitativa continua & Razón & Sí & Sí & Sí \\
+    6 & Ciudad            & Cualitativa nominal & Nominal & No & No & No \\
+    7 & Consultas del año & Cuantitativa discreta & Razón & Sí & Sí & Sí \\
+    8 & Estado del caso   & Cualitativa ordinal & Ordinal & No & Sí & Sí \\
+    \bottomrule
+  \end{tabular}
+  \end{center}
+
+  \vspace{0.1cm}
+  \begin{alertblock}{Puntos 4 y 5}
+    \tiny
+    \textbf{4.} Estrictamente \destacar{no}: el estrato es ordinal y la
+    distancia entre 1 y 2 no es la misma que entre 5 y 6. Lo defendible es
+    reportar la \azul{mediana} y la distribución de frecuencias.
+
+    \vspace{0.06cm}
+    \textbf{5.} El \destacar{número de afiliación}: identifica, no mide. Se usa
+    para enlazar registros, nunca para calcular. Promediar cédulas es el
+    ejemplo clásico de cifra correcta y sin significado.
+  \end{alertblock}
+\end{frame}
+
+\begin{frame}{Errores frecuentes en esta sesión}
+  \scriptsize
+  \begin{center}
+  \begin{tabular}{@{}p{5.4cm}p{6.4cm}@{}}
+    \toprule
+    \textbf{Error} & \textbf{Corrección} \\
+    \midrule
+    Tratar como cuantitativa toda variable con números &
+      Códigos y escalas de 1 a 5 son \azul{etiquetas ordenadas} \\
+    \addlinespace
+    Promediar una variable ordinal sin advertirlo &
+      Se reporta la mediana; si se usa la media, se justifica \\
+    \addlinespace
+    Confundir discreta con continua &
+      Si entre dos valores siempre cabe otro, es continua \\
+    \addlinespace
+    Creer que ``intervalar'' y ``de razón'' son lo mismo &
+      El cero de razón es \azul{ausencia}; el intervalar es una convención \\
+    \addlinespace
+    Ordenar alfabéticamente una variable ordinal &
+      Se respeta el orden natural de la escala \\
+    \addlinespace
+    Usar $\bar{x}$ para la población &
+      $\bar{x}$ y $s$ son de la muestra; $\mu$ y $\sigma$, de la población \\
+    \bottomrule
+  \end{tabular}
+  \end{center}
+\end{frame}
+
+\begin{frame}[fragile]{Tipos y escalas, en R}
+  \scriptsize
+\begin{lstlisting}[style=Rmini]
+gasto     <- c(112, 127, 138)
+canal     <- c("Tienda", "App", "Web")
+estrato   <- c(3, 2, 5)
+
+class(gasto)      # "numeric": cuantitativa
+class(canal)      # "character": R aun no sabe que es cualitativa
+
+canal   <- factor(canal)                                  # nominal
+estrato <- factor(estrato, levels = 1:6, ordered = TRUE)  # ORDINAL
+str(estrato)
+mean(as.numeric(estrato))   # R lo calcula... pero NO significa nada
+\end{lstlisting}
+\begin{lstlisting}[style=Rout]
+[1] "numeric"
+[1] "character"
+ Ord.factor w/ 6 levels "1"<"2"<"3"<..: 3 2 5
+[1] 3.333333
+\end{lstlisting}
+
+  \vspace{-0.12cm}
+  \begin{alertblock}{La última línea es la lección de hoy}
+    \tiny
+    R \destacar{sí} calcula el promedio del estrato y devuelve 3,33 sin una
+    sola advertencia. \azul{La herramienta no distingue escalas: usted sí.} Por
+    eso se declara \fx{ordered = TRUE}: para que el orden quede escrito y
+    quien lea el código sepa qué se puede y qué no se puede hacer.
+  \end{alertblock}
+\end{frame}
+
+\begin{frame}{Cierre de la sesión}
+  \begin{block}{Lo que debe quedar claro hoy}
+    \begin{itemize}
+      \item Parámetro describe la población ($\mu$, $\sigma$, $p$);
+            estadístico describe la muestra ($\bar x$, $s$, $\hat p$).
+      \item Cualitativa (nominal u ordinal) frente a cuantitativa (discreta o
+            continua).
+      \item Cuatro escalas: nominal, ordinal, intervalar y de razón.
+      \item La escala decide qué tabla, qué gráfico y qué medida son válidos.
+    \end{itemize}
+  \end{block}
+
+  \vspace{0.2cm}
+  \begin{alertblock}{Trabajo independiente para la próxima sesión}
+    \footnotesize
+    Resolver los \destacar{20 ejercicios de la lámina siguiente}. En la sesión
+    3 organizamos los datos en \azul{tablas de frecuencia}, y la escala de la
+    variable será lo primero que preguntemos.
+  \end{alertblock}
+\end{frame}
+
+\begin{frame}{Ejercicios propuestos}
+  \vspace{-0.1cm}
+  \begin{beamercolorbox}[wd=\textwidth,sep=0.10cm]{block body}
+    \centering\scriptsize
+    \textbf{1--12:} clasifique el tipo de variable y la escala. \quad
+    \textbf{13--20:} parámetro o estadístico, y conceptos.
+  \end{beamercolorbox}
+  \listatiny
+  \vspace{0.15cm}
+  \begin{columns}[T,onlytextwidth]
+    \begin{column}{0.47\textwidth}
+      \begin{enumerate}\setlength{\itemsep}{0.16cm}
+        \item Edad en años cumplidos
+        \item Color favorito
+        \item Número de hijos
+        \item Salario mensual
+        \item Nivel educativo alcanzado
+        \item Número de cédula
+        \item Estatura en metros
+        \item Calificación de 1 a 5 estrellas
+        \item Ciudad de residencia
+        \item Año de fundación de la empresa
+      \end{enumerate}
+    \end{column}
+    \begin{column}{0.50\textwidth}
+      \begin{enumerate}\setlength{\itemsep}{0.16cm}
+        \setcounter{enumi}{10}
+        \item Quejas recibidas por día
+        \item Tiempo de entrega en horas
+        \item $\bar{x}$ calculado con 40 datos
+        \item $\mu$ de los 1\,200 clientes
+        \item $s$ de la muestra
+        \item $\sigma$ de la población
+        \item ¿Se puede calcular la media del estrato?
+        \item ¿Se puede calcular la moda del canal de compra?
+        \item ¿Se puede calcular la mediana del nivel de satisfacción?
+        \item ¿Es $20^\circ$C el doble de $10^\circ$C?
+      \end{enumerate}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{Respuestas}{Autoevaluación de los ejercicios propuestos}
+  \listatiny
+  \vspace{0.15cm}
+  \begin{columns}[T,onlytextwidth]
+    \begin{column}{0.47\textwidth}
+      \begin{enumerate}\setlength{\itemsep}{0.16cm}
+        \item Cuantitativa discreta; razón
+        \item Cualitativa nominal; nominal
+        \item Cuantitativa discreta; razón
+        \item Cuantitativa continua; razón
+        \item Cualitativa ordinal; ordinal
+        \item Cualitativa nominal; nominal
+        \item Cuantitativa continua; razón
+        \item Cualitativa ordinal; ordinal
+        \item Cualitativa nominal; nominal
+        \item Cuantitativa discreta; intervalar
+      \end{enumerate}
+    \end{column}
+    \begin{column}{0.50\textwidth}
+      \begin{enumerate}\setlength{\itemsep}{0.16cm}
+        \setcounter{enumi}{10}
+        \item Cuantitativa discreta; razón
+        \item Cuantitativa continua; razón
+        \item Estadístico
+        \item Parámetro
+        \item Estadístico
+        \item Parámetro
+        \item No: es ordinal
+        \item Sí: la moda vale en nominal
+        \item Sí: la mediana vale en ordinal
+        \item No: el cero de $^\circ$C es arbitrario
+      \end{enumerate}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{Referencias}
+  \footnotesize
+  \begin{itemize}
+    \item[{[1]}] Monroy Saldívar, S. (2008). \textit{Estadística descriptiva}.
+      Instituto Politécnico Nacional.
+      \texttt{https://elibro.net/es/lc/uniminuto/titulos/74722}
+    \item[{[2]}] Ordóñez Fernández, F. F. \& González Fernández, J. (2021).
+      \textit{Estadística descriptiva paso a paso}. Ediciones Pirámide.
+      \texttt{https://elibro.net/es/lc/uniminuto/titulos/215449}
+    \item[{[3]}] Llinás Solano, H. (2014). \textit{Introducción a la
+      estadística con aplicaciones en ciencias sociales}. Universidad del
+      Norte. \texttt{https://elibro.net/es/lc/uniminuto/titulos/70062}
+  \end{itemize}
+
+  \vspace{0.35cm}
+  \begin{center}
+    {\Large\color{uniAzul}\textbf{¿Preguntas?}}
+  \end{center}
+\end{frame}
+
+\end{document}

@@ -1,0 +1,496 @@
+% ============================================================================
+%  ESTADÍSTICA INFERENCIAL — Sesión 10
+%  Semana 10: 12 al 17 de octubre de 2026   (lunes 12: festivo)
+%  2.6 Estimación puntual · 2.7 Conceptos y tipos de intervalos de confianza
+% ============================================================================
+\documentclass[aspectratio=169,10pt]{beamer}
+
+\usepackage[utf8]{inputenc}
+\IfFileExists{spanish.ldf}{\usepackage[spanish,es-noshorthands]{babel}}{}
+\usepackage{amsmath,amssymb}
+\usepackage{booktabs}
+\usepackage{tikz}
+\usepackage{listings}
+
+\usetheme{Uniminuto}
+
+\uniasignatura{Estadística inferencial}
+\uniprofesor{Andrés Felipe Puerta Velez}
+\unicorreo{andres.puerta-v@uniminuto.edu.co}
+\uninrc{CBASBL061}
+\unisemana{Sesión 10 — Semana 10 · 12 al 17 de octubre de 2026}
+
+\newcommand{\listatiny}{\setbeamerfont{itemize/enumerate body}{size=\tiny}\tiny}
+
+\newcommand{\fx}[1]{{\ttfamily\color{uniAzul}#1}}
+
+% ------------------------------------------------------------- CÓDIGO R ----
+\lstdefinestyle{Rcode}{
+  language=R,
+  basicstyle=\ttfamily\scriptsize,
+  keywordstyle=\color{uniAzul}\bfseries,
+  commentstyle=\color{uniGris}\itshape,
+  stringstyle=\color{uniTitulo},
+  showstringspaces=false, numbers=none, breaklines=true,
+  columns=fullflexible,
+  backgroundcolor=\color{uniCremaClaro},
+  frame=leftline, framerule=1.2pt, rulecolor=\color{uniNaranja},
+  xleftmargin=0.35cm, framexleftmargin=0.35cm,
+  framexrightmargin=0.15cm, framextopmargin=2pt, framexbottommargin=2pt,
+  aboveskip=0.15cm, belowskip=0.15cm
+}
+\lstdefinestyle{Rmini}{
+  language=R,
+  basicstyle=\ttfamily\tiny,
+  keywordstyle=\color{uniAzul}\bfseries,
+  commentstyle=\color{uniGris}\itshape,
+  stringstyle=\color{uniTitulo},
+  showstringspaces=false, numbers=none, breaklines=true,
+  columns=fullflexible,
+  backgroundcolor=\color{uniCremaClaro},
+  frame=leftline, framerule=1.2pt, rulecolor=\color{uniNaranja},
+  xleftmargin=0.35cm, framexleftmargin=0.35cm,
+  framexrightmargin=0.15cm, framextopmargin=2pt, framexbottommargin=2pt,
+  aboveskip=0.12cm, belowskip=0.12cm
+}
+\lstdefinestyle{Rout}{
+  basicstyle=\ttfamily\tiny\color{black},
+  showstringspaces=false, numbers=none, breaklines=true,
+  columns=fullflexible,
+  backgroundcolor=\color{uniGris!10},
+  frame=leftline, framerule=1.2pt, rulecolor=\color{uniGris},
+  xleftmargin=0.35cm, framexleftmargin=0.35cm,
+  framexrightmargin=0.15cm, framextopmargin=2pt, framexbottommargin=2pt,
+  aboveskip=0.12cm, belowskip=0.12cm
+}
+
+\begin{document}
+
+\portada
+
+\begin{frame}{Orden del día}
+  \begin{enumerate}
+    \item Llamado a lista y revisión de los ejercicios propuestos
+    \item Repaso: dónde quedamos
+    \item \azul{Tema 2.6: estimación puntual}
+    \item \azul{Tema 2.7: conceptos y tipos de intervalos de confianza}
+    \item Ejercicios en clase
+    \item Cierre y ejercicios propuestos
+  \end{enumerate}
+\end{frame}
+
+\begin{frame}{Repaso: dónde quedamos}
+  En la sesión 9 aprendimos que $\bar{X}$ tiene su propia distribución:
+  \[ \bar{X}\sim N\!\left(\mu,\ \frac{\sigma}{\sqrt{n}}\right)
+     \quad\text{(por el TLC)} \]
+
+  \vspace{0.2cm}
+  \begin{alertblock}{El giro de hoy}
+    \footnotesize
+    Hasta ahora conocíamos $\mu$ y preguntábamos por $\bar{x}$. \destacar{Desde
+    hoy invertimos la pregunta:} observamos $\bar{x}$ en una muestra y queremos
+    decir algo sobre el $\mu$ que no conocemos.
+
+    \vspace{0.15cm}
+    Eso es \azul{estimar}, y es el corazón de la inferencia estadística.
+  \end{alertblock}
+\end{frame}
+
+\seccion{2.6 Estimación puntual}
+
+\begin{frame}{Estimación puntual}
+  \begin{block}{Definición}
+    \small
+    Un \azul{estimador puntual} es un estadístico que se usa como aproximación
+    de un parámetro desconocido. Da \destacar{un solo número}.
+  \end{block}
+
+  \vspace{0.2cm}
+  \footnotesize
+  \begin{center}
+  \begin{tabular}{@{}lll@{}}
+    \toprule
+    \textbf{Parámetro (población)} & \textbf{Estimador (muestra)} &
+    \textbf{Se calcula} \\
+    \midrule
+    Media $\mu$        & $\bar{x}$   & $\sum x_i/n$ \\
+    Proporción $p$     & $\hat{p}$   & $x/n$ \\
+    Varianza $\sigma^{2}$ & $s^{2}$  & $\sum(x_i-\bar x)^{2}/(n-1)$ \\
+    Desviación $\sigma$ & $s$        & $\sqrt{s^{2}}$ \\
+    \bottomrule
+  \end{tabular}
+  \end{center}
+
+  \vspace{0.2cm}
+  {\footnotesize\color{uniGris} El $n-1$ de la varianza muestral no es un
+  capricho: hace que $s^{2}$ sea insesgado. Con $n$ en el denominador se
+  subestimaría sistemáticamente la varianza.}
+\end{frame}
+
+\begin{frame}{Propiedades de un buen estimador}
+  \begin{columns}[T,onlytextwidth]
+    \begin{column}{0.48\textwidth}
+      \begin{block}{Insesgado}
+        \footnotesize
+        Su valor esperado es el parámetro: $E(\bar X)=\mu$. En promedio da en
+        el blanco, sin desviarse hacia arriba ni hacia abajo.
+      \end{block}
+      \begin{block}{Eficiente}
+        \footnotesize
+        Entre varios insesgados, el de \azul{menor varianza}. Da resultados más
+        parecidos entre muestras.
+      \end{block}
+    \end{column}
+    \begin{column}{0.48\textwidth}
+      \begin{block}{Consistente}
+        \footnotesize
+        Se acerca al parámetro a medida que $n$ crece: $\sigma/\sqrt{n}\to 0$.
+      \end{block}
+      \begin{alertblock}{La limitación de la estimación puntual}
+        \footnotesize
+        $\bar{x}=52$ es casi con seguridad \destacar{distinto} de $\mu$. Un
+        solo número no dice qué tan cerca puede estar. \azul{Por eso se
+        necesitan los intervalos.}
+      \end{alertblock}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\seccion{2.7 Intervalos de confianza}
+
+\begin{frame}{Estimación por intervalo}
+  \begin{block}{Idea y estructura}
+    \small
+    En lugar de un número, se reporta un \destacar{rango} de valores creíbles
+    para el parámetro, con un \destacar{nivel de confianza}:
+    \[ \text{estimador} \;\pm\; \text{margen de error}
+       \qquad\text{es decir}\qquad
+       \bar{x} \;\pm\; z\cdot\frac{\sigma}{\sqrt{n}} \]
+  \end{block}
+
+  \vspace{0.2cm}
+  \begin{alertblock}{Las tres piezas del margen}
+    \footnotesize
+    El \azul{valor crítico} ($z$ o $t$) lo fija la confianza; la
+    \azul{variabilidad} ($\sigma$ o $s$) viene del fenómeno; el \azul{tamaño de
+    muestra} ($n$) lo decide el investigador. Solo la tercera está bajo nuestro
+    control.
+  \end{alertblock}
+\end{frame}
+
+\begin{frame}{Qué significa ``95\% de confianza''}
+  \begin{alertblock}{Interpretación correcta}
+    \footnotesize
+    Si se repitiera el muestreo muchas veces y en cada muestra se construyera
+    su intervalo, cerca del \destacar{95\% de esos intervalos contendría el
+    verdadero $\mu$}. La confianza está en el \azul{método}, no en el intervalo
+    particular que obtuvimos.
+  \end{alertblock}
+
+  \vspace{0.2cm}
+  \begin{block}{Interpretación incorrecta, y muy común}
+    \footnotesize
+    ``Hay 95\% de probabilidad de que $\mu$ esté entre 50 y 54''. No: $\mu$
+    es un número fijo, no una variable aleatoria. O está en el intervalo o no
+    está. Lo aleatorio es el intervalo, que cambia con cada muestra.
+  \end{block}
+
+  \vspace{0.15cm}
+  {\footnotesize\color{uniGris} En el examen esta distinción se pregunta.}
+\end{frame}
+
+\begin{frame}{Tipos de intervalo de confianza}
+  \footnotesize
+  \begin{center}
+  \begin{tabular}{@{}lll@{}}
+    \toprule
+    \textbf{Parámetro} & \textbf{Condición} & \textbf{Intervalo} \\
+    \midrule
+    Media $\mu$ & $\sigma$ conocida &
+      $\bar{x}\pm z_{\alpha/2}\dfrac{\sigma}{\sqrt{n}}$ \\[0.5em]
+    Media $\mu$ & $\sigma$ desconocida &
+      $\bar{x}\pm t_{\alpha/2,\,n-1}\dfrac{s}{\sqrt{n}}$ \\[0.5em]
+    Proporción $p$ & $n\hat p\ge 5$, $n(1-\hat p)\ge 5$ &
+      $\hat{p}\pm z_{\alpha/2}\sqrt{\dfrac{\hat p(1-\hat p)}{n}}$ \\
+    \bottomrule
+  \end{tabular}
+  \end{center}
+
+  \vspace{0.2cm}
+  \begin{exampleblock}{Valores críticos más usados}
+    \footnotesize
+    \centering
+    90\%: $z=1{,}645$ \qquad 95\%: $z=1{,}96$ \qquad 99\%: $z=2{,}576$
+  \end{exampleblock}
+\end{frame}
+
+\begin{frame}{Ejercicio 1 — en clase}
+  \begin{alertblock}{Individual (9 minutos)}
+    Una muestra de \destacar{$n=64$} facturas da un valor promedio de
+    \destacar{$\bar{x}=52$} (miles de pesos). Por registros históricos se sabe
+    que \destacar{$\sigma=8$}.
+
+    \vspace{0.25cm}
+    \begin{enumerate}
+      \item Construya el intervalo de confianza del 95\% para $\mu$.
+      \item Constrúyalo al 99\%.
+      \item ¿Cuál es más ancho y por qué?
+      \item Interprete el intervalo del 95\% en una frase.
+    \end{enumerate}
+  \end{alertblock}
+\end{frame}
+
+\begin{frame}{Ejercicio 1 — solución}
+  \small
+  \begin{block}{Cálculos}
+    \[ \sigma_{\bar x}=\frac{8}{\sqrt{64}}=1{,}00 \]
+    \begin{align*}
+      95\%:\;& 52\pm 1{,}96(1{,}00)=52\pm 1{,}96
+        \Rightarrow \azul{(50{,}04;\ 53{,}96)}\\[0.25em]
+      99\%:\;& 52\pm 2{,}576(1{,}00)=52\pm 2{,}576
+        \Rightarrow \azul{(49{,}42;\ 54{,}58)}
+    \end{align*}
+  \end{block}
+
+  \vspace{-0.02cm}
+  \begin{exampleblock}{Puntos 3 y 4}
+    \scriptsize
+    El del 99\% es más ancho: \azul{más confianza exige más margen}. Para
+    estar más seguros de acertar hay que apostar a un rango mayor.
+
+    \vspace{0.08cm}
+    Interpretación: con el método usado, en el 95\% de las muestras el
+    intervalo construido contendría el verdadero valor promedio de las
+    facturas.
+  \end{exampleblock}
+\end{frame}
+
+\begin{frame}{Ejercicio 2 — en clase}
+  \begin{alertblock}{En parejas (9 minutos)}
+    Se mide el tiempo de atención en \destacar{$n=20$} servicios. Resultado:
+    $\bar{x}=15{,}6$ minutos y \destacar{$s=2{,}4$} minutos. Se supone
+    población aproximadamente normal.
+
+    \vspace{0.25cm}
+    \begin{enumerate}
+      \item ¿Se usa $z$ o $t$? ¿Con cuántos grados de libertad?
+      \item Construya el intervalo del 95\% para $\mu$.
+      \item ¿Qué pasaría con el ancho si $n$ fuera 80 en vez de 20?
+    \end{enumerate}
+  \end{alertblock}
+\end{frame}
+
+\begin{frame}{Ejercicio 2 — solución}
+  \small
+  \begin{block}{Se usa $t$ porque el dato es $s$, no $\sigma$}
+    \[ gl=n-1=19 \qquad t_{0{,}025;\,19}=2{,}093
+       \qquad \frac{s}{\sqrt{n}}=\frac{2{,}4}{\sqrt{20}}=0{,}5367 \]
+    \[ 15{,}6 \pm 2{,}093(0{,}5367)=15{,}6\pm 1{,}123
+       \Rightarrow \azul{(14{,}48;\ 16{,}72)} \]
+  \end{block}
+
+  \vspace{0.1cm}
+  \begin{exampleblock}{Punto 3}
+    \footnotesize
+    Con $n=80$ el error estándar bajaría a $2{,}4/\sqrt{80}=0{,}268$ y además
+    $t$ se acercaría a $1{,}99$. El intervalo se reduciría casi a la mitad:
+    \azul{cuadruplicar $n$ reduce el margen a la mitad}.
+  \end{exampleblock}
+\end{frame}
+
+\begin{frame}{Ejercicio 3 — en clase}
+  \begin{alertblock}{Individual (8 minutos)}
+    En una encuesta a \destacar{$n=400$} clientes, \destacar{248} se declaran
+    satisfechos.
+
+    \vspace{0.25cm}
+    \begin{enumerate}
+      \item Calcule la estimación puntual $\hat{p}$.
+      \item Verifique las condiciones para usar la aproximación normal.
+      \item Construya el intervalo del 95\% para $p$.
+      \item ¿Puede afirmarse que más del 55\% de los clientes está
+            satisfecho?
+    \end{enumerate}
+  \end{alertblock}
+\end{frame}
+
+\begin{frame}{Ejercicio 3 — solución}
+  \begin{columns}[T,onlytextwidth]
+    \begin{column}{0.52\textwidth}
+      \begin{block}{Cálculos}
+        \footnotesize
+        \[ \hat p=\frac{248}{400}=\azul{0{,}62} \]
+        \[ n\hat p=248\ge 5,\quad n(1-\hat p)=152\ge 5 \;\checkmark \]
+        \[ \sqrt{\tfrac{0{,}62(0{,}38)}{400}}=0{,}0243 \]
+        \[ 0{,}62\pm 1{,}96(0{,}0243)=\azul{(0{,}5724;\ 0{,}6676)} \]
+      \end{block}
+    \end{column}
+    \begin{column}{0.44\textwidth}
+      \begin{exampleblock}{Punto 4}
+        \footnotesize
+        Sí. Todo el intervalo está \azul{por encima} de 0{,}55, de modo que al
+        95\% de confianza se puede afirmar que la satisfacción supera el
+        55\%.
+      \end{exampleblock}
+      \begin{alertblock}{Idea clave}
+        \footnotesize
+        Comparar un intervalo con un valor de referencia ya es, en esencia,
+        \destacar{una prueba de hipótesis}. Es lo que formalizaremos en la
+        unidad 3.
+      \end{alertblock}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}[fragile]{¿Qué significa ``95\% de confianza''? Véalo en R}
+  \scriptsize
+\begin{lstlisting}[style=Rmini]
+set.seed(2026)
+mu <- 100; sigma <- 15; n <- 25
+cubre <- replicate(1000, {
+  x  <- rnorm(n, mu, sigma)                 # una muestra nueva
+  ic <- mean(x) + c(-1, 1) * qt(0.975, n - 1) * sd(x) / sqrt(n)
+  ic[1] <= mu & mu <= ic[2]                 # el intervalo contuvo a mu?
+})
+mean(cubre)     # proporcion de intervalos que atraparon a mu
+\end{lstlisting}
+\begin{lstlisting}[style=Rout]
+[1] 0.949
+\end{lstlisting}
+
+  \vspace{-0.05cm}
+  \begin{alertblock}{La lectura correcta del 95\%}
+    \scriptsize
+    De 1\,000 muestras, \destacar{949 intervalos contuvieron el verdadero
+    $\mu$}: cerca del 95\% prometido. La confianza es una propiedad
+    \azul{del procedimiento repetido}, no de un intervalo en particular.
+    Un intervalo ya calculado \destacar{contiene o no contiene} a $\mu$: no hay
+    probabilidad en juego.
+  \end{alertblock}
+
+  \vspace{0.05cm}
+  {\tiny\color{uniGris} Este es el experimento que aclara de una vez la
+  confusión más frecuente de toda la unidad.}
+\end{frame}
+
+\begin{frame}{Cierre de la sesión}
+  \begin{block}{Lo que debe quedar claro hoy}
+    \begin{itemize}
+      \item Un estimador puntual da un número; un intervalo da un rango con
+            nivel de confianza.
+      \item Estructura: estimador $\pm$ valor crítico $\times$ error estándar.
+      \item Más confianza $\Rightarrow$ intervalo más ancho. Más $n$
+            $\Rightarrow$ más angosto.
+      \item La confianza es una propiedad del método, no del intervalo
+            particular.
+    \end{itemize}
+  \end{block}
+
+  \vspace{0.2cm}
+  \begin{alertblock}{Trabajo independiente para la próxima sesión}
+    \footnotesize
+    Resolver los \destacar{20 ejercicios de la lámina siguiente}. En la sesión
+    11 practicaremos el cálculo de intervalos, sus aplicaciones y sus
+    limitaciones, y habrá repaso para el \destacar{Examen 2}.
+  \end{alertblock}
+\end{frame}
+
+\begin{frame}{Ejercicios propuestos}
+  \vspace{-0.1cm}
+  \begin{beamercolorbox}[wd=\textwidth,sep=0.10cm]{block body}
+    \centering\scriptsize
+    $z$: 1{,}645 (90\%), 1{,}96 (95\%), 2{,}576 (99\%). \quad
+    $t_{0{,}025}$: 2{,}093 ($gl$=19), 2{,}145 ($gl$=14), 2{,}045 ($gl$=29).
+  \end{beamercolorbox}
+  \listatiny
+  \vspace{0.15cm}
+  \begin{columns}[T,onlytextwidth]
+    \begin{column}{0.47\textwidth}
+      \begin{enumerate}\setlength{\itemsep}{0.16cm}
+        \item Estimador puntual de $\mu$
+        \item Estimador puntual de $p$
+        \item ¿Por qué $s^{2}$ divide entre $n-1$?
+        \item $\bar x=52$, $\sigma=8$, $n=64$: margen al 95\%
+        \item El IC del punto 4
+        \item El mismo, al 99\%
+        \item El mismo, al 90\%
+        \item Con $n=256$ en vez de 64: margen al 95\%
+        \item ¿Qué le pasa al ancho si sube la confianza?
+        \item ¿Qué le pasa al ancho si sube $n$?
+      \end{enumerate}
+    \end{column}
+    \begin{column}{0.50\textwidth}
+      \begin{enumerate}\setlength{\itemsep}{0.16cm}
+        \setcounter{enumi}{10}
+        \item $\bar x=15{,}6$, $s=2{,}4$, $n=20$: ¿$z$ o $t$?
+        \item Grados de libertad del punto 11
+        \item El IC del 95\% del punto 11
+        \item $\hat p=248/400$: valor de $\hat p$
+        \item ¿Se cumplen las condiciones de normalidad?
+        \item Error estándar de $\hat p$
+        \item IC del 95\% para $p$
+        \item ¿Se puede afirmar que $p>0{,}55$?
+        \item Interpretación correcta de ``95\% de confianza''
+        \item ¿La confianza es del intervalo o del método?
+      \end{enumerate}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{Respuestas}{Autoevaluación de los ejercicios propuestos}
+  \listatiny
+  \vspace{0.15cm}
+  \begin{columns}[T,onlytextwidth]
+    \begin{column}{0.47\textwidth}
+      \begin{enumerate}\setlength{\itemsep}{0.16cm}
+        \item $\bar x$
+        \item $\hat p$
+        \item Para que sea insesgado
+        \item $1{,}96$
+        \item $(50{,}04;\ 53{,}96)$
+        \item $(49{,}42;\ 54{,}58)$
+        \item $(50{,}36;\ 53{,}65)$
+        \item $0{,}98$ \;{\color{uniTitulo}la mitad}
+        \item Se ensancha
+        \item Se angosta
+      \end{enumerate}
+    \end{column}
+    \begin{column}{0.50\textwidth}
+      \begin{enumerate}\setlength{\itemsep}{0.16cm}
+        \setcounter{enumi}{10}
+        \item $t$, porque el dato es $s$
+        \item $gl=19$
+        \item $(14{,}48;\ 16{,}72)$
+        \item $0{,}62$
+        \item Sí: $248$ y $152$
+        \item $0{,}0243$
+        \item $(0{,}5724;\ 0{,}6676)$
+        \item Sí: todo el IC supera $0{,}55$
+        \item El 95\% de los intervalos así construidos contiene a $\mu$
+        \item Del método
+      \end{enumerate}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{Referencias}
+  \footnotesize
+  \begin{itemize}
+    \item[{[1]}] Díaz Rodríguez, M. (2022). \textit{Estadística inferencial
+      aplicada}. Universidad del Norte.
+      \texttt{https://elibro.net/es/lc/uniminuto/titulos/221614}
+    \item[{[2]}] Llinás Solano, H. (2014). \textit{Introducción a la
+      estadística con aplicaciones en ciencias sociales}. Universidad del
+      Norte. \texttt{https://elibro.net/es/lc/uniminuto/titulos/70062}
+    \item[{[3]}] Contento Rubio, M. R. (2019). \textit{Estadística con
+      aplicaciones en R}. Editorial Utadeo.
+      \texttt{https://elibro.net/es/lc/uniminuto/titulos/220926}
+  \end{itemize}
+
+  \vspace{0.35cm}
+  \begin{center}
+    {\Large\color{uniAzul}\textbf{¿Preguntas?}}
+  \end{center}
+\end{frame}
+
+\end{document}

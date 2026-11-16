@@ -1,0 +1,522 @@
+% ============================================================================
+%  ESTADÍSTICA INFERENCIAL — Sesión 15
+%  Semana 15: 16 al 21 de noviembre de 2026   (lunes 16: festivo)
+%  3.5 Correlación y regresión lineal · 3.6 Validación de modelos
+%  Cierre de la Unidad 3 y repaso para el Examen 3
+% ============================================================================
+\documentclass[aspectratio=169,10pt]{beamer}
+
+\usepackage[utf8]{inputenc}
+\IfFileExists{spanish.ldf}{\usepackage[spanish,es-noshorthands]{babel}}{}
+\usepackage{amsmath,amssymb}
+\usepackage{booktabs}
+\usepackage{tikz}
+\usepackage{listings}
+
+\usetheme{Uniminuto}
+
+\uniasignatura{Estadística inferencial}
+\uniprofesor{Andrés Felipe Puerta Velez}
+\unicorreo{andres.puerta-v@uniminuto.edu.co}
+\uninrc{CBASBL061}
+\unisemana{Sesión 15 — Semana 15 · 16 al 21 de noviembre de 2026}
+
+\newcommand{\listatiny}{\setbeamerfont{itemize/enumerate body}{size=\tiny}\tiny}
+
+\newcommand{\fx}[1]{{\ttfamily\color{uniAzul}#1}}
+
+% ------------------------------------------------------------- CÓDIGO R ----
+\lstdefinestyle{Rcode}{
+  language=R,
+  basicstyle=\ttfamily\scriptsize,
+  keywordstyle=\color{uniAzul}\bfseries,
+  commentstyle=\color{uniGris}\itshape,
+  stringstyle=\color{uniTitulo},
+  showstringspaces=false, numbers=none, breaklines=true,
+  columns=fullflexible,
+  backgroundcolor=\color{uniCremaClaro},
+  frame=leftline, framerule=1.2pt, rulecolor=\color{uniNaranja},
+  xleftmargin=0.35cm, framexleftmargin=0.35cm,
+  framexrightmargin=0.15cm, framextopmargin=2pt, framexbottommargin=2pt,
+  aboveskip=0.15cm, belowskip=0.15cm
+}
+\lstdefinestyle{Rmini}{
+  language=R,
+  basicstyle=\ttfamily\tiny,
+  keywordstyle=\color{uniAzul}\bfseries,
+  commentstyle=\color{uniGris}\itshape,
+  stringstyle=\color{uniTitulo},
+  showstringspaces=false, numbers=none, breaklines=true,
+  columns=fullflexible,
+  backgroundcolor=\color{uniCremaClaro},
+  frame=leftline, framerule=1.2pt, rulecolor=\color{uniNaranja},
+  xleftmargin=0.35cm, framexleftmargin=0.35cm,
+  framexrightmargin=0.15cm, framextopmargin=2pt, framexbottommargin=2pt,
+  aboveskip=0.12cm, belowskip=0.12cm
+}
+\lstdefinestyle{Rout}{
+  basicstyle=\ttfamily\tiny\color{black},
+  showstringspaces=false, numbers=none, breaklines=true,
+  columns=fullflexible,
+  backgroundcolor=\color{uniGris!10},
+  frame=leftline, framerule=1.2pt, rulecolor=\color{uniGris},
+  xleftmargin=0.35cm, framexleftmargin=0.35cm,
+  framexrightmargin=0.15cm, framextopmargin=2pt, framexbottommargin=2pt,
+  aboveskip=0.12cm, belowskip=0.12cm
+}
+
+\begin{document}
+
+\portada
+
+\begin{frame}{Orden del día}
+  \begin{enumerate}
+    \item Llamado a lista y revisión de los ejercicios propuestos
+    \item Repaso: dónde quedamos
+    \item \azul{Tema 3.5: correlación y regresión lineal}
+    \item \azul{Tema 3.6: validación de modelos}
+    \item Ejercicios en clase
+    \item \destacar{Repaso para el Examen 3}
+  \end{enumerate}
+\end{frame}
+
+\begin{frame}{Repaso: dónde quedamos}
+  Todo el curso ha trabajado con \azul{una} variable: estimar su media, su
+  proporción, contrastar hipótesis sobre ella.
+
+  \vspace{0.25cm}
+  \begin{alertblock}{El último paso}
+    \footnotesize
+    Hoy trabajamos con \destacar{dos} variables a la vez y respondemos dos
+    preguntas nuevas: ¿están relacionadas y qué tan fuerte? (correlación) y
+    ¿puedo usar una para predecir la otra? (regresión).
+  \end{alertblock}
+
+  \vspace{0.15cm}
+  {\footnotesize\color{uniGris} Con esto se cierra la unidad 3 y el curso. El
+  \destacar{Examen 3} es la próxima semana: 23 al 28 de noviembre.}
+\end{frame}
+
+\seccion{3.5 Correlación}
+
+\begin{frame}{Coeficiente de correlación de Pearson}
+  \begin{block}{Fórmula}
+    \[ r=\frac{n\sum xy-\sum x\sum y}
+       {\sqrt{\left[n\sum x^{2}-(\sum x)^{2}\right]
+              \left[n\sum y^{2}-(\sum y)^{2}\right]}} \]
+  \end{block}
+
+  \vspace{0.2cm}
+  \begin{columns}[T,onlytextwidth]
+    \begin{column}{0.48\textwidth}
+      \begin{exampleblock}{Qué mide}
+        \footnotesize
+        La fuerza y el sentido de la relación \azul{lineal}. Siempre
+        $-1\le r\le 1$.
+      \end{exampleblock}
+    \end{column}
+    \begin{column}{0.48\textwidth}
+      \begin{alertblock}{Cómo se lee}
+        \footnotesize
+        $r>0$: crecen juntas. $r<0$: una sube y la otra baja. $r\approx 0$: no
+        hay relación \emph{lineal} (podría haber otra).
+      \end{alertblock}
+    \end{column}
+  \end{columns}
+
+  \vspace{0.2cm}
+  \footnotesize
+  \centering
+  $|r|<0{,}3$ débil \quad · \quad $0{,}3$ a $0{,}7$ moderada \quad · \quad
+  $>0{,}7$ fuerte
+\end{frame}
+
+\begin{frame}{Correlación no es causalidad}
+  \begin{alertblock}{La advertencia más importante de la sesión}
+    \footnotesize
+    Que dos variables se muevan juntas no significa que una cause la otra. Un
+    $r$ alto puede deberse a:
+    \begin{itemize}
+      \item Una \azul{tercera variable} que afecta a ambas (el tamaño de la
+            ciudad explica a la vez ventas y número de empleados).
+      \item Coincidencia en muestras pequeñas.
+      \item Causalidad \azul{inversa}: quizá $y$ causa $x$.
+    \end{itemize}
+  \end{alertblock}
+
+  \vspace{0.2cm}
+  \begin{block}{Para afirmar causalidad hace falta más}
+    \footnotesize
+    Un diseño experimental con asignación aleatoria, o al menos control de las
+    variables que podrían confundir. La estadística descriptiva de la relación
+    no basta.
+  \end{block}
+\end{frame}
+
+\seccion{3.5 Regresión lineal simple}
+
+\begin{frame}{La recta de regresión}
+  \begin{block}{Modelo}
+    \[ \hat{y}=b_0+b_1 x \qquad
+       b_1=\frac{n\sum xy-\sum x\sum y}{n\sum x^{2}-(\sum x)^{2}} \qquad
+       b_0=\bar{y}-b_1\bar{x} \]
+  \end{block}
+
+  \vspace{0.2cm}
+  \begin{columns}[T,onlytextwidth]
+    \begin{column}{0.48\textwidth}
+      \begin{exampleblock}{Interpretación de $b_1$}
+        \footnotesize
+        Cuánto cambia $y$ en promedio por cada unidad que aumenta $x$. Es la
+        pendiente.
+      \end{exampleblock}
+    \end{column}
+    \begin{column}{0.48\textwidth}
+      \begin{exampleblock}{Interpretación de $b_0$}
+        \footnotesize
+        Valor estimado de $y$ cuando $x=0$. A veces no tiene sentido práctico:
+        depende de si $x=0$ es un valor posible.
+      \end{exampleblock}
+    \end{column}
+  \end{columns}
+
+  \vspace{0.2cm}
+  {\footnotesize\color{uniGris} Los coeficientes se obtienen por
+  \azul{mínimos cuadrados}: la recta que hace mínima la suma de los cuadrados
+  de los residuos $e_i=y_i-\hat{y}_i$.}
+\end{frame}
+
+\begin{frame}{Ejercicio 1 — en clase}
+  \begin{alertblock}{En parejas (12 minutos)}
+    Una empresa registra la inversión en publicidad ($x$, millones) y las
+    ventas ($y$, millones) de 8 meses:
+
+    \vspace{0.2cm}
+    \centering\footnotesize
+    \begin{tabular}{@{}lcccccccc@{}}
+      \toprule
+      $x$ & 2 & 4 & 5 & 7 & 8 & 10 & 12 & 14 \\
+      $y$ & 35 & 40 & 52 & 55 & 68 & 70 & 78 & 88 \\
+      \bottomrule
+    \end{tabular}
+
+    \vspace{0.2cm}
+    \raggedright
+    Sumas: $\sum x=62$, $\sum y=486$, $\sum xy=4287$, $\sum x^{2}=598$,
+    $\sum y^{2}=31906$.
+
+    \vspace{0.15cm}
+    \begin{enumerate}
+      \item Calcule $r$ e interprételo.
+      \item Obtenga la recta $\hat{y}=b_0+b_1x$.
+      \item Prediga las ventas con una inversión de 9 millones.
+    \end{enumerate}
+  \end{alertblock}
+\end{frame}
+
+\begin{frame}{Ejercicio 1 — solución}
+  \begin{columns}[T,onlytextwidth]
+    \begin{column}{0.52\textwidth}
+      \begin{block}{Cálculos}
+        \footnotesize
+        \[ b_1=\frac{8(4287)-62(486)}{8(598)-62^{2}}
+              =\frac{34296-30132}{4784-3844}=\azul{4{,}4298} \]
+        \[ b_0=\frac{486}{8}-4{,}4298\left(\frac{62}{8}\right)=\azul{26{,}4191} \]
+        \[ r=\azul{0{,}9840} \qquad r^{2}=\azul{0{,}9682} \]
+      \end{block}
+    \end{column}
+    \begin{column}{0.44\textwidth}
+      \begin{exampleblock}{Recta y predicción}
+        \footnotesize
+        \[ \hat{y}=26{,}42+4{,}43\,x \]
+        \[ \hat{y}(9)=26{,}42+4{,}43(9)=\azul{66{,}29} \]
+      \end{exampleblock}
+      \begin{alertblock}{Interpretación}
+        \footnotesize
+        Correlación positiva \azul{fuerte}. Por cada millón adicional de
+        publicidad, las ventas aumentan en promedio 4{,}43 millones.
+      \end{alertblock}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\seccion{3.6 Validación de modelos}
+
+\begin{frame}{Coeficiente de determinación $r^{2}$}
+  \begin{block}{Qué significa}
+    \small
+    $r^{2}$ es la \destacar{proporción de la variabilidad de $y$ que el modelo
+    explica}. Se expresa como porcentaje y va de 0 a 1.
+  \end{block}
+
+  \vspace{0.2cm}
+  \begin{exampleblock}{En el ejercicio}
+    \footnotesize
+    $r^{2}=0{,}9682$: el 96{,}8\% de la variación en las ventas se explica
+    por la inversión en publicidad. El 3{,}2\% restante se debe a otros
+    factores no incluidos en el modelo.
+  \end{exampleblock}
+
+  \vspace{0.15cm}
+  \begin{alertblock}{Un $r^{2}$ alto no valida el modelo por sí solo}
+    \footnotesize
+    Puede haber un $r^{2}$ alto con una relación claramente curva, o con datos
+    dominados por un solo valor atípico. Siempre hay que \destacar{graficar}.
+  \end{alertblock}
+\end{frame}
+
+\begin{frame}{Cómo validar el modelo}
+  \small
+  \begin{enumerate}
+    \item \azul{Graficar la dispersión} antes de ajustar: ¿la nube es
+          realmente lineal?
+    \item \azul{Revisar los residuos} $e_i=y_i-\hat{y}_i$: deben repartirse al
+          azar alrededor de cero, sin patrones ni curvatura.
+    \item \azul{Detectar atípicos} e influyentes: un punto lejano puede
+          arrastrar toda la recta.
+    \item \azul{Probar la significancia} de la pendiente:
+          $H_0:\beta_1=0$ contra $H_1:\beta_1\neq 0$. Si no se rechaza, la
+          variable $x$ no aporta.
+    \item \azul{No extrapolar}: la recta solo es creíble dentro del rango de
+          $x$ observado.
+  \end{enumerate}
+
+  \vspace{0.2cm}
+  \begin{alertblock}{Sobre el punto 5}
+    \footnotesize
+    Predecir las ventas con una inversión de 60 millones a partir de datos
+    entre 2 y 14 no tiene respaldo: nada garantiza que la relación siga siendo
+    lineal fuera de ese rango.
+  \end{alertblock}
+\end{frame}
+
+\begin{frame}{Ejercicio 2 — en clase}
+  \begin{alertblock}{Individual (9 minutos)}
+    Con el modelo $\hat{y}=26{,}42+4{,}43\,x$ del ejercicio anterior:
+
+    \vspace{0.25cm}
+    \begin{enumerate}
+      \item Calcule el valor estimado para $x=8$ y el residuo correspondiente
+            (el valor observado fue $y=68$).
+      \item Interprete $b_0=26{,}42$ en el contexto del problema.
+      \item ¿Sería válido predecir las ventas con $x=60$? Justifique.
+      \item ¿Puede concluirse que la publicidad \emph{causa} las ventas?
+    \end{enumerate}
+  \end{alertblock}
+\end{frame}
+
+\begin{frame}{Ejercicio 2 — solución}
+  \small
+  \begin{block}{Punto 1}
+    \footnotesize
+    $\hat{y}(8)=26{,}42+4{,}43(8)=\azul{61{,}86}$ \quad y el residuo es
+    $e=68-61{,}86=\azul{6{,}14}$: ese mes se vendió más de lo que el modelo
+    predecía.
+  \end{block}
+
+  \vspace{0.1cm}
+  \begin{exampleblock}{Puntos 2 y 3}
+    \footnotesize
+    $b_0$ sería la venta estimada sin publicidad: 26{,}42 millones. Es
+    interpretable aquí porque $x=0$ es un escenario posible, aunque queda
+    fuera del rango observado.
+
+    \vspace{0.1cm}
+    Con $x=60$ \destacar{no}: sería extrapolar muy lejos del rango de 2 a 14.
+  \end{exampleblock}
+
+  \vspace{0.1cm}
+  \begin{alertblock}{Punto 4}
+    \footnotesize
+    \destacar{No.} La correlación es fuerte, pero pudo haber una tercera
+    variable (temporada, crecimiento del mercado) que moviera ambas.
+  \end{alertblock}
+\end{frame}
+
+\seccion{Repaso para el Examen 3}
+
+\begin{frame}{Mapa de la Unidad 3}
+  \scriptsize
+  \begin{center}
+  \begin{tabular}{@{}llp{6.6cm}@{}}
+    \toprule
+    \textbf{Tema} & \textbf{Sesión} & \textbf{Lo esencial} \\
+    \midrule
+    Concepto & 13 & $H_0$ lleva la igualdad; $H_1$ es lo que se prueba \\
+    Tipos & 13 & Bilateral ($\neq$) o unilateral ($>$, $<$) \\
+    Errores & 13 & Tipo I ($\alpha$) y tipo II ($\beta$); potencia $1-\beta$ \\
+    Valor $p$ & 13 & Si $p\le\alpha$ se rechaza $H_0$ \\
+    Pasos & 14 & Plantear, fijar $\alpha$, región, calcular, concluir \\
+    Estadísticos & 14 & $z$ con $\sigma$; $t$ con $s$; proporción con $p_0$ \\
+    Software & 14 & Leer $p$, $gl$ y el IC de la salida \\
+    Correlación & 15 & $r\in[-1,1]$; no implica causalidad \\
+    Regresión & 15 & $\hat y=b_0+b_1x$; $r^{2}$ explica la variabilidad \\
+    \bottomrule
+  \end{tabular}
+  \end{center}
+
+  \vspace{0.1cm}
+  \begin{alertblock}{Examen 3 — semana 16}
+    \footnotesize
+    \destacar{23 al 28 de noviembre}, en Aulas Virtuales (Moodle), presencial,
+    individual. Vale el \destacar{33,4\%}. Traiga calculadora, formulario y
+    tablas de $Z$ y $t$.
+  \end{alertblock}
+\end{frame}
+
+\begin{frame}[fragile]{Correlación y regresión, en R}
+  \scriptsize
+\begin{lstlisting}[style=Rmini]
+x <- c(2, 4, 5, 7, 8, 10, 12, 14)          # inversion en publicidad
+y <- c(35, 40, 52, 55, 68, 70, 78, 88)     # ventas
+
+cor(x, y)                 # coeficiente de Pearson
+modelo <- lm(y ~ x)       # se lee "y en funcion de x"
+coef(modelo)              # b0 y b1
+summary(modelo)$r.squared # coeficiente de determinacion
+predict(modelo, data.frame(x = 9))         # prediccion
+
+plot(x, y, pch = 19, main = "Ventas segun publicidad")
+abline(modelo, col = "tomato", lwd = 2)    # la recta ajustada
+plot(fitted(modelo), residuals(modelo))    # validacion: residuos
+\end{lstlisting}
+\begin{lstlisting}[style=Rout]
+[1] 0.9839578
+(Intercept)           x
+  26.419149    4.429787
+[1] 0.9681725
+       1
+66.28723
+\end{lstlisting}
+
+  \vspace{-0.12cm}
+  \begin{alertblock}{Lo que R no le va a decir}
+    \tiny
+    Que $r = 0{,}98$ \destacar{no prueba} que la publicidad cause las ventas;
+    que predecir en $x = 40$ sería extrapolar fuera del rango observado; y que
+    con $n = 8$ cualquier conclusión es frágil. \azul{Esos tres juicios son
+    suyos}, y son los que se evalúan en el Examen 3.
+  \end{alertblock}
+\end{frame}
+
+\begin{frame}{Cierre del curso}
+  \begin{block}{El recorrido completo}
+    \footnotesize
+    \begin{itemize}
+      \item \azul{Unidad 1:} describir y contar lo incierto; medir con
+            probabilidad; elegir una muestra.
+      \item \azul{Unidad 2:} modelar el azar con distribuciones; entender que
+            $\bar X$ es aleatoria; estimar con intervalos.
+      \item \azul{Unidad 3:} decidir con evidencia; relacionar y predecir.
+    \end{itemize}
+  \end{block}
+
+  \vspace{0.2cm}
+  \begin{alertblock}{La idea que resume el curso}
+    \footnotesize
+    Nunca vamos a conocer la población. Lo que la estadística inferencial
+    ofrece no es certeza, sino \destacar{una medida honesta de cuánta
+    incertidumbre queda} después de mirar los datos. Esa medida es lo que
+    permite decidir sin engañarse.
+  \end{alertblock}
+\end{frame}
+
+\begin{frame}{Ejercicios propuestos}
+  \vspace{-0.1cm}
+  \begin{beamercolorbox}[wd=\textwidth,sep=0.10cm]{block body}
+    \centering\scriptsize
+    \textbf{1--12:} datos del ejercicio 1 ($\sum x=62$, $\sum y=486$,
+    $\sum xy=4287$, $\sum x^{2}=598$, $\sum y^{2}=31906$, $n=8$).
+  \end{beamercolorbox}
+  \listatiny
+  \vspace{0.15cm}
+  \begin{columns}[T,onlytextwidth]
+    \begin{column}{0.47\textwidth}
+      \begin{enumerate}\setlength{\itemsep}{0.16cm}
+        \item $\bar{x}$
+        \item $\bar{y}$
+        \item $b_1$
+        \item $b_0$
+        \item Ecuación de la recta
+        \item $r$
+        \item $r^{2}$ en porcentaje
+        \item $\hat{y}$ para $x=9$
+        \item $\hat{y}$ para $x=6$
+        \item Residuo en $x=8$ si $y=68$
+      \end{enumerate}
+    \end{column}
+    \begin{column}{0.50\textwidth}
+      \begin{enumerate}\setlength{\itemsep}{0.16cm}
+        \setcounter{enumi}{10}
+        \item Interprete $b_1$
+        \item ¿Es válido predecir con $x=60$?
+        \item Rango de valores posibles de $r$
+        \item $r=-0{,}85$: ¿fuerza y sentido?
+        \item $r=0{,}12$: ¿fuerza?
+        \item ¿$r$ alto implica causalidad?
+        \item ¿Qué mide $r^{2}$?
+        \item ¿Qué se revisa en los residuos?
+        \item $H_0$ y $H_1$ para la significancia de la pendiente
+        \item Si no se rechaza $H_0$ del punto 19, ¿qué se concluye?
+      \end{enumerate}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{Respuestas}{Autoevaluación de los ejercicios propuestos}
+  \listatiny
+  \vspace{0.15cm}
+  \begin{columns}[T,onlytextwidth]
+    \begin{column}{0.47\textwidth}
+      \begin{enumerate}\setlength{\itemsep}{0.16cm}
+        \item $7{,}75$
+        \item $60{,}75$
+        \item $4{,}4298$
+        \item $26{,}4191$
+        \item $\hat y=26{,}42+4{,}43x$
+        \item $0{,}9840$
+        \item $96{,}82\%$
+        \item $66{,}29$
+        \item $53{,}00$
+        \item $6{,}14$
+      \end{enumerate}
+    \end{column}
+    \begin{column}{0.50\textwidth}
+      \begin{enumerate}\setlength{\itemsep}{0.16cm}
+        \setcounter{enumi}{10}
+        \item Por cada millón más de publicidad, las ventas suben 4{,}43
+        \item No: extrapolación fuera del rango 2--14
+        \item $-1\le r\le 1$
+        \item Fuerte y negativa
+        \item Muy débil
+        \item No
+        \item La proporción de variabilidad de $y$ explicada
+        \item Que se repartan al azar, sin patrón
+        \item $H_0:\beta_1=0$ vs. $H_1:\beta_1\neq 0$
+        \item Que $x$ no aporta a explicar $y$
+      \end{enumerate}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{Referencias}
+  \footnotesize
+  \begin{itemize}
+    \item[{[1]}] Díaz Rodríguez, M. (2022). \textit{Estadística inferencial
+      aplicada}. Universidad del Norte.
+      \texttt{https://elibro.net/es/lc/uniminuto/titulos/221614}
+    \item[{[2]}] Llinás Solano, H. (2014). \textit{Introducción a la
+      estadística con aplicaciones en ciencias sociales}. Universidad del
+      Norte. \texttt{https://elibro.net/es/lc/uniminuto/titulos/70062}
+    \item[{[3]}] Contento Rubio, M. R. (2019). \textit{Estadística con
+      aplicaciones en R}. Editorial Utadeo.
+      \texttt{https://elibro.net/es/lc/uniminuto/titulos/220926}
+  \end{itemize}
+
+  \vspace{0.3cm}
+  \begin{center}
+    {\Large\color{uniAzul}\textbf{Éxitos en el Examen 3}}
+  \end{center}
+\end{frame}
+
+\end{document}

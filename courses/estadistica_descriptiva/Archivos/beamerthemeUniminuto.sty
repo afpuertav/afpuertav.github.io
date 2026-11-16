@@ -1,0 +1,229 @@
+% ============================================================================
+%  beamerthemeUniminuto.sty
+%  Tema Beamer con la identidad visual de UNIMINUTO (Seccional Antioquia-Chocó)
+%
+%  Los marcos superior e inferior y la portada se DIBUJAN con TikZ (vectorial),
+%  por lo que no se deforman ni pierden nitidez en ninguna resolución.
+%  La única imagen que se usa es el logo institucional.
+%
+%  Geometría tomada por medición del arte oficial de la universidad.
+%
+%  Autor: Andrés Felipe Puerta Velez — 2026-2
+%  Uso:   \documentclass[aspectratio=169]{beamer}
+%         \usetheme{Uniminuto}
+% ============================================================================
+\ProvidesPackage{beamerthemeUniminuto}[2026/08/08 Tema UNIMINUTO (vectorial)]
+
+\RequirePackage{tikz}
+\RequirePackage{graphicx}
+\RequirePackage{xcolor}
+\RequirePackage{ragged2e}
+
+% ---------------------------------------------------------------- COLORES ---
+% Paleta institucional, muestreada del arte oficial.
+\definecolor{uniAzul}{HTML}{25325C}     % azul institucional (franjas, títulos)
+\definecolor{uniAmarillo}{HTML}{FECD0E} % amarillo institucional
+\definecolor{uniNaranja}{HTML}{F5A415}  % dorado / naranja de las diagonales
+\definecolor{uniTitulo}{HTML}{C04F15}   % terracota de los títulos de lámina
+\definecolor{uniGris}{HTML}{595959}     % texto secundario
+\definecolor{uniCrema}{HTML}{FDE3B0}    % fondo de cuadros de observación
+\definecolor{uniCremaClaro}{HTML}{FEF3DC}
+
+% ------------------------------------------------------------ TIPOGRAFÍA ----
+\RequirePackage[T1]{fontenc}
+\IfFileExists{lato.sty}{\RequirePackage[default]{lato}}{%
+  \RequirePackage{helvet}\renewcommand{\familydefault}{\sfdefault}}
+
+% ============================================================================
+%  GEOMETRÍA DEL MARCO  (fracciones del ancho y del alto de la lámina)
+%  Modifíquelas solo si quiere alterar el diseño institucional.
+% ============================================================================
+% Inclinación de las diagonales: al bajar 1 unidad de alto, se corre 0.5957
+% unidades de ancho hacia la izquierda.
+\def\uniSlant{0.5957}
+% -- marco superior
+\def\uniTopH{0.1391}      % alto de la banda superior
+\def\uniTopNavy{0.6685}   % borde derecho del azul, medido arriba
+\def\uniTopOran{0.0672}   % ancho de la diagonal naranja
+\def\uniTopAmar{0.0308}   % ancho de la diagonal amarilla
+\def\uniTopAmarH{0.1050}  % alto de la diagonal amarilla (más corta)
+% -- marco inferior
+\def\uniBotY{0.9378}      % borde superior de la barra inferior
+
+% Dibuja el marco superior e inferior. Se usa dentro de una tikzpicture cuyo
+% sistema es x=\paperwidth, y=-\paperheight (origen en la esquina superior
+% izquierda, la y crece hacia abajo).
+\newcommand{\uni@marco}{%
+  % ----------------------------------------------------------- SUPERIOR ----
+  \fill[uniAzul]
+     (0,0)
+  -- (\uniTopNavy,0)
+  -- ({\uniTopNavy-\uniSlant*\uniTopH},\uniTopH)
+  -- (0,\uniTopH) -- cycle;
+  \fill[uniNaranja]
+     (\uniTopNavy,0)
+  -- ({\uniTopNavy+\uniTopOran},0)
+  -- ({\uniTopNavy+\uniTopOran-\uniSlant*\uniTopH},\uniTopH)
+  -- ({\uniTopNavy-\uniSlant*\uniTopH},\uniTopH) -- cycle;
+  \fill[uniAmarillo]
+     ({\uniTopNavy+\uniTopOran},0)
+  -- ({\uniTopNavy+\uniTopOran+\uniTopAmar},0)
+  -- ({\uniTopNavy+\uniTopOran+\uniTopAmar-\uniSlant*\uniTopAmarH},\uniTopAmarH)
+  -- ({\uniTopNavy+\uniTopOran-\uniSlant*\uniTopAmarH},\uniTopAmarH) -- cycle;
+  % ----------------------------------------------------------- INFERIOR ----
+  \fill[uniAzul]
+     (0.0660,\uniBotY) -- (0.9510,\uniBotY) -- (0.9139,1) -- (0.0289,1) -- cycle;
+  \fill[uniNaranja]
+     (0.0468,\uniBotY) -- (0.0585,\uniBotY) -- (0.0214,1) -- (0.0097,1) -- cycle;
+  \fill[uniNaranja]
+     (1.0002,0.8703) -- (1.0117,0.8703) -- (0.9342,1) -- (0.9227,1) -- cycle;
+  \fill[uniAmarillo]
+     (0.9773,\uniBotY) -- (0.9891,\uniBotY) -- (0.9520,1) -- (0.9402,1) -- cycle;
+  % --------------------------------------------------------------- LOGO ----
+  \node[anchor=north east,inner sep=0]
+    at (0.9800,0.0120) {\includegraphics[width=0.1750\paperwidth]{logo-uniminuto}};
+}
+
+% Fondo de las láminas de contenido.
+\setbeamertemplate{background}{%
+  \begin{tikzpicture}[x=\paperwidth,y=-\paperheight,inner sep=0,outer sep=0]
+    \useasboundingbox (0,0) rectangle (1,1);
+    \clip (0,0) rectangle (1,1);
+    \uni@marco
+  \end{tikzpicture}}
+
+% -------------------------------------------------------------- ESTRUCTURA --
+\usebeamercolor{normal text}
+\setbeamercolor{normal text}{fg=black}
+\setbeamercolor{structure}{fg=uniAzul}
+\setbeamercolor{frametitle}{fg=uniTitulo,bg=}
+\setbeamercolor{title}{fg=uniAzul}
+\setbeamercolor{alerted text}{fg=uniTitulo}
+\setbeamercolor{itemize item}{fg=uniAzul}
+\setbeamercolor{itemize subitem}{fg=uniNaranja}
+\setbeamercolor{itemize subsubitem}{fg=uniGris}
+\setbeamercolor{enumerate item}{fg=uniAzul}
+\setbeamercolor{section in toc}{fg=uniAzul}
+
+\setbeamertemplate{navigation symbols}{}
+\setbeamertemplate{itemize item}{\raisebox{0.15ex}{\scriptsize$\blacksquare$}}
+\setbeamertemplate{itemize subitem}{\raisebox{0.15ex}{\scriptsize$\bullet$}}
+\setbeamertemplate{caption}[numbered]
+\setbeamerfont{frametitle}{size=\Large,series=\bfseries}
+\setbeamerfont{title}{size=\Huge,series=\bfseries}
+\setbeamerfont{itemize/enumerate body}{size=\small}
+\setbeamerfont{itemize/enumerate subbody}{size=\footnotesize}
+
+% Márgenes: dejan libres el marco superior y el inferior.
+\setbeamersize{text margin left=1.1cm,text margin right=1.1cm}
+
+% ------------------------------------------------- ENCABEZADO Y PIE ---------
+\setbeamertemplate{headline}{\vspace*{1.38cm}}
+
+\setbeamertemplate{frametitle}{%
+  \begin{beamercolorbox}[wd=\paperwidth,leftskip=1.1cm,rightskip=1.1cm]{frametitle}%
+    \usebeamerfont{frametitle}\usebeamercolor[fg]{frametitle}\insertframetitle%
+    \ifx\insertframesubtitle\@empty\else%
+      \\[-0.1cm]{\normalsize\color{uniGris}\insertframesubtitle}%
+    \fi%
+    \vspace*{0.15cm}%
+  \end{beamercolorbox}%
+  \vspace*{0.15cm}}
+
+% El número de lámina va sobre el marco inferior.
+\setbeamertemplate{footline}{%
+  \hfill{\color{uniGris}\scriptsize\insertframenumber}%
+  \hspace*{1.1cm}\vspace*{0.70cm}}
+
+% --------------------------------------------------------------- PORTADA ----
+% Datos del curso. Se definen en el preámbulo del documento.
+\newcommand{\uniasignatura}[1]{\def\@uniasignatura{#1}}
+\newcommand{\uniprofesor}[1]{\def\@uniprofesor{#1}}
+\newcommand{\unicorreo}[1]{\def\@unicorreo{#1}}
+\newcommand{\uninrc}[1]{\def\@uninrc{#1}}
+\newcommand{\unisemana}[1]{\def\@unisemana{#1}}
+\uniasignatura{}\uniprofesor{}\unicorreo{}\uninrc{}\unisemana{}
+
+% Geometría de la portada
+\def\uniPortBarX{0.1240}   % borde izquierdo de la barra vertical
+\def\uniPortBarXX{0.3197}  % borde derecho de la barra vertical
+\def\uniPortBandaA{0.4338} % borde superior de la banda azul
+\def\uniPortBandaB{0.7676} % borde inferior de la banda azul
+
+\newcommand{\uni@fondoportada}{%
+  \begin{tikzpicture}[x=\paperwidth,y=-\paperheight,inner sep=0,outer sep=0]
+    \useasboundingbox (0,0) rectangle (1,1);
+    \clip (0,0) rectangle (1,1);
+    % barra amarilla vertical
+    \fill[uniAmarillo] (\uniPortBarX,0) rectangle (\uniPortBarXX,\uniPortBandaB);
+    % banda azul horizontal
+    \fill[uniAzul] (0,\uniPortBandaA) rectangle (1,\uniPortBandaB);
+    % la barra cambia de tono al cruzar la banda
+    \fill[uniNaranja]
+      (\uniPortBarX,\uniPortBandaA) rectangle (\uniPortBarXX,\uniPortBandaB);
+    % bloque amarillo inferior
+    \fill[uniAmarillo] (\uniPortBarX,0.8907) rectangle (\uniPortBarXX,1);
+    % logo
+    \node[anchor=north west,inner sep=0]
+      at (0.7672,0.8000) {\includegraphics[width=0.2036\paperwidth]{logo-uniminuto}};
+  \end{tikzpicture}}
+
+% \portada  ->  lámina de portada institucional.
+\newcommand{\portada}{%
+ {\setbeamertemplate{background}{\uni@fondoportada}%
+  \begin{frame}[plain,noframenumbering]
+    \begin{tikzpicture}[remember picture,overlay]
+      % Título del curso, sobre el área blanca superior derecha
+      \node[anchor=north west,text width=0.60\paperwidth,align=center,
+            font=\Huge\bfseries,text=uniAzul]
+        at ([shift={(0.355\paperwidth,-0.11\paperheight)}]current page.north west)
+        {\@uniasignatura};
+      % Datos del profesor, dentro de la banda azul
+      \node[anchor=north west,text width=0.60\paperwidth,align=left,
+            font=\large,text=white]
+        at ([shift={(0.345\paperwidth,-0.48\paperheight)}]current page.north west)
+        {\textbf{\@uniprofesor}\\[0.15em]
+         \@unicorreo\\[0.7em]
+         \textbf{\@uninrc}};
+      % Tema de la sesión
+      \node[anchor=north west,text width=0.42\paperwidth,align=left,
+            font=\small,text=uniAzul]
+        at ([shift={(0.345\paperwidth,-0.81\paperheight)}]current page.north west)
+        {\@unisemana};
+    \end{tikzpicture}
+  \end{frame}}}
+
+% -------------------------------------------------- LÁMINA DE SECCIÓN -------
+% \seccion{Título}  ->  separador de unidad o de bloque temático.
+\newcommand{\seccion}[1]{%
+ {\setbeamertemplate{background}{%
+    \begin{tikzpicture}[x=\paperwidth,y=-\paperheight,inner sep=0,outer sep=0]
+      \useasboundingbox (0,0) rectangle (1,1);
+      \clip (0,0) rectangle (1,1);
+      \uni@marco
+      \fill[uniAzul]   (0,0.38) rectangle (1,0.66);
+      \fill[uniAmarillo] (0.07,0.31) rectangle (0.12,0.73);
+    \end{tikzpicture}}%
+  \begin{frame}[plain,noframenumbering]
+    \begin{tikzpicture}[remember picture,overlay]
+      \node[anchor=west,text width=0.70\paperwidth,align=left,
+            font=\huge\bfseries,text=white]
+        at ([shift={(0.17\paperwidth,-0.52\paperheight)}]current page.north west) {#1};
+    \end{tikzpicture}
+  \end{frame}}}
+
+% ------------------------------------------------------ CAJAS DE APOYO ------
+\setbeamercolor{block title}{bg=uniAzul,fg=white}
+\setbeamercolor{block body}{bg=uniCremaClaro,fg=black}
+\setbeamercolor{block title alerted}{bg=uniTitulo,fg=white}
+\setbeamercolor{block body alerted}{bg=uniCremaClaro,fg=black}
+\setbeamercolor{block title example}{bg=uniNaranja,fg=white}
+\setbeamercolor{block body example}{bg=uniCremaClaro,fg=black}
+\setbeamertemplate{blocks}[rounded][shadow=false]
+
+% Resaltado rápido en los colores de la universidad.
+% Funcionan tanto en texto como dentro de fórmulas matemáticas.
+\newcommand{\destacar}[1]{{\color{uniTitulo}\ifmmode\mathbf{#1}\else\textbf{#1}\fi}}
+\newcommand{\azul}[1]{{\color{uniAzul}\ifmmode\mathbf{#1}\else\textbf{#1}\fi}}
+
+\endinput

@@ -1,0 +1,591 @@
+% ============================================================================
+%  PRECÁLCULO — Sesión 11
+%  Semana 11: 19 al 24 de octubre de 2026
+%  2.5 Propiedades de los logaritmos · Repaso integrador de la Unidad 2
+%  Preparación del Examen 2
+%  Duración prevista: 3 horas
+% ============================================================================
+\documentclass[aspectratio=169,10pt]{beamer}
+
+\usepackage[utf8]{inputenc}
+\IfFileExists{spanish.ldf}{\usepackage[spanish,es-noshorthands]{babel}}{}
+\usepackage{amsmath,amssymb}
+\usepackage{booktabs}
+\usepackage{tikz}
+
+\usetheme{Uniminuto}
+
+\uniasignatura{Precálculo}
+\uniprofesor{Andrés Felipe Puerta Velez}
+\unicorreo{andres.puerta-v@uniminuto.edu.co}
+\uninrc{MATE1161}
+\unisemana{Sesión 11 — Semana 11 · 19 al 24 de octubre de 2026}
+
+\newcommand{\listatiny}{\setbeamerfont{itemize/enumerate body}{size=\tiny}\tiny}
+
+\begin{document}
+
+\portada
+
+\begin{frame}{Orden del día}
+  \begin{enumerate}
+    \item Llamado a lista y revisión de los ejercicios propuestos
+    \item \azul{Tema 2.5: las cuatro propiedades de los logaritmos}
+    \item Expandir y condensar expresiones logarítmicas
+    \item Cambio de base y ecuaciones logarítmicas
+    \item Repaso integrador de la Unidad 2
+    \item Simulacro del Examen 2 y recomendaciones
+  \end{enumerate}
+
+  \vspace{0.25cm}
+  {\footnotesize\color{uniGris} Sesión de 3 horas. La próxima semana
+  \destacar{no hay clase nueva}: se presenta el Examen 2 (35\,\%) en Aulas
+  Virtuales, presencial en el aula.}
+\end{frame}
+
+\seccion{2.5 Propiedades de los logaritmos}
+
+\begin{frame}{Las cuatro propiedades}
+  \scriptsize
+  \begin{center}
+  \begin{tabular}{@{}p{2.8cm}p{4.2cm}p{4.6cm}@{}}
+    \toprule
+    \textbf{Propiedad} & \textbf{Fórmula} & \textbf{Ejemplo} \\
+    \midrule
+    Del producto &
+      $\log_{b}(MN) = \log_{b}M + \log_{b}N$ &
+      $\log_{2}(8\cdot 4) = 3+2 = 5$ \\
+    \addlinespace
+    Del cociente &
+      $\log_{b}\dfrac{M}{N} = \log_{b}M - \log_{b}N$ &
+      $\log_{2}\dfrac{32}{4} = 5-2 = 3$ \\
+    \addlinespace
+    De la potencia &
+      $\log_{b}M^{\,p} = p\log_{b}M$ &
+      $\log_{3}9^{4} = 4(2) = 8$ \\
+    \addlinespace
+    Cambio de base &
+      $\log_{b}M = \dfrac{\log_{c}M}{\log_{c}b}$ &
+      $\log_{2}50 = \dfrac{\log 50}{\log 2} \approx 5{,}64$ \\
+    \bottomrule
+  \end{tabular}
+  \end{center}
+
+  \vspace{0.08cm}
+  \begin{alertblock}{Lo que hacen, en una frase}
+    \tiny
+    \destacar{Bajan un nivel la operación.} El logaritmo convierte productos en
+    sumas, cocientes en restas y potencias en productos. Por eso antes de las
+    calculadoras se multiplicaban números enormes \azul{sumando logaritmos}, y
+    por eso la regla de cálculo funcionaba.
+  \end{alertblock}
+\end{frame}
+
+\begin{frame}{De dónde salen}
+  \scriptsize
+  \begin{block}{Demostración de la propiedad del producto}
+    \tiny
+    Sean $\log_{b}M = x$ y $\log_{b}N = y$. Por definición:
+    \[ b^{x} = M \qquad b^{y} = N \]
+    Multiplicando y usando la propiedad de potencias de la sesión 7:
+    \[ MN = b^{x}\cdot b^{y} = b^{x+y} \]
+    Volviendo a forma logarítmica:
+    \[ \log_{b}(MN) = x+y = \destacar{\log_{b}M + \log_{b}N} \]
+  \end{block}
+
+  \vspace{0.05cm}
+  \begin{alertblock}{Las que NO existen}
+    \tiny
+    \[ \log_{b}(M+N) \neq \log_{b}M + \log_{b}N \qquad
+       \frac{\log_{b}M}{\log_{b}N} \neq \log_{b}\frac{M}{N} \qquad
+       \left(\log_{b}M\right)^{p} \neq p\log_{b}M \]
+    Compruebe la primera con $M=N=1$: la izquierda da $\log_b 2$ y la derecha
+    $0$. \destacar{No hay ninguna propiedad para el logaritmo de una suma.}
+  \end{alertblock}
+\end{frame}
+
+\begin{frame}{Expandir y condensar}
+  \scriptsize
+  \begin{columns}[T,onlytextwidth]
+    \begin{column}{0.50\textwidth}
+      \begin{block}{Expandir}
+        \tiny
+        Se aplican las propiedades \azul{de izquierda a derecha}:
+        \[ \log\frac{x^{2}y}{z^{3}} \]
+        \[ = \log x^{2} + \log y - \log z^{3} \]
+        \[ = \destacar{2\log x + \log y - 3\log z} \]
+      \end{block}
+    \end{column}
+    \begin{column}{0.46\textwidth}
+      \begin{block}{Condensar}
+        \tiny
+        Se aplican \azul{al revés}, hasta dejar un solo logaritmo:
+        \[ 3\log x + \tfrac{1}{2}\log y - 2\log z \]
+        \[ = \log x^{3} + \log y^{1/2} - \log z^{2} \]
+        \[ = \destacar{\log\frac{x^{3}\sqrt{y}}{z^{2}}} \]
+      \end{block}
+    \end{column}
+  \end{columns}
+
+  \vspace{0.1cm}
+  \begin{alertblock}{El orden importa}
+    \scriptsize
+    Al condensar, \destacar{primero} se suben los coeficientes como exponentes
+    y \destacar{después} se juntan en producto o cociente. Si se hace al revés,
+    los coeficientes quedan multiplicando por fuera y el resultado está mal.
+  \end{alertblock}
+\end{frame}
+
+\begin{frame}{Cambio de base y ecuaciones logarítmicas}
+  \scriptsize
+  \begin{columns}[T,onlytextwidth]
+    \begin{column}{0.44\textwidth}
+      \begin{block}{Cambio de base}
+        \tiny
+        La calculadora solo trae \fbox{log} y \fbox{ln}:
+        \[ \log_{b}M = \frac{\log M}{\log b} = \frac{\ln M}{\ln b} \]
+        \[ \log_{2}50 = \frac{\log 50}{\log 2}
+           = \frac{1{,}6990}{0{,}3010} \approx \destacar{5{,}64} \]
+      \end{block}
+    \end{column}
+    \begin{column}{0.54\textwidth}
+      \begin{exampleblock}{Ecuación logarítmica: ejemplo guiado}
+        \tiny
+        \[ \log_{2}x + \log_{2}(x-2) = 3 \]
+        \textbf{1.} Condensar: \ $\log_{2}\big[x(x-2)\big] = 3$
+
+        \textbf{2.} A forma exponencial: \ $x(x-2) = 2^{3} = 8$
+
+        \textbf{3.} Resolver: \ $x^{2}-2x-8 = 0 \Rightarrow (x-4)(x+2)=0$
+
+        \textbf{4.} \destacar{Verificar el dominio:} $x=4$ sirve;
+        $x=-2$ \azul{se descarta} porque $\log_2(-2)$ no existe.
+      \end{exampleblock}
+    \end{column}
+  \end{columns}
+
+  \vspace{0.08cm}
+  \begin{alertblock}{El paso 4 no es opcional}
+    \tiny
+    Al condensar logaritmos se puede \destacar{agrandar el dominio} y aparecer
+    soluciones falsas. \azul{Toda solución de una ecuación logarítmica debe
+    sustituirse en la ecuación original} antes de darla por buena.
+  \end{alertblock}
+\end{frame}
+
+\begin{frame}{Ejercicio 1 — en clase}
+  \begin{alertblock}{En parejas (15 minutos)}
+    \scriptsize
+    \textbf{Parte A.} Expanda:
+
+    \vspace{0.1cm}
+    \centering
+    \begin{tabular}{@{}lll@{}}
+      1. \ $\log\dfrac{a^{3}b}{c}$ &
+      2. \ $\log_{2}\left(x\sqrt{y}\right)$ &
+      3. \ $\ln\dfrac{x^{5}}{y^{2}z}$ \\
+    \end{tabular}
+
+    \vspace{0.2cm}
+    \raggedright
+    \textbf{Parte B.} Condense en un solo logaritmo:
+
+    \vspace{0.1cm}
+    \centering
+    \begin{tabular}{@{}lll@{}}
+      4. \ $\log 5 + \log 4$ &
+      5. \ $2\log x - 3\log y$ &
+      6. \ $\tfrac{1}{2}\log a + \log b - \log c$ \\
+    \end{tabular}
+
+    \vspace{0.2cm}
+    \raggedright
+    \textbf{Parte C.} Calcule con cambio de base (dos decimales):
+    \ $\log_{2}20$ \ y \ $\log_{5}100$.
+  \end{alertblock}
+\end{frame}
+
+\begin{frame}{Ejercicio 1 — solución}
+  \scriptsize
+  \begin{columns}[T,onlytextwidth]
+    \begin{column}{0.49\textwidth}
+      \begin{block}{Partes A y B}
+        \tiny
+        \textbf{1.} $3\log a + \log b - \log c$
+
+        \textbf{2.} $\log_{2}x + \tfrac{1}{2}\log_{2}y$
+
+        \textbf{3.} $5\ln x - 2\ln y - \ln z$
+
+        \vspace{0.08cm}
+        \textbf{4.} $\log 20$
+
+        \textbf{5.} $\log\dfrac{x^{2}}{y^{3}}$
+
+        \textbf{6.} $\log\dfrac{\sqrt{a}\,b}{c}$
+      \end{block}
+    \end{column}
+    \begin{column}{0.49\textwidth}
+      \begin{exampleblock}{Parte C}
+        \tiny
+        \[ \log_{2}20 = \frac{\log 20}{\log 2}
+           = \frac{1{,}3010}{0{,}3010} \approx \destacar{4{,}32} \]
+        \[ \log_{5}100 = \frac{\log 100}{\log 5}
+           = \frac{2}{0{,}6990} \approx \destacar{2{,}86} \]
+      \end{exampleblock}
+    \end{column}
+  \end{columns}
+
+  \vspace{0.08cm}
+  \begin{alertblock}{Verificación de sentido}
+    \tiny
+    $\log_{2}20$ debe estar \destacar{entre 4 y 5}, porque $2^4=16$ y $2^5=32$:
+    el 4,32 es coherente. \azul{Acote antes de calcular} y detectará el error
+    de tecleo al instante.
+  \end{alertblock}
+\end{frame}
+
+\begin{frame}{Ejercicio 2 — en clase}
+  \begin{alertblock}{En parejas (15 minutos)}
+    \scriptsize
+    Resuelva y \destacar{verifique el dominio} en cada caso:
+
+    \vspace{0.25cm}
+    \begin{columns}[T,onlytextwidth]
+      \begin{column}{0.48\textwidth}
+        \begin{enumerate}\setlength{\itemsep}{0.16cm}
+          \item $\log(x+3) = 2$
+          \item $\ln x = 0$
+          \item $\log_{5}x - \log_{5}3 = 2$
+        \end{enumerate}
+      \end{column}
+      \begin{column}{0.48\textwidth}
+        \begin{enumerate}\setlength{\itemsep}{0.16cm}
+          \setcounter{enumi}{3}
+          \item $\log_{3}x + \log_{3}(x+6) = 3$
+          \item $\log_{2}(x-1) = 4$
+          \item $2\log x = \log 36$
+        \end{enumerate}
+      \end{column}
+    \end{columns}
+  \end{alertblock}
+\end{frame}
+
+\begin{frame}{Ejercicio 2 — solución}
+  \tiny
+  \begin{columns}[T,onlytextwidth]
+    \begin{column}{0.49\textwidth}
+      \begin{block}{Puntos 1 a 3}
+        \tiny
+        \begin{align*}
+          1)\;& x+3 = 10^{2} = 100 \Rightarrow \destacar{x = 97} \\[0.25em]
+          2)\;& x = e^{0} \Rightarrow \destacar{x = 1} \\[0.25em]
+          3)\;& \log_{5}\tfrac{x}{3} = 2 \Rightarrow \tfrac{x}{3} = 25
+                \Rightarrow \destacar{x = 75}
+        \end{align*}
+      \end{block}
+    \end{column}
+    \begin{column}{0.49\textwidth}
+      \begin{block}{Puntos 4 a 6}
+        \tiny
+        \begin{align*}
+          4)\;& x(x+6) = 27 \Rightarrow x^{2}+6x-27 = 0 \\
+              & (x+9)(x-3)=0 \Rightarrow \destacar{x=3} \ (x=-9 \text{ se
+                descarta}) \\[0.25em]
+          5)\;& x-1 = 2^{4} = 16 \Rightarrow \destacar{x = 17} \\[0.25em]
+          6)\;& \log x^{2} = \log 36 \Rightarrow x^{2}=36
+                \Rightarrow \destacar{x = 6}
+        \end{align*}
+      \end{block}
+    \end{column}
+  \end{columns}
+
+  \vspace{0.08cm}
+  \begin{alertblock}{Los dos descartes}
+    \tiny
+    En el \destacar{4}, $x=-9$ daría $\log_3(-9)$: imposible. \quad
+    En el \destacar{6}, $x=-6$ daría $\log(-6)$: también se descarta.
+    \azul{La ecuación algebraica tiene dos raíces; la logarítmica, una sola.}
+  \end{alertblock}
+\end{frame}
+
+\seccion{Repaso integrador de la Unidad 2}
+
+\begin{frame}{Mapa y formulario de la Unidad 2}
+  \tiny
+  \begin{columns}[T,onlytextwidth]
+    \begin{column}{0.48\textwidth}
+      \begin{block}{Potencias y raíces}
+        \tiny
+        \[ a^{m}a^{n}=a^{m+n} \qquad \frac{a^{m}}{a^{n}}=a^{m-n} \qquad
+           (a^{m})^{n}=a^{mn} \]
+        \[ a^{0}=1 \qquad a^{-n}=\frac{1}{a^{n}} \qquad
+           a^{m/n}=\sqrt[n]{a^{m}} \]
+        \[ \sqrt[n]{ab}=\sqrt[n]{a}\sqrt[n]{b} \qquad
+           \sqrt{a^{2}}=|a| \]
+        \azul{Nunca} sobre sumas: $(a+b)^n \neq a^n+b^n$.
+      \end{block}
+    \end{column}
+    \begin{column}{0.48\textwidth}
+      \begin{block}{Racionalización y logaritmos}
+        \tiny
+        \[ \frac{a}{\sqrt{b}}=\frac{a\sqrt{b}}{b} \qquad
+           \frac{a}{\sqrt{b}+c}=\frac{a(\sqrt{b}-c)}{b-c^{2}} \]
+        \[ \log_{b}a=c \Leftrightarrow b^{c}=a \]
+        \[ \log_{b}(MN)=\log_b M+\log_b N \qquad
+           \log_{b}M^{p}=p\log_b M \]
+        \[ \log_{b}M=\frac{\log M}{\log b} \]
+      \end{block}
+    \end{column}
+  \end{columns}
+
+  \vspace{0.05cm}
+  \begin{alertblock}{El hilo de la unidad}
+    \tiny
+    Potenciación $\rightarrow$ su inversa por la base (\azul{radicación})
+    $\rightarrow$ cómo dejarla presentable (\azul{racionalización})
+    $\rightarrow$ su inversa por el exponente (\azul{logaritmación}).
+    \destacar{Todo se apoya en las cinco propiedades de la sesión 7.}
+  \end{alertblock}
+\end{frame}
+
+\begin{frame}{Simulacro del Examen 2 — parte A}
+  \begin{alertblock}{Individual (20 minutos, sin apuntes)}
+    \scriptsize
+    \begin{enumerate}\setlength{\itemsep}{0.04cm}
+      \item Simplifique: \ $\left(3x^{2}y^{-3}\right)^{-2}$
+      \item Calcule: \ $32^{3/5}$
+      \item Calcule: \ $\left(2^{-1}+4^{-1}\right)^{-1}$
+      \item Simplifique: \ $\sqrt{72a^{5}}$ \ (con $a\ge 0$)
+      \item Opere: \ $3\sqrt{50}-2\sqrt{18}$
+      \item Racionalice: \ $\dfrac{5}{\sqrt{7}-\sqrt{2}}$
+    \end{enumerate}
+  \end{alertblock}
+\end{frame}
+
+\begin{frame}{Simulacro — solución de la parte A}
+  \scriptsize
+  \begin{columns}[T,onlytextwidth]
+    \begin{column}{0.49\textwidth}
+      \begin{block}{Puntos 1 a 3}
+        \tiny
+        \textbf{1.} $3^{-2}x^{-4}y^{6} = \destacar{\dfrac{y^{6}}{9x^{4}}}$
+
+        \vspace{0.08cm}
+        \textbf{2.} $\left(\sqrt[5]{32}\right)^{3} = 2^{3} = \destacar{8}$
+
+        \vspace{0.08cm}
+        \textbf{3.} $\left(\tfrac{1}{2}+\tfrac{1}{4}\right)^{-1}
+        = \left(\tfrac{3}{4}\right)^{-1} = \destacar{\tfrac{4}{3}}$
+      \end{block}
+    \end{column}
+    \begin{column}{0.49\textwidth}
+      \begin{block}{Puntos 4 a 6}
+        \tiny
+        \textbf{4.} $\sqrt{6^{2}\cdot 2\cdot a^{4}\cdot a}
+        = \destacar{6a^{2}\sqrt{2a}}$
+
+        \vspace{0.08cm}
+        \textbf{5.} $15\sqrt2 - 6\sqrt2 = \destacar{9\sqrt{2}}$
+
+        \vspace{0.08cm}
+        \textbf{6.} $\dfrac{5(\sqrt7+\sqrt2)}{7-2}
+        = \destacar{\sqrt{7}+\sqrt{2}}$
+      \end{block}
+    \end{column}
+  \end{columns}
+
+  \vspace{0.05cm}
+  {\tiny\color{uniGris} En el \destacar{3} hay que operar \azul{dentro} del
+  paréntesis antes de aplicar el exponente $-1$: $2^{-1}+4^{-1}$ no es
+  $(2+4)^{-1}$.}
+\end{frame}
+
+\begin{frame}{Simulacro del Examen 2 — parte B}
+  \begin{alertblock}{Individual (20 minutos)}
+    \scriptsize
+    \begin{enumerate}\setlength{\itemsep}{0.04cm}
+      \item Calcule: \ $\log_{2}\dfrac{1}{32}$, \ $\log_{4}8$, \
+            $\log_{7}1$.
+      \item Expanda: \ $\log\dfrac{x^{4}\sqrt{y}}{z^{2}}$
+      \item Condense: \ $2\ln a + \ln b - 3\ln c$
+      \item Resuelva: \ $2^{3x-1} = 32$
+      \item Resuelva: \ $\log_{2}x + \log_{2}(x-2) = 3$
+      \item Con $\log 2 = 0{,}3010$ y $\log 3 = 0{,}4771$, calcule
+            $\log 6$ y $\log 1{,}5$ \destacar{sin calculadora}.
+    \end{enumerate}
+  \end{alertblock}
+\end{frame}
+
+\begin{frame}{Simulacro — solución de la parte B}
+  \scriptsize
+  \begin{columns}[T,onlytextwidth]
+    \begin{column}{0.49\textwidth}
+      \begin{block}{Puntos 1 a 3}
+        \tiny
+        \textbf{1.} $-5$; \ $\tfrac{3}{2}$; \ $0$
+
+        \vspace{0.08cm}
+        \textbf{2.} $4\log x + \tfrac{1}{2}\log y - 2\log z$
+
+        \vspace{0.08cm}
+        \textbf{3.} $\ln\dfrac{a^{2}b}{c^{3}}$
+      \end{block}
+    \end{column}
+    \begin{column}{0.49\textwidth}
+      \begin{block}{Puntos 4 a 6}
+        \tiny
+        \textbf{4.} $2^{3x-1}=2^{5} \Rightarrow 3x-1=5 \Rightarrow
+        \destacar{x=2}$
+
+        \vspace{0.08cm}
+        \textbf{5.} $x(x-2)=8 \Rightarrow x^2-2x-8=0 \Rightarrow
+        \destacar{x=4}$ \ ($-2$ se descarta)
+
+        \vspace{0.08cm}
+        \textbf{6.} $\log 6 = \log 2+\log 3 = \destacar{0{,}7781}$; \\
+        $\log 1{,}5 = \log 3-\log 2 = \destacar{0{,}1761}$
+      \end{block}
+    \end{column}
+  \end{columns}
+
+  \vspace{0.05cm}
+  \begin{alertblock}{El punto 6 es el que mide si entendió la unidad}
+    \tiny
+    No pide calcular: pide \destacar{descomponer} $6 = 2\cdot 3$ y
+    $1{,}5 = 3/2$ y aplicar las propiedades. \azul{Esa es exactamente la idea
+    que hizo históricamente útiles a los logaritmos.}
+  \end{alertblock}
+\end{frame}
+
+\begin{frame}{Recomendaciones para el Examen 2}
+  \begin{block}{Qué se evalúa}
+    \tiny
+    \begin{itemize}\setlength{\itemsep}{-0.02cm}
+      \item Aplicar las cinco propiedades de potencias, incluidos exponente
+            cero, negativo y fraccionario.
+      \item Simplificar y operar radicales; sumar solo semejantes.
+      \item Racionalizar denominadores: monomio, índice $n$ y conjugado.
+      \item Calcular logaritmos por definición y con cambio de base.
+      \item Expandir, condensar y resolver ecuaciones logarítmicas
+            \azul{verificando el dominio}.
+    \end{itemize}
+  \end{block}
+
+  \vspace{0.08cm}
+  \begin{alertblock}{Seis consejos concretos}
+    \tiny
+    (1) Ante una duda con radicales, \destacar{pase a exponente fraccionario}.
+    \quad (2) La potencia y la raíz \azul{nunca} se reparten sobre sumas.
+    \quad (3) Después de racionalizar, simplifique. \quad
+    (4) En logaritmos, escriba primero la forma exponencial. \quad
+    (5) \destacar{Verifique el dominio} de toda solución logarítmica. \quad
+    (6) Acote el resultado antes de calcular: $\log_2 20$ está entre 4 y 5.
+  \end{alertblock}
+
+  \vspace{0.05cm}
+  {\tiny\color{uniGris} Examen 2: semana 12 (26 al 31 de octubre), 35\,\% de la
+  nota, en Aulas Virtuales (Moodle), presencial en el aula.}
+\end{frame}
+
+\begin{frame}{Ejercicios propuestos}
+  \vspace{-0.1cm}
+  \begin{beamercolorbox}[wd=\textwidth,sep=0.10cm]{block body}
+    \centering\scriptsize
+    \textbf{1--7:} propiedades. \quad \textbf{8--13:} expandir y condensar.
+    \quad \textbf{14--20:} ecuaciones y repaso de la unidad.
+  \end{beamercolorbox}
+  \listatiny
+  \vspace{0.15cm}
+  \begin{columns}[T,onlytextwidth]
+    \begin{column}{0.47\textwidth}
+      \begin{enumerate}\setlength{\itemsep}{0.16cm}
+        \item $\log_{3}(9\cdot 27)$
+        \item $\log_{2}\dfrac{64}{8}$
+        \item $\log_{5}25^{3}$
+        \item $\log_{2}20$ (dos decimales)
+        \item $\log_{3}45$ (dos decimales)
+        \item ¿Es $\log(a+b) = \log a + \log b$?
+        \item ¿Es $\dfrac{\log 8}{\log 2} = \log 4$?
+        \item Expanda $\log\dfrac{x^{3}}{yz}$
+        \item Expanda $\ln\left(a^{2}\sqrt{b}\right)$
+        \item Condense $\log 3 + 2\log x$
+      \end{enumerate}
+    \end{column}
+    \begin{column}{0.50\textwidth}
+      \begin{enumerate}\setlength{\itemsep}{0.16cm}
+        \setcounter{enumi}{10}
+        \item Condense $\tfrac{1}{3}\log a - \log b$
+        \item Condense $\ln x + \ln y - 2\ln z$
+        \item Con $\log 2=0{,}3010$: halle $\log 8$
+        \item Resuelva $\log(2x) = 3$
+        \item Resuelva $\log_{3}(x+1) = 2$
+        \item Resuelva $\ln(x-1) = 0$
+        \item Resuelva $\log x + \log(x-3) = 1$
+        \item Resuelva $5^{2x}=125$
+        \item Simplifique $\left(\dfrac{8a^{6}}{27}\right)^{2/3}$
+        \item Racionalice $\dfrac{3}{\sqrt{5}+\sqrt{2}}$
+      \end{enumerate}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{Respuestas}{Autoevaluación de los ejercicios propuestos}
+  \listatiny
+  \vspace{0.15cm}
+  \begin{columns}[T,onlytextwidth]
+    \begin{column}{0.47\textwidth}
+      \begin{enumerate}\setlength{\itemsep}{0.16cm}
+        \item $2+3 = 5$
+        \item $6-3 = 3$
+        \item $3(2) = 6$
+        \item $4{,}32$
+        \item $3{,}465$
+        \item No: no hay propiedad para la suma
+        \item \azul{No}: $\tfrac{\log 8}{\log 2} = \log_{2}8 = 3$,
+              mientras que $\log 4 \approx 0{,}60$
+        \item $3\log x - \log y - \log z$
+        \item $2\ln a + \tfrac{1}{2}\ln b$
+        \item $\log(3x^{2})$
+      \end{enumerate}
+    \end{column}
+    \begin{column}{0.50\textwidth}
+      \begin{enumerate}\setlength{\itemsep}{0.16cm}
+        \setcounter{enumi}{10}
+        \item $\log\dfrac{\sqrt[3]{a}}{b}$
+        \item $\ln\dfrac{xy}{z^{2}}$
+        \item $3(0{,}3010) = 0{,}9030$
+        \item $x = 500$
+        \item $x = 8$
+        \item $x = 2$
+        \item $x = 5$ \ ($x=-2$ se descarta)
+        \item $x = \tfrac{3}{2}$
+        \item $\dfrac{4a^{4}}{9}$
+        \item $\dfrac{3(\sqrt{5}-\sqrt{2})}{3} = \sqrt{5}-\sqrt{2}$
+      \end{enumerate}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{Referencias}
+  \footnotesize
+  \begin{itemize}
+    \item[{[1]}] Ramos del Olmo, Á. M. (2016). \textit{Matemáticas básicas
+      para el acceso a la universidad}. Ediciones Pirámide.
+      \texttt{https://elibro.net/es/ereader/uniminuto/49134}
+    \item[{[2]}] González Pulido, J. W., Chacón Benavides, J. A. \&
+      Fonseca Correa, L. Á. (2023). \textit{Matemática básica} (1.\textsuperscript{a} ed.).
+      Universidad Mariana.
+      \texttt{https://elibro.net/es/ereader/uniminuto/280647}
+    \item[{[3]}] Placencia Valero, J. (2008). \textit{Compendio de matemática
+      básica elemental} (1.\textsuperscript{a} ed.). Editorial Tébar Flores.
+      \texttt{https://elibro.net/es/ereader/uniminuto/269758}
+  \end{itemize}
+
+  \vspace{0.35cm}
+  \begin{center}
+    {\Large\color{uniAzul}\textbf{Éxitos en el Examen 2}}
+  \end{center}
+\end{frame}
+
+\end{document}

@@ -1,0 +1,717 @@
+% ============================================================================
+%  ESTADÍSTICA DESCRIPTIVA — Sesión 11
+%  Semana 11: 19 al 24 de octubre de 2026
+%  Repaso integrador de la Unidad 2 · Preparación del Examen 2
+%  Duración prevista: 3 horas
+% ============================================================================
+\documentclass[aspectratio=169,10pt]{beamer}
+
+\usepackage[utf8]{inputenc}
+\IfFileExists{spanish.ldf}{\usepackage[spanish,es-noshorthands]{babel}}{}
+\usepackage{amsmath,amssymb}
+\usepackage{booktabs}
+\usepackage{tikz}
+\usepackage{listings}
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.16}
+
+\usetheme{Uniminuto}
+
+\uniasignatura{Estadística descriptiva}
+\uniprofesor{Andrés Felipe Puerta Velez}
+\unicorreo{andres.puerta-v@uniminuto.edu.co}
+\uninrc{CBASBL031 - CBASBL141}
+\unisemana{Sesión 11 — Semana 11 · 19 al 24 de octubre de 2026}
+
+\newcommand{\listatiny}{\setbeamerfont{itemize/enumerate body}{size=\tiny}\tiny}
+
+\pgfplotsset{
+  uniplot/.style={
+    width=8.0cm, height=3.4cm, axis lines=left,
+    tick label style={font=\tiny,color=uniGris},
+    label style={font=\tiny,color=uniGris},
+    title style={font=\scriptsize\bfseries,color=uniAzul},
+    every axis plot/.append style={fill=uniAzul!70,draw=uniAzul},
+    ymajorgrids, grid style={uniGris!25,very thin},
+  }
+}
+
+\newcommand{\cajahor}[8]{%
+  \draw[#8,thick] (#2*#1,#7) -- (#3*#1,#7);
+  \draw[#8,thick] (#5*#1,#7) -- (#6*#1,#7);
+  \draw[#8,thick] (#2*#1,#7-0.16) -- (#2*#1,#7+0.16);
+  \draw[#8,thick] (#6*#1,#7-0.16) -- (#6*#1,#7+0.16);
+  \draw[#8,thick,fill=#8!18] (#3*#1,#7-0.28) rectangle (#5*#1,#7+0.28);
+  \draw[#8,very thick] (#4*#1,#7-0.28) -- (#4*#1,#7+0.28);
+}
+
+\newcommand{\fx}[1]{{\ttfamily\color{uniAzul}#1}}
+
+% ------------------------------------------------------------- CÓDIGO R ----
+\lstdefinestyle{Rcode}{
+  language=R,
+  basicstyle=\ttfamily\scriptsize,
+  keywordstyle=\color{uniAzul}\bfseries,
+  commentstyle=\color{uniGris}\itshape,
+  stringstyle=\color{uniTitulo},
+  showstringspaces=false, numbers=none, breaklines=true,
+  columns=fullflexible,
+  backgroundcolor=\color{uniCremaClaro},
+  frame=leftline, framerule=1.2pt, rulecolor=\color{uniNaranja},
+  xleftmargin=0.35cm, framexleftmargin=0.35cm,
+  framexrightmargin=0.15cm, framextopmargin=2pt, framexbottommargin=2pt,
+  aboveskip=0.15cm, belowskip=0.15cm
+}
+\lstdefinestyle{Rmini}{
+  language=R,
+  basicstyle=\ttfamily\tiny,
+  keywordstyle=\color{uniAzul}\bfseries,
+  commentstyle=\color{uniGris}\itshape,
+  stringstyle=\color{uniTitulo},
+  showstringspaces=false, numbers=none, breaklines=true,
+  columns=fullflexible,
+  backgroundcolor=\color{uniCremaClaro},
+  frame=leftline, framerule=1.2pt, rulecolor=\color{uniNaranja},
+  xleftmargin=0.35cm, framexleftmargin=0.35cm,
+  framexrightmargin=0.15cm, framextopmargin=2pt, framexbottommargin=2pt,
+  aboveskip=0.12cm, belowskip=0.12cm
+}
+\lstdefinestyle{Rout}{
+  basicstyle=\ttfamily\tiny\color{black},
+  showstringspaces=false, numbers=none, breaklines=true,
+  columns=fullflexible,
+  backgroundcolor=\color{uniGris!10},
+  frame=leftline, framerule=1.2pt, rulecolor=\color{uniGris},
+  xleftmargin=0.35cm, framexleftmargin=0.35cm,
+  framexrightmargin=0.15cm, framextopmargin=2pt, framexbottommargin=2pt,
+  aboveskip=0.12cm, belowskip=0.12cm
+}
+
+\begin{document}
+
+\portada
+
+\begin{frame}{Orden del día}
+  \begin{enumerate}
+    \item Llamado a lista y dudas del trabajo independiente
+    \item Mapa y formulario de la Unidad 2
+    \item \azul{Caso integrador completo: Ferretería El Tornillo}
+    \item Simulacro del Examen 2: partes A, B y C
+    \item Solución comentada del simulacro
+    \item Recomendaciones para el examen
+  \end{enumerate}
+
+  \vspace{0.25cm}
+  {\footnotesize\color{uniGris} Sesión de 3 horas. La próxima semana se
+  presenta el \destacar{Examen 2 (35\%)} en Aulas Virtuales, presencial en
+  el aula.}
+\end{frame}
+
+\begin{frame}{Mapa de la Unidad 2}
+  \centering
+  \begin{tikzpicture}[scale=0.92,every node/.style={font=\tiny,align=center},
+    nodo/.style={draw=uniAzul,fill=uniAzul!10,rounded corners,inner sep=3pt,
+                 minimum width=2.5cm,minimum height=0.62cm},
+    flecha/.style={->,>=latex,uniGris}]
+    \node[nodo] (t) at (0,0) {Tabla de\\ frecuencias};
+    \node[nodo] (c) at (3.4,0.9) {Centro\\ $\bar{x}$, $Me$, $Mo$};
+    \node[nodo] (p) at (3.4,-0.9) {Posición\\ $Q_k$, $D_k$, $P_k$};
+    \node[nodo] (d) at (7.0,0.9) {Dispersión\\ $R$, $RIC$, $s$, $CV$};
+    \node[nodo] (fo) at (7.0,-0.9) {Forma\\ $As$, $g_2$};
+    \node[nodo,fill=uniCremaClaro,draw=uniNaranja] (g) at (10.4,0.9)
+      {Gráficos\\ histograma, caja};
+    \node[nodo,fill=uniCrema,draw=uniTitulo] (i) at (10.4,-0.9)
+      {Interpretación\\ e informe};
+    \draw[flecha] (t)--(c); \draw[flecha] (t)--(p);
+    \draw[flecha] (c)--(d); \draw[flecha] (p)--(fo); \draw[flecha] (p)--(d);
+    \draw[flecha] (d)--(g); \draw[flecha] (fo)--(i); \draw[flecha] (g)--(i);
+  \end{tikzpicture}
+
+  \vspace{0.25cm}
+  \begin{alertblock}{La idea que unifica la unidad}
+    \scriptsize
+    Una distribución se describe con \destacar{cuatro preguntas}: dónde está el
+    centro, cómo se reparte, cuánto varía y qué forma tiene. Cada medida de la
+    unidad responde a una de ellas.
+  \end{alertblock}
+\end{frame}
+
+\begin{frame}{Formulario — centro y posición}
+  \scriptsize
+  \begin{columns}[T,onlytextwidth]
+    \begin{column}{0.48\textwidth}
+      \begin{block}{No agrupados}
+        \scriptsize
+        \[ \bar{x} = \frac{\sum x_i}{n} \qquad
+           \bar{x}_p = \frac{\sum w_i x_i}{\sum w_i} \]
+        \[ \text{pos}(Me) = \frac{n+1}{2} \]
+        \[ \text{pos}(P_k) = \frac{k(n+1)}{100} \]
+        $Mo$: el valor más frecuente.
+      \end{block}
+    \end{column}
+    \begin{column}{0.48\textwidth}
+      \begin{block}{Agrupados}
+        \scriptsize
+        \[ \bar{x} = \frac{\sum f_i x_i}{n} \]
+        \[ Me = L_i + \left(\frac{\frac{n}{2}-F_{i-1}}{f_i}\right)A \]
+        \[ P_k = L_i + \left(\frac{\frac{kn}{100}-F_{i-1}}{f_i}\right)A \]
+        \[ Mo = L_i + \left(\frac{d_1}{d_1+d_2}\right)A \]
+      \end{block}
+    \end{column}
+  \end{columns}
+
+  \vspace{0.05cm}
+  {\tiny\color{uniGris} $Q_1 = P_{25}$, \ $Q_2 = Me = P_{50}$, \
+  $Q_3 = P_{75}$, \ $D_k = P_{10k}$. \ $d_1 = f_i - f_{i-1}$, \
+  $d_2 = f_i - f_{i+1}$.}
+\end{frame}
+
+\begin{frame}{Formulario — dispersión y forma}
+  \scriptsize
+  \begin{columns}[T,onlytextwidth]
+    \begin{column}{0.48\textwidth}
+      \begin{block}{Dispersión}
+        \scriptsize
+        \[ R = x_{\max}-x_{\min} \qquad RIC = Q_3-Q_1 \]
+        \[ s^2 = \frac{\sum f_i(x_i-\bar{x})^2}{n-1} \qquad s=\sqrt{s^2} \]
+        \[ CV = \frac{s}{\bar{x}}\times 100 \]
+      \end{block}
+    \end{column}
+    \begin{column}{0.48\textwidth}
+      \begin{block}{Forma}
+        \scriptsize
+        \[ As_1 = \frac{\bar{x}-Mo}{s} \qquad
+           As_2 = \frac{3(\bar{x}-Me)}{s} \]
+        \[ As_B = \frac{Q_3+Q_1-2Q_2}{Q_3-Q_1} \]
+        \[ g_2 = \frac{\sum f_i(x_i-\bar{x})^4/n}{\sigma^4}-3 \]
+      \end{block}
+    \end{column}
+  \end{columns}
+
+  \vspace{0.05cm}
+  \begin{alertblock}{Diagrama de caja}
+    \tiny
+    Cinco números: mínimo, $Q_1$, $Me$, $Q_3$, máximo. \quad
+    Vallas: $Q_1 - 1{,}5\,RIC$ \ y \ $Q_3 + 1{,}5\,RIC$. \quad
+    Los bigotes llegan al último dato \destacar{dentro} de las vallas.
+  \end{alertblock}
+\end{frame}
+
+\begin{frame}{Árbol de decisión: ¿qué medida uso?}
+  \scriptsize
+  \begin{center}
+  \begin{tabular}{@{}p{3.2cm}p{4.0cm}p{4.6cm}@{}}
+    \toprule
+    \textbf{Situación} & \textbf{Centro} & \textbf{Dispersión} \\
+    \midrule
+    Variable nominal & Moda & Ninguna (solo frecuencias) \\
+    Variable ordinal & Mediana o moda & $RIC$ \\
+    Cuantitativa simétrica, sin atípicos & Media & Desviación estándar \\
+    Cuantitativa asimétrica o con atípicos & Mediana & $RIC$ \\
+    Comparar variables de distinta unidad & --- & $CV$ \\
+    \bottomrule
+  \end{tabular}
+  \end{center}
+
+  \vspace{0.1cm}
+  \begin{alertblock}{La pregunta que resuelve casi todo el examen}
+    \scriptsize
+    \destacar{¿La escala de esta variable permite calcular lo que me piden, y
+    la forma de la distribución hace que ese número sea representativo?}
+    Si la respuesta a cualquiera de las dos es no, la medida correcta es otra.
+  \end{alertblock}
+\end{frame}
+
+\seccion{Caso integrador: Ferretería El Tornillo}
+
+\begin{frame}{El caso y la tabla base}
+  \scriptsize
+  \begin{exampleblock}{La situación}
+    \tiny
+    La \azul{Ferretería El Tornillo} registró el valor de compra (miles de
+    pesos) de una muestra de \destacar{50 clientes} durante octubre. El
+    administrador quiere saber cuánto compra un cliente típico, qué tan
+    parecidos son entre sí y si conviene crear un programa de fidelización
+    para los clientes grandes.
+  \end{exampleblock}
+
+  \vspace{0.1cm}
+  \begin{center}
+  \begin{tabular}{@{}lrrrrrrrr@{}}
+    \toprule
+    \textbf{Clase} & $[10,20)$ & $[20,30)$ & $[30,40)$ & $[40,50)$ &
+    $[50,60)$ & $[60,70)$ & $[70,80]$ & \textbf{Total} \\
+    \midrule
+    $x_i$ & 15 & 25 & 35 & 45 & 55 & 65 & 75 & \\
+    $f_i$ &  4 & 11 & 14 &  9 &  6 &  4 &  2 & \textbf{50} \\
+    $F_i$ &  4 & 15 & 29 & 38 & 44 & 48 & 50 & \\
+    \bottomrule
+  \end{tabular}
+  \end{center}
+
+  \vspace{0.1cm}
+  {\tiny\color{uniGris} Trabajaremos esta tabla completa en el tablero: media,
+  mediana, moda, cuartiles, dispersión, forma y diagrama de caja. Es
+  exactamente el tipo de ejercicio del Examen 2.}
+\end{frame}
+
+\begin{frame}{Paso 1 — media, mediana y moda}
+  \scriptsize
+  \begin{columns}[T,onlytextwidth]
+    \begin{column}{0.40\textwidth}
+      \centering
+      \begin{tabular}{@{}rrr@{}}
+        \toprule
+        \textbf{$x_i$} & \textbf{$f_i$} & \textbf{$f_ix_i$} \\
+        \midrule
+        15 &  4 &   60 \\
+        25 & 11 &  275 \\
+        35 & 14 &  490 \\
+        45 &  9 &  405 \\
+        55 &  6 &  330 \\
+        65 &  4 &  260 \\
+        75 &  2 &  150 \\
+        \midrule
+        & \textbf{50} & \textbf{1\,970} \\
+        \bottomrule
+      \end{tabular}
+    \end{column}
+    \begin{column}{0.57\textwidth}
+      \begin{exampleblock}{Los tres cálculos}
+        \scriptsize
+        \[ \bar{x} = \frac{1\,970}{50} = \destacar{39{,}40} \]
+        $\frac{n}{2}=25 \Rightarrow$ clase $[30,40)$: $F_{i-1}=15$, $f_i=14$
+        \[ Me = 30 + \frac{25-15}{14}\cdot 10 = \destacar{37{,}14} \]
+        Clase modal $[30,40)$: $d_1 = 14-11 = 3$, \ $d_2 = 14-9 = 5$
+        \[ Mo = 30 + \tfrac{3}{8}\cdot 10 = \destacar{33{,}75} \]
+      \end{exampleblock}
+    \end{column}
+  \end{columns}
+
+  \vspace{0.05cm}
+  {\tiny\color{uniGris} $Mo\,(33{,}75) < Me\,(37{,}14) < \bar{x}\,(39{,}40)$:
+  \azul{asimetría positiva}, como se esperaba de una variable de gasto.}
+\end{frame}
+
+\begin{frame}{Paso 2 — posición y dispersión}
+  \scriptsize
+  \begin{columns}[T,onlytextwidth]
+    \begin{column}{0.49\textwidth}
+      \begin{block}{Cuartiles}
+        \scriptsize
+        $\frac{n}{4}=12{,}5 \Rightarrow [20,30)$: $F_{i-1}=4$, $f_i=11$
+        \[ Q_1 = 20+\frac{12{,}5-4}{11}\cdot10 = \destacar{27{,}73} \]
+        $\frac{3n}{4}=37{,}5 \Rightarrow [40,50)$: $F_{i-1}=29$, $f_i=9$
+        \[ Q_3 = 40+\frac{37{,}5-29}{9}\cdot10 = \destacar{49{,}44} \]
+        \[ RIC = \destacar{21{,}72} \]
+      \end{block}
+    \end{column}
+    \begin{column}{0.49\textwidth}
+      \begin{exampleblock}{Varianza y CV}
+        \scriptsize
+        \[ \sum f_i(x_i-\bar{x})^2 = 11\,832 \]
+        \[ s^2 = \frac{11\,832}{49} = \destacar{241{,}47} \]
+        \[ s = \destacar{15{,}54} \text{ miles de pesos} \]
+        \[ CV = \frac{15{,}54}{39{,}40}\times100 = \destacar{39{,}4\%} \]
+      \end{exampleblock}
+    \end{column}
+  \end{columns}
+
+  \vspace{0.05cm}
+  {\tiny\color{uniGris} Detalle de la columna: $2\,381{,}44 + 2\,280{,}96 +
+  271{,}04 + 282{,}24 + 1\,460{,}16 + 2\,621{,}44 + 2\,534{,}72 = 11\,832$.}
+\end{frame}
+
+\begin{frame}{Paso 3 — forma, caja e interpretación}
+  \scriptsize
+  \begin{columns}[T,onlytextwidth]
+    \begin{column}{0.44\textwidth}
+      \begin{block}{Asimetría}
+        \scriptsize
+        \[ As_1 = \frac{39{,}40-33{,}75}{15{,}54} = \destacar{0{,}364} \]
+        \[ As_2 = \frac{3(39{,}40-37{,}14)}{15{,}54} = \destacar{0{,}436} \]
+        \[ As_B = \frac{49{,}44+27{,}73-2(37{,}14)}{21{,}72}
+                = \destacar{0{,}133} \]
+      \end{block}
+    \end{column}
+    \begin{column}{0.53\textwidth}
+      \centering
+      \begin{tikzpicture}[scale=0.9]
+        \cajahor{0.072}{10}{27.73}{37.14}{49.44}{80}{0}{uniAzul}
+        \draw[uniGris,->] (0.5,-0.6) -- (6.3,-0.6);
+        \foreach \v in {10,20,30,40,50,60,70,80}
+          \draw[uniGris] (\v*0.072,-0.55) -- (\v*0.072,-0.65)
+            node[below,font=\tiny,color=uniGris] {\v};
+      \end{tikzpicture}
+      {\tiny\color{uniGris} Caja construida con los cuartiles agrupados y los
+      extremos de la tabla.}
+    \end{column}
+  \end{columns}
+
+  \vspace{0.05cm}
+  \begin{alertblock}{El párrafo que va en el informe}
+    \tiny
+    ``Los 50 clientes de la muestra compraron en promedio \azul{39\,400
+    pesos}, aunque la mitad no superó los 37\,140. La variación equivale al
+    39,4\% de la media, de modo que la clientela es
+    \destacar{heterogénea}. El 25\% que más compra supera los 49\,440
+    pesos: ese es el segmento al que apuntaría el programa de fidelización.''
+  \end{alertblock}
+\end{frame}
+
+\seccion{Simulacro del Examen 2}
+
+\begin{frame}{Parte A — conceptos (12 minutos, sin apuntes)}
+  \begin{alertblock}{Individual}
+    \scriptsize
+    \begin{enumerate}\setlength{\itemsep}{-0.05cm}
+      \item ¿Qué medida de centro usaría para ``ciudad de residencia''? ¿Por qué?
+      \item Los salarios de una empresa tienen $\bar{x}=4{,}2$ y $Me=3{,}1$
+            millones. ¿Qué forma tiene la distribución y qué medida reportaría?
+      \item Dos productos: $\bar{x}=500$, $s=60$ y $\bar{x}=80$, $s=16$.
+            ¿Cuál es más homogéneo? Justifique con el $CV$.
+      \item Explique en una frase qué significa $P_{75} = 34$ minutos.
+      \item ¿Cuándo el bigote de un diagrama de caja no llega hasta el máximo?
+      \item Si $As_2 = -0{,}9$, ¿dónde está la cola y qué relación hay entre
+            $\bar{x}$, $Me$ y $Mo$?
+    \end{enumerate}
+  \end{alertblock}
+\end{frame}
+
+\begin{frame}{Parte A — solución}
+  \scriptsize
+  \begin{columns}[T,onlytextwidth]
+    \begin{column}{0.49\textwidth}
+      \begin{block}{Preguntas 1 a 3}
+        \scriptsize
+        \textbf{1.} La \azul{moda}: es la única válida en escala nominal.
+
+        \textbf{2.} $\bar{x} > Me$: asimetría \azul{positiva}. Se reporta la
+        \destacar{mediana}, porque la media está inflada por los salarios
+        altos.
+
+        \textbf{3.} $CV_1 = 60/500 = 12\%$; \ $CV_2 = 16/80 = 20\%$.
+        El \destacar{primero} es más homogéneo, pese a tener mayor $s$.
+      \end{block}
+    \end{column}
+    \begin{column}{0.49\textwidth}
+      \begin{exampleblock}{Preguntas 4 a 6}
+        \scriptsize
+        \textbf{4.} El 75\% de los casos tarda menos de 34 minutos (o: el
+        25\% más lento supera los 34).
+
+        \textbf{5.} Cuando el máximo es un \azul{valor atípico}: queda fuera
+        de la valla y se dibuja como punto suelto.
+
+        \textbf{6.} Cola a la \azul{izquierda}; el orden es
+        $\bar{x} < Me < Mo$.
+      \end{exampleblock}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{Parte B — cálculo (25 minutos)}
+  \begin{alertblock}{Individual}
+    \scriptsize
+    Horas de capacitación recibidas por 40 empleados en el semestre:
+
+    \vspace{0.15cm}
+    \centering
+    \begin{tabular}{@{}lrrrrr@{}}
+      \toprule
+      \textbf{Clase} & $[0,4)$ & $[4,8)$ & $[8,12)$ & $[12,16)$ & $[16,20]$ \\
+      \midrule
+      $f_i$ & 5 & 9 & 13 & 8 & 5 \\
+      \bottomrule
+    \end{tabular}
+
+    \vspace{0.2cm}
+    \raggedright
+    \begin{enumerate}\setlength{\itemsep}{-0.07cm}
+      \item Complete la tabla con $x_i$, $F_i$, $h_i$ y $H_i$.
+      \item Calcule $\bar{x}$, $Me$ y $Mo$.
+      \item Calcule $Q_1$, $Q_3$ y $RIC$.
+      \item Calcule $s^2$, $s$ y $CV$.
+      \item Calcule $As_2$ e indique la forma de la distribución.
+      \item ¿Qué porcentaje de empleados recibió menos de 12 horas?
+    \end{enumerate}
+  \end{alertblock}
+\end{frame}
+
+\begin{frame}{Parte B — solución (tabla y centro)}
+  \scriptsize
+  \begin{columns}[T,onlytextwidth]
+    \begin{column}{0.50\textwidth}
+      \centering
+      \begin{tabular}{@{}lrrrrr@{}}
+        \toprule
+        \textbf{Clase} & \textbf{$x_i$} & \textbf{$f_i$} & \textbf{$F_i$} &
+        \textbf{$f_ix_i$} & \textbf{$f_id_i^2$} \\
+        \midrule
+        $[0,4)$   &  2 &  5 &  5 &  10 & 312{,}05 \\
+        $[4,8)$   &  6 &  9 & 14 &  54 & 136{,}89 \\
+        $[8,12)$  & 10 & 13 & 27 & 130 &   0{,}13 \\
+        $[12,16)$ & 14 &  8 & 35 & 112 & 134{,}48 \\
+        $[16,20]$ & 18 &  5 & 40 &  90 & 328{,}05 \\
+        \midrule
+        \textbf{Tot.} & & \textbf{40} & & \textbf{396} &
+        \textbf{911{,}60} \\
+        \bottomrule
+      \end{tabular}
+      {\tiny $d_i = x_i - 9{,}9$}
+    \end{column}
+    \begin{column}{0.47\textwidth}
+      \begin{exampleblock}{Punto 2}
+        \scriptsize
+        \[ \bar{x} = \frac{396}{40} = \destacar{9{,}90} \]
+        $\frac{n}{2}=20 \Rightarrow [8,12)$: $F_{i-1}=14$, $f_i=13$
+        \[ Me = 8+\frac{20-14}{13}\cdot4 = \destacar{9{,}85} \]
+        $d_1=13-9=4$, \ $d_2=13-8=5$
+        \[ Mo = 8+\tfrac{4}{9}\cdot4 = \destacar{9{,}78} \]
+      \end{exampleblock}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{Parte B — solución (dispersión y forma)}
+  \scriptsize
+  \begin{columns}[T,onlytextwidth]
+    \begin{column}{0.49\textwidth}
+      \begin{block}{Puntos 3 y 4}
+        \scriptsize
+        $\frac{n}{4}=10 \Rightarrow [4,8)$: $F_{i-1}=5$, $f_i=9$
+        \[ Q_1 = 4+\tfrac{10-5}{9}\cdot4 = \destacar{6{,}22} \]
+        $\frac{3n}{4}=30 \Rightarrow [12,16)$: $F_{i-1}=27$, $f_i=8$
+        \[ Q_3 = 12+\tfrac{30-27}{8}\cdot4 = \destacar{13{,}50} \]
+        \[ RIC = \destacar{7{,}28} \]
+        \[ s^2 = \tfrac{911{,}60}{39} = 23{,}37 \quad
+           s = \destacar{4{,}83} \]
+        \[ CV = \tfrac{4{,}83}{9{,}90}\times100 = \destacar{48{,}8\%} \]
+      \end{block}
+    \end{column}
+    \begin{column}{0.49\textwidth}
+      \begin{exampleblock}{Puntos 5 y 6}
+        \scriptsize
+        \[ As_2 = \frac{3(9{,}90-9{,}85)}{4{,}83} = \destacar{0{,}033} \]
+        Prácticamente \azul{simétrica}: las tres medidas de centro casi
+        coinciden (9,90 / 9,85 / 9,78).
+
+        \vspace{0.15cm}
+        \textbf{6.} ``Menos de 12 horas'' es $H_3$:
+        \[ \frac{27}{40} = \destacar{67{,}5\%} \]
+      \end{exampleblock}
+    \end{column}
+  \end{columns}
+
+  \vspace{0.05cm}
+  {\tiny\color{uniGris} Con $CV = 48{,}8\%$ el grupo es \azul{muy
+  heterogéneo}: hay empleados con muy poca y con mucha capacitación, aunque el
+  promedio esté centrado.}
+\end{frame}
+
+\begin{frame}{Parte C — interpretación (15 minutos)}
+  \begin{alertblock}{Individual}
+    \scriptsize
+    Con los resultados de la parte B, responda en \destacar{frases completas}:
+
+    \vspace{0.2cm}
+    \begin{enumerate}\setlength{\itemsep}{-0.05cm}
+      \item Escriba una frase de interpretación para $\bar{x}$, otra para $Me$
+            y otra para $Q_3$.
+      \item ¿Es la media un buen resumen en este caso? Justifique con dos
+            cifras.
+      \item Recursos Humanos quiere garantizar 12 horas a todos.
+            ¿A cuántos empleados hay que reforzar?
+      \item Enuncie una limitación del estudio.
+      \item Escriba una recomendación anclada a una cifra.
+    \end{enumerate}
+  \end{alertblock}
+\end{frame}
+
+\begin{frame}{Parte C — solución sugerida}
+  \scriptsize
+  \begin{block}{Puntos 1 y 2}
+    \scriptsize
+    ``En promedio, cada empleado recibió \azul{9,9 horas} de capacitación en el
+    semestre.'' \quad ``La mitad de los empleados recibió menos de 9,85
+    horas.'' \quad ``El 25\% mejor capacitado superó las 13,5 horas.''
+
+    \vspace{0.1cm}
+    \textbf{2.} Sí: $\bar{x}$ y $Me$ casi coinciden ($As_2 = 0{,}033$), de modo
+    que la media \destacar{sí representa} al empleado típico. Lo que sí
+    preocupa es la dispersión: $CV = 48{,}8\%$.
+  \end{block}
+
+  \vspace{0.1cm}
+  \begin{exampleblock}{Puntos 3 a 5}
+    \scriptsize
+    \textbf{3.} $F_3 = 27$ empleados recibieron menos de 12 horas: hay que
+    reforzar a \destacar{27 de los 40} (67,5\%).
+
+    \textbf{4.} Limitación: se midieron horas, no \azul{calidad} ni
+    pertinencia de la capacitación; además es un solo semestre.
+
+    \textbf{5.} ``Diseñar un plan de nivelación para los 14 empleados con menos
+    de 8 horas ($F_2 = 14$), que son los más rezagados.''
+  \end{exampleblock}
+\end{frame}
+
+\begin{frame}{Recomendaciones para el Examen 2}
+  \begin{block}{Qué se evalúa}
+    \tiny
+    \begin{itemize}\setlength{\itemsep}{-0.02cm}
+      \item Calcular $\bar{x}$, $Me$ y $Mo$ con datos agrupados y no agrupados.
+      \item Calcular cuartiles, deciles y percentiles, e interpretarlos.
+      \item Calcular $R$, $RIC$, $s^2$, $s$ y $CV$, y comparar grupos.
+      \item Calcular e interpretar asimetría y curtosis.
+      \item Construir y leer un diagrama de caja, incluyendo atípicos.
+      \item Redactar interpretaciones correctas y limitadas a lo observado.
+    \end{itemize}
+  \end{block}
+
+  \vspace{0.1cm}
+  \begin{alertblock}{Seis consejos concretos}
+    \tiny
+    (1) Antes de reemplazar, escriba $L_i$, $F_{i-1}$, $f_i$ y $A$. \quad
+    (2) Identifique la clase con la \destacar{primera} $F_i$ que alcanza la
+    posición. \quad (3) No redondee en pasos intermedios. \quad
+    (4) Escriba unidades en toda respuesta. \quad (5) En las preguntas de
+    interpretación, \destacar{frase completa}. \quad (6) Verifique
+    $\sum f_i = n$ y $\sum f_ix_i$ antes de dividir.
+  \end{alertblock}
+
+  \vspace{0.05cm}
+  {\tiny\color{uniGris} Examen 2: semana 12 (26 al 31 de octubre), 35\% de la
+  nota, en Aulas Virtuales (Moodle), presencial en el aula.}
+\end{frame}
+
+\begin{frame}{Formulario de R para la Unidad 2}
+  \tiny
+  \begin{center}
+  \renewcommand{\arraystretch}{0.92}
+  \begin{tabular}{@{}p{3.2cm}p{5.0cm}p{3.6cm}@{}}
+    \toprule
+    \textbf{Medida} & \textbf{Función en R base} & \textbf{Observación} \\
+    \midrule
+    Media & \fx{mean(x)} & --- \\
+    Mediana & \fx{median(x)} & --- \\
+    Moda & \fx{names(which.max(table(x)))} & R base no la trae \\
+    Cuartiles y percentiles & \fx{quantile(x, p)} &
+      \fx{type = 7} por defecto \\
+    Rango & \fx{diff(range(x))} & --- \\
+    Rango intercuartílico & \fx{IQR(x)} & --- \\
+    Varianza y desviación & \fx{var(x)} \ \fx{sd(x)} &
+      Siempre de \azul{muestra} ($n-1$) \\
+    Coeficiente de variación & \fx{sd(x)/mean(x)*100} & --- \\
+    Asimetría de Pearson & \fx{3*(mean(x)-median(x))/sd(x)} & --- \\
+    Cinco números & \fx{fivenum(x)} \ o \ \fx{summary(x)} & Convenciones distintas \\
+    Atípicos & \fx{boxplot.stats(x)\$out} & Criterio $1{,}5\times RIC$ \\
+    Comparar grupos & \fx{tapply(x, g, mean)} & Una medida por grupo \\
+    \bottomrule
+  \end{tabular}
+  \end{center}
+
+  \vspace{-0.12cm}
+  \begin{alertblock}{Para el examen}
+    \tiny
+    El Examen 2 se resuelve \destacar{a mano}, con la tabla agrupada. Este
+    formulario es para el trabajo del semestre y para la sesión 14.
+  \end{alertblock}
+\end{frame}
+
+\begin{frame}{Ejercicios propuestos}
+  \vspace{-0.1cm}
+  \begin{beamercolorbox}[wd=\textwidth,sep=0.10cm]{block body}
+    \centering\scriptsize
+    Repaso general de la Unidad 2. Use la tabla de la Ferretería El Tornillo.
+  \end{beamercolorbox}
+  \listatiny
+  \begin{columns}[T,onlytextwidth]
+    \begin{column}{0.47\textwidth}
+      \begin{enumerate}\setlength{\itemsep}{0.16cm}
+        \item Verifique $\bar{x} = 39{,}40$
+        \item Identifique la clase mediana y su $F_{i-1}$
+        \item Verifique $Me = 37{,}14$
+        \item Verifique $Mo = 33{,}75$
+        \item Calcule $D_2$
+        \item Calcule $P_{95}$
+        \item Verifique $Q_1 = 27{,}73$ y $Q_3 = 49{,}44$
+        \item Calcule el $RIC$ y las vallas
+        \item ¿Habría atípicos si un cliente comprara 110?
+        \item Verifique $s = 15{,}54$
+      \end{enumerate}
+    \end{column}
+    \begin{column}{0.50\textwidth}
+      \begin{enumerate}\setlength{\itemsep}{0.16cm}
+        \setcounter{enumi}{10}
+        \item Verifique $CV = 39{,}4\%$ e interprételo
+        \item Calcule $As_1$ y $As_2$
+        \item ¿Qué forma tiene la distribución?
+        \item ¿Qué medida de centro reportaría? ¿Por qué?
+        \item ¿Qué \% de clientes compra menos de 40 mil?
+        \item ¿Cuántos clientes compran 50 mil o más?
+        \item Interprete $Q_3$ en una frase
+        \item Compare con el Almacén Bello ($CV = 24{,}8\%$)
+        \item Escriba una limitación del estudio
+        \item Escriba una recomendación anclada a una cifra
+      \end{enumerate}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{Respuestas}{Autoevaluación de los ejercicios propuestos}
+  \listatiny
+  \begin{columns}[T,onlytextwidth]
+    \begin{column}{0.47\textwidth}
+      \begin{enumerate}\setlength{\itemsep}{0.16cm}
+        \item $1\,970/50 = 39{,}40$
+        \item $[30,40)$; \ $F_{i-1} = 15$
+        \item $30+\frac{25-15}{14}(10) = 37{,}14$
+        \item $30+\frac{3}{8}(10) = 33{,}75$
+        \item $\frac{2n}{10}=10 \Rightarrow 20+\frac{10-4}{11}(10)=25{,}45$
+        \item $\frac{95n}{100}=47{,}5 \Rightarrow 60+\frac{47{,}5-44}{4}(10)=68{,}75$
+        \item Correcto (ver paso 2 del caso)
+        \item $RIC = 21{,}72$; vallas $-4{,}85$ y $82{,}02$
+        \item Sí: $110 > 82{,}02$
+        \item $\sqrt{11\,832/49} = 15{,}54$
+      \end{enumerate}
+    \end{column}
+    \begin{column}{0.50\textwidth}
+      \begin{enumerate}\setlength{\itemsep}{0.16cm}
+        \setcounter{enumi}{10}
+        \item $15{,}54/39{,}40 = 39{,}4\%$: clientela heterogénea
+        \item $As_1 = 0{,}364$; \ $As_2 = 0{,}436$
+        \item Asimétrica positiva
+        \item La mediana: la media está inflada por las compras grandes
+        \item $H_3 = 29/50 = 58{,}0\%$
+        \item $6+4+2 = 12$ clientes
+        \item El 25\% que más compra supera los 49\,440 pesos
+        \item El Tornillo es bastante más heterogéneo
+        \item Un solo mes; no distingue tipo de cliente
+        \item Respuesta abierta, anclada a $Q_3$ o a $f_i$
+      \end{enumerate}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{Referencias}
+  \footnotesize
+  \begin{itemize}
+    \item[{[1]}] Monroy Saldívar, S. (2008). \textit{Estadística descriptiva}.
+      Instituto Politécnico Nacional.
+      \texttt{https://elibro.net/es/lc/uniminuto/titulos/74722}
+    \item[{[2]}] Ordóñez Fernández, F. F. \& González Fernández, J. (2021).
+      \textit{Estadística descriptiva paso a paso}. Ediciones Pirámide.
+      \texttt{https://elibro.net/es/lc/uniminuto/titulos/215449}
+    \item[{[3]}] Llinás Solano, H. (2014). \textit{Introducción a la
+      estadística con aplicaciones en ciencias sociales}. Universidad del
+      Norte. \texttt{https://elibro.net/es/lc/uniminuto/titulos/70062}
+  \end{itemize}
+
+  \vspace{0.35cm}
+  \begin{center}
+    {\Large\color{uniAzul}\textbf{Éxitos en el Examen 2}}
+  \end{center}
+\end{frame}
+
+\end{document}

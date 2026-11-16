@@ -1,0 +1,486 @@
+% ============================================================================
+%  MATEMÁTICAS OPERATIVAS — Sesión 10
+%  Semana 10: 12 al 17 de octubre de 2026  (lunes 12: festivo, Día de la Raza)
+%  2.4 Logaritmos y exponenciales
+%  Duración prevista: 3 horas
+% ============================================================================
+\documentclass[aspectratio=169,10pt]{beamer}
+
+\usepackage[utf8]{inputenc}
+\IfFileExists{spanish.ldf}{\usepackage[spanish,es-noshorthands]{babel}}{}
+\usepackage{amsmath,amssymb}
+\usepackage{booktabs}
+\usepackage{tikz}
+
+\usetheme{Uniminuto}
+
+\uniasignatura{Matemáticas Operativas}
+\uniprofesor{Andrés Felipe Puerta Velez}
+\unicorreo{andres.puerta-v@uniminuto.edu.co}
+\uninrc{CBASBL011}
+\unisemana{Sesión 10 — Semana 10 · 12 al 17 de octubre de 2026}
+
+\newcommand{\listatiny}{\setbeamerfont{itemize/enumerate body}{size=\tiny}\tiny}
+
+\begin{document}
+
+\portada
+
+\begin{frame}{Orden del día}
+  \begin{enumerate}
+    \item Revisión de los ejercicios propuestos de la sesión 9
+    \item \azul{Tema 2.4: la función exponencial}
+    \item El logaritmo: la operación que despeja el exponente
+    \item Logaritmos decimales, naturales y cambio de base
+    \item Ecuaciones exponenciales sencillas
+    \item Taller principal, errores frecuentes y cierre
+  \end{enumerate}
+
+  \vspace{0.25cm}
+  {\footnotesize\color{uniGris} Sesión de 3 horas.
+  \destacar{Lunes 12 fue festivo} (Día de la Raza). Hoy aparece la última
+  operación nueva del curso, y es la que más asusta sin razón: un logaritmo
+  \azul{es simplemente un exponente}.}
+\end{frame}
+
+% ===========================================================================
+\seccion{2.4 Logaritmos y exponenciales}
+% ===========================================================================
+
+\begin{frame}{Primero, lo exponencial}
+  \scriptsize
+  \begin{block}{Crecimiento exponencial}
+    \tiny
+    En $y = a\cdot b^{x}$, la variable está \azul{en el exponente}. Eso cambia
+    todo: no se crece sumando una cantidad fija, sino
+    \destacar{multiplicando por un factor fijo}.
+  \end{block}
+
+  \vspace{0.1cm}
+  \begin{center}
+  \begin{tabular}{@{}lrrrrrr@{}}
+    \toprule
+    \textbf{Años} & $0$ & $1$ & $2$ & $5$ & $10$ & $20$ \\
+    \midrule
+    Lineal: $+\$400$ al año & $5\,000$ & $5\,400$ & $5\,800$ &
+      $7\,000$ & $9\,000$ & $13\,000$ \\
+    Exponencial: $\times 1{,}08$ & $5\,000$ & $5\,400$ & $5\,832$ &
+      $7\,347$ & $10\,795$ & $23\,305$ \\
+    \bottomrule
+  \end{tabular}
+  \end{center}
+
+  \vspace{0.1cm}
+  \begin{alertblock}{Lo que hay que ver en esta tabla}
+    \tiny
+    En el año $1$ son \azul{idénticos}. En el año $20$, lo exponencial casi
+    duplica a lo lineal. \destacar{Lo exponencial siempre parece inofensivo al
+    principio}, y esa es la razón por la que la intuición falla con intereses,
+    contagios o crecimiento poblacional.
+  \end{alertblock}
+
+  \vspace{0.06cm}
+  {\tiny\color{uniGris} Todo esto se calcula con lo de la sesión 7:
+  $5\,000\cdot 1{,}08^{20}$. \azul{Lo nuevo aparece cuando la incógnita es el
+  exponente:} ¿en cuántos años se duplica?}
+\end{frame}
+
+\begin{frame}{El logaritmo: despejar el exponente}
+  \scriptsize
+  \begin{block}{Definición}
+    \scriptsize
+    \[ \log_{b}(a) = c \qquad\Longleftrightarrow\qquad b^{c} = a \]
+    Con $b>0$, $b\neq 1$ y $a>0$. En palabras:
+    \destacar{$\log_{b}(a)$ es el exponente al que hay que elevar $b$ para
+    obtener $a$}.
+  \end{block}
+
+  \vspace{0.1cm}
+  \begin{center}
+  \begin{tabular}{@{}llll@{}}
+    \toprule
+    \textbf{Logaritmo} & \textbf{Se pregunta} & \textbf{Porque} &
+    \textbf{Vale} \\
+    \midrule
+    $\log_{2}(8)$ & $2$ elevado a ¿qué da $8$? & $2^{3}=8$ & $3$ \\
+    $\log_{3}(81)$ & $3$ elevado a ¿qué da $81$? & $3^{4}=81$ & $4$ \\
+    $\log_{10}(1000)$ & $10$ elevado a ¿qué da $1000$? & $10^{3}$ & $3$ \\
+    $\log_{2}\!\left(\tfrac{1}{8}\right)$ & \dots ¿qué da $\tfrac{1}{8}$? &
+      $2^{-3}$ & $-3$ \\
+    $\log_{9}(3)$ & $9$ elevado a ¿qué da $3$? & $9^{1/2}=3$ &
+      $\tfrac{1}{2}$ \\
+    \bottomrule
+  \end{tabular}
+  \end{center}
+
+  \vspace{0.06cm}
+  {\tiny\color{uniGris} \destacar{Método para resolver cualquier logaritmo a
+  mano:} escríbalo como pregunta de exponente y busque la potencia. Si el
+  resultado es una fracción o un negativo, no hay error: los exponentes
+  también pueden serlo.}
+\end{frame}
+
+\begin{frame}{Los tres valores que salen siempre}
+  \scriptsize
+  \begin{columns}[T,onlytextwidth]
+    \begin{column}{0.32\textwidth}
+      \begin{block}{$\log_{b}(1) = 0$}
+        \tiny
+        Porque $b^{0}=1$ para cualquier base.
+        \[ \log_{7}(1)=0 \]
+      \end{block}
+    \end{column}
+    \begin{column}{0.32\textwidth}
+      \begin{block}{$\log_{b}(b) = 1$}
+        \tiny
+        Porque $b^{1}=b$.
+        \[ \log_{5}(5)=1 \]
+      \end{block}
+    \end{column}
+    \begin{column}{0.32\textwidth}
+      \begin{block}{$\log_{b}(b^{n}) = n$}
+        \tiny
+        Se cancelan: son operaciones inversas.
+        \[ \log_{2}(2^{7})=7 \]
+      \end{block}
+    \end{column}
+  \end{columns}
+
+  \vspace{0.12cm}
+  \begin{alertblock}{Lo que NO existe}
+    \tiny
+    \[ \log_{b}(0) \quad\text{y}\quad \log_{b}(\text{negativo}) \]
+    \destacar{No hay ningún exponente que haga que una base positiva dé cero o
+    un número negativo.} $2^{x}$ siempre es positivo, por grande o pequeño que
+    sea $x$. Por eso el argumento de un logaritmo debe ser \azul{siempre
+    positivo}: es una restricción que hay que verificar al resolver
+    ecuaciones.
+  \end{alertblock}
+
+  \vspace{0.06cm}
+  {\tiny\color{uniGris} Tampoco existe $\log_{1}(a)$: la base $1$ elevada a lo
+  que sea da $1$, así que no serviría para nada.}
+\end{frame}
+
+\begin{frame}{Las dos bases con nombre propio}
+  \scriptsize
+  \begin{columns}[T,onlytextwidth]
+    \begin{column}{0.48\textwidth}
+      \begin{block}{Logaritmo decimal: base $10$}
+        \tiny
+        Se escribe $\log(a)$, sin base. Es el de la tecla \azul{log} de la
+        calculadora.
+        \[ \log(1000)=3 \qquad \log(2)\approx 0{,}3010 \]
+        Se usa en escalas: pH, decibeles, magnitud sísmica.
+      \end{block}
+    \end{column}
+    \begin{column}{0.48\textwidth}
+      \begin{block}{Logaritmo natural: base $e$}
+        \tiny
+        Se escribe $\ln(a)$, con $e\approx 2{,}71828$.
+        \[ \ln(e)=1 \qquad \ln(2)\approx 0{,}6931 \]
+        Es el que aparece en crecimiento continuo y en cálculo.
+      \end{block}
+    \end{column}
+  \end{columns}
+
+  \vspace{0.02cm}
+  \begin{exampleblock}{Cambio de base: cómo calcular cualquier logaritmo}
+    \tiny
+    $\log_{b}(a) = \dfrac{\log a}{\log b} = \dfrac{\ln a}{\ln b}$. \ La
+    calculadora solo trae $\log$ y $\ln$, pero con esto sirve para cualquier
+    base: \ $\log_{5}(30) = \dfrac{3{,}4012}{1{,}6094}
+    \approx \destacar{2{,}1133}$.
+    \ \azul{Comprobación:} $5^{2}=25$ y $5^{3}=125$, así que el resultado
+    \destacar{tiene} que estar entre $2$ y $3$ \checkmark
+  \end{exampleblock}
+\end{frame}
+
+\begin{frame}{Ejercicio 1 — calcular logaritmos a mano}
+  \scriptsize
+  \begin{alertblock}{Individual, 10 minutos. Sin calculadora.}
+    \tiny
+    \textbf{1.} $\log_{2}(32)$ \qquad
+    \textbf{2.} $\log_{5}(125)$ \qquad
+    \textbf{3.} $\log_{4}\!\left(\tfrac{1}{16}\right)$ \qquad
+    \textbf{4.} $\log_{8}(2)$ \qquad
+    \textbf{5.} $\log_{1/2}(8)$ \qquad
+    \textbf{6.} $\log(0{,}001)$
+  \end{alertblock}
+
+  \vspace{0.06cm}
+  \begin{block}{Solución}
+    \tiny
+    \textbf{1.} $2^{5}=32 \Rightarrow \destacar{5}$ \qquad
+    \textbf{2.} $5^{3}=125 \Rightarrow \destacar{3}$ \qquad
+    \textbf{3.} $4^{-2}=\tfrac{1}{16} \Rightarrow \destacar{-2}$
+
+    \vspace{0.08cm}
+    \textbf{4.} $8^{1/3}=2 \Rightarrow \destacar{\tfrac{1}{3}}$ \qquad
+    \textbf{5.} $\left(\tfrac12\right)^{-3}=8 \Rightarrow \destacar{-3}$
+    \qquad
+    \textbf{6.} $10^{-3}=0{,}001 \Rightarrow \destacar{-3}$
+  \end{block}
+
+  \vspace{0.05cm}
+  {\tiny\color{uniGris} Los puntos \destacar{4 y 5} son los que separan:
+  cuando el argumento es \azul{menor} que la base, el logaritmo es una
+  fracción; cuando la \azul{base} es menor que $1$, el logaritmo de un número
+  grande es negativo.}
+\end{frame}
+
+\begin{frame}{Ecuaciones exponenciales}
+  \scriptsize
+  \begin{columns}[T,onlytextwidth]
+    \begin{column}{0.48\textwidth}
+      \begin{block}{Método 1: igualar bases}
+        \tiny
+        Si se pueden escribir los dos lados con la misma base, los exponentes
+        son iguales.
+        \[ 5^{x-1} = 125 = 5^{3} \]
+        \[ x-1 = 3 \;\Longrightarrow\; x = \destacar{4} \]
+        Es el método preferido: \azul{exacto y sin calculadora}.
+      \end{block}
+    \end{column}
+    \begin{column}{0.48\textwidth}
+      \begin{block}{Método 2: aplicar logaritmo}
+        \tiny
+        Cuando las bases no se pueden igualar:
+        \[ 10^{x} = 450 \]
+        \[ x = \log(450) \approx \destacar{2{,}6532} \]
+        \azul{Control:} $10^{2}=100$ y $10^{3}=1000$, así que $x$ está entre
+        $2$ y $3$ \checkmark
+      \end{block}
+    \end{column}
+  \end{columns}
+
+  \vspace{0.12cm}
+  \begin{exampleblock}{Un caso con aplicación}
+    \tiny
+    ¿En cuántos años se duplica un capital al $4\%$ anual?
+    \[ 1{,}04^{t} = 2
+       \;\Longrightarrow\;
+       t = \frac{\ln 2}{\ln 1{,}04}
+       = \frac{0{,}6931}{0{,}0392} \approx \destacar{17{,}7\ \text{años}} \]
+  \end{exampleblock}
+
+  \vspace{0.05cm}
+  {\tiny\color{uniGris} Este es el problema que \azul{no se podía} resolver con
+  lo de la sesión 7: allí la incógnita era la base o el resultado; aquí es el
+  exponente. \destacar{Para eso se inventó el logaritmo.}}
+\end{frame}
+
+\begin{frame}{Ejercicio 2 — taller principal}
+  \begin{alertblock}{En grupos de tres, 20 minutos. Se socializa en el tablero.}
+    \scriptsize
+    \begin{enumerate}\setlength{\itemsep}{0.0cm}
+      \item Calcule sin calculadora: \ $\log_{3}(81)$, \ $\log_{2}(1)$, \
+            $\log_{7}(7)$, \ $\log_{9}(3)$
+      \item Resuelva: \ $2^{x} = 64$
+      \item Resuelva: \ $3^{x} = \tfrac{1}{27}$
+      \item Resuelva: \ $\log_{x}(49) = 2$
+      \item Resuelva: \ $\log_{3}(x) = 4$
+      \item Un capital de $\$1\,200\,000$ se invierte al $8\%$ anual
+            compuesto. ¿Cuánto hay a los $6$ años?
+    \end{enumerate}
+  \end{alertblock}
+\end{frame}
+
+\begin{frame}{Ejercicio 2 — solución}
+  \scriptsize
+  \begin{columns}[T,onlytextwidth]
+    \begin{column}{0.49\textwidth}
+      \begin{block}{Puntos 1 a 3}
+        \tiny
+        \textbf{1.} $\destacar{4}$; \ $\destacar{0}$; \ $\destacar{1}$; \
+        $\destacar{\tfrac{1}{2}}$ \ {\color{uniGris}($9^{1/2}=3$)}
+
+        \vspace{0.08cm}
+        \textbf{2.} $2^{x}=2^{6} \Rightarrow x=\destacar{6}$
+
+        \vspace{0.08cm}
+        \textbf{3.} $3^{x}=3^{-3} \Rightarrow x=\destacar{-3}$
+      \end{block}
+    \end{column}
+    \begin{column}{0.49\textwidth}
+      \begin{block}{Puntos 4 a 6}
+        \tiny
+        \textbf{4.} $x^{2}=49 \Rightarrow x=\destacar{7}$
+        \ {\color{uniGris}($-7$ se descarta: la base debe ser positiva)}
+
+        \vspace{0.08cm}
+        \textbf{5.} $x=3^{4}=\destacar{81}$
+
+        \vspace{0.08cm}
+        \textbf{6.} $1\,200\,000\cdot 1{,}08^{6}
+        \approx \destacar{\$1\,904\,249}$
+      \end{block}
+    \end{column}
+  \end{columns}
+
+  \vspace{0.08cm}
+  {\tiny\color{uniGris} El punto \destacar{4} es el único donde hay que
+  descartar una solución: aunque $(-7)^{2}=49$, una base de logaritmo
+  \azul{tiene que ser positiva y distinta de 1}. Es el mismo tipo de
+  verificación que se hará con las ecuaciones racionales de la sesión 14.}
+\end{frame}
+
+\begin{frame}{Errores frecuentes en esta sesión}
+  \scriptsize
+  \begin{center}
+  \begin{tabular}{@{}p{5.0cm}p{7.0cm}@{}}
+    \toprule
+    \textbf{Error} & \textbf{Lo correcto} \\
+    \midrule
+    $\log_{2}(8) = 4$ &
+      Es $3$: se busca el \azul{exponente}, no el cociente \\
+    \addlinespace
+    $\log(-100) = -2$ &
+      No existe: el argumento debe ser positivo \\
+    \addlinespace
+    $\log_{b}(a) = \tfrac{a}{b}$ &
+      No es una división; es un exponente \\
+    \addlinespace
+    Confundir $\log$ con $\ln$ &
+      $\log$ es base $10$; $\ln$ es base $e\approx 2{,}718$ \\
+    \addlinespace
+    $\log_{5}(30) = \tfrac{\log 5}{\log 30}$ &
+      Al revés: $\tfrac{\log 30}{\log 5}$ \\
+    \addlinespace
+    Aceptar base negativa en $\log_{x}(49)=2$ &
+      La base debe ser positiva y $\neq 1$: solo $x=7$ \\
+    \bottomrule
+  \end{tabular}
+  \end{center}
+\end{frame}
+
+\begin{frame}{Cierre de la sesión}
+  \scriptsize
+  \begin{block}{Lo que hay que llevarse}
+    \tiny
+    \textbf{1.} $\log_{b}(a)=c \Leftrightarrow b^{c}=a$: un logaritmo
+    \destacar{es un exponente}. \quad
+    \textbf{2.} $\log_{b}(1)=0$, $\log_{b}(b)=1$, $\log_{b}(b^{n})=n$. \quad
+    \textbf{3.} No existe el logaritmo de cero ni de negativos. \quad
+    \textbf{4.} $\log$ es base $10$; $\ln$ es base $e$. \quad
+    \textbf{5.} Cambio de base: $\log_{b}(a)=\tfrac{\ln a}{\ln b}$. \quad
+    \textbf{6.} Si se pueden igualar bases, no hace falta logaritmo.
+  \end{block}
+
+  \vspace{0.1cm}
+  \begin{alertblock}{Para la próxima sesión}
+    \tiny
+    Resolver los \destacar{20 ejercicios propuestos} y la guía de la unidad en
+    Aulas Virtuales.
+
+    \vspace{0.05cm}
+    En la sesión 11 vemos las \azul{propiedades de los logaritmos} —que
+    convierten productos en sumas— y hacemos el \destacar{repaso integrador de
+    la Unidad 2} con un simulacro del Examen 2, que es en la semana 12.
+  \end{alertblock}
+\end{frame}
+
+\begin{frame}{Ejercicios propuestos}
+  \vspace{-0.1cm}
+  \begin{beamercolorbox}[wd=\textwidth,sep=0.10cm]{block body}
+    \centering\scriptsize
+    \textbf{1--10:} calcule sin calculadora. \quad
+    \textbf{11--16:} resuelva. \quad
+    \textbf{17--20:} con calculadora y aplicación.
+  \end{beamercolorbox}
+  \listatiny
+  \vspace{0.15cm}
+  \begin{columns}[T,onlytextwidth]
+    \begin{column}{0.47\textwidth}
+      \begin{enumerate}\setlength{\itemsep}{0.16cm}
+        \item $\log_{2}(64)$
+        \item $\log_{3}(243)$
+        \item $\log_{10}(10\,000)$
+        \item $\log_{6}(1)$
+        \item $\log_{12}(12)$
+        \item $\log_{5}\!\left(\tfrac{1}{25}\right)$
+        \item $\log_{27}(3)$
+        \item $\log_{2}(\sqrt{2})$
+        \item $\log_{1/3}(9)$
+        \item $\ln(e^{5})$
+      \end{enumerate}
+    \end{column}
+    \begin{column}{0.50\textwidth}
+      \begin{enumerate}\setlength{\itemsep}{0.16cm}
+        \setcounter{enumi}{10}
+        \item $2^{x}=128$
+        \item $4^{x}=\tfrac{1}{64}$
+        \item $3^{x+2}=81$
+        \item $\log_{2}(x)=6$
+        \item $\log_{x}(64)=3$
+        \item $10^{x}=0{,}01$
+        \item $\log_{7}(200)$ por cambio de base
+        \item $5^{x}=90$ (tres decimales)
+        \item $\$800\,000$ al $6\%$ anual durante $8$ años
+        \item ¿En cuántos años se triplica un capital al $5\%$?
+      \end{enumerate}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{Respuestas}{Autoevaluación de los ejercicios propuestos}
+  \listatiny
+  \vspace{0.15cm}
+  \begin{columns}[T,onlytextwidth]
+    \begin{column}{0.47\textwidth}
+      \begin{enumerate}\setlength{\itemsep}{0.16cm}
+        \item $6$
+        \item $5$
+        \item $4$
+        \item $0$
+        \item $1$
+        \item $-2$
+        \item $\tfrac{1}{3}$
+        \item $\tfrac{1}{2}$
+        \item $-2$
+        \item $5$
+      \end{enumerate}
+    \end{column}
+    \begin{column}{0.50\textwidth}
+      \begin{enumerate}\setlength{\itemsep}{0.16cm}
+        \setcounter{enumi}{10}
+        \item $x=7$
+        \item $x=-3$
+        \item $x=2$
+        \item $x=64$
+        \item $x=4$
+        \item $x=-2$
+        \item $\tfrac{\ln 200}{\ln 7}\approx 2{,}723$
+        \item $\tfrac{\ln 90}{\ln 5}\approx 2{,}796$
+        \item $800\,000\cdot 1{,}06^{8}\approx \$1\,275\,078$
+        \item $\tfrac{\ln 3}{\ln 1{,}05}\approx 22{,}5$ años
+      \end{enumerate}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{Referencias}
+  \footnotesize
+  \begin{itemize}
+    \item[{[1]}] Ramos del Olmo, Á. M. (2016). \textit{Matemáticas básicas
+      para el acceso a la universidad}. Ediciones Pirámide.
+      \texttt{https://elibro.net/es/ereader/uniminuto/49134}
+    \item[{[2]}] González Pulido, J. W., Chacón Benavides, J. A. \&
+      Fonseca Correa, L. Á. (2023). \textit{Matemática básica}
+      (1.\textsuperscript{a} ed.). Universidad Mariana.
+      \texttt{https://elibro.net/es/ereader/uniminuto/280647}
+    \item[{[3]}] Torrijos, M. (2018). \textit{Apuntes de matemática básica}.
+      Universidad Católica de Colombia.
+      \texttt{https://elibro.net/es/ereader/uniminuto/197048}
+    \item[{[4]}] Ramírez, A. \& Rojas, L. (2016). \textit{Matemáticas básicas
+      con aplicaciones a la ingeniería}. Ecoe Ediciones.
+      \texttt{https://elibro.net/es/ereader/uniminuto/114355}
+  \end{itemize}
+
+  \vspace{0.3cm}
+  \begin{center}
+    {\Large\color{uniAzul}\textbf{¿Preguntas?}}
+  \end{center}
+\end{frame}
+
+\end{document}

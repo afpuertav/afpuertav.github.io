@@ -1,0 +1,697 @@
+% ============================================================================
+%  ESTADÍSTICA DESCRIPTIVA — Sesión 9
+%  Semana 9: 5 al 10 de octubre de 2026
+%  2.5 Elaboración de gráficos estadísticos: histograma, polígono y
+%      diagrama de caja
+%  Duración prevista: 3 horas
+% ============================================================================
+\documentclass[aspectratio=169,10pt]{beamer}
+
+\usepackage[utf8]{inputenc}
+\IfFileExists{spanish.ldf}{\usepackage[spanish,es-noshorthands]{babel}}{}
+\usepackage{amsmath,amssymb}
+\usepackage{booktabs}
+\usepackage{tikz}
+\usepackage{listings}
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.16}
+
+\usetheme{Uniminuto}
+
+\uniasignatura{Estadística descriptiva}
+\uniprofesor{Andrés Felipe Puerta Velez}
+\unicorreo{andres.puerta-v@uniminuto.edu.co}
+\uninrc{CBASBL031 - CBASBL141}
+\unisemana{Sesión 9 — Semana 9 · 5 al 10 de octubre de 2026}
+
+\newcommand{\listatiny}{\setbeamerfont{itemize/enumerate body}{size=\tiny}\tiny}
+
+\pgfplotsset{
+  uniplot/.style={
+    width=8.0cm, height=3.5cm, axis lines=left,
+    tick label style={font=\tiny,color=uniGris},
+    label style={font=\tiny,color=uniGris},
+    title style={font=\scriptsize\bfseries,color=uniAzul},
+    every axis plot/.append style={fill=uniAzul!70,draw=uniAzul},
+    ymajorgrids, grid style={uniGris!25,very thin},
+  }
+}
+
+% ---- macro para dibujar una caja horizontal -------------------------------
+% \caja{escala x}{min}{Q1}{Me}{Q3}{max}{y}{color}
+\newcommand{\cajahor}[8]{%
+  \draw[#8,thick] (#2*#1,#7) -- (#3*#1,#7);
+  \draw[#8,thick] (#5*#1,#7) -- (#6*#1,#7);
+  \draw[#8,thick] (#2*#1,#7-0.16) -- (#2*#1,#7+0.16);
+  \draw[#8,thick] (#6*#1,#7-0.16) -- (#6*#1,#7+0.16);
+  \draw[#8,thick,fill=#8!18] (#3*#1,#7-0.28) rectangle (#5*#1,#7+0.28);
+  \draw[#8,very thick] (#4*#1,#7-0.28) -- (#4*#1,#7+0.28);
+}
+
+\newcommand{\fx}[1]{{\ttfamily\color{uniAzul}#1}}
+
+% ------------------------------------------------------------- CÓDIGO R ----
+\lstdefinestyle{Rcode}{
+  language=R,
+  basicstyle=\ttfamily\scriptsize,
+  keywordstyle=\color{uniAzul}\bfseries,
+  commentstyle=\color{uniGris}\itshape,
+  stringstyle=\color{uniTitulo},
+  showstringspaces=false, numbers=none, breaklines=true,
+  columns=fullflexible,
+  backgroundcolor=\color{uniCremaClaro},
+  frame=leftline, framerule=1.2pt, rulecolor=\color{uniNaranja},
+  xleftmargin=0.35cm, framexleftmargin=0.35cm,
+  framexrightmargin=0.15cm, framextopmargin=2pt, framexbottommargin=2pt,
+  aboveskip=0.15cm, belowskip=0.15cm
+}
+\lstdefinestyle{Rmini}{
+  language=R,
+  basicstyle=\ttfamily\tiny,
+  keywordstyle=\color{uniAzul}\bfseries,
+  commentstyle=\color{uniGris}\itshape,
+  stringstyle=\color{uniTitulo},
+  showstringspaces=false, numbers=none, breaklines=true,
+  columns=fullflexible,
+  backgroundcolor=\color{uniCremaClaro},
+  frame=leftline, framerule=1.2pt, rulecolor=\color{uniNaranja},
+  xleftmargin=0.35cm, framexleftmargin=0.35cm,
+  framexrightmargin=0.15cm, framextopmargin=2pt, framexbottommargin=2pt,
+  aboveskip=0.12cm, belowskip=0.12cm
+}
+\lstdefinestyle{Rout}{
+  basicstyle=\ttfamily\tiny\color{black},
+  showstringspaces=false, numbers=none, breaklines=true,
+  columns=fullflexible,
+  backgroundcolor=\color{uniGris!10},
+  frame=leftline, framerule=1.2pt, rulecolor=\color{uniGris},
+  xleftmargin=0.35cm, framexleftmargin=0.35cm,
+  framexrightmargin=0.15cm, framextopmargin=2pt, framexbottommargin=2pt,
+  aboveskip=0.12cm, belowskip=0.12cm
+}
+
+\begin{document}
+
+\portada
+
+\begin{frame}{Orden del día}
+  \begin{enumerate}
+    \item Llamado a lista y revisión de los ejercicios propuestos
+    \item Repaso: histograma y polígono con las medidas encima
+    \item \azul{El resumen de cinco números}
+    \item \azul{Diagrama de caja: construcción, bigotes y valores atípicos}
+    \item Comparación de grupos con cajas paralelas
+    \item Taller guiado y cierre
+  \end{enumerate}
+
+  \vspace{0.25cm}
+  {\footnotesize\color{uniGris} Sesión de 3 horas. Hoy se dibuja mucho: traiga
+  regla y papel cuadriculado.}
+\end{frame}
+
+\begin{frame}{Repaso: el histograma con las medidas encima}
+  \centering
+  \begin{tikzpicture}
+    \begin{axis}[uniplot, width=8.6cm, height=3.6cm,
+      title={Gasto mensual — Almacén Bello, con $Mo$, $Me$ y $\bar{x}$},
+      ybar interval, bar width=1,
+      xlabel={Gasto (miles \$)}, ylabel={$f_i$},
+      xtick={112,152,192,232,272,312,352}, ymin=0, ymax=13]
+      \addplot coordinates {(112,4) (152,7) (192,11) (232,9) (272,6) (312,3)
+                            (352,0)};
+      \draw[uniTitulo,very thick] (axis cs:218.67,0) -- (axis cs:218.67,12);
+      \draw[uniNaranja,very thick,dashed] (axis cs:224.73,0)
+                                          -- (axis cs:224.73,12);
+      \draw[uniGris,very thick,dotted] (axis cs:227,0) -- (axis cs:227,12);
+    \end{axis}
+  \end{tikzpicture}
+
+  \vspace{-0.1cm}
+  \begin{alertblock}{Las tres líneas}
+    \scriptsize
+    \destacar{Moda 218,67} (línea continua), \destacar{mediana 224,73}
+    (discontinua) y \destacar{media 227,0} (punteada). Están casi pegadas y en
+    ese orden: asimetría positiva leve, como calculamos en la sesión 8.
+  \end{alertblock}
+\end{frame}
+
+\begin{frame}{El resumen de cinco números}
+  \footnotesize
+  \begin{center}
+  \begin{tabular}{@{}lrl@{}}
+    \toprule
+    \textbf{Valor} & \textbf{Almacén Bello} & \textbf{Qué indica} \\
+    \midrule
+    Mínimo   & 112 & El cliente que menos gasta \\
+    $Q_1$    & 185{,}50 & El 25\% gasta menos que esto \\
+    Mediana  & 227{,}50 & La mitad gasta menos que esto \\
+    $Q_3$    & 267{,}75 & El 75\% gasta menos que esto \\
+    Máximo   & 352 & El cliente que más gasta \\
+    \bottomrule
+  \end{tabular}
+  \end{center}
+
+  \vspace{0.15cm}
+  \begin{alertblock}{Por qué cinco números y no uno}
+    \scriptsize
+    Con estos cinco valores se reconstruye \destacar{el centro, la dispersión y
+    la asimetría} de la distribución sin necesidad de ver los 40 datos. El
+    diagrama de caja no es más que \azul{el dibujo de esta tabla}.
+  \end{alertblock}
+
+  \vspace{0.1cm}
+  {\scriptsize\color{uniGris} Nota: aquí usamos los cuartiles de los
+  \azul{datos originales}. Si solo se dispone de la tabla agrupada, se usan los
+  cuartiles interpolados de la sesión 7.}
+\end{frame}
+
+\seccion{Diagrama de caja}
+
+\begin{frame}{Anatomía del diagrama de caja}
+  \centering
+  \begin{tikzpicture}[scale=1.0]
+    \cajahor{0.028}{112}{185.5}{227.5}{267.75}{352}{0}{uniAzul}
+    \draw[uniGris,->] (2.8,-0.75) -- (11.0,-0.75);
+    \foreach \v in {112,150,200,250,300,352}
+      \draw[uniGris] (\v*0.028,-0.7) -- (\v*0.028,-0.8)
+        node[below,font=\tiny,color=uniGris] {\v};
+    \node[font=\tiny,color=uniTitulo,above] at (112*0.028,0.4) {mínimo};
+    \node[font=\tiny,color=uniTitulo,above] at (185.5*0.028,0.4) {$Q_1$};
+    \node[font=\tiny,color=uniTitulo,above] at (227.5*0.028,0.62) {$Me$};
+    \node[font=\tiny,color=uniTitulo,above] at (267.75*0.028,0.4) {$Q_3$};
+    \node[font=\tiny,color=uniTitulo,above] at (352*0.028,0.4) {máximo};
+    \draw[uniNaranja,<->] (185.5*0.028,-0.45) -- (267.75*0.028,-0.45)
+      node[midway,below,font=\tiny,color=uniNaranja] {$RIC = 82{,}25$};
+  \end{tikzpicture}
+
+  \vspace{0.35cm}
+  \begin{alertblock}{Qué representa cada parte}
+    \scriptsize
+    La \destacar{caja} contiene al 50\% central de los datos; su ancho es el
+    $RIC$. La \destacar{línea interior} es la mediana. Cada \destacar{bigote}
+    cubre aproximadamente el 25\% de los datos. Si un bigote es mucho más
+    largo que el otro, hay \azul{asimetría}.
+  \end{alertblock}
+\end{frame}
+
+\begin{frame}{Construcción paso a paso}
+  \footnotesize
+  \begin{block}{Los seis pasos}
+    \tiny
+    \begin{enumerate}\setlength{\itemsep}{-0.03cm}
+      \item Ordenar los datos y calcular $Q_1$, $Me$ y $Q_3$.
+      \item Calcular $RIC = Q_3 - Q_1$.
+      \item Calcular las \azul{vallas}: \ inferior $= Q_1 - 1{,}5\,RIC$; \
+            superior $= Q_3 + 1{,}5\,RIC$.
+      \item Marcar como \destacar{atípicos} los datos fuera de las vallas.
+      \item Dibujar los bigotes hasta el dato \azul{más extremo que aún esté
+            dentro} de las vallas —no hasta la valla.
+      \item Dibujar los atípicos como puntos sueltos.
+    \end{enumerate}
+  \end{block}
+
+  \vspace{0.05cm}
+  \begin{alertblock}{El error número uno}
+    \tiny
+    Los bigotes \destacar{no llegan hasta las vallas}: llegan hasta el último
+    dato real que cabe dentro de ellas.
+  \end{alertblock}
+\end{frame}
+
+\begin{frame}{Aplicación al Almacén Bello}
+  \scriptsize
+  \begin{columns}[T,onlytextwidth]
+    \begin{column}{0.46\textwidth}
+      \begin{exampleblock}{Los cálculos}
+        \scriptsize
+        \[ RIC = 267{,}75-185{,}50 = 82{,}25 \]
+        \[ 1{,}5 \times 82{,}25 = 123{,}375 \]
+        \[ \text{V. inf.} = 185{,}50-123{,}38 = 62{,}12 \]
+        \[ \text{V. sup.} = 267{,}75+123{,}38 = 391{,}13 \]
+      \end{exampleblock}
+    \end{column}
+    \begin{column}{0.50\textwidth}
+      \begin{block}{Conclusión}
+        \scriptsize
+        El mínimo (112) y el máximo (352) están \azul{dentro} de las vallas:
+        \destacar{no hay valores atípicos}.
+
+        \vspace{0.1cm}
+        Los bigotes llegan entonces hasta 112 y hasta 352.
+      \end{block}
+    \end{column}
+  \end{columns}
+
+  \vspace{0.1cm}
+  \begin{alertblock}{Leyendo la asimetría en la caja}
+    \scriptsize
+    Distancia $Q_1$ a $Me$: $227{,}5-185{,}5 = 42{,}0$. \quad
+    Distancia $Me$ a $Q_3$: $267{,}75-227{,}5 = 40{,}25$. \quad
+    Casi iguales: la mitad central es \azul{prácticamente simétrica}. El bigote
+    derecho (84,25) sí es más largo que el izquierdo (73,5): la
+    \destacar{cola} derecha es la que produce la asimetría positiva.
+  \end{alertblock}
+\end{frame}
+
+\begin{frame}{Un caso con valores atípicos}
+  \footnotesize
+  Tiempo de respuesta de soporte técnico, en minutos ($n=15$):
+
+  \vspace{0.1cm}
+  \begin{beamercolorbox}[wd=\textwidth,sep=0.1cm]{block body}
+    \centering\scriptsize\ttfamily
+    5 \ 7 \ 8 \ 9 \ 10 \ 11 \ 12 \ 13 \ 14 \ 15 \ 16 \ 18 \ 20 \ 45 \ 60
+  \end{beamercolorbox}
+
+  \vspace{0.15cm}
+  \centering
+  \begin{tikzpicture}[scale=1.0]
+    \cajahor{0.16}{5}{9}{13}{18}{20}{0}{uniAzul}
+    \fill[uniTitulo] (45*0.16,0) circle (2.2pt);
+    \fill[uniTitulo] (60*0.16,0) circle (2.2pt);
+    \draw[uniGris,->] (0.4,-0.65) -- (10.4,-0.65);
+    \foreach \v in {0,10,20,30,40,50,60}
+      \draw[uniGris] (\v*0.16,-0.6) -- (\v*0.16,-0.7)
+        node[below,font=\tiny,color=uniGris] {\v};
+    \draw[uniNaranja,dashed] (31.5*0.16,-0.45) -- (31.5*0.16,0.55)
+      node[above,font=\tiny,color=uniNaranja] {valla sup. $=31{,}5$};
+  \end{tikzpicture}
+
+  \vspace{0.15cm}
+  \begin{alertblock}{Los cálculos}
+    \scriptsize
+    $Q_1 = 9$, \ $Me = 13$, \ $Q_3 = 18$, \ $RIC = 9$, \ valla superior
+    $= 18 + 13{,}5 = 31{,}5$. Los valores \destacar{45 y 60} la superan: son
+    \azul{atípicos}. El bigote derecho llega hasta \destacar{20}, el último
+    dato admitido.
+  \end{alertblock}
+\end{frame}
+
+\begin{frame}{Qué hacer con un valor atípico}
+  \scriptsize
+  \begin{center}
+  \begin{tabular}{@{}p{4.2cm}p{7.6cm}@{}}
+    \toprule
+    \textbf{Posible causa} & \textbf{Qué se hace} \\
+    \midrule
+    Error de digitación o de unidad &
+      Se corrige o se elimina, dejando constancia en el informe \\
+    \addlinespace
+    Caso legítimo pero excepcional &
+      Se conserva y se analiza aparte: suele ser lo más interesante \\
+    \addlinespace
+    Mezcla de dos poblaciones &
+      Se separan los grupos y se describe cada uno \\
+    \bottomrule
+  \end{tabular}
+  \end{center}
+
+  \vspace{0.15cm}
+  \begin{alertblock}{La regla profesional}
+    \scriptsize
+    \destacar{Nunca se borra un dato solo porque estorbe.} En el ejemplo de
+    soporte, los casos de 45 y 60 minutos podrían ser justamente los que
+    generan las quejas: eliminarlos ocultaría el problema que se quiere
+    resolver.
+  \end{alertblock}
+
+  \vspace{0.1cm}
+  {\tiny\color{uniGris} El criterio $1{,}5 \times RIC$ es una convención (Tukey),
+  no una ley física. Con $3 \times RIC$ se marcan los atípicos ``extremos''.}
+\end{frame}
+
+\begin{frame}{Comparar grupos con cajas paralelas}
+  \centering
+  \begin{tikzpicture}[scale=1.0]
+    \cajahor{0.32}{4}{7}{10}{13}{18}{0.9}{uniAzul}
+    \cajahor{0.32}{2}{5}{9}{17}{28}{0}{uniNaranja}
+    \node[font=\tiny,color=uniAzul,left] at (0.3,0.9) {Bello};
+    \node[font=\tiny,color=uniNaranja,left] at (0.3,0) {Itagüí};
+    \draw[uniGris,->] (0.4,-0.6) -- (9.9,-0.6);
+    \foreach \v in {0,5,10,15,20,25,30}
+      \draw[uniGris] (\v*0.32,-0.55) -- (\v*0.32,-0.65)
+        node[below,font=\tiny,color=uniGris] {\v};
+    \node[font=\tiny,color=uniGris] at (5.0,-1.05) {Tiempo de espera (minutos)};
+  \end{tikzpicture}
+
+  \vspace{0.35cm}
+  \begin{alertblock}{Lo que se lee de un vistazo}
+    \scriptsize
+    Las medianas son parecidas (10 y 9 minutos), pero la caja de
+    \destacar{Itagüí es mucho más ancha}: $RIC = 12$ frente a 6. El servicio
+    de Bello es \azul{más predecible}. Además la caja de Itagüí es asimétrica
+    hacia arriba: hay clientes que esperan mucho más de lo habitual.
+  \end{alertblock}
+
+  \vspace{0.05cm}
+  {\tiny\color{uniGris} Este es el gráfico que se lleva a una junta cuando hay
+  que comparar sucursales, turnos, meses o productos.}
+\end{frame}
+
+\begin{frame}{Histograma o caja: ¿cuál usar?}
+  \scriptsize
+  \begin{center}
+  \begin{tabular}{@{}p{2.4cm}p{4.6cm}p{4.6cm}@{}}
+    \toprule
+    & \textbf{Histograma} & \textbf{Diagrama de caja} \\
+    \midrule
+    Muestra & La forma completa: picos, huecos, bimodalidad &
+      Cinco números: centro, dispersión y atípicos \\
+    \addlinespace
+    Oculta & Los valores atípicos individuales &
+      La forma: dos distribuciones muy distintas pueden dar cajas iguales \\
+    \addlinespace
+    Comparar grupos & Difícil: hay que superponer o repetir &
+      Muy fácil: cajas paralelas \\
+    \addlinespace
+    Necesita & Bastantes datos y clases bien elegidas &
+      Solo los cuartiles; funciona con pocos datos \\
+    \bottomrule
+  \end{tabular}
+  \end{center}
+
+  \vspace{0.1cm}
+  \begin{alertblock}{En la práctica}
+    \scriptsize
+    \destacar{Se usan juntos.} El histograma para entender la variable; la
+    caja para comparar grupos y detectar atípicos. En un informe, primero el
+    histograma de la variable y después las cajas por segmento.
+  \end{alertblock}
+\end{frame}
+
+\begin{frame}{Ejercicio 1 — en clase}
+  \begin{alertblock}{En parejas (20 minutos)}
+    \footnotesize
+    Monto de 12 facturas de un restaurante (miles de pesos):
+
+    \vspace{0.15cm}
+    \begin{beamercolorbox}[wd=0.9\textwidth,sep=0.1cm]{block body}
+      \centering\scriptsize\ttfamily
+      21 \ 33 \ 14 \ 25 \ 19 \ 48 \ 22 \ 30 \ 16 \ 27 \ 18 \ 24
+    \end{beamercolorbox}
+
+    \vspace{0.2cm}
+    \begin{enumerate}\setlength{\itemsep}{-0.05cm}
+      \item Ordene los datos y obtenga el resumen de cinco números.
+      \item Calcule el $RIC$ y las dos vallas.
+      \item ¿Hay valores atípicos? ¿Cuáles?
+      \item ¿Hasta dónde llegan los bigotes?
+      \item Dibuje el diagrama de caja a escala.
+      \item ¿Qué asimetría muestra? Justifique con las distancias.
+    \end{enumerate}
+  \end{alertblock}
+\end{frame}
+
+\begin{frame}{Ejercicio 1 — solución}
+  \scriptsize
+  Ordenados: \ttfamily 14 \ 16 \ 18 \ 19 \ 21 \ 22 \ 24 \ 25 \ 27 \ 30 \ 33
+  \ 48 \rmfamily \quad ($n = 12$)
+
+  \vspace{0.1cm}
+  \begin{columns}[T,onlytextwidth]
+    \begin{column}{0.47\textwidth}
+      \begin{exampleblock}{Puntos 1 a 4}
+        \scriptsize
+        pos$(Q_1) = \frac{13}{4} = 3{,}25 \Rightarrow
+        Q_1 = 18+0{,}25(19-18) = \destacar{18{,}25}$
+
+        pos$(Me) = 6{,}5 \Rightarrow Me = \frac{22+24}{2} = \destacar{23}$
+
+        pos$(Q_3) = 9{,}75 \Rightarrow Q_3 = 27+0{,}75(30-27) = \destacar{29{,}25}$
+        \[ RIC = 11{,}0 \qquad 1{,}5\,RIC = 16{,}5 \]
+        Vallas: $1{,}75$ y $\destacar{45{,}75}$ \\
+        Atípico: \destacar{48}. \ Bigotes: de 14 a 33.
+      \end{exampleblock}
+    \end{column}
+    \begin{column}{0.49\textwidth}
+      \centering
+      \begin{tikzpicture}[scale=0.95]
+        \cajahor{0.115}{14}{18.25}{23}{29.25}{33}{0}{uniAzul}
+        \fill[uniTitulo] (48*0.115,0) circle (2pt);
+        \draw[uniGris,->] (0.8,-0.6) -- (6.0,-0.6);
+        \foreach \v in {10,20,30,40,50}
+          \draw[uniGris] (\v*0.115,-0.55) -- (\v*0.115,-0.65)
+            node[below,font=\tiny,color=uniGris] {\v};
+      \end{tikzpicture}
+    \end{column}
+  \end{columns}
+
+  \vspace{0.1cm}
+  \begin{alertblock}{Punto 6}
+    \tiny
+    $Me-Q_1 = 4{,}75$ y $Q_3-Me = 6{,}25$: la mitad superior de la caja es más
+    ancha. Sumado al atípico de 48, la distribución es
+    \destacar{asimétrica positiva}.
+  \end{alertblock}
+\end{frame}
+
+\begin{frame}{Ejercicio 2 — en clase (taller principal)}
+  \begin{alertblock}{En grupos de 3 (25 minutos)}
+    \scriptsize
+    Dos turnos de una misma bodega registran las unidades despachadas por hora:
+
+    \vspace{0.15cm}
+    \begin{beamercolorbox}[wd=0.94\textwidth,sep=0.1cm]{block body}
+      \centering\scriptsize\ttfamily
+      Turno mañana: \ 30 \ 32 \ 35 \ 36 \ 38 \ 40 \ 41 \ 43 \ 45 \ 60 \\
+      Turno tarde: \ \ 22 \ 28 \ 33 \ 36 \ 38 \ 39 \ 42 \ 48 \ 52 \ 55
+    \end{beamercolorbox}
+
+    \vspace{0.2cm}
+    \begin{enumerate}\setlength{\itemsep}{-0.07cm}
+      \item Obtenga el resumen de cinco números de cada turno.
+      \item Calcule $RIC$ y vallas de cada uno; identifique atípicos.
+      \item Dibuje las dos cajas en paralelo, con la misma escala.
+      \item ¿Qué turno despacha más, en mediana?
+      \item ¿Qué turno es más consistente? Justifique con el $RIC$.
+      \item Si usted fuera el jefe de bodega, ¿qué decisión tomaría y con qué
+            argumento?
+    \end{enumerate}
+  \end{alertblock}
+\end{frame}
+
+\begin{frame}{Ejercicio 2 — solución}
+  \scriptsize
+  \begin{columns}[T,onlytextwidth]
+    \begin{column}{0.44\textwidth}
+      \centering
+      \begin{tabular}{@{}lrr@{}}
+        \toprule
+        & \textbf{Mañana} & \textbf{Tarde} \\
+        \midrule
+        Mínimo & 30 & 22 \\
+        $Q_1$  & 34{,}25 & 31{,}75 \\
+        $Me$   & 39{,}0  & 38{,}5 \\
+        $Q_3$  & 43{,}5  & 49{,}0 \\
+        Máximo & 60 & 55 \\
+        \midrule
+        $RIC$  & 9{,}25 & 17{,}25 \\
+        V. sup.& 57{,}38 & 74{,}88 \\
+        Atípico & \destacar{60} & --- \\
+        \bottomrule
+      \end{tabular}
+    \end{column}
+    \begin{column}{0.53\textwidth}
+      \centering
+      \begin{tikzpicture}[scale=0.92]
+        \cajahor{0.105}{30}{34.25}{39}{43.5}{45}{0.85}{uniAzul}
+        \fill[uniTitulo] (60*0.105,0.85) circle (2pt);
+        \cajahor{0.105}{22}{31.75}{38.5}{49}{55}{0}{uniNaranja}
+        \node[font=\tiny,color=uniAzul,left] at (2.0,0.85) {Mañana};
+        \node[font=\tiny,color=uniNaranja,left] at (2.0,0) {Tarde};
+        \draw[uniGris,->] (2.05,-0.55) -- (6.7,-0.55);
+        \foreach \v in {20,30,40,50,60}
+          \draw[uniGris] (\v*0.105,-0.5) -- (\v*0.105,-0.6)
+            node[below,font=\tiny,color=uniGris] {\v};
+      \end{tikzpicture}
+    \end{column}
+  \end{columns}
+
+  \vspace{0.05cm}
+  \begin{alertblock}{Puntos 4 a 6}
+    \tiny
+    Las medianas son casi iguales (39 y 38,5): \destacar{ninguno despacha
+    claramente más}. Pero el turno de la \azul{mañana} tiene un $RIC$ de 9,25
+    frente a 17,25: es casi el doble de consistente. Decisión razonable: revisar
+    qué causa la variabilidad de la tarde (¿personal cambiante? ¿picos de
+    pedidos?) e investigar la hora de 60 unidades de la mañana, que fue
+    atípica.
+  \end{alertblock}
+\end{frame}
+
+\begin{frame}{Buenas prácticas al presentar gráficos}
+  \scriptsize
+  \begin{center}
+  \begin{tabular}{@{}p{4.4cm}p{7.4cm}@{}}
+    \toprule
+    \textbf{Práctica} & \textbf{Por qué} \\
+    \midrule
+    Título que diga qué, quién y cuándo &
+      ``Gasto mensual de 40 clientes, Almacén Bello, agosto 2026'' \\
+    Ejes rotulados con unidades &
+      Sin unidad, el número no significa nada \\
+    Misma escala al comparar &
+      Dos cajas en escalas distintas no son comparables \\
+    Indicar $n$ en cada grupo &
+      Una caja con 5 datos no vale lo mismo que una con 500 \\
+    Señalar los atípicos, no esconderlos &
+      Suelen ser la información más valiosa \\
+    Un mensaje por gráfico &
+      Si el gráfico necesita tres párrafos de explicación, sobra \\
+    \bottomrule
+  \end{tabular}
+  \end{center}
+\end{frame}
+
+\begin{frame}[fragile]{El diagrama de caja, en R}
+  \scriptsize
+\begin{lstlisting}[style=Rmini]
+boxplot(gasto, horizontal = TRUE, col = "steelblue",
+        main = "Gasto mensual de 40 clientes", xlab = "Miles de pesos")
+
+fivenum(gasto)              # los cinco numeros que dibuja el grafico
+boxplot.stats(gasto)$stats  # bigote inf, Q1, mediana, Q3, bigote sup
+boxplot.stats(gasto)$out    # valores atipicos
+
+# Cajas paralelas: la formula se lee "gasto SEGUN sucursal"
+boxplot(gasto ~ sucursal, col = "steelblue",
+        main = "Gasto por sucursal", xlab = "Sucursal", ylab = "Miles de pesos")
+\end{lstlisting}
+\begin{lstlisting}[style=Rout]
+[1] 112.0 187.0 227.5 266.5 352.0
+[1] 112.0 187.0 227.5 266.5 352.0
+numeric(0)
+\end{lstlisting}
+
+  \vspace{-0.1cm}
+  \begin{alertblock}{Dos detalles finos}
+    \tiny
+    \fx{numeric(0)} significa \destacar{ningún atípico}, igual que concluimos a
+    mano. Y ojo: \fx{fivenum()} usa las \azul{bisagras de Tukey} (187 y 266,5)
+    mientras \fx{quantile()} usa otra convención (188,5 y 265,25). El dibujo se
+    hace con las primeras.
+  \end{alertblock}
+\end{frame}
+
+\begin{frame}{Cierre de la sesión}
+  \begin{block}{Lo que debe quedar claro hoy}
+    \scriptsize
+    \begin{itemize}\setlength{\itemsep}{0.02cm}
+      \item El \azul{resumen de cinco números} describe una distribución sin
+            mostrar los datos.
+      \item Caja $=$ 50\% central; línea $=$ mediana; bigotes $\approx$
+            25\% a cada lado.
+      \item Vallas $= Q_1 - 1{,}5\,RIC$ y $Q_3 + 1{,}5\,RIC$; los bigotes
+            llegan al \destacar{último dato dentro} de ellas.
+      \item Un atípico se investiga, no se borra.
+      \item Cajas paralelas: la herramienta para \azul{comparar grupos}.
+    \end{itemize}
+  \end{block}
+
+  \vspace{0.1cm}
+  \begin{alertblock}{Trabajo independiente}
+    \scriptsize
+    Resolver los 20 ejercicios de la lámina siguiente. En la sesión 10 pasamos
+    de calcular a \destacar{interpretar}: patrones, tendencias y redacción del
+    informe estadístico.
+  \end{alertblock}
+\end{frame}
+
+\begin{frame}{Ejercicios propuestos}
+  \vspace{-0.1cm}
+  \begin{beamercolorbox}[wd=\textwidth,sep=0.10cm]{block body}
+    \centering\scriptsize
+    \textbf{1--7:} cinco números y vallas. \quad \textbf{8--14:} construcción.
+    \quad \textbf{15--20:} lectura e interpretación.
+  \end{beamercolorbox}
+  \listatiny
+  \begin{columns}[T,onlytextwidth]
+    \begin{column}{0.47\textwidth}
+      \begin{enumerate}\setlength{\itemsep}{0.16cm}
+        \item Cinco números de: 3, 5, 6, 8, 9, 11, 14, 20
+        \item $RIC$ de ese conjunto
+        \item Vallas de ese conjunto
+        \item ¿Hay atípicos? ¿Cuáles?
+        \item Con $Q_1=40$ y $Q_3=70$: $RIC$ y vallas
+        \item ¿Es atípico un dato de 120 en ese caso?
+        \item ¿Y uno de 10?
+        \item ¿Hasta dónde llega el bigote superior si el mayor dato dentro de
+              la valla es 108?
+        \item Dibuje la caja de: 2, 4, 5, 5, 6, 7, 9
+        \item ¿Qué porcentaje de datos hay dentro de la caja?
+      \end{enumerate}
+    \end{column}
+    \begin{column}{0.50\textwidth}
+      \begin{enumerate}\setlength{\itemsep}{0.16cm}
+        \setcounter{enumi}{10}
+        \item ¿Qué porcentaje cubre cada bigote?
+        \item Si la mediana está pegada a $Q_1$, ¿qué asimetría hay?
+        \item ¿Qué caja es más dispersa: $RIC=5$ o $RIC=15$?
+        \item ¿Puede un diagrama de caja no tener bigote de un lado?
+        \item Dos cajas con igual mediana y distinto $RIC$: ¿qué concluye?
+        \item ¿Por qué no se borra un atípico automáticamente?
+        \item ¿Qué muestra el histograma que no muestra la caja?
+        \item ¿Qué muestra la caja que no muestra el histograma?
+        \item En el Almacén Bello, ¿por qué no hay atípicos?
+        \item Escriba una frase de interpretación de la caja del turno tarde
+      \end{enumerate}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{Respuestas}{Autoevaluación de los ejercicios propuestos}
+  \listatiny
+  \begin{columns}[T,onlytextwidth]
+    \begin{column}{0.47\textwidth}
+      \begin{enumerate}\setlength{\itemsep}{0.16cm}
+        \item Mín 3; $Q_1=5{,}25$; $Me=8{,}5$; $Q_3=13{,}25$; máx 20
+        \item $RIC = 8{,}0$
+        \item $-6{,}75$ y $25{,}25$
+        \item No hay atípicos
+        \item $RIC = 30$; vallas $-5$ y $115$
+        \item Sí: $120 > 115$
+        \item No: $10 > -5$
+        \item Hasta 108
+        \item $Q_1=4$; $Me=5$; $Q_3=7$; mín 2; máx 9
+        \item El 50\%
+      \end{enumerate}
+    \end{column}
+    \begin{column}{0.50\textwidth}
+      \begin{enumerate}\setlength{\itemsep}{0.16cm}
+        \setcounter{enumi}{10}
+        \item Aproximadamente el 25\% cada uno
+        \item Positiva: la cola larga está arriba
+        \item La de $RIC = 15$
+        \item Sí: si $Q_1$ coincide con el mínimo, por ejemplo
+        \item Mismo centro, distinta consistencia
+        \item Puede ser un caso legítimo e informativo
+        \item La forma: picos, huecos, bimodalidad
+        \item Los cuartiles y los atípicos, y permite comparar grupos
+        \item Porque 112 y 352 caen dentro de $[62{,}12;\ 391{,}13]$
+        \item Respuesta abierta: mediana 38,5 con alta variabilidad
+      \end{enumerate}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{Referencias}
+  \footnotesize
+  \begin{itemize}
+    \item[{[1]}] Monroy Saldívar, S. (2008). \textit{Estadística descriptiva}.
+      Instituto Politécnico Nacional.
+      \texttt{https://elibro.net/es/lc/uniminuto/titulos/74722}
+    \item[{[2]}] Ordóñez Fernández, F. F. \& González Fernández, J. (2021).
+      \textit{Estadística descriptiva paso a paso}. Ediciones Pirámide.
+      \texttt{https://elibro.net/es/lc/uniminuto/titulos/215449}
+    \item[{[3]}] Llinás Solano, H. (2014). \textit{Introducción a la
+      estadística con aplicaciones en ciencias sociales}. Universidad del
+      Norte. \texttt{https://elibro.net/es/lc/uniminuto/titulos/70062}
+  \end{itemize}
+
+  \vspace{0.35cm}
+  \begin{center}
+    {\Large\color{uniAzul}\textbf{¿Preguntas?}}
+  \end{center}
+\end{frame}
+
+\end{document}

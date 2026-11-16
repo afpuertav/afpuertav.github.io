@@ -1,0 +1,636 @@
+% ============================================================================
+%  ESTADÍSTICA INFERENCIAL — Sesión 2
+%  Semana 2: 17 al 22 de agosto de 2026   (lunes 17: festivo)
+%  1.2 Reglas de conteo, combinaciones y permutaciones
+%  Compilar: pdflatex Est-Inferencial-S02.tex  (dos veces)
+% ============================================================================
+\documentclass[aspectratio=169,10pt]{beamer}
+
+\usepackage[utf8]{inputenc}
+\IfFileExists{spanish.ldf}{\usepackage[spanish,es-noshorthands]{babel}}{}
+\usepackage{amsmath,amssymb}
+\usepackage{booktabs}
+\usepackage{tikz}
+\usepackage{listings}
+\usetikzlibrary{positioning}
+
+\usetheme{Uniminuto}
+
+\uniasignatura{Estadística inferencial}
+\uniprofesor{Andrés Felipe Puerta Velez}
+\unicorreo{andres.puerta-v@uniminuto.edu.co}
+\uninrc{CBASBL061}
+\unisemana{Sesión 2 — Semana 2 · 17 al 22 de agosto de 2026}
+
+\newcommand{\listatiny}{\setbeamerfont{itemize/enumerate body}{size=\tiny}\tiny}
+
+\newcommand{\fx}[1]{{\ttfamily\color{uniAzul}#1}}
+
+% ------------------------------------------------------------- CÓDIGO R ----
+\lstdefinestyle{Rcode}{
+  language=R,
+  basicstyle=\ttfamily\scriptsize,
+  keywordstyle=\color{uniAzul}\bfseries,
+  commentstyle=\color{uniGris}\itshape,
+  stringstyle=\color{uniTitulo},
+  showstringspaces=false, numbers=none, breaklines=true,
+  columns=fullflexible,
+  backgroundcolor=\color{uniCremaClaro},
+  frame=leftline, framerule=1.2pt, rulecolor=\color{uniNaranja},
+  xleftmargin=0.35cm, framexleftmargin=0.35cm,
+  framexrightmargin=0.15cm, framextopmargin=2pt, framexbottommargin=2pt,
+  aboveskip=0.15cm, belowskip=0.15cm
+}
+\lstdefinestyle{Rmini}{
+  language=R,
+  basicstyle=\ttfamily\tiny,
+  keywordstyle=\color{uniAzul}\bfseries,
+  commentstyle=\color{uniGris}\itshape,
+  stringstyle=\color{uniTitulo},
+  showstringspaces=false, numbers=none, breaklines=true,
+  columns=fullflexible,
+  backgroundcolor=\color{uniCremaClaro},
+  frame=leftline, framerule=1.2pt, rulecolor=\color{uniNaranja},
+  xleftmargin=0.35cm, framexleftmargin=0.35cm,
+  framexrightmargin=0.15cm, framextopmargin=2pt, framexbottommargin=2pt,
+  aboveskip=0.12cm, belowskip=0.12cm
+}
+\lstdefinestyle{Rout}{
+  basicstyle=\ttfamily\tiny\color{black},
+  showstringspaces=false, numbers=none, breaklines=true,
+  columns=fullflexible,
+  backgroundcolor=\color{uniGris!10},
+  frame=leftline, framerule=1.2pt, rulecolor=\color{uniGris},
+  xleftmargin=0.35cm, framexleftmargin=0.35cm,
+  framexrightmargin=0.15cm, framextopmargin=2pt, framexbottommargin=2pt,
+  aboveskip=0.12cm, belowskip=0.12cm
+}
+
+\begin{document}
+
+\portada
+
+% ============================================================== ORDEN DEL DÍA
+\begin{frame}{Orden del día}
+  \begin{enumerate}
+    \item Llamado a lista
+    \item Repaso: dónde quedamos en la sesión anterior
+    \item \azul{Tema 1.2: reglas de conteo, permutaciones y combinaciones}
+    \item Principio de la multiplicación y regla de la suma
+    \item Factorial, permutaciones y combinaciones
+    \item Ejercicios en clase
+    \item Cierre y ejercicios propuestos
+  \end{enumerate}
+\end{frame}
+
+% ================================================================== REPASO ==
+\begin{frame}{Repaso: dónde quedamos}
+  En la sesión 1 llegamos a que, si todos los resultados son igualmente
+  probables,
+  \[ P(A)=\frac{\#A}{\#\Omega} \]
+
+  \vspace{0.2cm}
+  \begin{alertblock}{El problema de hoy}
+    \footnotesize
+    Con un dado podíamos escribir $\Omega=\{1,\dots,6\}$ y contar a mano. Pero
+    si el experimento es ``asignar un código de inventario de 2 letras y 3
+    dígitos'', enumerar todos los resultados es imposible: hay cientos de
+    miles. \destacar{Necesitamos contar sin enumerar.}
+  \end{alertblock}
+
+  \vspace{0.2cm}
+  {\footnotesize\color{uniGris} De eso se ocupan las reglas de conteo: son las
+  herramientas para calcular $\#A$ y $\#\Omega$ cuando los conjuntos son
+  grandes\,[2].}
+\end{frame}
+
+% ============================================================== UNIDAD 1 ====
+\seccion{1.2 Reglas de conteo}
+
+% ------------------------------------------------------- MULTIPLICACIÓN ----
+\begin{frame}{Principio de la multiplicación}
+  \begin{block}{Enunciado}
+    \small
+    Si una tarea se realiza en $k$ etapas, y la etapa $i$ se puede hacer de
+    $n_i$ maneras (sin importar lo elegido antes), entonces la tarea completa
+    se puede hacer de
+    \[ n_1 \times n_2 \times \cdots \times n_k \quad\text{maneras.} \]
+  \end{block}
+
+  \vspace{0.15cm}
+  \begin{columns}[T,onlytextwidth]
+    \begin{column}{0.46\textwidth}
+      \footnotesize
+      \textbf{Ejemplo.} Un menú ofrece 3 entradas, 4 platos fuertes y 2
+      postres. Una comida completa se arma en 3 etapas:
+      \[ 3\times 4\times 2 = 24 \text{ comidas distintas.} \]
+    \end{column}
+    \begin{column}{0.50\textwidth}
+      \centering
+      \begin{tikzpicture}[scale=0.63,every node/.style={font=\scriptsize},
+                          level distance=13mm,sibling distance=7mm]
+        \node[circle,draw=uniAzul,fill=uniAzul!12,inner sep=1.4pt] (r) {}
+          child {node[circle,draw=uniNaranja,fill=uniNaranja!25,inner sep=1.4pt]{}
+            child {node[circle,fill=uniAzul,inner sep=1pt]{}}
+            child {node[circle,fill=uniAzul,inner sep=1pt]{}}}
+          child {node[circle,draw=uniNaranja,fill=uniNaranja!25,inner sep=1.4pt]{}
+            child {node[circle,fill=uniAzul,inner sep=1pt]{}}
+            child {node[circle,fill=uniAzul,inner sep=1pt]{}}}
+          child {node[circle,draw=uniNaranja,fill=uniNaranja!25,inner sep=1.4pt]{}
+            child {node[circle,fill=uniAzul,inner sep=1pt]{}}
+            child {node[circle,fill=uniAzul,inner sep=1pt]{}}};
+        \node[anchor=west,text=uniGris] at (2.6,0) {etapa 1: 3 opciones};
+        \node[anchor=west,text=uniGris] at (2.6,-1.3) {etapa 2: 2 opciones};
+        \node[anchor=west,text=uniGris] at (2.6,-2.6) {$3\times 2=6$ caminos};
+      \end{tikzpicture}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+% ---------------------------------------------------------- REGLA SUMA -----
+\begin{frame}{Regla de la suma: cuándo se suma y cuándo se multiplica}
+  \begin{columns}[T,onlytextwidth]
+    \begin{column}{0.48\textwidth}
+      \begin{block}{Se \emph{multiplica}}
+        \footnotesize
+        Cuando las elecciones son \azul{etapas sucesivas} de una misma tarea:
+        se hace lo uno \textbf{y} lo otro.
+
+        \vspace{0.15cm}
+        ``Elijo entrada \textbf{y} plato fuerte'' $\rightarrow 3\times 4$
+      \end{block}
+    \end{column}
+    \begin{column}{0.48\textwidth}
+      \begin{exampleblock}{Se \emph{suma}}
+        \footnotesize
+        Cuando las opciones son \azul{alternativas excluyentes}: se hace lo uno
+        \textbf{o} lo otro, nunca ambos.
+
+        \vspace{0.15cm}
+        ``Voy en bus (4 rutas) \textbf{o} en metro (2 líneas)''
+        $\rightarrow 4+2=6$
+      \end{exampleblock}
+    \end{column}
+  \end{columns}
+
+  \vspace{0.35cm}
+  \begin{alertblock}{Conexión con la sesión anterior}
+    \footnotesize
+    La regla de la suma solo vale si las alternativas son \destacar{mutuamente
+    excluyentes}. Si no lo son, hay que descontar la intersección, exactamente
+    como en $\#(A\cup B)=\#A+\#B-\#(A\cap B)$.
+  \end{alertblock}
+\end{frame}
+
+% ------------------------------------------------------------ EJERCICIO 1 --
+\begin{frame}{Ejercicio 1 — en clase}
+  \begin{alertblock}{Individual (6 minutos)}
+    Una empresa asigna códigos de inventario formados por \destacar{2 letras}
+    (alfabeto de 26) seguidas de \destacar{3 dígitos} (del 0 al 9).
+
+    \vspace{0.3cm}
+    \begin{enumerate}
+      \item ¿Cuántos códigos distintos existen si se permite repetir letras y
+            dígitos?
+      \item ¿Cuántos si las dos letras deben ser diferentes?
+      \item ¿Cuántos códigos del punto 1 terminan en dígito par?
+    \end{enumerate}
+  \end{alertblock}
+\end{frame}
+
+\begin{frame}{Ejercicio 1 — solución}
+  \small
+  \begin{block}{Se aplica el principio de la multiplicación en cada caso}
+    \begin{align*}
+      \text{1.}\quad & 26\times 26\times 10\times 10\times 10 = 26^{2}\cdot 10^{3}
+                       = \azul{676\,000}\\[0.25em]
+      \text{2.}\quad & 26\times 25\times 10^{3} = \azul{650\,000}\\[0.25em]
+      \text{3.}\quad & 26^{2}\times 10\times 10\times 5 = \azul{338\,000}
+    \end{align*}
+  \end{block}
+
+  \vspace{0.15cm}
+  \begin{exampleblock}{Observaciones}
+    \footnotesize
+    En el punto 2 la segunda letra tiene solo 25 opciones porque no puede
+    repetir la primera: eso es una \azul{permutación}. En el punto 3 la última
+    etapa tiene 5 opciones $\{0,2,4,6,8\}$; note que $338\,000$ es exactamente
+    la mitad de $676\,000$, como era de esperarse.
+  \end{exampleblock}
+\end{frame}
+
+% -------------------------------------------------------------- FACTORIAL --
+\begin{frame}{Factorial y permutaciones}
+  \begin{block}{Factorial}
+    \small
+    \[ n! = n\times(n-1)\times\cdots\times 2\times 1,
+       \qquad\text{con } 0!=1 \text{ por convención.} \]
+  \end{block}
+
+  \vspace{0.15cm}
+  \begin{block}{Permutación de los $n$ objetos}
+    \small
+    El número de formas de \azul{ordenar} $n$ objetos distintos en fila es $n!$.
+
+    \vspace{0.1cm}
+    \footnotesize
+    \emph{Por qué:} para el primer puesto hay $n$ opciones, para el segundo
+    $n-1$, y así sucesivamente. Por el principio de la multiplicación,
+    $n(n-1)\cdots 1 = n!$.
+  \end{block}
+
+  \vspace{0.15cm}
+  \begin{exampleblock}{Ejemplo}
+    \footnotesize
+    Ocho empleados se ordenan para una foto: $8! = 40\,320$ formas.
+    Seis personas en una fila: $6! = 720$.
+  \end{exampleblock}
+\end{frame}
+
+% --------------------------------------------------------- PERMUTACIONES ---
+\begin{frame}{Permutaciones de $r$ objetos entre $n$}
+  \begin{block}{Fórmula}
+    \[ P(n,r)=\frac{n!}{(n-r)!}
+       = \underbrace{n\,(n-1)\cdots(n-r+1)}_{r\ \text{factores}} \]
+    Se usa cuando se eligen $r$ de $n$ objetos \destacar{y el orden importa}.
+  \end{block}
+
+  \vspace{0.2cm}
+  \begin{columns}[T,onlytextwidth]
+    \begin{column}{0.48\textwidth}
+      \begin{exampleblock}{Ejemplo}
+        \footnotesize
+        De 8 empleados se eligen presidente, secretario y tesorero:
+        \[ P(8,3)=\frac{8!}{5!}=8\cdot 7\cdot 6 = 336 \]
+      \end{exampleblock}
+    \end{column}
+    \begin{column}{0.48\textwidth}
+      \begin{alertblock}{Con repetición}
+        \footnotesize
+        Si los objetos se pueden repetir (como los dígitos de un código), el
+        conteo es $n^{r}$, no $P(n,r)$.
+        \[ 10^{3}=1000 \text{ códigos de 3 dígitos} \]
+      \end{alertblock}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+% ------------------------------------------------ PERMUTACIONES REPETIDAS --
+\begin{frame}{Permutaciones con objetos repetidos}
+  \begin{block}{Fórmula}
+    \small
+    Si entre $n$ objetos hay $n_1$ iguales de un tipo, $n_2$ de otro, \dots,
+    $n_k$ del último, el número de ordenamientos \emph{distinguibles} es
+    \[ \frac{n!}{n_1!\;n_2!\cdots n_k!} \]
+  \end{block}
+
+  \vspace{0.2cm}
+  \begin{exampleblock}{Ejemplo: la palabra BANANA}
+    \footnotesize
+    Tiene 6 letras, con 3 letras A, 2 letras N y 1 letra B:
+    \[ \frac{6!}{3!\,2!\,1!}=\frac{720}{12}=60 \text{ palabras distintas.} \]
+    Se divide porque intercambiar dos letras A \azul{no} produce una palabra
+    nueva.
+  \end{exampleblock}
+\end{frame}
+
+% ------------------------------------------------------------ EJERCICIO 2 --
+\begin{frame}{Ejercicio 2 — en clase}
+  \begin{alertblock}{En parejas (7 minutos)}
+    Un área de una empresa tiene \destacar{8 empleados}.
+
+    \vspace{0.3cm}
+    \begin{enumerate}
+      \item ¿De cuántas formas se puede elegir un comité con presidente,
+            secretario y tesorero?
+      \item ¿De cuántas formas se pueden elegir 3 empleados para un comité
+            \emph{sin} cargos definidos?
+      \item ¿De cuántas formas se pueden ordenar los 8 para una fotografía?
+      \item ¿Por qué la respuesta del punto 1 es mayor que la del punto 2?
+    \end{enumerate}
+  \end{alertblock}
+\end{frame}
+
+\begin{frame}{Ejercicio 2 — solución}
+  \begin{columns}[T,onlytextwidth]
+    \begin{column}{0.50\textwidth}
+      \begin{block}{Cálculos}
+        \small
+        \begin{align*}
+          \text{1.}\;& P(8,3)=8\cdot 7\cdot 6 = \azul{336}\\[0.25em]
+          \text{2.}\;& C(8,3)=\frac{8!}{3!\,5!} = \azul{56}\\[0.25em]
+          \text{3.}\;& 8! = \azul{40\,320}
+        \end{align*}
+      \end{block}
+    \end{column}
+    \begin{column}{0.46\textwidth}
+      \begin{exampleblock}{Punto 4}
+        \footnotesize
+        Porque en el punto 1 el \azul{orden importa}: los mismos tres nombres
+        producen $3!=6$ comités distintos según quién sea presidente.
+
+        \vspace{0.2cm}
+        \[ 336 = 56 \times 3! \]
+        Esa es exactamente la relación entre permutaciones y combinaciones.
+      \end{exampleblock}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+% -------------------------------------------------------- COMBINACIONES ----
+\begin{frame}{Combinaciones}
+  \begin{block}{Fórmula}
+    \[ C(n,r)=\binom{n}{r}=\frac{n!}{r!\,(n-r)!}
+       = \frac{P(n,r)}{r!} \]
+    Se usa cuando se eligen $r$ de $n$ objetos \destacar{y el orden no importa}.
+  \end{block}
+
+  \vspace{0.2cm}
+  \begin{columns}[T,onlytextwidth]
+    \begin{column}{0.48\textwidth}
+      \begin{exampleblock}{Ejemplo}
+        \footnotesize
+        De 12 jugadores se arma un equipo de 5:
+        \[ \binom{12}{5}=792 \]
+      \end{exampleblock}
+    \end{column}
+    \begin{column}{0.48\textwidth}
+      \begin{alertblock}{Propiedad útil}
+        \footnotesize
+        \[ \binom{n}{r}=\binom{n}{n-r} \]
+        Elegir 4 de 10 para incluir es lo mismo que elegir 6 de 10 para
+        excluir: $\binom{10}{4}=\binom{10}{6}=210$.
+      \end{alertblock}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+% -------------------------------------------------------- CÓMO DECIDIR -----
+\begin{frame}{¿Permutación o combinación?}
+  \begin{block}{La única pregunta que hay que hacerse}
+    \centering\small
+    \destacar{¿Cambiar el orden produce un resultado diferente?}\\[0.2em]
+    Si la respuesta es \emph{sí} $\rightarrow$ permutación. \quad
+    Si es \emph{no} $\rightarrow$ combinación.
+  \end{block}
+
+  \vspace{0.2cm}
+  \footnotesize
+  \begin{center}
+  \begin{tabular}{@{}lll@{}}
+    \toprule
+    \textbf{Situación} & \textbf{¿Importa el orden?} & \textbf{Se usa} \\
+    \midrule
+    Cargos en un comité (presidente, secretario)  & Sí & $P(n,r)$ \\
+    Integrantes de un comité sin cargos           & No & $C(n,r)$ \\
+    Podio de una competencia (1.º, 2.º, 3.º)      & Sí & $P(n,r)$ \\
+    Números ganadores de una lotería              & No & $C(n,r)$ \\
+    Clave de acceso de 4 dígitos                  & Sí, y con repetición & $n^{r}$ \\
+    Muestra de 3 productos de un lote             & No & $C(n,r)$ \\
+    \bottomrule
+  \end{tabular}
+  \end{center}
+\end{frame}
+
+% ------------------------------------------------------------- RESUMEN -----
+\begin{frame}{Resumen: las cuatro fórmulas de conteo}
+  \footnotesize
+  \begin{center}
+  \begin{tabular}{@{}llll@{}}
+    \toprule
+    \textbf{Situación} & \textbf{¿Orden?} & \textbf{¿Repetición?} &
+    \textbf{Fórmula} \\
+    \midrule
+    Etapas sucesivas          & ---   & --- & $n_1\cdot n_2\cdots n_k$ \\
+    Ordenar los $n$ objetos   & Sí    & No  & $n!$ \\
+    Elegir $r$ de $n$         & Sí    & No  & $P(n,r)=\dfrac{n!}{(n-r)!}$ \\[0.35em]
+    Elegir $r$ de $n$         & Sí    & Sí  & $n^{r}$ \\[0.15em]
+    Elegir $r$ de $n$         & No    & No  & $C(n,r)=\dfrac{n!}{r!\,(n-r)!}$ \\[0.35em]
+    Ordenar con repetidos     & Sí    & ---  & $\dfrac{n!}{n_1!\cdots n_k!}$ \\
+    \bottomrule
+  \end{tabular}
+  \end{center}
+
+  \vspace{0.15cm}
+  {\scriptsize\color{uniGris} En calculadora científica: $P(n,r)$ suele
+  aparecer como \texttt{nPr} y $C(n,r)$ como \texttt{nCr}\,[3].}
+\end{frame}
+
+% ------------------------------------------------------------ EJERCICIO 3 --
+\begin{frame}{Ejercicio 3 — en clase}
+  \begin{alertblock}{Aplicado (10 minutos)}
+    En una caja hay \destacar{12 productos}, de los cuales \destacar{4 son
+    defectuosos}. Se extraen 3 al azar, de una sola vez (el orden no importa).
+
+    \vspace{0.25cm}
+    \begin{enumerate}
+      \item ¿De cuántas formas se pueden extraer 3 productos?
+      \item ¿En cuántas de esas formas los 3 resultan buenos?
+      \item ¿Cuál es la probabilidad de que los 3 sean buenos?
+      \item ¿Cuál es la probabilidad de que haya exactamente 1 defectuoso?
+    \end{enumerate}
+  \end{alertblock}
+\end{frame}
+
+\begin{frame}{Ejercicio 3 — solución}
+  \begin{columns}[T,onlytextwidth]
+    \begin{column}{0.50\textwidth}
+      \begin{block}{Conteos}
+        \small
+        \begin{align*}
+          \#\Omega &= \binom{12}{3} = \azul{220}\\[0.3em]
+          \#A &= \binom{8}{3} = \azul{56}
+        \end{align*}
+        \footnotesize
+        (los 8 productos buenos, tomados de a 3)
+      \end{block}
+    \end{column}
+    \begin{column}{0.46\textwidth}
+      \begin{exampleblock}{Probabilidades}
+        \footnotesize
+        \[ P(\text{3 buenos})=\frac{56}{220}=0{,}2545 \]
+        \[ P(\text{exactamente 1 defectuoso})
+           =\frac{\binom{4}{1}\binom{8}{2}}{\binom{12}{3}}
+           =\frac{4\cdot 28}{220}=\frac{112}{220}=0{,}5091 \]
+      \end{exampleblock}
+    \end{column}
+  \end{columns}
+
+  \vspace{0.1cm}
+  {\footnotesize\color{uniGris} El punto 4 combina las dos reglas: se
+  \emph{multiplica} para armar cada caso favorable (1 defectuoso \textbf{y} 2
+  buenos) y se divide por el total de casos posibles.}
+\end{frame}
+
+% ------------------------------------------------------------- PUENTE ------
+\begin{frame}{Del conteo a la probabilidad}
+  Las reglas de conteo son el motor de la regla de Laplace: sirven para
+  calcular el numerador y el denominador de
+  \[ P(A)=\frac{\#A}{\#\Omega} \]
+
+  \vspace{0.2cm}
+  \begin{exampleblock}{Ejemplo completo}
+    \footnotesize
+    Se lanza una moneda 5 veces. El espacio muestral tiene $2^{5}=32$
+    secuencias. Las que tienen exactamente 3 caras son
+    $\binom{5}{3}=10$, porque basta elegir \emph{en cuáles} de los 5
+    lanzamientos salió cara. Entonces
+    \[ P(\text{exactamente 3 caras})=\frac{10}{32}=0{,}3125 \]
+  \end{exampleblock}
+
+  \vspace{0.1cm}
+  {\footnotesize\color{uniGris} En la sesión 3 formalizaremos la regla de
+  Laplace y los enfoques para asignar probabilidades.}
+\end{frame}
+
+% ------------------------------------------------------------- CIERRE ------
+\begin{frame}[fragile]{Conteo, en R}
+  \scriptsize
+\begin{lstlisting}[style=Rmini]
+factorial(5)             # 5!
+choose(10, 3)            # combinaciones C(10,3)
+factorial(10)/factorial(7)   # permutaciones P(10,3)
+prod(4, 3, 2)            # principio multiplicativo
+
+combn(c("A","B","C","D"), 2)   # las combinaciones, una por columna
+nrow(expand.grid(1:6, 1:6))    # espacio muestral de dos dados
+\end{lstlisting}
+\begin{lstlisting}[style=Rout]
+[1] 120
+[1] 120
+[1] 720
+[1] 24
+     [,1] [,2] [,3] [,4] [,5] [,6]
+[1,] "A"  "A"  "A"  "B"  "B"  "C"
+[2,] "B"  "C"  "D"  "C"  "D"  "D"
+[1] 36
+\end{lstlisting}
+
+  \vspace{-0.1cm}
+  \begin{alertblock}{Para qué sirve de verdad}
+    \tiny
+    \fx{choose()} evita el error más común de la sesión: equivocarse al
+    simplificar factoriales. Y \fx{combn()} \destacar{muestra} las
+    combinaciones, no solo las cuenta: es la mejor forma de convencerse de que
+    el orden no importa.
+  \end{alertblock}
+\end{frame}
+
+\begin{frame}{Cierre de la sesión}
+  \begin{block}{Lo que debe quedar claro hoy}
+    \begin{itemize}
+      \item Etapas sucesivas se multiplican; alternativas excluyentes se suman.
+      \item Si el orden importa: $n!$, $P(n,r)$ o $n^{r}$ según haya o no
+            repetición.
+      \item Si el orden no importa: $C(n,r)$, y siempre $C(n,r)=P(n,r)/r!$.
+      \item El conteo alimenta a $P(A)=\#A/\#\Omega$.
+    \end{itemize}
+  \end{block}
+
+  \vspace{0.25cm}
+  \begin{alertblock}{Trabajo independiente para la próxima sesión}
+    \footnotesize
+    Resolver los \destacar{20 ejercicios de la lámina siguiente}; las
+    respuestas están en la lámina posterior, para que usted mismo se corrija.
+    Practicar las teclas \texttt{nPr} y \texttt{nCr} de la calculadora y
+    revisar la referencia [3].
+  \end{alertblock}
+\end{frame}
+
+% -------------------------------------------------- EJERCICIOS PROPUESTOS --
+\begin{frame}{Ejercicios propuestos}
+  \vspace{0.1cm}
+  \listatiny
+  \vspace{0.15cm}
+  \begin{columns}[T,onlytextwidth]
+    \begin{column}{0.47\textwidth}
+      \begin{enumerate}\setlength{\itemsep}{0.16cm}
+        \item $5!$
+        \item $8!/5!$
+        \item $P(7,2)$
+        \item $C(7,2)$
+        \item $C(10,4)$
+        \item $C(10,6)$
+        \item Placas de 3 letras y 3 dígitos, con repetición
+        \item Números de 4 cifras distintas con los dígitos 1--9
+        \item Ordenar 6 personas en fila
+        \item Comités de 3 entre 6, sin cargos
+      \end{enumerate}
+    \end{column}
+    \begin{column}{0.50\textwidth}
+      \begin{enumerate}\setlength{\itemsep}{0.16cm}
+        \setcounter{enumi}{10}
+        \item Palabras distintas con BANANA
+        \item Palabras distintas con ESTADISTICA
+        \item Subconjuntos de un conjunto de 5 elementos
+        \item Respuestas a 10 preguntas falso/verdadero
+        \item Comidas: 3 entradas, 4 platos, 2 postres
+        \item Equipos de 5 entre 12 jugadores
+        \item Comisiones de 2 hombres (de 5) y 3 mujeres (de 6)
+        \item Secuencias al lanzar una moneda 5 veces
+        \item De las del 18, ¿cuántas con 3 caras exactas?
+        \item $P(3$ caras exactas en 5 lanzamientos$)$
+      \end{enumerate}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+% ----------------------------------------------------------- RESPUESTAS ----
+\begin{frame}{Respuestas}{Autoevaluación de los ejercicios propuestos}
+  \listatiny
+  \vspace{0.15cm}
+  \begin{columns}[T,onlytextwidth]
+    \begin{column}{0.47\textwidth}
+      \begin{enumerate}\setlength{\itemsep}{0.16cm}
+        \item $120$
+        \item $336$ \;{\color{uniGris}$=P(8,3)$}
+        \item $42$
+        \item $21$
+        \item $210$
+        \item $210$ \;{\color{uniTitulo}igual al 5: $\binom{n}{r}=\binom{n}{n-r}$}
+        \item $26^{3}\cdot 10^{3}=17\,576\,000$
+        \item $P(9,4)=3024$
+        \item $6!=720$
+        \item $C(6,3)=20$
+      \end{enumerate}
+    \end{column}
+    \begin{column}{0.50\textwidth}
+      \begin{enumerate}\setlength{\itemsep}{0.16cm}
+        \setcounter{enumi}{10}
+        \item $6!/(3!\,2!)=60$
+        \item $11!/(2!)^{4}=2\,494\,800$
+        \item $2^{5}=32$
+        \item $2^{10}=1024$
+        \item $3\cdot 4\cdot 2=24$
+        \item $C(12,5)=792$
+        \item $C(5,2)\cdot C(6,3)=10\cdot 20=200$
+        \item $2^{5}=32$
+        \item $C(5,3)=10$
+        \item $10/32=0{,}3125$
+      \end{enumerate}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+% ---------------------------------------------------------- REFERENCIAS ----
+\begin{frame}{Referencias}
+  \footnotesize
+  \begin{itemize}
+    \item[{[1]}] Díaz Rodríguez, M. (2022). \textit{Estadística inferencial
+      aplicada}. Universidad del Norte.
+      \texttt{https://elibro.net/es/lc/uniminuto/titulos/221614}
+    \item[{[2]}] Llinás Solano, H. (2014). \textit{Introducción a la
+      estadística con aplicaciones en ciencias sociales}. Universidad del
+      Norte. \texttt{https://elibro.net/es/lc/uniminuto/titulos/70062}
+    \item[{[3]}] Contento Rubio, M. R. (2019). \textit{Estadística con
+      aplicaciones en R}. Editorial Utadeo.
+      \texttt{https://elibro.net/es/lc/uniminuto/titulos/220926}
+  \end{itemize}
+
+  \vspace{0.35cm}
+  \begin{center}
+    {\Large\color{uniAzul}\textbf{¿Preguntas?}}
+  \end{center}
+\end{frame}
+
+\end{document}

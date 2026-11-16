@@ -1,0 +1,866 @@
+% ============================================================================
+%  ESTADÍSTICA DESCRIPTIVA — Sesión 7
+%  Semana 7: 21 al 26 de septiembre de 2026
+%  2.1 Medidas de tendencia central: media, mediana y moda
+%  2.2 Medidas de posición: cuartiles, deciles y percentiles
+%  Duración prevista: 3 horas
+% ============================================================================
+\documentclass[aspectratio=169,10pt]{beamer}
+
+\usepackage[utf8]{inputenc}
+\IfFileExists{spanish.ldf}{\usepackage[spanish,es-noshorthands]{babel}}{}
+\usepackage{amsmath,amssymb}
+\usepackage{booktabs}
+\usepackage{tikz}
+\usepackage{listings}
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.16}
+
+\usetheme{Uniminuto}
+
+\uniasignatura{Estadística descriptiva}
+\uniprofesor{Andrés Felipe Puerta Velez}
+\unicorreo{andres.puerta-v@uniminuto.edu.co}
+\uninrc{CBASBL031 - CBASBL141}
+\unisemana{Sesión 7 — Semana 7 · 21 al 26 de septiembre de 2026}
+
+\newcommand{\listatiny}{\setbeamerfont{itemize/enumerate body}{size=\tiny}\tiny}
+
+\pgfplotsset{
+  uniplot/.style={
+    width=8.0cm, height=3.7cm, axis lines=left,
+    tick label style={font=\tiny,color=uniGris},
+    label style={font=\tiny,color=uniGris},
+    title style={font=\scriptsize\bfseries,color=uniAzul},
+    every axis plot/.append style={fill=uniAzul!70,draw=uniAzul},
+    ymajorgrids, grid style={uniGris!25,very thin},
+  }
+}
+
+\newcommand{\fx}[1]{{\ttfamily\color{uniAzul}#1}}
+
+% ------------------------------------------------------------- CÓDIGO R ----
+\lstdefinestyle{Rcode}{
+  language=R,
+  basicstyle=\ttfamily\scriptsize,
+  keywordstyle=\color{uniAzul}\bfseries,
+  commentstyle=\color{uniGris}\itshape,
+  stringstyle=\color{uniTitulo},
+  showstringspaces=false, numbers=none, breaklines=true,
+  columns=fullflexible,
+  backgroundcolor=\color{uniCremaClaro},
+  frame=leftline, framerule=1.2pt, rulecolor=\color{uniNaranja},
+  xleftmargin=0.35cm, framexleftmargin=0.35cm,
+  framexrightmargin=0.15cm, framextopmargin=2pt, framexbottommargin=2pt,
+  aboveskip=0.15cm, belowskip=0.15cm
+}
+\lstdefinestyle{Rmini}{
+  language=R,
+  basicstyle=\ttfamily\tiny,
+  keywordstyle=\color{uniAzul}\bfseries,
+  commentstyle=\color{uniGris}\itshape,
+  stringstyle=\color{uniTitulo},
+  showstringspaces=false, numbers=none, breaklines=true,
+  columns=fullflexible,
+  backgroundcolor=\color{uniCremaClaro},
+  frame=leftline, framerule=1.2pt, rulecolor=\color{uniNaranja},
+  xleftmargin=0.35cm, framexleftmargin=0.35cm,
+  framexrightmargin=0.15cm, framextopmargin=2pt, framexbottommargin=2pt,
+  aboveskip=0.12cm, belowskip=0.12cm
+}
+\lstdefinestyle{Rout}{
+  basicstyle=\ttfamily\tiny\color{black},
+  showstringspaces=false, numbers=none, breaklines=true,
+  columns=fullflexible,
+  backgroundcolor=\color{uniGris!10},
+  frame=leftline, framerule=1.2pt, rulecolor=\color{uniGris},
+  xleftmargin=0.35cm, framexleftmargin=0.35cm,
+  framexrightmargin=0.15cm, framextopmargin=2pt, framexbottommargin=2pt,
+  aboveskip=0.12cm, belowskip=0.12cm
+}
+
+\begin{document}
+
+\portada
+
+\begin{frame}{Orden del día}
+  \begin{enumerate}
+    \item Retroalimentación del Examen 1
+    \item \azul{Tema 2.1: media, mediana y moda}
+    \item Cálculo con datos no agrupados y con datos agrupados
+    \item ¿Cuál usar? La forma de la distribución decide
+    \item \azul{Tema 2.2: cuartiles, deciles y percentiles}
+    \item Ejercicios guiados y cierre
+  \end{enumerate}
+
+  \vspace{0.25cm}
+  {\footnotesize\color{uniGris} Sesión de 3 horas. Empieza la Unidad 2:
+  pasamos de \emph{organizar} los datos a \emph{resumirlos en un número}.}
+\end{frame}
+
+\begin{frame}{De la unidad 1 a la unidad 2}
+  \begin{alertblock}{La pregunta que abre la unidad}
+    \footnotesize
+    Ya sabemos construir la tabla y el gráfico del gasto de los 40 clientes.
+    Pero si el gerente pregunta \destacar{``¿cuánto gasta un cliente típico?''},
+    necesitamos \azul{un solo número}. Ese es el trabajo de las medidas de
+    tendencia central.
+  \end{alertblock}
+
+  \vspace{0.2cm}
+  \begin{block}{Las tres preguntas de la Unidad 2}
+    \footnotesize
+    \begin{enumerate}
+      \item ¿Dónde está el \azul{centro}? \quad (2.1: media, mediana, moda)
+      \item ¿Cómo se \azul{reparten} los datos alrededor del centro?
+            \quad (2.2: posición \ y \ 2.3: dispersión)
+      \item ¿Qué \azul{forma} tiene la distribución? \quad (2.4: asimetría y
+            curtosis)
+    \end{enumerate}
+  \end{block}
+
+  \vspace{0.15cm}
+  {\footnotesize\color{uniGris} Seguimos con el caso \azul{Almacén Bello}:
+  gasto mensual de 40 clientes, en miles de pesos.}
+\end{frame}
+
+\seccion{2.1 Medidas de tendencia central}
+
+\begin{frame}{Media aritmética — datos no agrupados}
+  \footnotesize
+  \begin{columns}[T,onlytextwidth]
+    \begin{column}{0.46\textwidth}
+      \begin{block}{Definición}
+        \scriptsize
+        \[ \bar{x} = \frac{\sum_{i=1}^{n} x_i}{n} \qquad
+           \mu = \frac{\sum_{i=1}^{N} x_i}{N} \]
+        Suma de todos los datos dividida entre cuántos son.
+      \end{block}
+    \end{column}
+    \begin{column}{0.50\textwidth}
+      \begin{exampleblock}{Almacén Bello, 40 clientes}
+        \scriptsize
+        \[ \sum x_i = 9\,086 \qquad n = 40 \]
+        \[ \bar{x} = \frac{9\,086}{40} = \destacar{227{,}15} \]
+        El gasto promedio de la muestra es de 227\,150 pesos al mes.
+      \end{exampleblock}
+    \end{column}
+  \end{columns}
+
+  \vspace{0.1cm}
+  \begin{alertblock}{Tres propiedades que se usan todo el tiempo}
+    \scriptsize
+    (1) La suma de las desviaciones respecto a la media es \destacar{cero}:
+    $\sum (x_i - \bar{x}) = 0$. \quad
+    (2) Si a todos los datos les sumo una constante, la media aumenta en esa
+    constante. \quad
+    (3) La media \destacar{es sensible a los valores extremos}: un solo dato
+    muy grande la arrastra.
+  \end{alertblock}
+\end{frame}
+
+\begin{frame}{Media aritmética — datos agrupados}
+  \scriptsize
+  \begin{columns}[T,onlytextwidth]
+    \begin{column}{0.55\textwidth}
+      \centering
+      \begin{tabular}{@{}lrrr@{}}
+        \toprule
+        \textbf{Clase} & \textbf{$x_i$} & \textbf{$f_i$} & \textbf{$f_i x_i$} \\
+        \midrule
+        $[112,\ 152)$ & 132 &  4 &   528 \\
+        $[152,\ 192)$ & 172 &  7 & 1\,204 \\
+        $[192,\ 232)$ & 212 & 11 & 2\,332 \\
+        $[232,\ 272)$ & 252 &  9 & 2\,268 \\
+        $[272,\ 312)$ & 292 &  6 & 1\,752 \\
+        $[312,\ 352]$ & 332 &  3 &   996 \\
+        \midrule
+        \textbf{Total} & & \textbf{40} & \textbf{9\,080} \\
+        \bottomrule
+      \end{tabular}
+    \end{column}
+    \begin{column}{0.42\textwidth}
+      \begin{block}{Fórmula}
+        \scriptsize
+        \[ \bar{x} = \frac{\sum f_i x_i}{n} \]
+        \[ \bar{x} = \frac{9\,080}{40} = \destacar{227{,}0} \]
+      \end{block}
+      \begin{alertblock}{¿Por qué no da 227,15?}
+        \tiny
+        Porque cada dato fue reemplazado por la \azul{marca de clase}. La
+        diferencia (0,15) es el error de agrupamiento: pequeño, pero real.
+      \end{alertblock}
+    \end{column}
+  \end{columns}
+
+  \vspace{0.05cm}
+  {\tiny\color{uniGris} Procedimiento: se agrega la columna $f_i x_i$, se suma
+  y se divide entre $n$. Es una \azul{media ponderada} en la que el peso de
+  cada marca es su frecuencia.}
+\end{frame}
+
+\begin{frame}{Media ponderada — cuando los datos no pesan igual}
+  \footnotesize
+  \begin{columns}[T,onlytextwidth]
+    \begin{column}{0.40\textwidth}
+      \begin{block}{Fórmula}
+        \scriptsize
+        \[ \bar{x}_p = \frac{\sum w_i x_i}{\sum w_i} \]
+        $w_i$ = peso o ponderación de cada valor.
+      \end{block}
+    \end{column}
+    \begin{column}{0.56\textwidth}
+      \centering\scriptsize
+      \begin{tabular}{@{}lrrr@{}}
+        \toprule
+        \textbf{Evaluación} & \textbf{Nota $x_i$} & \textbf{Peso $w_i$} &
+        \textbf{$w_i x_i$} \\
+        \midrule
+        Examen 1 & 3{,}8 & 0{,}35 & 1{,}330 \\
+        Examen 2 & 4{,}2 & 0{,}35 & 1{,}470 \\
+        Examen 3 & 3{,}0 & 0{,}30 & 0{,}900 \\
+        \midrule
+        \textbf{Total} & & \textbf{1{,}00} & \textbf{3{,}700} \\
+        \bottomrule
+      \end{tabular}
+    \end{column}
+  \end{columns}
+
+  \vspace{0.15cm}
+  \begin{alertblock}{El error clásico}
+    \scriptsize
+    El promedio simple de 3,8, 4,2 y 3,0 es \destacar{3,67}; la nota real,
+    ponderada, es \destacar{3,70}. Cuando los pesos son distintos,
+    \azul{promediar sin ponderar da un número equivocado}. Es exactamente la
+    nota definitiva de este curso.
+  \end{alertblock}
+\end{frame}
+
+\begin{frame}{Mediana — datos no agrupados}
+  \footnotesize
+  \begin{block}{Definición}
+    \scriptsize
+    Valor que ocupa la \azul{posición central} cuando los datos están
+    ordenados: deja el 50\% por debajo y el 50\% por encima.
+    \vspace{0.1cm}
+    \[ \text{Posición} = \frac{n+1}{2} \]
+    Si $n$ es impar, la mediana es ese dato. Si $n$ es par, es el promedio de
+    los dos datos centrales.
+  \end{block}
+
+  \vspace{0.1cm}
+  \begin{exampleblock}{Almacén Bello: $n = 40$ (par)}
+    \scriptsize
+    Posición $= \frac{41}{2} = 20{,}5$, es decir entre el dato 20 y el 21:
+    \[ Me = \frac{226 + 229}{2} = \destacar{227{,}5} \]
+    La mitad de los clientes gasta menos de 227\,500 pesos.
+  \end{exampleblock}
+
+  \vspace{0.05cm}
+  {\tiny\color{uniGris} \azul{Ordenar primero} no es opcional: sin ordenar,
+  la ``posición central'' no significa nada.}
+\end{frame}
+
+\begin{frame}{Mediana — datos agrupados}
+  \scriptsize
+  \begin{columns}[T,onlytextwidth]
+    \begin{column}{0.47\textwidth}
+      \begin{block}{Fórmula}
+        \scriptsize
+        \[ Me = L_i + \left(\frac{\frac{n}{2} - F_{i-1}}{f_i}\right) A \]
+        \vspace{-0.15cm}
+        \begin{itemize}\setlength{\itemsep}{-0.08cm}
+          \item[] $L_i$: límite inferior de la clase mediana
+          \item[] $F_{i-1}$: acumulada de la clase anterior
+          \item[] $f_i$: frecuencia de la clase mediana
+          \item[] $A$: amplitud
+        \end{itemize}
+      \end{block}
+    \end{column}
+    \begin{column}{0.50\textwidth}
+      \begin{exampleblock}{Paso a paso}
+        \scriptsize
+        \textbf{1.} $\frac{n}{2} = \frac{40}{2} = 20$
+
+        \textbf{2.} Primera clase con $F_i \ge 20$: \\
+        $[192, 232)$, con $F_3 = 22$. Es la \azul{clase mediana}.
+
+        \textbf{3.} $L_i=192$, \ $F_{i-1}=11$, \ $f_i=11$, \ $A=40$
+        \[ Me = 192 + \frac{20-11}{11}\cdot 40 \]
+        \[ Me = 192 + 32{,}73 = \destacar{224{,}73} \]
+      \end{exampleblock}
+    \end{column}
+  \end{columns}
+
+  \vspace{0.05cm}
+  {\tiny\color{uniGris} Con los datos originales la mediana era 227,5. La
+  fórmula agrupada supone que los 11 datos de la clase mediana se reparten
+  uniformemente dentro del intervalo: es una interpolación.}
+\end{frame}
+
+\begin{frame}{Moda}
+  \footnotesize
+  \begin{columns}[T,onlytextwidth]
+    \begin{column}{0.44\textwidth}
+      \begin{block}{No agrupados}
+        \scriptsize
+        El valor que \azul{más se repite}.
+
+        \vspace{0.1cm}
+        Puede no existir (todos distintos), ser única (unimodal) o haber
+        varias (bimodal, multimodal).
+
+        \vspace{0.1cm}
+        Es la \destacar{única} medida de centro válida para variables
+        nominales.
+      \end{block}
+    \end{column}
+    \begin{column}{0.52\textwidth}
+      \begin{exampleblock}{Agrupados: fórmula de Czuber}
+        \scriptsize
+        \[ Mo = L_i + \left(\frac{d_1}{d_1+d_2}\right) A \]
+        $d_1 = f_i - f_{i-1}$, \quad $d_2 = f_i - f_{i+1}$
+        \vspace{0.1cm}
+        Clase modal $[192,232)$: $f=11$
+        \[ d_1 = 11-7 = 4 \qquad d_2 = 11-9 = 2 \]
+        \[ Mo = 192 + \tfrac{4}{6}\cdot 40 = \destacar{218{,}67} \]
+      \end{exampleblock}
+    \end{column}
+  \end{columns}
+
+  \vspace{0.1cm}
+  \begin{alertblock}{Cuidado}
+    \scriptsize
+    La \destacar{clase modal} es $[192, 232)$; la \destacar{moda} es 218,67.
+    No son lo mismo: la primera es un intervalo, la segunda un valor puntual
+    dentro de él.
+  \end{alertblock}
+\end{frame}
+
+\begin{frame}{Las tres juntas: qué nos dicen del Almacén Bello}
+  \scriptsize
+  \begin{center}
+  \begin{tabular}{@{}lrrl@{}}
+    \toprule
+    \textbf{Medida} & \textbf{No agrupados} & \textbf{Agrupados} &
+    \textbf{Interpretación} \\
+    \midrule
+    Moda $Mo$    & --- & 218{,}67 & El gasto más frecuente \\
+    Mediana $Me$ & 227{,}50 & 224{,}73 & La mitad gasta menos que esto \\
+    Media $\bar{x}$ & 227{,}15 & 227{,}00 & El promedio de todos \\
+    \bottomrule
+  \end{tabular}
+  \end{center}
+
+  \vspace{0.15cm}
+  \begin{exampleblock}{La relación empírica}
+    \scriptsize
+    \[ Mo\ (218{,}67) \ < \ Me\ (224{,}73) \ < \ \bar{x}\ (227{,}00) \]
+    Ese orden confirma lo que vimos en el histograma de la sesión 4: la
+    distribución es \destacar{asimétrica positiva}. La cola de clientes que
+    gastan mucho empuja la media hacia arriba; la mediana se mueve menos y la
+    moda casi nada.
+  \end{exampleblock}
+
+  \vspace{0.05cm}
+  \begin{alertblock}{La regla para reconocer la asimetría sin graficar}
+    \tiny
+    $Mo < Me < \bar{x}$: asimetría \azul{positiva}. \quad
+    $\bar{x} < Me < Mo$: asimetría \azul{negativa}. \quad
+    $Mo = Me = \bar{x}$: distribución \azul{simétrica}.
+  \end{alertblock}
+\end{frame}
+
+\begin{frame}{¿Cuál de las tres usar?}
+  \scriptsize
+  \begin{center}
+  \begin{tabular}{@{}p{2.0cm}p{3.6cm}p{3.3cm}p{2.7cm}@{}}
+    \toprule
+    \textbf{Medida} & \textbf{Ventaja} & \textbf{Desventaja} &
+    \textbf{Escala mínima} \\
+    \midrule
+    Media & Usa toda la información; base de casi toda la estadística &
+      Muy sensible a valores extremos & Intervalar \\
+    \addlinespace
+    Mediana & No se afecta por extremos; representa al caso típico &
+      Ignora la magnitud de los datos & Ordinal \\
+    \addlinespace
+    Moda & Única válida en variables nominales; fácil de leer &
+      Puede no existir o no ser única & Nominal \\
+    \bottomrule
+  \end{tabular}
+  \end{center}
+
+  \vspace{0.1cm}
+  \begin{alertblock}{El ejemplo que lo aclara todo}
+    \scriptsize
+    Salarios de una empresa: 1, 1, 1, 1, 1 y 50 (millones). La \destacar{media
+    es 9,17} y no describe a nadie; la \destacar{mediana es 1} y describe a
+    cinco de las seis personas. Cuando hay cola larga, la mediana es más
+    honesta.
+  \end{alertblock}
+\end{frame}
+
+\begin{frame}{Ejercicio 1 — en clase}
+  \begin{alertblock}{En parejas (15 minutos)}
+    \footnotesize
+    Tiempo de entrega, en horas, de 15 pedidos:
+
+    \vspace{0.15cm}
+    \begin{beamercolorbox}[wd=0.92\textwidth,sep=0.1cm]{block body}
+      \centering\scriptsize\ttfamily
+      12 \ 8 \ 15 \ 10 \ 8 \ 22 \ 9 \ 14 \ 8 \ 11 \ 30 \ 10 \ 13 \ 8 \ 12
+    \end{beamercolorbox}
+
+    \vspace{0.2cm}
+    \begin{enumerate}\setlength{\itemsep}{-0.05cm}
+      \item Ordene los datos y calcule la media.
+      \item Calcule la mediana. ¿Qué posición ocupa?
+      \item Calcule la moda.
+      \item Ordene las tres medidas de menor a mayor. ¿Qué asimetría sugiere?
+      \item Si el pedido de 30 horas hubiera sido de 60, ¿cómo cambian las tres
+            medidas? Calcule.
+    \end{enumerate}
+  \end{alertblock}
+\end{frame}
+
+\begin{frame}{Ejercicio 1 — solución}
+  \scriptsize
+  Ordenados: \ttfamily 8 \ 8 \ 8 \ 8 \ 9 \ 10 \ 10 \ 11 \ 12 \ 12 \ 13 \ 14
+  \ 15 \ 22 \ 30 \rmfamily
+
+  \vspace{0.1cm}
+  \begin{columns}[T,onlytextwidth]
+    \begin{column}{0.49\textwidth}
+      \begin{block}{Puntos 1 a 4}
+        \scriptsize
+        \[ \bar{x} = \tfrac{190}{15} = \destacar{12{,}67} \]
+        Posición de $Me$: $\frac{15+1}{2} = 8$ \\
+        $\Rightarrow Me = \destacar{11}$ \\
+        $Mo = \destacar{8}$ (aparece 4 veces)
+        \vspace{0.1cm}
+        \[ Mo\ (8) < Me\ (11) < \bar{x}\ (12{,}67) \]
+        Asimetría \azul{positiva}.
+      \end{block}
+    \end{column}
+    \begin{column}{0.49\textwidth}
+      \begin{exampleblock}{Punto 5: cambiar 30 por 60}
+        \scriptsize
+        \[ \bar{x} = \tfrac{220}{15} = \destacar{14{,}67} \]
+        $Me = \destacar{11}$ (no cambia) \\
+        $Mo = \destacar{8}$ (no cambia)
+        \vspace{0.1cm}
+        La media subió \azul{2 horas completas} por un solo dato; las otras dos
+        ni se movieron. Eso es la \destacar{robustez} de la mediana.
+      \end{exampleblock}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\seccion{2.2 Medidas de posición}
+
+\begin{frame}{La idea: dividir la distribución ordenada}
+  \footnotesize
+  \begin{center}
+  \begin{tabular}{@{}lccl@{}}
+    \toprule
+    \textbf{Medida} & \textbf{Divide en} & \textbf{Cuántas hay} &
+    \textbf{Notación} \\
+    \midrule
+    Cuartiles   & 4 partes iguales  &  3 & $Q_1$, $Q_2$, $Q_3$ \\
+    Deciles     & 10 partes iguales &  9 & $D_1 \dots D_9$ \\
+    Percentiles & 100 partes iguales & 99 & $P_1 \dots P_{99}$ \\
+    \bottomrule
+  \end{tabular}
+  \end{center}
+
+  \vspace{0.15cm}
+  \begin{exampleblock}{Todas son la misma idea}
+    \scriptsize
+    \[ Q_2 = D_5 = P_{50} = Me \qquad Q_1 = P_{25} \qquad
+       Q_3 = P_{75} \qquad D_3 = P_{30} \]
+    Cambia solo en cuántas partes se corta la distribución.
+  \end{exampleblock}
+
+  \vspace{0.1cm}
+  \begin{alertblock}{Para qué sirven en la práctica}
+    \scriptsize
+    Para \destacar{segmentar}. ``Clientes del cuartil superior'',
+    ``el percentil 90 de tiempo de respuesta'', ``el decil más bajo de
+    ingresos'': todo eso son decisiones de negocio expresadas con posiciones.
+  \end{alertblock}
+\end{frame}
+
+\begin{frame}{Posición — datos no agrupados}
+  \footnotesize
+  \begin{block}{Procedimiento}
+    \scriptsize
+    \textbf{1.} Ordenar los datos. \quad
+    \textbf{2.} Calcular la posición:
+    \[ \text{pos}(P_k) = \frac{k\,(n+1)}{100} \]
+    \textbf{3.} Si la posición es entera, tomar ese dato. Si no, interpolar
+    entre los dos vecinos.
+  \end{block}
+
+  \vspace{0.1cm}
+  \begin{exampleblock}{Almacén Bello, $n = 40$: cálculo de $Q_1$}
+    \scriptsize
+    \[ \text{pos}(Q_1) = \frac{25(41)}{100} = 10{,}25 \]
+    Está entre el dato 10 ($x=184$) y el 11 ($x=190$), a 0,25 del camino:
+    \[ Q_1 = 184 + 0{,}25\,(190-184) = 184 + 1{,}5 = \destacar{185{,}5} \]
+  \end{exampleblock}
+
+  \vspace{0.05cm}
+  {\tiny\color{uniGris} Del mismo modo: $Q_2 = 227{,}5$ (pos. 20,5) y
+  $Q_3 = 267{,}75$ (pos. 30,75). Existen varias convenciones para la posición;
+  en este curso usamos $k(n+1)/100$ y la aplicamos siempre igual.}
+\end{frame}
+
+\begin{frame}{Posición — datos agrupados}
+  \scriptsize
+  \begin{columns}[T,onlytextwidth]
+    \begin{column}{0.46\textwidth}
+      \begin{block}{Fórmula general}
+        \scriptsize
+        \[ P_k = L_i + \left(\frac{\frac{k\,n}{100} - F_{i-1}}{f_i}\right) A \]
+        Es la misma fórmula de la mediana, cambiando $\frac{n}{2}$ por
+        $\frac{k\,n}{100}$.
+        \vspace{0.1cm}
+        \[ Q_1: \tfrac{n}{4} \quad Q_3: \tfrac{3n}{4} \quad
+           D_k: \tfrac{k\,n}{10} \]
+      \end{block}
+    \end{column}
+    \begin{column}{0.50\textwidth}
+      \begin{exampleblock}{$Q_1$ del gasto, agrupado}
+        \scriptsize
+        \textbf{1.} $\frac{n}{4} = 10$
+
+        \textbf{2.} Primera clase con $F_i \ge 10$: $[152,192)$, $F_2 = 11$
+
+        \textbf{3.} $L_i=152$, $F_{i-1}=4$, $f_i=7$, $A=40$
+        \[ Q_1 = 152 + \frac{10-4}{7}\cdot 40 \]
+        \[ Q_1 = 152 + 34{,}29 = \destacar{186{,}29} \]
+      \end{exampleblock}
+    \end{column}
+  \end{columns}
+
+  \vspace{0.1cm}
+  \begin{alertblock}{Los tres del caso, y cómo se leen}
+    \scriptsize
+    $Q_1 = 186{,}29$: el 25\% de los clientes gasta menos de 186 mil. \quad
+    $Q_2 = 224{,}73$. \quad $Q_3 = 267{,}56$: el 25\% \destacar{más
+    gastador} supera los 268 mil. Ese es el segmento premium, definido con un
+    criterio y no a ojo.
+  \end{alertblock}
+\end{frame}
+
+\begin{frame}{Deciles y percentiles del caso}
+  \scriptsize
+  \begin{columns}[T,onlytextwidth]
+    \begin{column}{0.50\textwidth}
+      \begin{exampleblock}{$D_3$ (decil 3)}
+        \scriptsize
+        \[ \frac{3n}{10} = 12 \quad\Rightarrow\quad \text{clase } [192,232) \]
+        \[ D_3 = 192 + \frac{12-11}{11}\cdot 40 = \destacar{195{,}64} \]
+        El 30\% de los clientes gasta menos de 195\,640 pesos.
+      \end{exampleblock}
+    \end{column}
+    \begin{column}{0.46\textwidth}
+      \begin{exampleblock}{$P_{90}$ (percentil 90)}
+        \scriptsize
+        \[ \frac{90n}{100} = 36 \quad\Rightarrow\quad \text{clase } [272,312) \]
+        \[ P_{90} = 272 + \frac{36-31}{6}\cdot 40 = \destacar{305{,}33} \]
+        Solo el 10\% gasta más de 305 mil.
+      \end{exampleblock}
+    \end{column}
+  \end{columns}
+
+  \vspace{0.1cm}
+  \begin{alertblock}{El paso donde más se falla}
+    \scriptsize
+    Identificar la \destacar{clase correcta}. Se busca la \azul{primera} clase
+    cuya $F_i$ sea mayor o igual a la posición buscada, y se usan los datos de
+    \azul{esa} clase con la acumulada de la \azul{anterior}. Escriba siempre
+    los cuatro valores ($L_i$, $F_{i-1}$, $f_i$, $A$) antes de reemplazar.
+  \end{alertblock}
+\end{frame}
+
+\begin{frame}{Ejercicio 2 — en clase (taller principal)}
+  \begin{alertblock}{En grupos de 3 (25 minutos)}
+    \scriptsize
+    Consumo por visita en la Cafetería El Portal ($n = 45$, miles de pesos):
+
+    \vspace{0.15cm}
+    \centering
+    \begin{tabular}{@{}lrrrrrr@{}}
+      \toprule
+      \textbf{Clase} & $[6,12)$ & $[12,18)$ & $[18,24)$ & $[24,30)$ &
+      $[30,36)$ & $[36,42]$ \\
+      \midrule
+      $x_i$ &  9 & 15 & 21 & 27 & 33 & 39 \\
+      $f_i$ &  5 &  9 & 13 & 10 &  5 &  3 \\
+      $F_i$ &  5 & 14 & 27 & 37 & 42 & 45 \\
+      \bottomrule
+    \end{tabular}
+
+    \vspace{0.2cm}
+    \raggedright
+    \begin{enumerate}\setlength{\itemsep}{-0.07cm}
+      \item Calcule la media agrupada (agregue la columna $f_i x_i$).
+      \item Calcule la mediana. Identifique primero la clase mediana.
+      \item Calcule la moda con la fórmula de Czuber.
+      \item Ordene las tres. ¿Qué asimetría hay?
+      \item Calcule $Q_1$ y $Q_3$.
+      \item ¿Entre qué valores está el 50\% central de los clientes?
+    \end{enumerate}
+  \end{alertblock}
+\end{frame}
+
+\begin{frame}{Ejercicio 2 — solución (media, mediana, moda)}
+  \scriptsize
+  \begin{columns}[T,onlytextwidth]
+    \begin{column}{0.44\textwidth}
+      \centering
+      \begin{tabular}{@{}lrrr@{}}
+        \toprule
+        \textbf{Clase} & \textbf{$x_i$} & \textbf{$f_i$} &
+        \textbf{$f_i x_i$} \\
+        \midrule
+        $[6,12)$  &  9 &  5 &   45 \\
+        $[12,18)$ & 15 &  9 &  135 \\
+        $[18,24)$ & 21 & 13 &  273 \\
+        $[24,30)$ & 27 & 10 &  270 \\
+        $[30,36)$ & 33 &  5 &  165 \\
+        $[36,42]$ & 39 &  3 &  117 \\
+        \midrule
+        \textbf{Tot.} & & \textbf{45} & \textbf{1\,005} \\
+        \bottomrule
+      \end{tabular}
+    \end{column}
+    \begin{column}{0.53\textwidth}
+      \begin{exampleblock}{Los tres cálculos}
+        \scriptsize
+        \[ \bar{x} = \frac{1\,005}{45} = \destacar{22{,}33} \]
+        $\frac{n}{2} = 22{,}5 \Rightarrow$ clase $[18,24)$, $F_{i-1}=14$,
+        $f_i=13$
+        \[ Me = 18 + \frac{22{,}5-14}{13}\cdot 6 = \destacar{21{,}92} \]
+        $d_1 = 13-9 = 4$, \ $d_2 = 13-10 = 3$
+        \[ Mo = 18 + \tfrac{4}{7}\cdot 6 = \destacar{21{,}43} \]
+      \end{exampleblock}
+    \end{column}
+  \end{columns}
+
+  \vspace{0.05cm}
+  {\tiny\color{uniGris} \textbf{Punto 4:} $Mo\,(21{,}43) < Me\,(21{,}92) <
+  \bar{x}\,(22{,}33)$: asimetría positiva, igual que en el Almacén Bello.}
+\end{frame}
+
+\begin{frame}{Ejercicio 2 — solución (cuartiles y decisión)}
+  \scriptsize
+  \begin{columns}[T,onlytextwidth]
+    \begin{column}{0.49\textwidth}
+      \begin{exampleblock}{$Q_1$}
+        \scriptsize
+        $\frac{n}{4} = 11{,}25 \Rightarrow$ clase $[12,18)$, \ $F_{i-1}=5$,
+        \ $f_i=9$
+        \[ Q_1 = 12 + \frac{11{,}25-5}{9}\cdot 6 \]
+        \[ Q_1 = 12 + 4{,}17 = \destacar{16{,}17} \]
+      \end{exampleblock}
+    \end{column}
+    \begin{column}{0.49\textwidth}
+      \begin{exampleblock}{$Q_3$}
+        \scriptsize
+        $\frac{3n}{4} = 33{,}75 \Rightarrow$ clase $[24,30)$, \ $F_{i-1}=27$,
+        \ $f_i=10$
+        \[ Q_3 = 24 + \frac{33{,}75-27}{10}\cdot 6 \]
+        \[ Q_3 = 24 + 4{,}05 = \destacar{28{,}05} \]
+      \end{exampleblock}
+    \end{column}
+  \end{columns}
+
+  \vspace{0.1cm}
+  \begin{alertblock}{Punto 6: la respuesta al gerente}
+    \scriptsize
+    El 50\% central de los clientes consume entre \destacar{16\,170 y
+    28\,050 pesos} por visita. Un combo en ese rango —digamos entre 17 y 27
+    mil— cubre a la mitad de la clientela. Por debajo de 16 mil o por encima
+    de 28 mil se atiende solo a un cuarto de los clientes en cada extremo.
+  \end{alertblock}
+\end{frame}
+
+\begin{frame}{Errores frecuentes}
+  \scriptsize
+  \begin{center}
+  \begin{tabular}{@{}p{5.4cm}p{6.4cm}@{}}
+    \toprule
+    \textbf{Error} & \textbf{Corrección} \\
+    \midrule
+    Calcular la mediana sin ordenar los datos &
+      Ordenar siempre es el paso 1 \\
+    Confundir clase modal con moda &
+      La clase es un intervalo; la moda, un valor dentro de él \\
+    Usar $F_i$ de la propia clase en vez de $F_{i-1}$ &
+      La fórmula pide la acumulada de la clase \azul{anterior} \\
+    Promediar notas sin ponderar &
+      Si los pesos difieren, se usa $\bar{x}_p = \sum w_ix_i / \sum w_i$ \\
+    Reportar la media de una variable ordinal &
+      La mediana o la moda son las medidas válidas \\
+    Redondear en cada paso intermedio &
+      Redondear solo el resultado final \\
+    \bottomrule
+  \end{tabular}
+  \end{center}
+\end{frame}
+
+\begin{frame}[fragile]{Centro y posición, en R}
+  \scriptsize
+\begin{lstlisting}[style=Rmini]
+mean(gasto)                    # media
+median(gasto)                  # mediana
+quantile(gasto)                # minimo, Q1, mediana, Q3, maximo
+quantile(gasto, c(0.30, 0.90)) # decil 3 y percentil 90
+summary(gasto)                 # todo lo anterior de una vez
+
+# R base no trae funcion de moda: se arma con table()
+tab <- table(gasto); names(tab)[tab == max(tab)]
+\end{lstlisting}
+\begin{lstlisting}[style=Rout]
+[1] 227.15
+[1] 227.5
+    0%    25%    50%    75%   100%
+112.00 188.50 227.50 265.25 352.00
+   30%    90%
+ 197.8  302.7
+\end{lstlisting}
+
+  \vspace{-0.1cm}
+  \begin{alertblock}{Por qué no dan lo mismo que a mano}
+    \tiny
+    R usa los \destacar{40 datos originales}; nosotros usamos la
+    \destacar{tabla agrupada}. Media: 227,15 frente a 227,00. Mediana: 227,5
+    frente a 224,73. $Q_1$: 188,50 frente a 186,29. Las dos vías son válidas;
+    lo que no se puede es mezclarlas sin decirlo.
+  \end{alertblock}
+\end{frame}
+
+\begin{frame}{Cierre de la sesión}
+  \begin{block}{Lo que debe quedar claro hoy}
+    \scriptsize
+    \begin{itemize}\setlength{\itemsep}{0.02cm}
+      \item $\bar{x} = \sum x_i / n$ y, agrupado, $\bar{x} = \sum f_i x_i / n$.
+      \item $Me$: posición $(n+1)/2$; agrupada, interpolación dentro de la
+            clase mediana.
+      \item $Mo$: el valor más frecuente; agrupada, fórmula de Czuber.
+      \item El orden $Mo < Me < \bar{x}$ revela \azul{asimetría positiva} sin
+            necesidad de graficar.
+      \item Cuartiles, deciles y percentiles son la misma fórmula con distinta
+            posición; sirven para \azul{segmentar}.
+    \end{itemize}
+  \end{block}
+
+  \vspace{0.1cm}
+  \begin{alertblock}{Trabajo independiente}
+    \scriptsize
+    Resolver los 20 ejercicios de la lámina siguiente. En la sesión 8 medimos
+    \destacar{cuánto se alejan} los datos del centro: rango, varianza,
+    desviación estándar, asimetría y curtosis.
+  \end{alertblock}
+\end{frame}
+
+\begin{frame}{Ejercicios propuestos}
+  \vspace{-0.1cm}
+  \begin{beamercolorbox}[wd=\textwidth,sep=0.10cm]{block body}
+    \centering\scriptsize
+    \textbf{1--7:} no agrupados. \quad \textbf{8--14:} agrupados
+    (use la tabla del Almacén Bello). \quad \textbf{15--20:} interpretación.
+  \end{beamercolorbox}
+  \listatiny
+  \begin{columns}[T,onlytextwidth]
+    \begin{column}{0.47\textwidth}
+      \begin{enumerate}\setlength{\itemsep}{0.16cm}
+        \item Media de: 5, 7, 7, 9, 12
+        \item Mediana de: 5, 7, 7, 9, 12
+        \item Moda de: 5, 7, 7, 9, 12
+        \item Media de: 4, 6, 8, 10 (n par)
+        \item Mediana de: 4, 6, 8, 10
+        \item Notas 4{,}0 (30\%), 3{,}5 (30\%), 2{,}8 (40\%): nota final
+        \item Si a todos los datos les sumo 5, ¿qué pasa con la media?
+        \item Media agrupada del gasto (verifique 227{,}0)
+        \item Clase mediana del gasto y su $F_{i-1}$
+        \item Mediana agrupada del gasto
+      \end{enumerate}
+    \end{column}
+    \begin{column}{0.50\textwidth}
+      \begin{enumerate}\setlength{\itemsep}{0.16cm}
+        \setcounter{enumi}{10}
+        \item Clase modal y moda agrupada del gasto
+        \item $Q_1$ agrupado del gasto
+        \item $Q_3$ agrupado del gasto
+        \item $P_{90}$ agrupado del gasto
+        \item ¿Qué significa $Q_3 = 267{,}56$, en una frase?
+        \item ¿Qué significa $D_3 = 195{,}64$?
+        \item ¿Por qué $Mo < Me < \bar{x}$ en este caso?
+        \item ¿Qué medida usaría para describir el salario típico? ¿Por qué?
+        \item ¿Qué medida usaría para el color más vendido? ¿Por qué?
+        \item Un dato pasa de 352 a 900: ¿qué medidas cambian y cuáles no?
+      \end{enumerate}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{Respuestas}{Autoevaluación de los ejercicios propuestos}
+  \listatiny
+  \begin{columns}[T,onlytextwidth]
+    \begin{column}{0.47\textwidth}
+      \begin{enumerate}\setlength{\itemsep}{0.16cm}
+        \item $40/5 = 8{,}0$
+        \item Posición 3 $\Rightarrow$ 7
+        \item 7
+        \item $28/4 = 7{,}0$
+        \item $(6+8)/2 = 7{,}0$
+        \item $1{,}20+1{,}05+1{,}12 = 3{,}37$
+        \item Aumenta en 5
+        \item $9\,080/40 = 227{,}0$
+        \item $[192,232)$; \ $F_{i-1} = 11$
+        \item $192 + \frac{20-11}{11}(40) = 224{,}73$
+      \end{enumerate}
+    \end{column}
+    \begin{column}{0.50\textwidth}
+      \begin{enumerate}\setlength{\itemsep}{0.16cm}
+        \setcounter{enumi}{10}
+        \item $[192,232)$; \ $Mo = 218{,}67$
+        \item $152 + \frac{10-4}{7}(40) = 186{,}29$
+        \item $232 + \frac{30-22}{9}(40) = 267{,}56$
+        \item $272 + \frac{36-31}{6}(40) = 305{,}33$
+        \item El 75\% gasta menos de 267\,560 pesos
+        \item El 30\% gasta menos de 195\,640 pesos
+        \item Porque hay cola larga a la derecha: la media se desplaza
+        \item Mediana: los salarios tienen cola larga
+        \item Moda: es una variable nominal
+        \item Cambia la media; mediana y moda no
+      \end{enumerate}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{Referencias}
+  \footnotesize
+  \begin{itemize}
+    \item[{[1]}] Monroy Saldívar, S. (2008). \textit{Estadística descriptiva}.
+      Instituto Politécnico Nacional.
+      \texttt{https://elibro.net/es/lc/uniminuto/titulos/74722}
+    \item[{[2]}] Ordóñez Fernández, F. F. \& González Fernández, J. (2021).
+      \textit{Estadística descriptiva paso a paso}. Ediciones Pirámide.
+      \texttt{https://elibro.net/es/lc/uniminuto/titulos/215449}
+    \item[{[3]}] Llinás Solano, H. (2014). \textit{Introducción a la
+      estadística con aplicaciones en ciencias sociales}. Universidad del
+      Norte. \texttt{https://elibro.net/es/lc/uniminuto/titulos/70062}
+  \end{itemize}
+
+  \vspace{0.35cm}
+  \begin{center}
+    {\Large\color{uniAzul}\textbf{¿Preguntas?}}
+  \end{center}
+\end{frame}
+
+\end{document}

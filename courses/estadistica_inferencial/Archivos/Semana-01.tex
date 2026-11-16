@@ -1,0 +1,1292 @@
+% ============================================================================
+%  ESTADÍSTICA INFERENCIAL — Sesión 1
+%  Semana 1: 10 al 15 de agosto de 2026
+%  Presentación del curso + 1.1 Conceptos de probabilidad: teoría de conjuntos
+%  Compilar: pdflatex Est-Inferencial-S01.tex  (dos veces)
+% ============================================================================
+\documentclass[aspectratio=169,10pt]{beamer}
+
+\usepackage[utf8]{inputenc}
+\IfFileExists{spanish.ldf}{\usepackage[spanish,es-noshorthands]{babel}}{}
+\usepackage{amsmath,amssymb}
+\usepackage{booktabs}
+\usepackage{tikz}
+\usepackage{listings}
+\usetikzlibrary{positioning}
+
+\usetheme{Uniminuto}
+
+\uniasignatura{Estadística inferencial}
+\uniprofesor{Andrés Felipe Puerta Velez}
+\unicorreo{andres.puerta-v@uniminuto.edu.co}
+\uninrc{CBASBL061}
+\unisemana{Sesión 1 — Semana 1 · 10 al 15 de agosto de 2026}
+
+\newcommand{\listatiny}{\setbeamerfont{itemize/enumerate body}{size=\tiny}\tiny}
+
+% Estilo de los diagramas de Venn
+\tikzset{
+  venn/.style={draw=uniAzul,thick,fill=uniAzul,fill opacity=0.18},
+  vennB/.style={draw=uniNaranja,thick,fill=uniNaranja,fill opacity=0.25},
+  univ/.style={draw=uniGris,thick}
+}
+
+\newcommand{\fx}[1]{{\ttfamily\color{uniAzul}#1}}
+
+% ------------------------------------------------------------- CÓDIGO R ----
+\lstdefinestyle{Rcode}{
+  language=R,
+  basicstyle=\ttfamily\scriptsize,
+  keywordstyle=\color{uniAzul}\bfseries,
+  commentstyle=\color{uniGris}\itshape,
+  stringstyle=\color{uniTitulo},
+  showstringspaces=false, numbers=none, breaklines=true,
+  columns=fullflexible,
+  backgroundcolor=\color{uniCremaClaro},
+  frame=leftline, framerule=1.2pt, rulecolor=\color{uniNaranja},
+  xleftmargin=0.35cm, framexleftmargin=0.35cm,
+  framexrightmargin=0.15cm, framextopmargin=2pt, framexbottommargin=2pt,
+  aboveskip=0.15cm, belowskip=0.15cm
+}
+\lstdefinestyle{Rmini}{
+  language=R,
+  basicstyle=\ttfamily\tiny,
+  keywordstyle=\color{uniAzul}\bfseries,
+  commentstyle=\color{uniGris}\itshape,
+  stringstyle=\color{uniTitulo},
+  showstringspaces=false, numbers=none, breaklines=true,
+  columns=fullflexible,
+  backgroundcolor=\color{uniCremaClaro},
+  frame=leftline, framerule=1.2pt, rulecolor=\color{uniNaranja},
+  xleftmargin=0.35cm, framexleftmargin=0.35cm,
+  framexrightmargin=0.15cm, framextopmargin=2pt, framexbottommargin=2pt,
+  aboveskip=0.12cm, belowskip=0.12cm
+}
+\lstdefinestyle{Rout}{
+  basicstyle=\ttfamily\tiny\color{black},
+  showstringspaces=false, numbers=none, breaklines=true,
+  columns=fullflexible,
+  backgroundcolor=\color{uniGris!10},
+  frame=leftline, framerule=1.2pt, rulecolor=\color{uniGris},
+  xleftmargin=0.35cm, framexleftmargin=0.35cm,
+  framexrightmargin=0.15cm, framextopmargin=2pt, framexbottommargin=2pt,
+  aboveskip=0.12cm, belowskip=0.12cm
+}
+
+\begin{document}
+
+\portada
+
+% ============================================================== ORDEN DEL DÍA
+\begin{frame}{Orden del día}
+  \begin{enumerate}
+    \item Llamado a lista, presentación del grupo y elección del representante
+    \item ¿Qué es la estadística inferencial y para qué sirve?
+    \item Temario, cronograma, evaluación y acuerdos mínimos
+    \item Población, muestra, parámetro y estadístico: el vocabulario del curso
+    \item \azul{Tema 1.1: Conceptos de probabilidad — teoría de conjuntos}
+    \item Espacio muestral, eventos y operaciones entre eventos
+    \item Ejercicios en clase, errores frecuentes y cierre
+  \end{enumerate}
+
+  \vspace{0.25cm}
+  {\footnotesize\color{uniGris} Sesión de 3 horas. Al final de hoy queda
+  montado \destacar{el lenguaje} con el que se escribe todo el curso: sin
+  conjuntos no hay probabilidad, y sin probabilidad no hay inferencia.}
+\end{frame}
+
+% ============================================================== MOTIVACIÓN ==
+\begin{frame}{¿Por qué estudiar estadística inferencial?}
+  Casi nunca podemos medir a \destacar{toda} la población. La inferencia
+  estadística permite decir algo sobre el todo a partir de una parte.
+
+  \vspace{0.35cm}
+  \begin{columns}[T,onlytextwidth]
+    \begin{column}{0.47\textwidth}
+      \begin{block}{Preguntas que resolveremos}
+        \begin{itemize}
+          \item ¿A cuántos clientes debo encuestar?
+          \item ¿Entre qué valores está el gasto promedio real?
+          \item ¿El nuevo proceso sí redujo los tiempos?
+        \end{itemize}
+      \end{block}
+    \end{column}
+    \begin{column}{0.47\textwidth}
+      \begin{exampleblock}{La lógica del curso}
+        \begin{enumerate}
+          \item Medir la \azul{incertidumbre} $\rightarrow$ probabilidad
+          \item Describir el \azul{azar} $\rightarrow$ distribuciones
+          \item \azul{Decidir} con datos $\rightarrow$ estimación e hipótesis
+        \end{enumerate}
+      \end{exampleblock}
+    \end{column}
+  \end{columns}
+
+  \vspace{0.3cm}
+  {\small\color{uniGris} La estadística descriptiva resume lo que ya observé;
+  la inferencial generaliza a lo que no observé\,[1].}
+\end{frame}
+
+% ============================================================== EL CURSO ====
+\begin{frame}{Cuatro decisiones reales que se toman con inferencia}
+  \scriptsize
+  \begin{center}
+  \begin{tabular}{@{}p{4.0cm}p{3.6cm}p{4.2cm}@{}}
+    \toprule
+    \textbf{Situación} & \textbf{Lo que se mide} & \textbf{La decisión} \\
+    \midrule
+    Una encuesta a 1\,200 votantes de un país entero &
+      La intención de voto de 1\,200 &
+      Se anuncia el resultado de \azul{millones} \\
+    \addlinespace
+    Control de calidad de un lote de 50\,000 piezas &
+      Se prueban 200 &
+      Se acepta o se rechaza \azul{todo el lote} \\
+    \addlinespace
+    Auditoría de 40\,000 facturas &
+      Se revisan 300 &
+      Se estima el \azul{error total} de la contabilidad \\
+    \addlinespace
+    Prueba A/B de dos versiones de una página &
+      Dos semanas de tráfico &
+      Se elige la versión \azul{definitiva} \\
+    \bottomrule
+  \end{tabular}
+  \end{center}
+
+  \vspace{0.1cm}
+  \begin{alertblock}{Lo que tienen en común}
+    \scriptsize
+    En los cuatro casos se decide sobre \destacar{un todo que nunca se midió},
+    a partir de \destacar{una parte que sí se midió}. La pregunta que este
+    curso responde no es ``¿cuánto dio la muestra?'' sino
+    \azul{``¿cuánto puedo equivocarme al extenderlo al total?''}
+  \end{alertblock}
+\end{frame}
+
+\begin{frame}{Descriptiva o inferencial: la prueba de las cuatro frases}
+  \scriptsize
+  \begin{center}
+  \begin{tabular}{@{}p{8.0cm}p{3.8cm}@{}}
+    \toprule
+    \textbf{Afirmación} & \textbf{¿Qué es?} \\
+    \midrule
+    ``De los 200 clientes encuestados, 130 están satisfechos.'' &
+      \azul{Descriptiva} \\
+    ``El 65\% de nuestros clientes está satisfecho.'' &
+      \destacar{Inferencial} \\
+    ``El gasto promedio de la muestra fue de 227 mil pesos.'' &
+      \azul{Descriptiva} \\
+    ``Con 95\% de confianza, el gasto promedio está entre 215 y 239 mil.'' &
+      \destacar{Inferencial} \\
+    \bottomrule
+  \end{tabular}
+  \end{center}
+
+  \vspace{0.12cm}
+  \begin{alertblock}{La señal que las distingue}
+    \scriptsize
+    Si la frase habla \destacar{solo de los casos medidos}, es descripción. Si
+    habla de \destacar{casos que no se midieron}, es inferencia, y entonces
+    \azul{tiene que venir acompañada de una medida de incertidumbre}: un
+    porcentaje de confianza, un margen de error o un valor $p$.
+  \end{alertblock}
+
+  \vspace{0.08cm}
+  {\tiny\color{uniGris} Toda la asignatura consiste en aprender a construir esa
+  segunda columna \destacar{sin mentir}: decir algo del total, y decir además
+  qué tan seguros estamos.}
+\end{frame}
+
+\begin{frame}{El curso en tres unidades}
+  \begin{columns}[T,onlytextwidth]
+    \begin{column}{0.32\textwidth}
+      \begin{block}{Unidad 1 (sem. 1--5)}
+        \small Probabilidad y muestreo\\[0.2em]
+        Conjuntos, conteo, Laplace, axiomas, probabilidad condicional,
+        tipos de muestreo y tamaño de muestra.
+      \end{block}
+    \end{column}
+    \begin{column}{0.32\textwidth}
+      \begin{block}{Unidad 2 (sem. 7--11)}
+        \small Distribuciones y estimación\\[0.2em]
+        Binomial, Poisson, normal, $t$ de Student, teorema del límite central,
+        estimación puntual e intervalos de confianza.
+      \end{block}
+    \end{column}
+    \begin{column}{0.32\textwidth}
+      \begin{block}{Unidad 3 (sem. 13--15)}
+        \small Pruebas de hipótesis\\[0.2em]
+        Concepto y tipos, planteamiento y pasos, software estadístico,
+        correlación y regresión lineal.
+      \end{block}
+    \end{column}
+  \end{columns}
+
+  \vspace{0.45cm}
+  \begin{center}
+    \small Curso \destacar{100\% presencial} · 3 créditos · 16 semanas ·
+    2 horas de clase por semana
+  \end{center}
+\end{frame}
+
+% ============================================================== EVALUACIÓN ==
+\begin{frame}{Evaluación: tres exámenes, nada más}
+  \begin{center}
+  \begin{tabular}{@{}llr@{}}
+    \toprule
+    \textbf{Evaluación} & \textbf{Semana y fechas} & \textbf{Peso} \\
+    \midrule
+    Examen 1 — Unidad 1 & Semana 6: 14 al 19 de septiembre  & 33,3\% \\
+    Examen 2 — Unidad 2 & Semana 12: 26 al 31 de octubre    & 33,3\% \\
+    Examen 3 — Unidad 3 & Semana 16: 23 al 28 de noviembre  & 33,4\% \\
+    \midrule
+    \textbf{Total}      &                                   & \textbf{100\%} \\
+    \bottomrule
+  \end{tabular}
+  \end{center}
+
+  \vspace{0.3cm}
+  \begin{alertblock}{Cómo son los exámenes}
+    \footnotesize
+    Individuales, en \azul{Aulas Virtuales (Moodle)}, presentados de forma
+    presencial en el aula y con tiempo límite. Selección múltiple con única
+    respuesta y problemas de aplicación con respuesta numérica. Se permite
+    calculadora, formulario y tablas estadísticas autorizadas.
+  \end{alertblock}
+\end{frame}
+
+% ============================================================== ACUERDOS ====
+\begin{frame}{Acuerdos mínimos del curso}
+  \begin{itemize}
+    \item \azul{No hay talleres, quices ni trabajos calificables.} Todo lo que
+          hagamos en clase es formativo: sirve para prepararse.
+    \item Las semanas \destacar{6, 12 y 16} se dedican por completo al examen;
+          no se dictan temas nuevos.
+    \item Notas y retroalimentación se publican dentro de la semana siguiente
+          al examen. Reclamaciones: 3 días hábiles.
+    \item Presentación en fecha distinta solo con excusa válida radicada ante
+          la coordinación del programa.
+    \item Comunicación en clase, por correo institucional o por medio del
+          representante de curso.
+    \item Fraude o plagio anula la prueba y se reporta según el Reglamento
+          Estudiantil.
+  \end{itemize}
+\end{frame}
+
+% ============================================================== UNIDAD 1 ====
+\begin{frame}{El vocabulario que usaremos todo el semestre}
+  \scriptsize
+  \begin{center}
+  \begin{tabular}{@{}p{2.6cm}p{4.6cm}p{2.2cm}p{2.4cm}@{}}
+    \toprule
+    \textbf{Concepto} & \textbf{Qué es} & \textbf{Símbolo} &
+    \textbf{¿Se conoce?} \\
+    \midrule
+    Población & El conjunto \azul{completo} que interesa & $N$ &
+      Casi nunca \\
+    Muestra & La parte que sí se observa & $n$ & Sí \\
+    \addlinespace
+    Parámetro & Un número que describe la \azul{población} &
+      $\mu,\ \sigma,\ p$ & \destacar{No}: se estima \\
+    Estadístico & Un número calculado con la \azul{muestra} &
+      $\bar{x},\ s,\ \hat{p}$ & Sí: se calcula \\
+    \bottomrule
+  \end{tabular}
+  \end{center}
+
+  \vspace{0.08cm}
+  \begin{exampleblock}{La frase que resume el curso completo}
+    \tiny
+    \[ \text{Estadístico conocido} \;\longrightarrow\;
+       \text{Parámetro desconocido} \]
+    Usamos $\bar{x}$ para decir algo sobre $\mu$, y $\hat{p}$ sobre $p$.
+    \destacar{Ese salto es la inferencia}, y el precio que se paga por darlo
+    es la incertidumbre. \azul{Letras griegas para la población, latinas para
+    la muestra.}
+  \end{exampleblock}
+\end{frame}
+
+\seccion{Unidad 1. Probabilidad y muestreo}
+
+\begin{frame}{1.1 Conceptos de probabilidad: teoría de conjuntos}
+  Antes de calcular probabilidades necesitamos un lenguaje para describir
+  \destacar{lo que puede pasar}. Ese lenguaje es la teoría de conjuntos.
+
+  \vspace{0.4cm}
+  \begin{block}{Tres definiciones básicas}
+    \begin{description}
+      \item[Experimento aleatorio] Proceso cuyo resultado no se puede predecir
+            con certeza, aunque se conozcan todos los resultados posibles.
+      \item[Espacio muestral $\Omega$] Conjunto de \emph{todos} los resultados
+            posibles del experimento.
+      \item[Evento $A$] Cualquier subconjunto del espacio muestral,
+            $A \subseteq \Omega$.
+    \end{description}
+  \end{block}
+
+  \vspace{0.25cm}
+  {\small\color{uniGris} Un evento ocurre si el resultado observado pertenece a
+  él\,[2].}
+\end{frame}
+
+% -------------------------------------------------------------- EJEMPLO ----
+\begin{frame}{De dónde viene la probabilidad}
+  \scriptsize
+  \begin{columns}[T,onlytextwidth]
+    \begin{column}{0.52\textwidth}
+      \begin{block}{1654: una carta entre dos matemáticos}
+        \tiny
+        El caballero \azul{De Méré}, jugador profesional, le plantea a
+        \azul{Blaise Pascal} un problema práctico: si una partida por dinero se
+        interrumpe antes de terminar, \destacar{¿cómo se reparte el premio de
+        forma justa?}
+
+        \vspace{0.08cm}
+        Pascal le escribe a \azul{Pierre de Fermat} y, en esa correspondencia,
+        nace el cálculo de probabilidades: la idea de \destacar{medir con un
+        número lo que aún no ha ocurrido}.
+      \end{block}
+    \end{column}
+    \begin{column}{0.44\textwidth}
+      \begin{exampleblock}{La paradoja que lo destapó}
+        \tiny
+        De Méré ganaba apostando a \azul{sacar al menos un 6 en 4
+        lanzamientos} de un dado, y perdía apostando a \azul{al menos un doble
+        6 en 24 lanzamientos} de dos dados. Creía que debía ser lo mismo.
+        \[ 1-\left(\tfrac{5}{6}\right)^{4} = \destacar{0{,}5177} \]
+        \[ 1-\left(\tfrac{35}{36}\right)^{24} = \destacar{0{,}4914} \]
+        Su intuición fallaba por dos centésimas: suficiente para arruinarlo.
+      \end{exampleblock}
+    \end{column}
+  \end{columns}
+
+  \vspace{0.08cm}
+  \begin{alertblock}{Tres fechas para ubicarse}
+    \tiny
+    \azul{1654} Pascal y Fermat: el problema del reparto. \quad
+    \azul{1812} Laplace formaliza la regla clásica. \quad
+    \azul{1933} Kolmogórov da los \destacar{axiomas} que veremos en la sesión
+    3, y la probabilidad pasa a ser una rama rigurosa de las matemáticas.
+  \end{alertblock}
+
+  \vspace{0.05cm}
+  {\tiny\color{uniGris} La moraleja sigue vigente:
+  \destacar{la intuición sobre el azar se equivoca}, y por eso hace falta
+  calcular.}
+\end{frame}
+
+\begin{frame}{Determinista o aleatorio}
+  \scriptsize
+  \begin{center}
+  \begin{tabular}{@{}p{2.2cm}p{4.6cm}p{4.8cm}@{}}
+    \toprule
+    & \textbf{Experimento determinista} & \textbf{Experimento aleatorio} \\
+    \midrule
+    Definición & El resultado se puede predecir con certeza &
+      El resultado \azul{no} se puede predecir, aunque se conozcan todos los
+      posibles \\
+    \addlinespace
+    Ejemplos & Soltar un objeto: cae. Calentar agua a 100\,$^\circ$C: hierve &
+      Lanzar un dado. Preguntarle a un cliente si volverá. El tiempo de espera
+      en una fila \\
+    \addlinespace
+    Se estudia con & Física, química, ecuaciones &
+      \destacar{Probabilidad} \\
+    \bottomrule
+  \end{tabular}
+  \end{center}
+
+  \vspace{0.1cm}
+  \begin{alertblock}{Las tres condiciones de un experimento aleatorio}
+    \scriptsize
+    \textbf{1.} Se puede \azul{repetir} en las mismas condiciones. \quad
+    \textbf{2.} Se conocen \azul{todos} los resultados posibles antes de
+    hacerlo. \quad
+    \textbf{3.} No se sabe \azul{cuál} de ellos ocurrirá.
+  \end{alertblock}
+
+  \vspace{0.08cm}
+  {\tiny\color{uniGris} La condición 2 es la que la gente olvida:
+  \destacar{si no sabemos qué puede pasar, no hay espacio muestral y no hay
+  probabilidad}. Por eso el primer paso de todo problema es escribir $\Omega$.}
+\end{frame}
+
+\begin{frame}{Ejemplo guiado}
+  \textbf{Experimento:} lanzar un dado corriente una vez.
+
+  \vspace{0.3cm}
+  \begin{itemize}
+    \item Espacio muestral: $\Omega=\{1,2,3,4,5,6\}$
+    \item Evento $A$ = ``sale número par'' $=\{2,4,6\}$
+    \item Evento $B$ = ``sale mayor que 3'' $=\{4,5,6\}$
+  \end{itemize}
+
+  \vspace{0.35cm}
+  \begin{exampleblock}{Fíjese en la diferencia}
+    \begin{itemize}
+      \item $4 \in A$ \quad (el 4 \azul{pertenece} al evento $A$: es un elemento)
+      \item $A \subseteq \Omega$ \quad (el evento $A$ \azul{está contenido} en
+            $\Omega$: es un subconjunto)
+      \item $\in$ relaciona elemento con conjunto; $\subseteq$ relaciona
+            conjunto con conjunto.
+    \end{itemize}
+  \end{exampleblock}
+\end{frame}
+
+% ------------------------------------------------------------ EJERCICIO 1 --
+\begin{frame}{Cómo se escribe un espacio muestral}
+  \tiny
+  \begin{columns}[T,onlytextwidth]
+    \begin{column}{0.30\textwidth}
+      \begin{block}{Por extensión}
+        \tiny
+        Se listan los resultados:
+        $\Omega = \{1,2,3,4,5,6\}$. Sirve cuando son pocos.
+      \end{block}
+      \begin{block}{Por comprensión}
+        \tiny
+        Se da la propiedad:
+        $\Omega = \{t \in \mathbb{R} : t \ge 0\}$. Sirve cuando son
+        infinitos.
+      \end{block}
+    \end{column}
+    \begin{column}{0.32\textwidth}
+      \centering
+      {\tiny\color{uniAzul}\textbf{Diagrama de árbol}}\\[0.15em]
+      \begin{tikzpicture}[scale=0.42,every node/.style={font=\tiny}]
+        \node (r) at (0,0) {};
+        \node (c) at (1.6,1.1) {C};
+        \node (s) at (1.6,-1.1) {S};
+        \node (cc) at (3.4,1.8) {CC};
+        \node (cs) at (3.4,0.5) {CS};
+        \node (sc) at (3.4,-0.5) {SC};
+        \node (ss) at (3.4,-1.8) {SS};
+        \draw[uniGris] (r)--(c); \draw[uniGris] (r)--(s);
+        \draw[uniGris] (c)--(cc); \draw[uniGris] (c)--(cs);
+        \draw[uniGris] (s)--(sc); \draw[uniGris] (s)--(ss);
+      \end{tikzpicture}\\[0.1em]
+      {\tiny Dos monedas: $\#\Omega = 4$}
+    \end{column}
+    \begin{column}{0.34\textwidth}
+      \centering
+      {\tiny\color{uniAzul}\textbf{Tabla de doble entrada}}\\[0.15em]
+      \tiny
+      \setlength{\tabcolsep}{2.0pt}
+      \renewcommand{\arraystretch}{0.82}
+      \begin{tabular}{@{}c|cccccc@{}}
+        & 1 & 2 & 3 & 4 & 5 & 6 \\
+        \hline
+        1 & 11 & 12 & 13 & 14 & 15 & 16 \\
+        2 & 21 & 22 & 23 & 24 & 25 & 26 \\
+        3 & 31 & 32 & 33 & 34 & 35 & 36 \\
+        4 & 41 & 42 & 43 & 44 & 45 & 46 \\
+        5 & 51 & 52 & 53 & 54 & 55 & 56 \\
+        6 & 61 & 62 & 63 & 64 & 65 & 66 \\
+      \end{tabular}\\[0.05em]
+      {\tiny Dos dados: $\#\Omega = 36$}
+    \end{column}
+  \end{columns}
+
+  \vspace{-0.14cm}
+  \begin{alertblock}{Cuál conviene en cada caso}
+    \tiny
+    El \azul{árbol} cuando el experimento tiene \destacar{etapas}; la
+    \azul{tabla} cuando hay \destacar{dos dimensiones} que se cruzan; la
+    \azul{comprensión} cuando $\Omega$ es infinito.
+  \end{alertblock}
+\end{frame}
+
+\begin{frame}{¿Cuántos elementos tiene $\Omega$?}
+  \scriptsize
+  \begin{center}
+  \begin{tabular}{@{}p{2.8cm}p{4.0cm}p{4.8cm}@{}}
+    \toprule
+    \textbf{Tipo} & \textbf{Ejemplo} & \textbf{Con qué se trabajará} \\
+    \midrule
+    Finito & Lanzar un dado: 6 resultados &
+      Conteo y regla de Laplace \ (sesiones 2 y 3) \\
+    \addlinespace
+    Infinito numerable & Llamadas hasta la primera queja:
+      $\{1,2,3,\dots\}$ &
+      Distribuciones \azul{discretas}: binomial, Poisson \ (sesión 7) \\
+    \addlinespace
+    Infinito no numerable & Tiempo de espera en minutos: $[0,\infty)$ &
+      Distribuciones \azul{continuas}: normal, $t$ \ (sesiones 8 y 9) \\
+    \bottomrule
+  \end{tabular}
+  \end{center}
+
+  \vspace{0.1cm}
+  \begin{alertblock}{Por qué importa hoy}
+    \scriptsize
+    Porque \destacar{el tipo de espacio muestral decide toda la herramienta que
+    se usará después}. Si se puede contar, se cuenta; si no, hay que integrar
+    áreas bajo una curva. \azul{Esta tabla es, en realidad, el índice de las
+    unidades 1 y 2.}
+  \end{alertblock}
+
+  \vspace{0.05cm}
+  {\tiny\color{uniGris} En el caso finito, el número de elementos de $\Omega$
+  se escribe $\#\Omega$ o $|\Omega|$, y se llama \azul{cardinal}. Contarlo bien
+  es justamente el tema de la sesión 2.}
+\end{frame}
+
+\begin{frame}{Tipos de evento}
+  \scriptsize
+  \begin{center}
+  \begin{tabular}{@{}p{2.8cm}p{3.6cm}p{5.2cm}@{}}
+    \toprule
+    \textbf{Evento} & \textbf{Definición} & \textbf{Ejemplo con un dado} \\
+    \midrule
+    Simple o elemental & Un solo resultado & $\{4\}$: ``sale 4'' \\
+    Compuesto & Dos o más resultados & $\{2,4,6\}$: ``sale par'' \\
+    \addlinespace
+    Seguro & Es todo $\Omega$ & ``sale un número entre 1 y 6'' \\
+    Imposible & Es $\varnothing$ & ``sale 7'' \\
+    \addlinespace
+    Complementario & $A^{c}$: todo lo que no está en $A$ &
+      Si $A=\{2,4,6\}$, \ $A^{c}=\{1,3,5\}$ \\
+    \bottomrule
+  \end{tabular}
+  \end{center}
+
+  \vspace{0.1cm}
+  \begin{alertblock}{Dos observaciones que se usan todo el semestre}
+    \scriptsize
+    (1) El evento seguro y el imposible \destacar{sí son eventos}: son
+    subconjuntos de $\Omega$, aunque uno sea todo y el otro nada. \quad
+    (2) Un evento \azul{ocurre} si el resultado observado \destacar{pertenece}
+    a él: si sale 4, ocurrieron a la vez $\{4\}$, ``par'' y ``mayor que 3''.
+  \end{alertblock}
+
+  \vspace{0.05cm}
+  {\tiny\color{uniGris} \destacar{Varios eventos pueden ocurrir con un mismo
+  resultado.} Esa idea, que parece obvia, es la que hace falta para entender la
+  probabilidad condicional en la sesión 4.}
+\end{frame}
+
+\begin{frame}{Ejercicio 1 — en clase}
+  \begin{alertblock}{Trabajo individual (5 minutos)}
+    Una empresa de domicilios registra si cada pedido llega \emph{a tiempo}
+    (T) o \emph{tarde} (R). Se observan \destacar{dos} pedidos consecutivos.
+
+    \vspace{0.3cm}
+    \begin{enumerate}
+      \item Escriba el espacio muestral $\Omega$.
+      \item Escriba el evento $A$ = ``al menos un pedido llega a tiempo''.
+      \item Escriba el evento $B$ = ``los dos pedidos llegan igual''.
+      \item ¿Cuántos elementos tiene cada uno?
+    \end{enumerate}
+  \end{alertblock}
+\end{frame}
+
+\begin{frame}{Ejercicio 1 — solución}
+  \begin{columns}[T,onlytextwidth]
+    \begin{column}{0.5\textwidth}
+      \begin{block}{Espacio muestral}
+        \[ \Omega=\{TT,\;TR,\;RT,\;RR\},\qquad \#\Omega=4 \]
+      \end{block}
+      \begin{block}{Eventos}
+        \begin{align*}
+          A &= \{TT,\;TR,\;RT\}, & \#A &= 3\\
+          B &= \{TT,\;RR\},      & \#B &= 2
+        \end{align*}
+      \end{block}
+    \end{column}
+    \begin{column}{0.46\textwidth}
+      \begin{exampleblock}{Observaciones}
+        \begin{itemize}
+          \item El orden importa: $TR$ y $RT$ son resultados distintos.
+          \item ``Al menos uno'' es lo contrario de ``ninguno''. Por eso a $A$
+                le falta únicamente $RR$.
+          \item Ese atajo ($A$ = todo menos lo contrario) lo formalizaremos
+                como el \azul{complemento}.
+        \end{itemize}
+      \end{exampleblock}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+% ------------------------------------------------------------ OPERACIONES --
+\begin{frame}{Operaciones entre eventos (I)}
+  \begin{columns}[T,onlytextwidth]
+    \begin{column}{0.33\textwidth}
+      \centering
+      \begin{tikzpicture}[scale=0.62]
+        \draw[univ] (-2.1,-1.5) rectangle (2.1,1.5);
+        \begin{scope}
+          \clip (-0.55,0) circle (1.1);
+          \fill[uniAzul,opacity=0.30] (0.55,0) circle (1.1);
+        \end{scope}
+        \fill[uniAzul,opacity=0.30] (-0.55,0) circle (1.1);
+        \fill[uniAzul,opacity=0.30] (0.55,0) circle (1.1);
+        \draw[thick,uniAzul] (-0.55,0) circle (1.1);
+        \draw[thick,uniAzul] (0.55,0) circle (1.1);
+        \node at (-1.25,0) {$A$}; \node at (1.25,0) {$B$};
+        \node[font=\scriptsize] at (1.75,1.25) {$\Omega$};
+      \end{tikzpicture}
+      \par\vspace{0.15cm}
+      \textbf{Unión} $A\cup B$\par
+      {\scriptsize ocurre $A$, ocurre $B$, o ambos}
+    \end{column}
+    \begin{column}{0.33\textwidth}
+      \centering
+      \begin{tikzpicture}[scale=0.62]
+        \draw[univ] (-2.1,-1.5) rectangle (2.1,1.5);
+        \begin{scope}
+          \clip (-0.55,0) circle (1.1);
+          \fill[uniNaranja,opacity=0.55] (0.55,0) circle (1.1);
+        \end{scope}
+        \draw[thick,uniAzul] (-0.55,0) circle (1.1);
+        \draw[thick,uniAzul] (0.55,0) circle (1.1);
+        \node at (-1.25,0) {$A$}; \node at (1.25,0) {$B$};
+        \node[font=\scriptsize] at (1.75,1.25) {$\Omega$};
+      \end{tikzpicture}
+      \par\vspace{0.15cm}
+      \textbf{Intersección} $A\cap B$\par
+      {\scriptsize ocurren los dos a la vez}
+    \end{column}
+    \begin{column}{0.33\textwidth}
+      \centering
+      \begin{tikzpicture}[scale=0.62]
+        \fill[uniAzul,opacity=0.30] (-2.1,-1.5) rectangle (2.1,1.5);
+        \fill[white] (0,0) circle (1.1);
+        \draw[univ] (-2.1,-1.5) rectangle (2.1,1.5);
+        \draw[thick,uniAzul] (0,0) circle (1.1);
+        \node at (0,0) {$A$};
+        \node[font=\scriptsize] at (1.75,1.25) {$\Omega$};
+      \end{tikzpicture}
+      \par\vspace{0.15cm}
+      \textbf{Complemento} $A^{c}$\par
+      {\scriptsize todo lo que \emph{no} es $A$}
+    \end{column}
+  \end{columns}
+
+  \vspace{0.4cm}
+  \begin{exampleblock}{Con el dado: $\Omega=\{1,\dots,6\}$, $A=\{2,4,6\}$, $B=\{4,5,6\}$}
+    $A\cup B=\{2,4,5,6\}$ \qquad $A\cap B=\{4,6\}$ \qquad $A^{c}=\{1,3,5\}$
+  \end{exampleblock}
+\end{frame}
+
+% -------------------------------------------------------- OPERACIONES II ---
+\begin{frame}{Operaciones entre eventos (II)}
+  \begin{columns}[T,onlytextwidth]
+    \begin{column}{0.33\textwidth}
+      \centering
+      \begin{tikzpicture}[scale=0.62]
+        \draw[univ] (-2.1,-1.5) rectangle (2.1,1.5);
+        \begin{scope}[even odd rule]
+          \clip (-2.1,-1.5) rectangle (2.1,1.5) (0.55,0) circle (1.1);
+          \fill[uniAzul,opacity=0.32] (-0.55,0) circle (1.1);
+        \end{scope}
+        \draw[thick,uniAzul] (-0.55,0) circle (1.1);
+        \draw[thick,uniAzul] (0.55,0) circle (1.1);
+        \node at (-1.25,0) {$A$}; \node at (1.25,0) {$B$};
+        \node[font=\scriptsize] at (1.75,1.25) {$\Omega$};
+      \end{tikzpicture}
+      \par\vspace{0.15cm}
+      \textbf{Diferencia} $A\setminus B$\par
+      {\scriptsize ocurre $A$ \emph{pero no} $B$}
+    \end{column}
+    \begin{column}{0.33\textwidth}
+      \centering
+      \begin{tikzpicture}[scale=0.62]
+        \draw[univ] (-2.1,-1.5) rectangle (2.1,1.5);
+        \begin{scope}[even odd rule]
+          \clip (-2.1,-1.5) rectangle (2.1,1.5) (-0.55,0) circle (1.1);
+          \fill[uniNaranja,opacity=0.45] (0.55,0) circle (1.1);
+        \end{scope}
+        \draw[thick,uniAzul] (-0.55,0) circle (1.1);
+        \draw[thick,uniAzul] (0.55,0) circle (1.1);
+        \node at (-1.25,0) {$A$}; \node at (1.25,0) {$B$};
+        \node[font=\scriptsize] at (1.75,1.25) {$\Omega$};
+      \end{tikzpicture}
+      \par\vspace{0.15cm}
+      \textbf{Diferencia} $B\setminus A$\par
+      {\scriptsize ocurre $B$ \emph{pero no} $A$}
+    \end{column}
+    \begin{column}{0.33\textwidth}
+      \centering
+      \begin{tikzpicture}[scale=0.62]
+        \draw[univ] (-2.1,-1.5) rectangle (2.1,1.5);
+        \fill[uniAzul,opacity=0.32,even odd rule]
+          (-0.55,0) circle (1.1) (0.55,0) circle (1.1);
+        \draw[thick,uniAzul] (-0.55,0) circle (1.1);
+        \draw[thick,uniAzul] (0.55,0) circle (1.1);
+        \node at (-1.25,0) {$A$}; \node at (1.25,0) {$B$};
+        \node[font=\scriptsize] at (1.75,1.25) {$\Omega$};
+      \end{tikzpicture}
+      \par\vspace{0.15cm}
+      \textbf{Diferencia simétrica} $A\,\triangle\,B$\par
+      {\scriptsize ocurre \emph{uno de los dos}, pero no ambos}
+    \end{column}
+  \end{columns}
+
+  \vspace{0.35cm}
+  \begin{exampleblock}{Las tres se escriben con las operaciones anteriores}
+    \[ A\setminus B = A\cap B^{c} \qquad
+       A\,\triangle\,B = (A\setminus B)\cup(B\setminus A)
+                       = (A\cup B)\setminus(A\cap B) \]
+    Con el dado: $A\setminus B=\{2\}$, \; $B\setminus A=\{5\}$, \;
+    $A\,\triangle\,B=\{2,5\}$.
+  \end{exampleblock}
+\end{frame}
+
+% ------------------------------------------------------------ RELACIONES ---
+\begin{frame}{Relaciones entre eventos}
+  \begin{columns}[T,onlytextwidth]
+    \begin{column}{0.30\textwidth}
+      \centering
+      \begin{tikzpicture}[scale=0.58]
+        \draw[univ] (-2.1,-1.5) rectangle (2.1,1.5);
+        \fill[uniNaranja,opacity=0.30] (0,0) circle (1.3);
+        \fill[uniAzul,opacity=0.35] (-0.35,0) circle (0.6);
+        \draw[thick,uniNaranja] (0,0) circle (1.3);
+        \draw[thick,uniAzul] (-0.35,0) circle (0.6);
+        \node at (-0.35,0) {\small$A$}; \node at (1.0,0.9) {\small$B$};
+        \node[font=\scriptsize] at (1.75,1.25) {$\Omega$};
+      \end{tikzpicture}
+      \par\vspace{0.1cm}
+      \textbf{Inclusión} $A\subseteq B$\par
+      {\scriptsize si ocurre $A$, necesariamente ocurre $B$}
+    \end{column}
+    \begin{column}{0.30\textwidth}
+      \centering
+      \begin{tikzpicture}[scale=0.58]
+        \draw[univ] (-2.1,-1.5) rectangle (2.1,1.5);
+        \fill[uniAzul,opacity=0.32] (-1.0,0) circle (0.9);
+        \fill[uniNaranja,opacity=0.40] (1.0,0) circle (0.9);
+        \draw[thick,uniAzul] (-1.0,0) circle (0.9);
+        \draw[thick,uniNaranja] (1.0,0) circle (0.9);
+        \node at (-1.0,0) {\small$A$}; \node at (1.0,0) {\small$B$};
+        \node[font=\scriptsize] at (1.75,1.25) {$\Omega$};
+      \end{tikzpicture}
+      \par\vspace{0.1cm}
+      \textbf{Disjuntos} $A\cap B=\varnothing$\par
+      {\scriptsize no pueden ocurrir a la vez}
+    \end{column}
+    \begin{column}{0.36\textwidth}
+      \centering
+      \begin{tikzpicture}[scale=0.58]
+        \draw[univ] (-2.1,-1.5) rectangle (2.1,1.5);
+        \fill[uniAzul,opacity=0.32]  (-2.1,-1.5) rectangle (-0.7,1.5);
+        \fill[uniNaranja,opacity=0.40] (-0.7,-1.5) rectangle (0.7,1.5);
+        \fill[uniAmarillo,opacity=0.55] (0.7,-1.5) rectangle (2.1,1.5);
+        \draw[univ] (-2.1,-1.5) rectangle (2.1,1.5);
+        \draw[uniGris] (-0.7,-1.5) -- (-0.7,1.5);
+        \draw[uniGris] (0.7,-1.5) -- (0.7,1.5);
+        \node at (-1.4,0) {\small$A_1$}; \node at (0,0) {\small$A_2$};
+        \node at (1.4,0) {\small$A_3$};
+      \end{tikzpicture}
+      \par\vspace{0.1cm}
+      \textbf{Partición de $\Omega$}\par
+      {\scriptsize disjuntos dos a dos y su unión es todo $\Omega$}
+    \end{column}
+  \end{columns}
+
+  \vspace{0.3cm}
+  \begin{block}{Dos eventos particulares}
+    \small
+    $\Omega$ es el \azul{evento seguro} (siempre ocurre) y $\varnothing$ el
+    \azul{evento imposible} (nunca ocurre). Todo evento $A$ y su complemento
+    $A^{c}$ forman siempre una partición de $\Omega$.
+  \end{block}
+\end{frame}
+
+% ------------------------------------------------------------ EXCLUYENTES --
+\begin{frame}{Eventos mutuamente excluyentes}
+  \begin{columns}[T,onlytextwidth]
+    \begin{column}{0.42\textwidth}
+      \centering
+      \begin{tikzpicture}[scale=0.75]
+        \draw[univ] (-2.4,-1.5) rectangle (2.4,1.5);
+        \fill[uniAzul,opacity=0.30] (-1.1,0) circle (1.0);
+        \fill[uniNaranja,opacity=0.40] (1.1,0) circle (1.0);
+        \draw[thick,uniAzul] (-1.1,0) circle (1.0);
+        \draw[thick,uniNaranja] (1.1,0) circle (1.0);
+        \node at (-1.1,0) {$A$}; \node at (1.1,0) {$B$};
+        \node[font=\scriptsize] at (2.05,1.25) {$\Omega$};
+      \end{tikzpicture}
+    \end{column}
+    \begin{column}{0.55\textwidth}
+      Dos eventos son \destacar{mutuamente excluyentes} (o disjuntos) si no
+      pueden ocurrir al mismo tiempo:
+      \[ A\cap B=\varnothing \]
+
+      \vspace{0.2cm}
+      \begin{itemize}
+        \item Un pedido no puede llegar a tiempo \emph{y} tarde.
+        \item Un dado no puede caer en 2 \emph{y} en 5 en el mismo lanzamiento.
+      \end{itemize}
+
+      \vspace{0.2cm}
+      {\small\color{uniGris} Cuidado: excluyente \azul{no} es lo mismo que
+      independiente. Lo veremos en la sesión 4.}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+% -------------------------------------------------------------- RESUMEN ----
+\begin{frame}{Resumen: todas las operaciones}
+  \footnotesize
+  \begin{center}
+  \begin{tabular}{@{}llll@{}}
+    \toprule
+    \textbf{Operación} & \textbf{Símbolo} & \textbf{Ocurre cuando} &
+    \textbf{Cardinalidad} \\
+    \midrule
+    Unión            & $A\cup B$            & ocurre $A$, $B$, o ambos
+                     & $\#A+\#B-\#(A\cap B)$ \\
+    Intersección     & $A\cap B$            & ocurren los dos
+                     & $\#(A\cap B)$ \\
+    Complemento      & $A^{c}$              & no ocurre $A$
+                     & $\#\Omega-\#A$ \\
+    Diferencia       & $A\setminus B$       & ocurre $A$ y no $B$
+                     & $\#A-\#(A\cap B)$ \\
+    Dif. simétrica   & $A\,\triangle\,B$    & ocurre exactamente uno
+                     & $\#A+\#B-2\,\#(A\cap B)$ \\
+    \midrule
+    Inclusión        & $A\subseteq B$       & $A$ implica $B$ & --- \\
+    Disjuntos        & $A\cap B=\varnothing$& no coinciden nunca & --- \\
+    Evento seguro    & $\Omega$             & siempre & $\#\Omega$ \\
+    Evento imposible & $\varnothing$        & nunca & $0$ \\
+    \bottomrule
+  \end{tabular}
+  \end{center}
+
+  \vspace{0.2cm}
+  {\scriptsize\color{uniGris} Las dos últimas filas no son operaciones sino
+  relaciones o eventos particulares, pero conviene tenerlas en el mismo
+  cuadro\,[2].}
+\end{frame}
+
+% ---------------------------------------------------------- PROPIEDADES ----
+\begin{frame}{Propiedades del álgebra de eventos}
+  \small
+  \begin{columns}[T,onlytextwidth]
+    \begin{column}{0.48\textwidth}
+      \begin{block}{Estructura}
+        \begin{align*}
+          A\cup B &= B\cup A & A\cap B &= B\cap A\\
+          (A\cup B)\cup C &= A\cup(B\cup C) \\
+          (A\cap B)\cap C &= A\cap(B\cap C) \\
+          A\cup A &= A & A\cap A &= A
+        \end{align*}
+      \end{block}
+    \end{column}
+    \begin{column}{0.48\textwidth}
+      \begin{block}{Complemento e identidades}
+        \begin{align*}
+          A\cup A^{c} &= \Omega & A\cap A^{c} &= \varnothing\\
+          (A^{c})^{c} &= A &  \Omega^{c} &= \varnothing\\
+          A\cup\varnothing &= A & A\cap\Omega &= A\\
+          A\cup(A\cap B) &= A & A\cap(A\cup B) &= A
+        \end{align*}
+      \end{block}
+    \end{column}
+  \end{columns}
+
+  \vspace{0.15cm}
+  \begin{exampleblock}{Distributivas}
+    \[ A\cap(B\cup C)=(A\cap B)\cup(A\cap C) \qquad
+       A\cup(B\cap C)=(A\cup B)\cap(A\cup C) \]
+  \end{exampleblock}
+\end{frame}
+
+% ------------------------------------------------------------ EJERCICIO 2 --
+\begin{frame}{Ejercicio 2 — en clase}
+  \begin{alertblock}{En parejas (7 minutos)}
+    En una tienda se clasifica cada cliente que entra según lo que hace:
+    \[ \Omega=\{\text{compra},\ \text{cotiza},\ \text{devuelve},\
+                \text{solo mira},\ \text{reclama}\} \]
+
+    Sea $A=\{\text{compra},\ \text{cotiza}\}$ y
+    $B=\{\text{cotiza},\ \text{solo mira},\ \text{reclama}\}$.
+
+    \vspace{0.25cm}
+    Determine y escriba por extensión:
+    \begin{columns}[T,onlytextwidth]
+      \begin{column}{0.48\textwidth}
+        \begin{enumerate}
+          \item $A\cup B$
+          \item $A\cap B$
+          \item $A^{c}$
+          \item $A\setminus B$
+        \end{enumerate}
+      \end{column}
+      \begin{column}{0.48\textwidth}
+        \begin{enumerate}
+          \setcounter{enumi}{4}
+          \item $B\setminus A$
+          \item $A\,\triangle\,B$
+          \item ¿Son $A$ y $B$ mutuamente excluyentes? Justifique.
+        \end{enumerate}
+      \end{column}
+    \end{columns}
+  \end{alertblock}
+\end{frame}
+
+\begin{frame}{Ejercicio 2 — solución}
+  \begin{columns}[T,onlytextwidth]
+    \begin{column}{0.55\textwidth}
+      \begin{block}{Resultados}
+        \footnotesize
+        \begin{align*}
+          A\cup B &= \{\text{compra, cotiza, solo mira, reclama}\}\\[0.15em]
+          A\cap B &= \{\text{cotiza}\}\\[0.15em]
+          A^{c}   &= \{\text{devuelve, solo mira, reclama}\}\\[0.15em]
+          A\setminus B &= \{\text{compra}\}\\[0.15em]
+          B\setminus A &= \{\text{solo mira, reclama}\}\\[0.15em]
+          A\,\triangle\,B &= \{\text{compra, solo mira, reclama}\}
+        \end{align*}
+      \end{block}
+    \end{column}
+    \begin{column}{0.42\textwidth}
+      \begin{exampleblock}{¿Excluyentes?}
+        \footnotesize
+        \textbf{No.} Comparten ``cotiza'', luego
+        $A\cap B\neq\varnothing$. Basta \azul{un} elemento en común.
+      \end{exampleblock}
+      \begin{alertblock}{Verificación}
+        \footnotesize
+        $\#(A\,\triangle\,B)=\#A+\#B-2\,\#(A\cap B)=2+3-2=3$ \checkmark
+
+        \vspace{0.15cm}
+        $\#(A\cup B)=2+3-1=4$: se resta el elemento repetido. De ahí sale la
+        regla de la suma.
+      \end{alertblock}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+% ------------------------------------------------------------- DE MORGAN ---
+\begin{frame}{Leyes de De Morgan}
+  Sirven para traducir un enunciado en palabras a una operación de conjuntos.
+
+  \vspace{0.35cm}
+  \begin{block}{Enunciado}
+    \[ (A\cup B)^{c}=A^{c}\cap B^{c} \qquad\qquad
+       (A\cap B)^{c}=A^{c}\cup B^{c} \]
+  \end{block}
+
+  \vspace{0.3cm}
+  \begin{exampleblock}{Cómo leerlas}
+    \begin{itemize}
+      \item ``No ocurrió \azul{ninguno} de los dos'' $=$ ``no ocurrió $A$
+            \azul{y} no ocurrió $B$''. \quad $(A\cup B)^{c}=A^{c}\cap B^{c}$
+      \item ``No ocurrieron \azul{ambos}'' $=$ ``falló $A$ \azul{o} falló
+            $B$''. \quad $(A\cap B)^{c}=A^{c}\cup B^{c}$
+    \end{itemize}
+  \end{exampleblock}
+\end{frame}
+
+% ------------------------------------------------------------ EJERCICIO 3 --
+\begin{frame}{Ejercicio 3 — en clase}
+  \begin{alertblock}{Aplicado (8 minutos)}
+    Una encuesta a 200 clientes de un banco arrojó:
+    \begin{itemize}
+      \item 120 usan la aplicación móvil ($M$)
+      \item 90 van a la oficina ($O$)
+      \item 40 usan ambos canales
+    \end{itemize}
+
+    \vspace{0.25cm}
+    \begin{enumerate}
+      \item Represente la situación en un diagrama de Venn.
+      \item ¿Cuántos usan \azul{al menos} un canal, es decir $\#(M\cup O)$?
+      \item ¿Cuántos \azul{no} usan ninguno de los dos, es decir
+            $\#(M\cup O)^{c}$?
+      \item ¿Cuántos usan la aplicación \azul{pero no} van a la oficina?
+    \end{enumerate}
+  \end{alertblock}
+\end{frame}
+
+\begin{frame}{Ejercicio 3 — solución}
+  \begin{columns}[T,onlytextwidth]
+    \begin{column}{0.40\textwidth}
+      \centering
+      \begin{tikzpicture}[scale=0.72]
+        \draw[univ] (-2.6,-1.7) rectangle (2.6,1.7);
+        \fill[uniAzul,opacity=0.22] (-0.6,0) circle (1.25);
+        \fill[uniNaranja,opacity=0.30] (0.6,0) circle (1.25);
+        \draw[thick,uniAzul] (-0.6,0) circle (1.25);
+        \draw[thick,uniNaranja] (0.6,0) circle (1.25);
+        \node at (-1.35,0) {\small 80}; \node at (0,0) {\small 40};
+        \node at (1.35,0) {\small 50};  \node at (2.05,-1.35) {\small 30};
+        \node[font=\scriptsize] at (-1.55,1.35) {$M$};
+        \node[font=\scriptsize] at (1.55,1.35) {$O$};
+      \end{tikzpicture}
+    \end{column}
+    \begin{column}{0.57\textwidth}
+      \begin{block}{Cálculos}
+        \begin{align*}
+          \#(M\cup O) &= 120+90-40 = 170\\[0.25em]
+          \#(M\cup O)^{c} &= 200-170 = 30\\[0.25em]
+          \#(M\cap O^{c}) &= 120-40 = 80
+        \end{align*}
+      \end{block}
+      \vspace{-0.25cm}
+      \begin{exampleblock}{La regla que acabamos de usar}
+        \footnotesize
+        \[ \#(A\cup B)=\#A+\#B-\#(A\cap B) \]
+        Se resta la intersección porque, de lo contrario, quedaría contada dos
+        veces\,[3].
+      \end{exampleblock}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+% ------------------------------------------------------------- PUENTE ------
+\begin{frame}{Partición del espacio muestral}
+  \scriptsize
+  \begin{columns}[T,onlytextwidth]
+    \begin{column}{0.44\textwidth}
+      \centering
+      \begin{tikzpicture}[scale=0.72]
+        \draw[uniGris,fill=uniGris!6] (0,0) rectangle (5.4,3.0);
+        \draw[uniAzul,thick,fill=uniAzul!14] (0,0) rectangle (1.6,3.0);
+        \draw[uniNaranja,thick,fill=uniNaranja!14] (1.6,0) rectangle (3.3,3.0);
+        \draw[uniTitulo,thick,fill=uniTitulo!14] (3.3,0) rectangle (5.4,3.0);
+        \node[font=\tiny] at (0.8,1.5) {$A_{1}$};
+        \node[font=\tiny] at (2.45,1.5) {$A_{2}$};
+        \node[font=\tiny] at (4.35,1.5) {$A_{3}$};
+        \node[font=\tiny,color=uniGris] at (2.7,3.3) {$\Omega$};
+      \end{tikzpicture}
+    \end{column}
+    \begin{column}{0.54\textwidth}
+      \begin{block}{Definición}
+        \tiny
+        Los eventos $A_{1},A_{2},\dots,A_{k}$ forman una \azul{partición} de
+        $\Omega$ si cumplen las dos condiciones:
+        \[ A_{i}\cap A_{j} = \varnothing \ \text{ para } i\neq j
+           \qquad\text{(no se solapan)} \]
+        \[ A_{1}\cup A_{2}\cup\dots\cup A_{k} = \Omega
+           \qquad\text{(lo cubren todo)} \]
+      \end{block}
+    \end{column}
+  \end{columns}
+
+  \vspace{0.08cm}
+  \begin{exampleblock}{Ejemplos y contraejemplo}
+    \tiny
+    \azul{Sí es partición:} clasificar a los clientes por zona —Norte, Centro,
+    Sur— si cada uno vive en una sola y no hay más zonas. \quad
+    \azul{Sí:} $A$ y $A^{c}$, siempre, para cualquier evento $A$. \quad
+    \destacar{No es partición:} ``compra por app'' y ``compra por web'', porque
+    alguien puede usar las dos y alguien puede no usar ninguna.
+  \end{exampleblock}
+
+  \vspace{0.05cm}
+  {\tiny\color{uniGris} Guarde esta lámina: la partición es la condición que
+  exige el \destacar{teorema de la probabilidad total} y el
+  \destacar{teorema de Bayes} de la sesión 4. Sin partición, esas fórmulas no
+  se pueden aplicar.}
+\end{frame}
+
+\begin{frame}{De los conjuntos a la probabilidad}
+  Si todos los resultados de $\Omega$ son igualmente probables, la probabilidad
+  de un evento es una \destacar{proporción de conteos}:
+  \[ P(A)=\frac{\#A}{\#\Omega} \]
+
+  \vspace{0.2cm}
+  \begin{exampleblock}{Con el ejercicio 3}
+    \footnotesize Si se elige un cliente al azar entre los 200:
+    \[ P(M\cup O)=\frac{170}{200}=0{,}85 \qquad
+       P\big((M\cup O)^{c}\big)=\frac{30}{200}=0{,}15 \]
+    Note que $0{,}85+0{,}15=1$: el evento y su complemento agotan $\Omega$.
+  \end{exampleblock}
+
+  \vspace{0.08cm}
+  {\scriptsize\color{uniGris} Esto es la \azul{regla de Laplace}, que veremos
+  en la sesión 3. Antes, en la sesión 2, aprenderemos a contar $\#A$ y
+  $\#\Omega$ cuando son demasiado grandes para enumerarlos.}
+\end{frame}
+
+% ------------------------------------------------------------- CIERRE ------
+\begin{frame}[fragile]{Conjuntos, en R}
+  \scriptsize
+  R trabaja las operaciones de conjuntos con vectores, y con los mismos nombres
+  que acabamos de ver:
+\begin{lstlisting}[style=Rmini]
+A <- c(1, 2, 3, 4, 5)
+B <- c(4, 5, 6, 7)
+
+union(A, B)         # A union B
+intersect(A, B)     # A interseccion B
+setdiff(A, B)       # A menos B
+3 %in% A            # pertenencia
+length(union(A, B)) # cardinal
+\end{lstlisting}
+\begin{lstlisting}[style=Rout]
+[1] 1 2 3 4 5 6 7
+[1] 4 5
+[1] 1 2 3
+[1] TRUE
+[1] 7
+\end{lstlisting}
+
+  \vspace{-0.1cm}
+  {\tiny\color{uniGris} Verificación de la regla de la suma:
+  $|A \cup B| = |A| + |B| - |A \cap B| = 5 + 4 - 2 = 7$. R lo confirma sin
+  contar a mano.}
+\end{frame}
+
+\begin{frame}{Errores frecuentes en esta sesión}
+  \scriptsize
+  \begin{center}
+  \begin{tabular}{@{}p{5.2cm}p{6.6cm}@{}}
+    \toprule
+    \textbf{Error} & \textbf{Corrección} \\
+    \midrule
+    Escribir $\{4\} \in \Omega$ &
+      $4 \in \Omega$ (elemento) o $\{4\} \subseteq \Omega$ (evento) \\
+    \addlinespace
+    Confundir $\varnothing$ con $\{\varnothing\}$ &
+      El primero no tiene elementos; el segundo tiene uno \\
+    \addlinespace
+    Suponer que $A\setminus B = B\setminus A$ &
+      La diferencia \azul{no} es conmutativa \\
+    \addlinespace
+    Calcular $A^{c}$ sin haber escrito $\Omega$ &
+      El complemento siempre es \azul{respecto de} $\Omega$ \\
+    \addlinespace
+    Sumar $\#A + \#B$ y olvidar restar $\#(A\cap B)$ &
+      Los elementos comunes quedarían contados dos veces \\
+    \addlinespace
+    Confundir excluyentes con complementarios &
+      Complementarios son excluyentes \azul{y además} cubren $\Omega$ \\
+    \addlinespace
+    Empezar a calcular sin escribir el espacio muestral &
+      \destacar{Primero $\Omega$}, después los eventos, después las cuentas \\
+    \bottomrule
+  \end{tabular}
+  \end{center}
+\end{frame}
+
+\begin{frame}{Cierre de la sesión}
+  \begin{block}{Lo que debe quedar claro hoy}
+    \begin{itemize}
+      \item Un evento es un subconjunto del espacio muestral.
+      \item $\cup$ es ``o'', $\cap$ es ``y'', $A^{c}$ es ``no $A$'',
+            $A\setminus B$ es ``$A$ pero no $B$'' y $A\,\triangle\,B$ es
+            ``exactamente uno de los dos''.
+      \item Excluyentes significa $A\cap B=\varnothing$; inclusión
+            $A\subseteq B$ significa que $A$ implica $B$.
+      \item $\#(A\cup B)=\#A+\#B-\#(A\cap B)$.
+    \end{itemize}
+  \end{block}
+
+  \vspace{0.25cm}
+  \begin{alertblock}{Trabajo independiente para la próxima sesión}
+    \footnotesize
+    Resolver los \destacar{20 ejercicios de la lámina siguiente}; las
+    respuestas están en la lámina posterior, para que usted mismo se corrija.
+    Leer el capítulo de conjuntos y probabilidad de la referencia [1] y repasar
+    factoriales y la notación $n!$, que usaremos en conteo.
+  \end{alertblock}
+\end{frame}
+
+% -------------------------------------------------- EJERCICIOS PROPUESTOS --
+\begin{frame}{Ejercicios propuestos}
+  \vspace{-0.1cm}
+  \begin{beamercolorbox}[wd=\textwidth,sep=0.16cm]{block body}
+    \centering\footnotesize
+    $\Omega=\{1,2,\dots,10\}$,\quad $A=\{1,2,3,4,5\}$,\quad
+    $B=\{2,4,6,8,10\}$,\quad $C=\{3,6,9\}$
+  \end{beamercolorbox}
+  \vspace{0.1cm}
+  \listatiny
+  \vspace{0.15cm}
+  \begin{columns}[T,onlytextwidth]
+    \begin{column}{0.47\textwidth}
+      \begin{enumerate}\setlength{\itemsep}{0.16cm}
+        \item $A\cup B$
+        \item $A\cap B$
+        \item $A^{c}$
+        \item $B^{c}$
+        \item $A\setminus B$
+        \item $B\setminus A$
+        \item $A\,\triangle\,B$
+        \item $A\cap C$
+        \item $A\cup C$
+        \item $C\setminus A$
+      \end{enumerate}
+    \end{column}
+    \begin{column}{0.50\textwidth}
+      \begin{enumerate}\setlength{\itemsep}{0.16cm}
+        \setcounter{enumi}{10}
+        \item $(A\cup B)^{c}$
+        \item $A^{c}\cap B^{c}$ \;{\color{uniGris}(compare con 11)}
+        \item $(A\cap B)^{c}$
+        \item $A^{c}\cup B^{c}$ \;{\color{uniGris}(compare con 13)}
+        \item $A\cap(B\cup C)$
+        \item $(A\cap B)\cup(A\cap C)$ \;{\color{uniGris}(compare con 15)}
+        \item $\#(A\,\triangle\,C)$
+        \item ¿Son $B$ y $C$ disjuntos? Justifique.
+        \item $P(A\cap B)$, eligiendo un número al azar
+        \item $P\big((A\cup C)^{c}\big)$
+      \end{enumerate}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+% ----------------------------------------------------------- RESPUESTAS ----
+\begin{frame}{Respuestas}{Autoevaluación de los ejercicios propuestos}
+  \listatiny
+  \vspace{0.15cm}
+  \begin{columns}[T,onlytextwidth]
+    \begin{column}{0.47\textwidth}
+      \begin{enumerate}\setlength{\itemsep}{0.16cm}
+        \item $\{1,2,3,4,5,6,8,10\}$
+        \item $\{2,4\}$
+        \item $\{6,7,8,9,10\}$
+        \item $\{1,3,5,7,9\}$
+        \item $\{1,3,5\}$
+        \item $\{6,8,10\}$
+        \item $\{1,3,5,6,8,10\}$
+        \item $\{3\}$
+        \item $\{1,2,3,4,5,6,9\}$
+        \item $\{6,9\}$
+      \end{enumerate}
+    \end{column}
+    \begin{column}{0.50\textwidth}
+      \begin{enumerate}\setlength{\itemsep}{0.16cm}
+        \setcounter{enumi}{10}
+        \item $\{7,9\}$
+        \item $\{7,9\}$ \;{\color{uniTitulo}De Morgan: igual al 11}
+        \item $\{1,3,5,6,7,8,9,10\}$
+        \item $\{1,3,5,6,7,8,9,10\}$ \;{\color{uniTitulo}igual al 13}
+        \item $\{2,3,4\}$
+        \item $\{2,3,4\}$ \;{\color{uniTitulo}distributiva: igual al 15}
+        \item $6$ \;{\color{uniGris}$(5+3-2\cdot 1)$}
+        \item No: $B\cap C=\{6\}\neq\varnothing$
+        \item $2/10=0{,}20$
+        \item $3/10=0{,}30$ \;{\color{uniGris}$(A\cup C)^{c}=\{7,8,10\}$}
+      \end{enumerate}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+% ---------------------------------------------------------- REFERENCIAS ----
+\begin{frame}{Referencias}
+  \footnotesize
+  \begin{itemize}
+    \item[{[1]}] Díaz Rodríguez, M. (2022). \textit{Estadística inferencial
+      aplicada}. Universidad del Norte.
+      \texttt{https://elibro.net/es/lc/uniminuto/titulos/221614}
+    \item[{[2]}] Llinás Solano, H. (2014). \textit{Introducción a la
+      estadística con aplicaciones en ciencias sociales}. Universidad del
+      Norte. \texttt{https://elibro.net/es/lc/uniminuto/titulos/70062}
+    \item[{[3]}] Contento Rubio, M. R. (2019). \textit{Estadística con
+      aplicaciones en R}. Editorial Utadeo.
+      \texttt{https://elibro.net/es/lc/uniminuto/titulos/220926}
+  \end{itemize}
+
+  \vspace{0.35cm}
+  \begin{center}
+    {\Large\color{uniAzul}\textbf{¿Preguntas?}}
+  \end{center}
+\end{frame}
+
+\end{document}

@@ -1,0 +1,912 @@
+% ============================================================================
+%  ESTADÍSTICA DESCRIPTIVA — Sesión 3
+%  Semana 3: 24 al 29 de agosto de 2026
+%  1.5 Tablas de distribución de frecuencia para datos no agrupados
+%  1.6 Tablas de distribución de frecuencia para datos agrupados
+%  Duración prevista: 3 horas
+% ============================================================================
+\documentclass[aspectratio=169,10pt]{beamer}
+
+\usepackage[utf8]{inputenc}
+\IfFileExists{spanish.ldf}{\usepackage[spanish,es-noshorthands]{babel}}{}
+\usepackage{amsmath,amssymb}
+\usepackage{booktabs}
+\usepackage{tikz}
+\usepackage{listings}
+
+\usetheme{Uniminuto}
+
+\uniasignatura{Estadística descriptiva}
+\uniprofesor{Andrés Felipe Puerta Velez}
+\unicorreo{andres.puerta-v@uniminuto.edu.co}
+\uninrc{CBASBL031 - CBASBL141}
+\unisemana{Sesión 3 — Semana 3 · 24 al 29 de agosto de 2026}
+
+\newcommand{\listatiny}{\setbeamerfont{itemize/enumerate body}{size=\tiny}\tiny}
+
+\newcommand{\fx}[1]{{\ttfamily\color{uniAzul}#1}}
+
+% ------------------------------------------------------------- CÓDIGO R ----
+\lstdefinestyle{Rcode}{
+  language=R,
+  basicstyle=\ttfamily\scriptsize,
+  keywordstyle=\color{uniAzul}\bfseries,
+  commentstyle=\color{uniGris}\itshape,
+  stringstyle=\color{uniTitulo},
+  showstringspaces=false, numbers=none, breaklines=true,
+  columns=fullflexible,
+  backgroundcolor=\color{uniCremaClaro},
+  frame=leftline, framerule=1.2pt, rulecolor=\color{uniNaranja},
+  xleftmargin=0.35cm, framexleftmargin=0.35cm,
+  framexrightmargin=0.15cm, framextopmargin=2pt, framexbottommargin=2pt,
+  aboveskip=0.15cm, belowskip=0.15cm
+}
+\lstdefinestyle{Rmini}{
+  language=R,
+  basicstyle=\ttfamily\tiny,
+  keywordstyle=\color{uniAzul}\bfseries,
+  commentstyle=\color{uniGris}\itshape,
+  stringstyle=\color{uniTitulo},
+  showstringspaces=false, numbers=none, breaklines=true,
+  columns=fullflexible,
+  backgroundcolor=\color{uniCremaClaro},
+  frame=leftline, framerule=1.2pt, rulecolor=\color{uniNaranja},
+  xleftmargin=0.35cm, framexleftmargin=0.35cm,
+  framexrightmargin=0.15cm, framextopmargin=2pt, framexbottommargin=2pt,
+  aboveskip=0.12cm, belowskip=0.12cm
+}
+\lstdefinestyle{Rout}{
+  basicstyle=\ttfamily\tiny\color{black},
+  showstringspaces=false, numbers=none, breaklines=true,
+  columns=fullflexible,
+  backgroundcolor=\color{uniGris!10},
+  frame=leftline, framerule=1.2pt, rulecolor=\color{uniGris},
+  xleftmargin=0.35cm, framexleftmargin=0.35cm,
+  framexrightmargin=0.15cm, framextopmargin=2pt, framexbottommargin=2pt,
+  aboveskip=0.12cm, belowskip=0.12cm
+}
+
+\begin{document}
+
+\portada
+
+\begin{frame}{Orden del día}
+  \begin{enumerate}
+    \item Llamado a lista y revisión de los ejercicios propuestos
+    \item Repaso: la escala decide la herramienta
+    \item \azul{Tema 1.5: tablas de frecuencia para datos no agrupados}
+    \item \azul{Tema 1.6: tablas de frecuencia para datos agrupados}
+    \item Taller guiado: construcción completa de una tabla
+    \item Errores frecuentes y cierre
+  \end{enumerate}
+
+  \vspace{0.3cm}
+  {\footnotesize\color{uniGris} Sesión de 3 horas. Trabajaremos con un mismo
+  conjunto de datos durante todo el bloque y lo retomaremos en las sesiones 4 y 5.}
+\end{frame}
+
+\begin{frame}{Repaso: dónde quedamos}
+  En la sesión 2 clasificamos variables y aprendimos las cuatro escalas de
+  medición.
+
+  \vspace{0.25cm}
+  \begin{alertblock}{La pregunta de hoy}
+    \footnotesize
+    Tengo 40 datos anotados en desorden. \destacar{¿Cómo los organizo para
+    poder verlos?} La respuesta es la \azul{tabla de distribución de
+    frecuencias}, y la forma de construirla depende de si la variable es
+    cualitativa, cuantitativa discreta o cuantitativa continua.
+  \end{alertblock}
+
+  \vspace{0.2cm}
+  \begin{block}{El hilo conductor del curso}
+    \footnotesize
+    Datos crudos $\rightarrow$ \azul{tabla} $\rightarrow$ gráfico (sesión 4)
+    $\rightarrow$ medidas resumen (unidad 2) $\rightarrow$ interpretación y
+    decisión (unidad 3).
+  \end{block}
+\end{frame}
+
+\begin{frame}{El caso que usaremos todo el semestre}
+  \begin{exampleblock}{Almacén Bello — datos de 40 clientes}
+    \footnotesize
+    El administrador de un almacén en Bello quiere entender a sus clientes.
+    Toma una \azul{muestra de 40} clientes del último mes y registra:
+
+    \vspace{0.2cm}
+    \begin{tabular}{@{}lll@{}}
+      \toprule
+      \textbf{Variable} & \textbf{Cómo se registró} & \textbf{Tipo} \\
+      \midrule
+      Canal de compra   & Tienda / App / Web / Teléfono & Cualitativa nominal \\
+      Compras del mes   & Número entero de compras      & Cuantitativa discreta \\
+      Gasto mensual     & Miles de pesos                & Cuantitativa continua \\
+      \bottomrule
+    \end{tabular}
+  \end{exampleblock}
+
+  \vspace{0.25cm}
+  {\footnotesize\color{uniGris} Cada tipo de variable exige una tabla distinta.
+  Ese es exactamente el contenido de hoy.}
+\end{frame}
+
+\seccion{1.5 Datos no agrupados}
+
+\begin{frame}{Los cinco tipos de frecuencia}
+  \scriptsize
+  \begin{center}
+  \begin{tabular}{@{}p{2.4cm}p{1.3cm}p{5.4cm}p{2.6cm}@{}}
+    \toprule
+    \textbf{Frecuencia} & \textbf{Símbolo} & \textbf{Qué es} & \textbf{Rango} \\
+    \midrule
+    Absoluta            & $f_i$ & Cuántas veces aparece la categoría o el valor
+                        & $0 \le f_i \le n$ \\
+    Absoluta acumulada  & $F_i$ & Suma de las absolutas hasta esa fila
+                        & Termina en $n$ \\
+    Relativa            & $h_i$ & $f_i / n$: proporción del total
+                        & $0 \le h_i \le 1$ \\
+    Relativa acumulada  & $H_i$ & Suma de las relativas hasta esa fila
+                        & Termina en 1 \\
+    Porcentual          & $\%_i$ & $h_i \times 100$
+                        & Suma 100\% \\
+    \bottomrule
+  \end{tabular}
+  \end{center}
+
+  \vspace{0.1cm}
+  \begin{alertblock}{Dos controles que nunca fallan}
+    \scriptsize
+    \[ \sum_{i=1}^{k} f_i = n \qquad\qquad \sum_{i=1}^{k} h_i = 1 \]
+    Si su tabla no cumple estas dos igualdades, \destacar{hay un error de
+    conteo}.
+  \end{alertblock}
+\end{frame}
+
+\begin{frame}{Cuándo acumular y cuándo no}
+  \begin{columns}[T,onlytextwidth]
+    \begin{column}{0.48\textwidth}
+      \begin{block}{Sí tiene sentido acumular}
+        \footnotesize
+        Cuando la variable tiene \azul{orden}: ordinal, discreta o continua.
+
+        \vspace{0.15cm}
+        ``El 55\% gastó menos de 232 mil'' es una frase con significado.
+      \end{block}
+    \end{column}
+    \begin{column}{0.48\textwidth}
+      \begin{alertblock}{No tiene sentido acumular}
+        \footnotesize
+        Cuando la variable es \azul{nominal}.
+
+        \vspace{0.15cm}
+        ``El 65\% compró por tienda o app'' depende del orden en que usted
+        escribió las filas: es un número arbitrario.
+      \end{alertblock}
+    \end{column}
+  \end{columns}
+
+  \vspace{0.3cm}
+  \begin{exampleblock}{Regla práctica}
+    \footnotesize
+    En una tabla de variable \destacar{nominal}, las columnas $F_i$ y $H_i$
+    se omiten. Incluirlas no es un error de cálculo, pero sí de
+    \azul{interpretación}, y en el examen se penaliza como tal.
+  \end{exampleblock}
+\end{frame}
+
+\begin{frame}{Ejemplo guiado 1 — variable cualitativa}
+  \footnotesize
+  \textbf{Canal de compra de los 40 clientes} (datos crudos, en el orden en que
+  se registraron):
+
+  \vspace{0.15cm}
+  \begin{beamercolorbox}[wd=\textwidth,sep=0.15cm]{block body}
+    \scriptsize\ttfamily
+    T A W T F A W T A T W A F T W A T A W T \\
+    T W A T F A W T A T W A T W A T F A T A
+  \end{beamercolorbox}
+  \vspace{0.15cm}
+  {\scriptsize T = Tienda física \quad A = App móvil \quad W = Web \quad
+  F = Teléfono}
+
+  \vspace{0.15cm}
+  \begin{alertblock}{Paso 1: el conteo con palotes}
+    \scriptsize
+    Se recorre la lista \destacar{una sola vez} marcando un palote por cada
+    dato. Nunca se cuenta categoría por categoría: eso obliga a recorrer la
+    lista cuatro veces y multiplica los errores.
+    \vspace{0.05cm}
+    \begin{center}\scriptsize
+    \begin{tabular}{@{}lll@{}}
+      \toprule
+      \textbf{Categoría} & \textbf{Conteo} & \textbf{$f_i$} \\
+      \midrule
+      Tienda física & \textbar\textbar\textbar\textbar\ \ \textbar\textbar\textbar\textbar\ \ \textbar\textbar\textbar\textbar & 14 \\
+      App móvil     & \textbar\textbar\textbar\textbar\ \ \textbar\textbar\textbar\textbar\ \ \textbar\textbar\textbar & 13 \\
+      Web           & \textbar\textbar\textbar\textbar\ \ \textbar\textbar\textbar\textbar\ & 9 \\
+      Teléfono      & \textbar\textbar\textbar\textbar & 4 \\
+      \bottomrule
+    \end{tabular}
+    \end{center}
+  \end{alertblock}
+\end{frame}
+
+\begin{frame}{Ejemplo guiado 1 — la tabla terminada}
+  \scriptsize
+  \begin{columns}[T,onlytextwidth]
+    \begin{column}{0.46\textwidth}
+      \centering
+      \begin{tabular}{@{}lrrr@{}}
+        \toprule
+        \textbf{Canal} & \textbf{$f_i$} & \textbf{$h_i$} & \textbf{$\%_i$} \\
+        \midrule
+        Tienda física & 14 & 0{,}350 & 35{,}0 \\
+        App móvil     & 13 & 0{,}325 & 32{,}5 \\
+        Web           &  9 & 0{,}225 & 22{,}5 \\
+        Teléfono      &  4 & 0{,}100 & 10{,}0 \\
+        \midrule
+        \textbf{Total} & \textbf{40} & \textbf{1{,}000} & \textbf{100{,}0} \\
+        \bottomrule
+      \end{tabular}
+    \end{column}
+    \begin{column}{0.50\textwidth}
+      \begin{exampleblock}{El cálculo, fila por fila}
+        \scriptsize
+        \[ h_1=\tfrac{14}{40}=0{,}350 \qquad h_2=\tfrac{13}{40}=0{,}325 \]
+        \[ h_3=\tfrac{9}{40}=0{,}225 \qquad h_4=\tfrac{4}{40}=0{,}100 \]
+      \end{exampleblock}
+    \end{column}
+  \end{columns}
+
+  \vspace{0.15cm}
+  {\scriptsize Control: $14+13+9+4=40$ \checkmark \qquad
+  $0{,}350+0{,}325+0{,}225+0{,}100=1{,}000$ \checkmark}
+
+  \vspace{0.15cm}
+  \begin{alertblock}{Cómo se lee}
+    \scriptsize
+    \destacar{El 35\% de los clientes de la muestra compró en tienda física},
+    y el canal telefónico solo representa 1 de cada 10 compras. No acumulamos
+    porque el canal es \azul{nominal}.
+  \end{alertblock}
+\end{frame}
+
+\begin{frame}{Ejercicio 1 — en clase}
+  \begin{alertblock}{En parejas (10 minutos)}
+    \footnotesize
+    Una encuesta de satisfacción a 30 clientes arrojó estas respuestas:
+
+    \vspace{0.2cm}
+    \begin{beamercolorbox}[wd=0.95\textwidth,sep=0.12cm]{block body}
+      \centering\scriptsize\ttfamily
+      Medio Alto Medio Bajo Alto Muy alto Medio Alto Bajo Medio \\
+      Alto Medio Muy bajo Alto Medio Muy alto Bajo Medio Alto Medio \\
+      Muy alto Bajo Alto Muy bajo Medio Alto Muy alto Bajo Medio Muy bajo
+    \end{beamercolorbox}
+
+    \vspace{0.25cm}
+    \begin{enumerate}
+      \item Construya la tabla de frecuencias con $f_i$, $h_i$ y $\%_i$.
+      \item ¿Esta variable admite frecuencias acumuladas? Justifique y, si la
+            respuesta es sí, agregue $F_i$ y $H_i$.
+      \item ¿Qué porcentaje de clientes reportó satisfacción \emph{media o
+            inferior}?
+    \end{enumerate}
+  \end{alertblock}
+\end{frame}
+
+\begin{frame}{Ejercicio 1 — solución}
+  \footnotesize
+  \begin{center}
+  \begin{tabular}{@{}lrrrrr@{}}
+    \toprule
+    \textbf{Satisfacción} & \textbf{$f_i$} & \textbf{$F_i$} & \textbf{$h_i$} &
+    \textbf{$H_i$} & \textbf{$\%_i$} \\
+    \midrule
+    Muy bajo  &  3 &  3 & 0{,}100 & 0{,}100 & 10{,}0 \\
+    Bajo      &  5 &  8 & 0{,}167 & 0{,}267 & 16{,}7 \\
+    Medio     & 10 & 18 & 0{,}333 & 0{,}600 & 33{,}3 \\
+    Alto      &  8 & 26 & 0{,}267 & 0{,}867 & 26{,}7 \\
+    Muy alto  &  4 & 30 & 0{,}133 & 1{,}000 & 13{,}3 \\
+    \midrule
+    \textbf{Total} & \textbf{30} & & \textbf{1{,}000} & & \textbf{100{,}0} \\
+    \bottomrule
+  \end{tabular}
+  \end{center}
+  \vspace{0.2cm}
+  \begin{exampleblock}{Puntos 2 y 3}
+    \scriptsize
+    \textbf{Sí} admite acumuladas: la satisfacción es \azul{ordinal}, sus
+    categorías tienen un orden natural de menor a mayor. Por eso las filas
+    deben escribirse en ese orden, no alfabéticamente.
+    \vspace{0.1cm}
+    Media o inferior: $H_3 = 0{,}600 \Rightarrow \destacar{60{,}0\%}$ de los
+    clientes. Se lee directamente de la columna acumulada, sin volver a sumar.
+  \end{exampleblock}
+\end{frame}
+
+\begin{frame}{Ejemplo guiado 2 — cuantitativa discreta}
+  \footnotesize
+  \textbf{Número de compras en el mes} de 25 clientes:
+
+  \vspace{0.15cm}
+  \begin{beamercolorbox}[wd=\textwidth,sep=0.12cm]{block body}
+    \centering\scriptsize\ttfamily
+    2 \ 3 \ 1 \ 0 \ 2 \ 4 \ 3 \ 2 \ 1 \ 5 \ 2 \ 3 \ 6 \ 1 \ 2 \ 4 \ 0 \ 3 \ 8 \ 2 \ 5 \ 1 \ 6 \ 4 \ 3
+  \end{beamercolorbox}
+
+  \vspace{0.25cm}
+  \begin{alertblock}{Regla de decisión}
+    \footnotesize
+    Una variable discreta se deja \destacar{sin agrupar} cuando toma pocos
+    valores distintos (guía práctica: \azul{menos de 15}). Aquí toma 8 valores
+    distintos: cada uno es una fila.
+  \end{alertblock}
+
+  \vspace{0.2cm}
+  {\footnotesize\color{uniGris} Ordenar los datos de menor a mayor antes de
+  contar reduce los errores casi a cero. Es el primer paso siempre.}
+\end{frame}
+
+\begin{frame}{Ejemplo guiado 2 — la tabla terminada}
+  \scriptsize
+  \begin{columns}[T,onlytextwidth]
+    \begin{column}{0.46\textwidth}
+      \centering
+      \begin{tabular}{@{}rrrrrr@{}}
+        \toprule
+        \textbf{$x_i$} & \textbf{$f_i$} & \textbf{$F_i$} & \textbf{$h_i$} &
+        \textbf{$H_i$} & \textbf{$\%_i$} \\
+        \midrule
+        0 & 2 &  2 & 0{,}08 & 0{,}08 &  8 \\
+        1 & 4 &  6 & 0{,}16 & 0{,}24 & 16 \\
+        2 & 6 & 12 & 0{,}24 & 0{,}48 & 24 \\
+        3 & 5 & 17 & 0{,}20 & 0{,}68 & 20 \\
+        4 & 3 & 20 & 0{,}12 & 0{,}80 & 12 \\
+        5 & 2 & 22 & 0{,}08 & 0{,}88 &  8 \\
+        6 & 2 & 24 & 0{,}08 & 0{,}96 &  8 \\
+        8 & 1 & 25 & 0{,}04 & 1{,}00 &  4 \\
+        \midrule
+        \textbf{Tot.} & \textbf{25} & & \textbf{1{,}00} & & \textbf{100} \\
+        \bottomrule
+      \end{tabular}
+    \end{column}
+    \begin{column}{0.50\textwidth}
+      \begin{block}{Dos lecturas}
+        \scriptsize
+        $F_3 = 17$: \destacar{17 clientes hicieron 3 compras o menos}.
+
+        $H_4 = 0{,}80$: el 80\% hizo 4 compras o menos.
+      \end{block}
+      \begin{alertblock}{La trampa}
+        \scriptsize
+        El valor 7 no aparece porque \azul{nadie} hizo 7 compras. Se puede
+        incluir la fila con $f_i=0$ u omitirla, pero jamás se salta un valor
+        que sí fue observado.
+      \end{alertblock}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{Ejercicio 2 — en clase}
+  \begin{alertblock}{Individual (10 minutos)}
+    \footnotesize
+    Número de quejas recibidas por día durante 20 días:
+
+    \vspace{0.2cm}
+    \begin{beamercolorbox}[wd=0.9\textwidth,sep=0.12cm]{block body}
+      \centering\scriptsize\ttfamily
+      1 \ 3 \ 0 \ 2 \ 1 \ 4 \ 2 \ 1 \ 0 \ 3 \ 2 \ 1 \ 5 \ 2 \ 0 \ 1 \ 3 \ 2 \ 4 \ 1
+    \end{beamercolorbox}
+
+    \vspace{0.25cm}
+    \begin{enumerate}
+      \item Construya la tabla completa ($x_i$, $f_i$, $F_i$, $h_i$, $H_i$).
+      \item ¿En cuántos días hubo \emph{a lo sumo} 2 quejas?
+      \item ¿Qué porcentaje de días tuvo \emph{más} de 3 quejas?
+      \item Verifique los dos controles: $\sum f_i = n$ y $\sum h_i = 1$.
+    \end{enumerate}
+  \end{alertblock}
+\end{frame}
+
+\begin{frame}{Ejercicio 2 — solución}
+  \footnotesize
+  \begin{columns}[T,onlytextwidth]
+    \begin{column}{0.52\textwidth}
+      \centering\scriptsize
+      \begin{tabular}{@{}rrrrr@{}}
+        \toprule
+        \textbf{$x_i$} & \textbf{$f_i$} & \textbf{$F_i$} & \textbf{$h_i$} &
+        \textbf{$H_i$} \\
+        \midrule
+        0 & 3 &  3 & 0{,}15 & 0{,}15 \\
+        1 & 6 &  9 & 0{,}30 & 0{,}45 \\
+        2 & 5 & 14 & 0{,}25 & 0{,}70 \\
+        3 & 3 & 17 & 0{,}15 & 0{,}85 \\
+        4 & 2 & 19 & 0{,}10 & 0{,}95 \\
+        5 & 1 & 20 & 0{,}05 & 1{,}00 \\
+        \midrule
+        \textbf{Tot.} & \textbf{20} & & \textbf{1{,}00} & \\
+        \bottomrule
+      \end{tabular}
+    \end{column}
+    \begin{column}{0.45\textwidth}
+      \begin{exampleblock}{Respuestas}
+        \scriptsize
+        \textbf{2.} ``A lo sumo 2'' es $F_3 = \destacar{14}$ días.
+
+        \vspace{0.15cm}
+        \textbf{3.} ``Más de 3'' es el complemento:
+        $1 - H_4 = 1-0{,}85 = 0{,}15 \Rightarrow \destacar{15\%}$.
+
+        \vspace{0.15cm}
+        \textbf{4.} $3+6+5+3+2+1 = 20$ \checkmark \\
+        $0{,}15+0{,}30+0{,}25+0{,}15+0{,}10+0{,}05 = 1{,}00$ \checkmark
+      \end{exampleblock}
+    \end{column}
+  \end{columns}
+
+  \vspace{0.15cm}
+  \begin{alertblock}{El error de vocabulario más común}
+    \scriptsize
+    \destacar{``A lo sumo 3''} incluye el 3 ($F_i$ directo).
+    \destacar{``Menos de 3''} no lo incluye (hay que usar $F_{i-1}$).
+    \destacar{``Más de 3''} es $1 - H_i$. Léalo dos veces antes de responder.
+  \end{alertblock}
+\end{frame}
+
+\seccion{1.6 Datos agrupados}
+
+\begin{frame}{¿Por qué agrupar?}
+  \footnotesize
+  \textbf{Gasto mensual (miles de pesos) de los 40 clientes}, ya ordenado:
+
+  \vspace{0.15cm}
+  \begin{beamercolorbox}[wd=\textwidth,sep=0.12cm]{block body}
+    \centering\scriptsize\ttfamily
+    112 \ 127 \ 138 \ 149 \ 153 \ 158 \ 165 \ 171 \ 178 \ 184 \\
+    190 \ 195 \ 199 \ 203 \ 208 \ 212 \ 215 \ 219 \ 222 \ 226 \\
+    229 \ 231 \ 234 \ 238 \ 241 \ 245 \ 249 \ 253 \ 258 \ 264 \\
+    269 \ 275 \ 281 \ 288 \ 295 \ 302 \ 309 \ 318 \ 331 \ 352
+  \end{beamercolorbox}
+
+  \vspace{0.25cm}
+  \begin{alertblock}{El problema}
+    \footnotesize
+    Si hiciéramos una fila por valor tendríamos \destacar{40 filas con
+    frecuencia 1} cada una: una tabla tan larga como la lista original y que no
+    resume nada. Cuando la variable es continua, casi ningún valor se repite.
+  \end{alertblock}
+
+  \vspace{0.15cm}
+  {\footnotesize\color{uniGris} La solución es \azul{agrupar en intervalos de
+  clase}: sacrificamos un poco de detalle a cambio de poder ver la forma de la
+  distribución.}
+\end{frame}
+
+\begin{frame}{El procedimiento en seis pasos}
+  \footnotesize
+  \begin{enumerate}\setlength{\itemsep}{0.12cm}
+    \item \azul{Ordenar} los datos y localizar el mínimo y el máximo.
+    \item Calcular el \azul{rango}: \quad $R = x_{\max} - x_{\min}$
+    \item Decidir el \azul{número de clases} $k$ (regla de Sturges):
+      \[ k = 1 + 3{,}322 \cdot \log_{10}(n) \]
+    \item Calcular la \azul{amplitud} de clase: \quad $A = R / k$,
+      redondeando \emph{siempre hacia arriba}.
+    \item Construir los \azul{intervalos} desde $x_{\min}$, sumando $A$.
+    \item \azul{Contar} cuántos datos caen en cada intervalo y completar las
+      columnas de frecuencia.
+  \end{enumerate}
+
+  \vspace{0.2cm}
+  \begin{alertblock}{Sobre Sturges}
+    \scriptsize
+    Es una \destacar{guía, no una ley}. Da un $k$ razonable para que la tabla
+    no sea ni demasiado gruesa ni demasiado fina. En la práctica se acepta
+    cualquier $k$ entre 5 y 15, y muchas veces se ajusta para que la amplitud
+    quede en un número redondo.
+  \end{alertblock}
+\end{frame}
+
+\begin{frame}{Paso a paso con el caso Almacén Bello}
+  \footnotesize
+  \begin{columns}[T,onlytextwidth]
+    \begin{column}{0.50\textwidth}
+      \begin{block}{Pasos 1 a 4}
+        \scriptsize
+        \textbf{1.} $x_{\min}=112$, \ $x_{\max}=352$, \ $n=40$
+        \vspace{0.1cm}
+        \[ \textbf{2.}\quad R = 352 - 112 = 240 \]
+        \[ \textbf{3.}\quad k = 1 + 3{,}322\cdot\log_{10}(40) \]
+        \[ \log_{10}(40)=1{,}6021 \]
+        \[ k = 1 + 3{,}322(1{,}6021)=1+5{,}322=6{,}32 \]
+        \[ \Rightarrow k = 6 \]
+        \[ \textbf{4.}\quad A = \frac{R}{k} = \frac{240}{6} = 40 \]
+      \end{block}
+    \end{column}
+    \begin{column}{0.46\textwidth}
+      \begin{exampleblock}{Paso 5: los intervalos}
+        \scriptsize
+        Se arranca en 112 y se suma 40 seis veces:
+        \vspace{0.1cm}
+        \begin{tabular}{@{}ll@{}}
+          Clase 1 & $[112,\ 152)$ \\
+          Clase 2 & $[152,\ 192)$ \\
+          Clase 3 & $[192,\ 232)$ \\
+          Clase 4 & $[232,\ 272)$ \\
+          Clase 5 & $[272,\ 312)$ \\
+          Clase 6 & $[312,\ 352]$ \\
+        \end{tabular}
+      \end{exampleblock}
+      \begin{alertblock}{Ojo con la última}
+        \scriptsize
+        Los intervalos son \destacar{cerrados por izquierda y abiertos por
+        derecha}, excepto el último, que se cierra para que el máximo quede
+        dentro.
+      \end{alertblock}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{Marca de clase y límites reales}
+  \begin{columns}[T,onlytextwidth]
+    \begin{column}{0.48\textwidth}
+      \begin{block}{Marca de clase $x_i$}
+        \footnotesize
+        Es el punto medio del intervalo. \azul{Representa} a todos los datos de
+        esa clase en los cálculos de la unidad 2.
+        \[ x_i = \frac{L_{\text{inf}} + L_{\text{sup}}}{2} \]
+        Ejemplo clase 3:
+        \[ x_3 = \frac{192+232}{2} = 212 \]
+      \end{block}
+    \end{column}
+    \begin{column}{0.48\textwidth}
+      \begin{exampleblock}{Amplitud y verificación}
+        \footnotesize
+        \[ A = L_{\text{sup}} - L_{\text{inf}} = 232-192 = 40 \]
+        Todas las clases deben tener la \azul{misma amplitud}. Si no, los
+        gráficos y las medidas se distorsionan.
+
+        \vspace{0.15cm}
+        Verificación global:
+        \[ k \cdot A = 6 \times 40 = 240 \ge R = 240 \ \checkmark \]
+      \end{exampleblock}
+    \end{column}
+  \end{columns}
+
+  \vspace{0.1cm}
+  \begin{alertblock}{Lo que se pierde al agrupar}
+    \scriptsize
+    Al agrupar dejamos de saber que el cliente más gastador gastó 352. Solo
+    sabemos que \destacar{alguien cayó en la clase $[312, 352]$}. Por eso los
+    cálculos con datos agrupados son \azul{aproximados}.
+  \end{alertblock}
+\end{frame}
+
+\begin{frame}{Paso 6: la tabla terminada}
+  \scriptsize
+  \begin{center}
+  \begin{tabular}{@{}lrrrrrrr@{}}
+    \toprule
+    \textbf{Clase (gasto)} & \textbf{$x_i$} & \textbf{$f_i$} & \textbf{$F_i$} &
+    \textbf{$h_i$} & \textbf{$H_i$} & \textbf{$\%_i$} & \textbf{$\%$ ac.} \\
+    \midrule
+    $[112,\ 152)$ & 132 &  4 &  4 & 0{,}100 & 0{,}100 & 10{,}0 &  10{,}0 \\
+    $[152,\ 192)$ & 172 &  7 & 11 & 0{,}175 & 0{,}275 & 17{,}5 &  27{,}5 \\
+    $[192,\ 232)$ & 212 & 11 & 22 & 0{,}275 & 0{,}550 & 27{,}5 &  55{,}0 \\
+    $[232,\ 272)$ & 252 &  9 & 31 & 0{,}225 & 0{,}775 & 22{,}5 &  77{,}5 \\
+    $[272,\ 312)$ & 292 &  6 & 37 & 0{,}150 & 0{,}925 & 15{,}0 &  92{,}5 \\
+    $[312,\ 352]$ & 332 &  3 & 40 & 0{,}075 & 1{,}000 &  7{,}5 & 100{,}0 \\
+    \midrule
+    \textbf{Total} & & \textbf{40} & & \textbf{1{,}000} & & \textbf{100{,}0} & \\
+    \bottomrule
+  \end{tabular}
+  \end{center}
+
+  \vspace{0.1cm}
+  \begin{exampleblock}{Cómo se obtuvo la fila 3, en detalle}
+    \scriptsize
+    Datos en $[192, 232)$: 195, 199, 203, 208, 212, 215, 219, 222, 226, 229,
+    231 $\Rightarrow f_3 = 11$.
+    \[ F_3 = 4+7+11 = 22 \quad h_3 = \tfrac{11}{40}=0{,}275 \quad
+       H_3 = 0{,}100+0{,}175+0{,}275 = 0{,}550 \]
+  \end{exampleblock}
+\end{frame}
+
+\begin{frame}{Cómo se lee esta tabla}
+  \scriptsize
+  \begin{block}{Cuatro frases que el administrador puede usar}
+    \scriptsize
+    \begin{itemize}\setlength{\itemsep}{0.04cm}
+      \item La clase \azul{más frecuente} es $[192, 232)$: \destacar{27,5\%
+            de los clientes} gasta entre 192 y 232 mil pesos al mes.
+      \item $H_3 = 0{,}550$: el \destacar{55\%} gasta menos de 232 mil.
+      \item $1 - H_4 = 1-0{,}775 = 0{,}225$: el \destacar{22,5\%} gasta 272
+            mil o más. Ese es el segmento premium.
+      \item $f_1 = 4$: solo 4 clientes están por debajo de 152 mil. El almacén
+            casi no tiene clientes de gasto bajo.
+    \end{itemize}
+  \end{block}
+
+  \vspace{0.1cm}
+  \begin{alertblock}{Lo que una tabla no puede decir}
+    \scriptsize
+    Estas frases describen a los \azul{40 clientes de la muestra}. Afirmar que
+    ``el 55\% de todos los clientes del almacén gasta menos de 232 mil''
+    ya sería hablar de \destacar{clientes que nunca se midieron}. En este
+    curso describimos lo observado; nos detenemos ahí.
+  \end{alertblock}
+\end{frame}
+
+\begin{frame}{Ejercicio 3 — en clase (taller principal)}
+  \begin{alertblock}{En grupos de 3 (20 minutos)}
+    \footnotesize
+    Tiempo de espera en caja, en minutos, de 30 clientes:
+
+    \vspace{0.2cm}
+    \begin{beamercolorbox}[wd=0.95\textwidth,sep=0.12cm]{block body}
+      \centering\scriptsize\ttfamily
+      4 \ 5 \ 7 \ 8 \ 9 \ 10 \ 11 \ 12 \ 13 \ 13 \ 14 \ 15 \ 16 \ 17 \ 17 \\
+      18 \ 19 \ 20 \ 21 \ 22 \ 23 \ 24 \ 25 \ 26 \ 27 \ 28 \ 29 \ 30 \ 32 \ 34
+    \end{beamercolorbox}
+
+    \vspace{0.2cm}
+    \begin{enumerate}\setlength{\itemsep}{-0.05cm}
+      \item Calcule $R$, $k$ (Sturges) y $A$. Muestre el cálculo.
+      \item Construya los intervalos y la tabla completa con marca de clase.
+      \item ¿Qué porcentaje de clientes esperó menos de 19 minutos?
+      \item ¿Qué porcentaje esperó 24 minutos o más?
+      \item El gerente promete ``atención en menos de 15 minutos''.
+            ¿Qué proporción de clientes recibe lo prometido?
+    \end{enumerate}
+  \end{alertblock}
+\end{frame}
+
+\begin{frame}{Ejercicio 3 — solución (pasos 1 y 2)}
+  \footnotesize
+  \begin{columns}[T,onlytextwidth]
+    \begin{column}{0.42\textwidth}
+      \begin{block}{Los cálculos previos}
+        \scriptsize
+        \[ R = 34 - 4 = 30 \]
+        \[ k = 1+3{,}322\cdot\log_{10}(30) \]
+        \[ \log_{10}(30) = 1{,}4771 \]
+        \[ k = 1+4{,}907 = 5{,}91 \Rightarrow k=6 \]
+        \[ A = \frac{30}{6} = 5 \]
+      \end{block}
+    \end{column}
+    \begin{column}{0.56\textwidth}
+      \centering\scriptsize
+      \begin{tabular}{@{}lrrrrr@{}}
+        \toprule
+        \textbf{Clase} & \textbf{$x_i$} & \textbf{$f_i$} & \textbf{$F_i$} &
+        \textbf{$h_i$} & \textbf{$H_i$} \\
+        \midrule
+        $[4,\ 9)$   &  6{,}5 & 4 &  4 & 0{,}133 & 0{,}133 \\
+        $[9,\ 14)$  & 11{,}5 & 6 & 10 & 0{,}200 & 0{,}333 \\
+        $[14,\ 19)$ & 16{,}5 & 6 & 16 & 0{,}200 & 0{,}533 \\
+        $[19,\ 24)$ & 21{,}5 & 5 & 21 & 0{,}167 & 0{,}700 \\
+        $[24,\ 29)$ & 26{,}5 & 5 & 26 & 0{,}167 & 0{,}867 \\
+        $[29,\ 34]$ & 31{,}5 & 4 & 30 & 0{,}133 & 1{,}000 \\
+        \midrule
+        \textbf{Tot.} & & \textbf{30} & & \textbf{1{,}000} & \\
+        \bottomrule
+      \end{tabular}
+    \end{column}
+  \end{columns}
+
+  \vspace{0.2cm}
+  {\scriptsize\color{uniGris} Control: $4+6+6+5+5+4=30$ \checkmark \quad
+  $k\cdot A = 6\times 5 = 30 \ge R$ \checkmark}
+\end{frame}
+
+\begin{frame}{Ejercicio 3 — solución (interpretación)}
+  \footnotesize
+  \begin{exampleblock}{Puntos 3 y 4}
+    \scriptsize
+    \textbf{3.} ``Menos de 19'' coincide con el límite superior de la clase 3:
+    $H_3 = 0{,}533 \Rightarrow \destacar{53{,}3\%}$.
+
+    \vspace{0.15cm}
+    \textbf{4.} ``24 o más'' es el complemento de ``menos de 24'', y 24 es el
+    límite superior de la clase 4:
+    $1 - H_4 = 1 - 0{,}700 = 0{,}300 \Rightarrow \destacar{30{,}0\%}$.
+  \end{exampleblock}
+
+  \vspace{0.15cm}
+  \begin{alertblock}{Punto 5: la pregunta difícil}
+    \scriptsize
+    ``Menos de 15 minutos'' \destacar{no coincide} con ningún límite de clase:
+    cae dentro de $[14, 19)$. Con la tabla agrupada solo podemos
+    \azul{aproximar} suponiendo que los 6 datos de esa clase se reparten de
+    forma uniforme:
+    \[ H(15) \approx 0{,}333 + 0{,}200 \cdot \frac{15-14}{5}
+       = 0{,}333 + 0{,}040 = 0{,}373 \Rightarrow 37{,}3\% \]
+    Con los datos \azul{originales} el valor exacto es $11/30 = 36{,}7\%$.
+    La diferencia es \destacar{el costo de haber agrupado}.
+  \end{alertblock}
+\end{frame}
+
+\begin{frame}{Errores frecuentes en el examen}
+  \footnotesize
+  \begin{center}
+  \begin{tabular}{@{}p{5.2cm}p{6.4cm}@{}}
+    \toprule
+    \textbf{Error} & \textbf{Corrección} \\
+    \midrule
+    Intervalos que se solapan: $[112,152]$ y $[152,192]$ &
+      Un dato debe caer en \azul{una sola} clase: $[112,152)$, $[152,192)$ \\
+    \addlinespace
+    Clases de amplitud distinta &
+      Todas iguales, salvo instrucción explícita en contra \\
+    \addlinespace
+    Acumular frecuencias en variable nominal &
+      Solo se acumula si hay orden \\
+    \addlinespace
+    Redondear $A$ hacia abajo &
+      Siempre hacia arriba: si no, el máximo queda fuera de la tabla \\
+    \addlinespace
+    Reportar $h_i$ y $\%_i$ como si fueran cosas distintas &
+      $\%_i = h_i \times 100$; se elige una de las dos \\
+    \addlinespace
+    Olvidar la fila de totales &
+      Es la que permite verificar el trabajo \\
+    \bottomrule
+  \end{tabular}
+  \end{center}
+\end{frame}
+
+\begin{frame}[fragile]{La misma tabla, en R}
+  \scriptsize
+  En la sesión 14 trabajaremos R a fondo. Por ahora, vea que
+  \destacar{toda la tabla de hoy cabe en cinco líneas}.
+\begin{lstlisting}[style=Rmini]
+canal <- factor(canal)                  # cualitativa nominal
+table(canal)                            # frecuencias absolutas
+round(prop.table(table(canal)) * 100, 1)  # porcentajes
+
+limites <- seq(112, 352, by = 40)       # los limites de clase
+clases  <- cut(gasto, breaks = limites, right = FALSE, include.lowest = TRUE)
+fi <- table(clases);  Fi <- cumsum(fi);  hi <- prop.table(fi);  Hi <- cumsum(hi)
+fi
+\end{lstlisting}
+\begin{lstlisting}[style=Rout]
+clases
+[112,152) [152,192) [192,232) [232,272) [272,312) [312,352]
+        4         7        11         9         6         3
+\end{lstlisting}
+
+  \vspace{-0.1cm}
+  \begin{alertblock}{Los dos argumentos que importan}
+    \tiny
+    \fx{right = FALSE} produce intervalos \destacar{$[a,b)$}, la convención del
+    curso; \fx{include.lowest = TRUE} cierra el último para que el máximo entre.
+    Sin ellos R usa $(a,b]$ y la tabla no coincide con la de clase.
+  \end{alertblock}
+\end{frame}
+
+\begin{frame}{Cierre de la sesión}
+  \begin{block}{Lo que debe quedar claro hoy}
+    \scriptsize
+    \begin{itemize}\setlength{\itemsep}{0.02cm}
+      \item Cinco frecuencias: $f_i$, $F_i$, $h_i$, $H_i$ y $\%_i$; y dos
+            controles que siempre se verifican.
+      \item Cualitativa y discreta con pocos valores: \azul{una fila por
+            categoría o valor}, sin agrupar.
+      \item Continua o discreta con muchos valores: \azul{intervalos de clase}
+            mediante $R$, Sturges, $A$ y marca de clase.
+      \item Solo se acumula cuando la variable tiene orden.
+      \item Agrupar resume, pero \destacar{pierde información}: los resultados
+            pasan a ser aproximados.
+    \end{itemize}
+  \end{block}
+
+  \vspace{0.1cm}
+  \begin{alertblock}{Trabajo independiente}
+    \scriptsize
+    Resolver los 20 ejercicios de la lámina siguiente y \destacar{traer la
+    tabla del caso Almacén Bello impresa o en el cuaderno}: en la sesión 4 la
+    convertimos en histograma, polígono y ojiva.
+  \end{alertblock}
+\end{frame}
+
+\begin{frame}{Ejercicios propuestos}
+  \vspace{-0.1cm}
+  \begin{beamercolorbox}[wd=\textwidth,sep=0.10cm]{block body}
+    \centering\scriptsize
+    \textbf{1--8:} conceptos y lectura de tablas. \quad
+    \textbf{9--14:} cálculo de $R$, $k$ y $A$. \quad
+    \textbf{15--20:} construcción e interpretación.
+  \end{beamercolorbox}
+  \listatiny
+  \vspace{0.15cm}
+  \begin{columns}[T,onlytextwidth]
+    \begin{column}{0.47\textwidth}
+      \begin{enumerate}\setlength{\itemsep}{0.16cm}
+        \item ¿Qué significa $F_i$?
+        \item ¿Qué significa $H_i$?
+        \item ¿Cuánto suma siempre $\sum h_i$?
+        \item ¿Se acumula en una variable nominal? ¿Por qué?
+        \item Si $n=50$ y $f_3=12$, ¿cuánto vale $h_3$?
+        \item Si $H_4=0{,}62$ y $h_5=0{,}18$, ¿cuánto vale $H_5$?
+        \item Si $F_5=38$ y $F_4=29$, ¿cuánto vale $f_5$?
+        \item ¿Qué es la marca de clase y para qué sirve?
+        \item $n=60$: calcule $k$ con Sturges.
+        \item $n=100$: calcule $k$ con Sturges.
+      \end{enumerate}
+    \end{column}
+    \begin{column}{0.50\textwidth}
+      \begin{enumerate}\setlength{\itemsep}{0.16cm}
+        \setcounter{enumi}{10}
+        \item $x_{\min}=18$, $x_{\max}=93$: calcule $R$.
+        \item Con $R=75$ y $k=7$: calcule $A$.
+        \item Clase $[45, 60)$: marca de clase y amplitud.
+        \item ¿Por qué $A$ se redondea hacia arriba?
+        \item Con la tabla del Almacén Bello: ¿qué \% gasta menos de 192?
+        \item ¿Qué \% gasta entre 192 y 272?
+        \item ¿Cuántos clientes gastan 272 o más?
+        \item ¿Cuál es la clase modal y qué significa?
+        \item Si el gerente sube el corte premium a 312, ¿a cuántos clientes afecta?
+        \item ¿Por qué agrupar hace que los cálculos sean aproximados?
+      \end{enumerate}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{Respuestas}{Autoevaluación de los ejercicios propuestos}
+  \listatiny
+  \vspace{0.15cm}
+  \begin{columns}[T,onlytextwidth]
+    \begin{column}{0.47\textwidth}
+      \begin{enumerate}\setlength{\itemsep}{0.16cm}
+        \item Datos con valor menor o igual al de esa fila
+        \item Proporción acumulada hasta esa fila
+        \item 1 (o 100\% en porcentaje)
+        \item No: sin orden, la acumulada es arbitraria
+        \item $12/50 = 0{,}24$
+        \item $0{,}62+0{,}18 = 0{,}80$
+        \item $38-29 = 9$
+        \item Punto medio de la clase; representa a la clase
+        \item $1+3{,}322(1{,}7782)=6{,}91 \Rightarrow 7$
+        \item $1+3{,}322(2)=7{,}64 \Rightarrow 8$
+      \end{enumerate}
+    \end{column}
+    \begin{column}{0.50\textwidth}
+      \begin{enumerate}\setlength{\itemsep}{0.16cm}
+        \setcounter{enumi}{10}
+        \item $R = 93-18 = 75$
+        \item $A = 75/7 = 10{,}71 \Rightarrow 11$
+        \item $x_i = 52{,}5$; \ $A = 15$
+        \item Para que $k\cdot A \ge R$ y el máximo entre en la tabla
+        \item $H_2 = 27{,}5\%$
+        \item $h_3+h_4 = 0{,}275+0{,}225 = 50{,}0\%$
+        \item $6+3 = 9$ clientes
+        \item $[192,232)$: el gasto más común de la muestra
+        \item A 3 clientes ($f_6$), el 7{,}5\%
+        \item Porque la marca de clase reemplaza a los datos reales
+      \end{enumerate}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{Referencias}
+  \footnotesize
+  \begin{itemize}
+    \item[{[1]}] Monroy Saldívar, S. (2008). \textit{Estadística descriptiva}.
+      Instituto Politécnico Nacional.
+      \texttt{https://elibro.net/es/lc/uniminuto/titulos/74722}
+    \item[{[2]}] Ordóñez Fernández, F. F. \& González Fernández, J. (2021).
+      \textit{Estadística descriptiva paso a paso}. Ediciones Pirámide.
+      \texttt{https://elibro.net/es/lc/uniminuto/titulos/215449}
+    \item[{[3]}] Llinás Solano, H. (2014). \textit{Introducción a la
+      estadística con aplicaciones en ciencias sociales}. Universidad del
+      Norte. \texttt{https://elibro.net/es/lc/uniminuto/titulos/70062}
+  \end{itemize}
+
+  \vspace{0.35cm}
+  \begin{center}
+    {\Large\color{uniAzul}\textbf{¿Preguntas?}}
+  \end{center}
+\end{frame}
+
+\end{document}

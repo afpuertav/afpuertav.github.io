@@ -1,0 +1,707 @@
+% ============================================================================
+%  ESTADÍSTICA DESCRIPTIVA — Sesión 13
+%  Semana 13: 2 al 7 de noviembre de 2026   (lunes 2: festivo)
+%  3.1 Integración de medidas estadísticas
+%  3.2 Interpretación global de datos y gráficos
+%  Duración prevista: 3 horas
+% ============================================================================
+\documentclass[aspectratio=169,10pt]{beamer}
+
+\usepackage[utf8]{inputenc}
+\IfFileExists{spanish.ldf}{\usepackage[spanish,es-noshorthands]{babel}}{}
+\usepackage{amsmath,amssymb}
+\usepackage{booktabs}
+\usepackage{tikz}
+\usepackage{listings}
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.16}
+
+\usetheme{Uniminuto}
+
+\uniasignatura{Estadística descriptiva}
+\uniprofesor{Andrés Felipe Puerta Velez}
+\unicorreo{andres.puerta-v@uniminuto.edu.co}
+\uninrc{CBASBL031 - CBASBL141}
+\unisemana{Sesión 13 — Semana 13 · 2 al 7 de noviembre de 2026}
+
+\newcommand{\listatiny}{\setbeamerfont{itemize/enumerate body}{size=\tiny}\tiny}
+
+\pgfplotsset{
+  uniplot/.style={
+    width=8.0cm, height=3.2cm, axis lines=left,
+    tick label style={font=\tiny,color=uniGris},
+    label style={font=\tiny,color=uniGris},
+    title style={font=\scriptsize\bfseries,color=uniAzul},
+    every axis plot/.append style={fill=uniAzul!70,draw=uniAzul},
+    ymajorgrids, grid style={uniGris!25,very thin},
+  }
+}
+
+\newcommand{\cajahor}[8]{%
+  \draw[#8,thick] (#2*#1,#7) -- (#3*#1,#7);
+  \draw[#8,thick] (#5*#1,#7) -- (#6*#1,#7);
+  \draw[#8,thick] (#2*#1,#7-0.14) -- (#2*#1,#7+0.14);
+  \draw[#8,thick] (#6*#1,#7-0.14) -- (#6*#1,#7+0.14);
+  \draw[#8,thick,fill=#8!18] (#3*#1,#7-0.24) rectangle (#5*#1,#7+0.24);
+  \draw[#8,very thick] (#4*#1,#7-0.24) -- (#4*#1,#7+0.24);
+}
+
+\newcommand{\fx}[1]{{\ttfamily\color{uniAzul}#1}}
+
+% ------------------------------------------------------------- CÓDIGO R ----
+\lstdefinestyle{Rcode}{
+  language=R,
+  basicstyle=\ttfamily\scriptsize,
+  keywordstyle=\color{uniAzul}\bfseries,
+  commentstyle=\color{uniGris}\itshape,
+  stringstyle=\color{uniTitulo},
+  showstringspaces=false, numbers=none, breaklines=true,
+  columns=fullflexible,
+  backgroundcolor=\color{uniCremaClaro},
+  frame=leftline, framerule=1.2pt, rulecolor=\color{uniNaranja},
+  xleftmargin=0.35cm, framexleftmargin=0.35cm,
+  framexrightmargin=0.15cm, framextopmargin=2pt, framexbottommargin=2pt,
+  aboveskip=0.15cm, belowskip=0.15cm
+}
+\lstdefinestyle{Rmini}{
+  language=R,
+  basicstyle=\ttfamily\tiny,
+  keywordstyle=\color{uniAzul}\bfseries,
+  commentstyle=\color{uniGris}\itshape,
+  stringstyle=\color{uniTitulo},
+  showstringspaces=false, numbers=none, breaklines=true,
+  columns=fullflexible,
+  backgroundcolor=\color{uniCremaClaro},
+  frame=leftline, framerule=1.2pt, rulecolor=\color{uniNaranja},
+  xleftmargin=0.35cm, framexleftmargin=0.35cm,
+  framexrightmargin=0.15cm, framextopmargin=2pt, framexbottommargin=2pt,
+  aboveskip=0.12cm, belowskip=0.12cm
+}
+\lstdefinestyle{Rout}{
+  basicstyle=\ttfamily\tiny\color{black},
+  showstringspaces=false, numbers=none, breaklines=true,
+  columns=fullflexible,
+  backgroundcolor=\color{uniGris!10},
+  frame=leftline, framerule=1.2pt, rulecolor=\color{uniGris},
+  xleftmargin=0.35cm, framexleftmargin=0.35cm,
+  framexrightmargin=0.15cm, framextopmargin=2pt, framexbottommargin=2pt,
+  aboveskip=0.12cm, belowskip=0.12cm
+}
+
+\begin{document}
+
+\portada
+
+\begin{frame}{Orden del día}
+  \begin{enumerate}
+    \item Retroalimentación del Examen 2
+    \item \azul{Tema 3.1: la ficha estadística completa}
+    \item Perfiles de distribución: leer las cuatro dimensiones juntas
+    \item Cuando las medidas parecen contradecirse
+    \item \azul{Tema 3.2: lectura global de datos y gráficos}
+    \item Taller de análisis integral y cierre
+  \end{enumerate}
+
+  \vspace{0.25cm}
+  {\footnotesize\color{uniGris} Sesión de 3 horas. Empieza la Unidad 3: ya no
+  se trata de calcular, sino de \azul{leer todo junto} y decidir.}
+\end{frame}
+
+\begin{frame}{Qué cambia en la Unidad 3}
+  \footnotesize
+  \begin{columns}[T,onlytextwidth]
+    \begin{column}{0.48\textwidth}
+      \begin{block}{Unidades 1 y 2}
+        \scriptsize
+        Una pregunta a la vez:
+
+        ``Calcule la mediana.'' \\
+        ``Construya el histograma.'' \\
+        ``Halle el $CV$.''
+      \end{block}
+    \end{column}
+    \begin{column}{0.48\textwidth}
+      \begin{exampleblock}{Unidad 3}
+        \scriptsize
+        Todas a la vez:
+
+        ``Aquí están los datos. \destacar{Dígame qué está pasando y qué
+        hacemos.}''
+      \end{exampleblock}
+    \end{column}
+  \end{columns}
+
+  \vspace{0.2cm}
+  \begin{alertblock}{Lo que se evalúa a partir de ahora}
+    \footnotesize
+    No la fórmula aislada, sino la \azul{coherencia} entre lo que dicen los
+    números, lo que muestra el gráfico y lo que usted concluye. Un cálculo
+    correcto con una conclusión incoherente vale menos que un cálculo
+    aproximado bien interpretado.
+  \end{alertblock}
+\end{frame}
+
+\seccion{3.1 Integración de medidas}
+
+\begin{frame}{La ficha estadística completa}
+  \scriptsize
+  \begin{center}
+  \begin{tabular}{@{}p{2.2cm}p{3.4cm}p{5.8cm}@{}}
+    \toprule
+    \textbf{Dimensión} & \textbf{Medidas} & \textbf{Pregunta que responde} \\
+    \midrule
+    Centro & $\bar{x}$, $Me$, $Mo$ &
+      ¿Cuál es el valor típico? \\
+    \addlinespace
+    Posición & $Q_1$, $Q_3$, $D_k$, $P_k$ &
+      ¿Cómo se reparten los casos? ¿Dónde corto los segmentos? \\
+    \addlinespace
+    Dispersión & $R$, $RIC$, $s$, $CV$ &
+      ¿Son parecidos entre sí o muy distintos? \\
+    \addlinespace
+    Forma & $As$, $g_2$, atípicos &
+      ¿Hay una minoría que distorsiona el promedio? \\
+    \bottomrule
+  \end{tabular}
+  \end{center}
+
+  \vspace{0.1cm}
+  \begin{alertblock}{La regla de oro del análisis integral}
+    \scriptsize
+    \destacar{Ninguna medida se interpreta sola.} La media sin la desviación no
+    dice nada; la desviación sin el $CV$ no se puede comparar; el $CV$ sin la
+    asimetría puede engañar. Se leen \azul{las cuatro dimensiones juntas},
+    siempre en ese orden.
+  \end{alertblock}
+\end{frame}
+
+\begin{frame}{Tres sucursales, tres perfiles}
+  \scriptsize
+  \begin{center}
+  \begin{tabular}{@{}lrrr@{}}
+    \toprule
+    \textbf{Medida} & \textbf{Sucursal A} & \textbf{Sucursal B} &
+    \textbf{Sucursal C} \\
+    \midrule
+    $n$ & 60 & 60 & 60 \\
+    Media $\bar{x}$ & 50{,}0 & 58{,}0 & 50{,}0 \\
+    Mediana $Me$ & 50{,}0 & 48{,}0 & 50{,}0 \\
+    Moda $Mo$ & 50 & 44 & 30 y 70 \\
+    $Q_1$ / $Q_3$ & 46 / 54 & 38 / 68 & 32 / 68 \\
+    $RIC$ & 8 & 30 & 36 \\
+    $s$ & 6{,}0 & 28{,}0 & 19{,}0 \\
+    $CV$ & 12{,}0\% & 48{,}3\% & 38{,}0\% \\
+    $As_2$ & 0{,}00 & $+1{,}07$ & 0{,}00 \\
+    $g_2$ & $+0{,}1$ & $+2{,}4$ & $-1{,}2$ \\
+    Atípicos & 0 & 3 & 0 \\
+    \bottomrule
+  \end{tabular}
+  \end{center}
+  {\tiny\color{uniGris} Ventas diarias, en millones de pesos, de tres
+  sucursales durante 60 días.}
+\end{frame}
+
+\begin{frame}{¿Qué le pasa a cada sucursal?}
+  \footnotesize
+  \begin{block}{Sucursal A — el negocio predecible}
+    \tiny
+    $\bar{x}=Me=Mo=50$, $CV=12\%$, $RIC=8$, sin atípicos. Distribución
+    \azul{simétrica y concentrada}. Se puede planear inventario y personal con
+    confianza; la media describe bien a casi todos los días.
+  \end{block}
+
+  \vspace{0.08cm}
+  \begin{block}{Sucursal B — el promedio que engaña}
+    \tiny
+    $\bar{x}=58$ pero $Me=48$: $As_2 = +1{,}07$ y tres atípicos.
+    \destacar{Unos pocos días excepcionales inflan el promedio.} Reportar
+    ``vendemos 58 al día'' sería \azul{falso} para la mayoría de los días: lo
+    honesto es reportar la mediana, 48.
+  \end{block}
+
+  \vspace{0.08cm}
+  \begin{block}{Sucursal C — dos negocios en uno}
+    \tiny
+    Simétrica ($As_2=0$) pero $g_2=-1{,}2$ y \azul{dos modas} (30 y 70), con
+    $RIC=36$. No hay un día típico: hay \destacar{dos tipos de día}. Casi con
+    seguridad hay dos poblaciones mezcladas (¿entre semana y fin de semana?)
+    que deben analizarse por separado.
+  \end{block}
+
+  \vspace{0.08cm}
+  {\tiny\color{uniGris} Las tres tienen medias casi iguales. \azul{La media
+  sola no habría distinguido ninguna de estas tres realidades.}}
+\end{frame}
+
+\begin{frame}{Los perfiles típicos, en una tabla}
+  \scriptsize
+  \begin{center}
+  \begin{tabular}{@{}p{2.6cm}p{4.4cm}p{5.0cm}@{}}
+    \toprule
+    \textbf{Perfil} & \textbf{Combinación de medidas} &
+    \textbf{Qué se hace} \\
+    \midrule
+    Homogéneo simétrico &
+      $\bar{x}\approx Me\approx Mo$, $CV<15\%$, sin atípicos &
+      Reportar la media; se puede estandarizar el proceso \\
+    \addlinespace
+    Asimétrico positivo &
+      $Mo<Me<\bar{x}$, $As>0$, cola derecha &
+      Reportar la mediana; segmentar el cuartil superior \\
+    \addlinespace
+    Asimétrico negativo &
+      $\bar{x}<Me<Mo$, $As<0$ &
+      Reportar la mediana; investigar los casos bajos \\
+    \addlinespace
+    Bimodal &
+      Dos picos, $g_2<0$, $RIC$ grande &
+      \destacar{Separar los grupos} antes de resumir \\
+    \addlinespace
+    Con atípicos &
+      Puntos fuera de las vallas, $\bar{x}$ inestable &
+      Analizarlos aparte; nunca borrarlos sin justificación \\
+    \bottomrule
+  \end{tabular}
+  \end{center}
+\end{frame}
+
+\begin{frame}{Cuando las medidas parecen contradecirse}
+  \scriptsize
+  \begin{center}
+  \begin{tabular}{@{}p{4.4cm}p{7.4cm}@{}}
+    \toprule
+    \textbf{Situación} & \textbf{Cómo se resuelve} \\
+    \midrule
+    $s$ grande pero $CV$ pequeño &
+      No hay contradicción: la media también es grande. Manda el $CV$ \\
+    \addlinespace
+    $As_2 \approx 0$ pero el histograma se ve raro &
+      Puede ser bimodal simétrica: el coeficiente no detecta dos picos \\
+    \addlinespace
+    Media y mediana casi iguales, pero hay atípicos &
+      Los atípicos están repartidos a ambos lados; siguen mereciendo revisión \\
+    \addlinespace
+    $RIC$ pequeño y $R$ enorme &
+      El 50\% central es compacto y hay unos pocos casos extremos \\
+    \bottomrule
+  \end{tabular}
+  \end{center}
+
+  \vspace{0.1cm}
+  \begin{alertblock}{El desempate}
+    \scriptsize
+    Cuando dos indicadores parecen decir cosas distintas, \destacar{se mira el
+    gráfico}. El histograma y el diagrama de caja resuelven en cinco segundos
+    discusiones que con puros números duran media hora.
+  \end{alertblock}
+\end{frame}
+
+\begin{frame}{Ejercicio 1 — en clase}
+  \begin{alertblock}{En parejas (20 minutos)}
+    \scriptsize
+    Para cada conjunto de resultados, describa la distribución \destacar{sin
+    ver los datos} y diga qué medida de centro reportaría y por qué.
+
+    \vspace{0.15cm}
+    \centering
+    \begin{tabular}{@{}lrrrr@{}}
+      \toprule
+      & \textbf{Caso 1} & \textbf{Caso 2} & \textbf{Caso 3} & \textbf{Caso 4} \\
+      \midrule
+      $\bar{x}$ & 25{,}0 & 120{,}0 & 7{,}5 & 4{,}0 \\
+      $Me$      & 25{,}2 &  95{,}0 & 7{,}5 & 4{,}6 \\
+      $Mo$      & 25 & 80 & 3 y 12 & 5 \\
+      $s$       &  2{,}0 &  60{,}0 & 3{,}8 & 0{,}9 \\
+      $CV$      &  8{,}0\% & 50{,}0\% & 50{,}7\% & 22{,}5\% \\
+      $As_2$    & $-0{,}30$ & $+1{,}25$ & 0{,}00 & $-2{,}00$ \\
+      Atípicos  & 0 & 5 & 0 & 2 \\
+      \bottomrule
+    \end{tabular}
+
+    \vspace{0.15cm}
+    \raggedright
+    Para cada caso: (a) ¿qué perfil es? \ (b) ¿qué medida de centro reporta? \
+    (c) ¿qué acción recomienda?
+  \end{alertblock}
+\end{frame}
+
+\begin{frame}{Ejercicio 1 — solución}
+  \scriptsize
+  \begin{center}
+  \begin{tabular}{@{}lp{3.3cm}p{2.2cm}p{4.4cm}@{}}
+    \toprule
+    & \textbf{Perfil} & \textbf{Centro} & \textbf{Acción} \\
+    \midrule
+    Caso 1 & Homogéneo, casi simétrico ($CV=8\%$) & Media &
+      Proceso estable: se puede estandarizar \\
+    \addlinespace
+    Caso 2 & Asimétrico positivo fuerte, con atípicos & Mediana &
+      Separar el segmento alto; revisar los 5 atípicos \\
+    \addlinespace
+    Caso 3 & \destacar{Bimodal} simétrico ($Mo$ doble, $CV$ alto) &
+      Ninguna sola & Separar los dos grupos y describir cada uno \\
+    \addlinespace
+    Caso 4 & Asimétrico negativo fuerte & Mediana &
+      Investigar los casos bajos: ahí está el problema \\
+    \bottomrule
+  \end{tabular}
+  \end{center}
+
+  \vspace{0.05cm}
+  \begin{alertblock}{La trampa del caso 3}
+    \tiny
+    $\bar{x} = Me$ y $As_2 = 0$ sugieren simetría, y lo es. Pero la
+    \destacar{moda doble} y el $CV$ del 50,7\% delatan que hay dos grupos.
+    Reportar ``el valor típico es 7,5'' describiría a un caso que
+    \azul{casi no existe}.
+  \end{alertblock}
+\end{frame}
+
+\seccion{3.2 Interpretación global}
+
+\begin{frame}{Los tres gráficos de la misma variable}
+  \centering
+  \begin{tikzpicture}
+    \begin{axis}[uniplot, width=5.6cm, height=2.9cm, name=h,
+      title={Histograma}, ybar interval, bar width=1,
+      xtick={10,30,50,70}, ymin=0, ymax=15]
+      \addplot coordinates {(10,4) (20,11) (30,14) (40,9) (50,6) (60,4)
+                            (70,2) (80,0)};
+    \end{axis}
+    \begin{axis}[uniplot, width=5.6cm, height=2.9cm, at={(h.right of south east)},
+      anchor=left of south west, xshift=0.5cm,
+      title={Ojiva}, xtick={10,30,50,70}, ymin=0, ymax=55,
+      every axis plot/.append style={fill=none}]
+      \addplot[color=uniAzul,thick,mark=*,mark size=1.1pt,
+               mark options={fill=uniAzul}]
+        coordinates {(10,0) (20,4) (30,15) (40,29) (50,38) (60,44) (70,48)
+                     (80,50)};
+    \end{axis}
+  \end{tikzpicture}
+
+  \vspace{0.1cm}
+  \begin{tikzpicture}[scale=0.9]
+    \cajahor{0.062}{10}{27.73}{37.14}{49.44}{80}{0}{uniAzul}
+    \draw[uniGris,->] (0.4,-0.5) -- (5.4,-0.5);
+    \foreach \v in {10,30,50,70}
+      \draw[uniGris] (\v*0.062,-0.45) -- (\v*0.062,-0.55)
+        node[below,font=\tiny,color=uniGris] {\v};
+    \node[font=\tiny,color=uniAzul,right] at (5.6,0) {Diagrama de caja};
+  \end{tikzpicture}
+
+  \vspace{0.1cm}
+  {\tiny\color{uniGris} Ferretería El Tornillo: los mismos 50 clientes vistos
+  de tres maneras.}
+\end{frame}
+
+\begin{frame}{Qué aporta cada gráfico}
+  \scriptsize
+  \begin{center}
+  \begin{tabular}{@{}p{2.4cm}p{4.4cm}p{5.2cm}@{}}
+    \toprule
+    \textbf{Gráfico} & \textbf{Se lee} & \textbf{Pregunta que responde} \\
+    \midrule
+    Histograma & Pico en $[30,40)$, cola a la derecha &
+      ¿Dónde se concentran los clientes y qué forma tiene el negocio? \\
+    \addlinespace
+    Ojiva & Crece rápido hasta 40 y luego se aplana &
+      ¿Qué porcentaje está por debajo de cualquier valor de corte? \\
+    \addlinespace
+    Caja & Mediana 37,1; caja de 27,7 a 49,4 &
+      ¿Dónde está el 50\% central y hay casos raros? \\
+    \bottomrule
+  \end{tabular}
+  \end{center}
+
+  \vspace{0.1cm}
+  \begin{alertblock}{La lectura conjunta}
+    \scriptsize
+    Los tres cuentan \destacar{la misma historia}: clientela concentrada en
+    compras de 30 a 40 mil, con una minoría que compra mucho más. Si un
+    gráfico contradijera a los otros dos, habría un \azul{error de
+    construcción} y habría que revisar los cálculos.
+  \end{alertblock}
+\end{frame}
+
+\begin{frame}{Protocolo de lectura global (6 pasos)}
+  \footnotesize
+  \begin{block}{El orden que conviene seguir siempre}
+    \scriptsize
+    \begin{enumerate}\setlength{\itemsep}{-0.03cm}
+      \item \azul{Contexto:} qué variable es, en qué unidad, sobre cuántos
+            casos y en qué periodo.
+      \item \azul{Forma:} mire el histograma antes que cualquier número.
+            ¿Uno o dos picos? ¿Hacia dónde va la cola?
+      \item \azul{Centro:} compare $\bar{x}$, $Me$ y $Mo$. Si difieren mucho,
+            reporte la mediana.
+      \item \azul{Dispersión:} $CV$ para juzgar homogeneidad; $RIC$ para
+            describir el grupo central.
+      \item \azul{Casos extremos:} ¿hay atípicos? ¿son error o son
+            información?
+      \item \azul{Conclusión:} dos o tres frases y una recomendación anclada a
+            una cifra.
+    \end{enumerate}
+  \end{block}
+
+  \vspace{0.08cm}
+  \begin{alertblock}{Por qué la forma va antes que el centro}
+    \tiny
+    Porque la forma \destacar{decide cuál medida de centro es válida}. Calcular
+    primero la media y después mirar el histograma es hacer el trabajo al
+    revés.
+  \end{alertblock}
+\end{frame}
+
+\begin{frame}{Ejercicio 2 — en clase (taller principal)}
+  \begin{alertblock}{En grupos de 3 (30 minutos)}
+    \tiny
+    Una cadena evalúa el \azul{tiempo de atención telefónica} (minutos) en dos
+    centros de servicio:
+
+    \vspace{0.1cm}
+    \centering
+    \begin{tabular}{@{}lrrrrrrrr@{}}
+      \toprule
+      & $n$ & $\bar{x}$ & $Me$ & $Mo$ & $Q_1$ / $Q_3$ & $s$ & Máx. &
+      Atíp. \\
+      \midrule
+      \textbf{Centro Norte} & 80 & 6{,}8 & 6{,}7 & 6{,}5 & 5{,}4 / 8{,}1 &
+        1{,}9 & 12{,}0 & 0 \\
+      \textbf{Centro Sur}   & 80 & 6{,}5 & 5{,}0 & 4{,}0 & 3{,}8 / 7{,}9 &
+        4{,}6 & 31{,}0 & 6 \\
+      \bottomrule
+    \end{tabular}
+
+    \vspace{0.15cm}
+    \raggedright
+    \setbeamerfont{itemize/enumerate body}{size=\tiny}
+    \begin{enumerate}\setlength{\itemsep}{-0.07cm}
+      \item Calcule $CV$, $RIC$ y $As_2$ de cada centro.
+      \item Identifique el perfil de cada distribución.
+      \item ¿Qué medida de centro reportaría en cada uno? Justifique.
+      \item Aplique el protocolo de 6 pasos y redacte un párrafo por centro.
+      \item ¿Qué centro presenta el problema más serio y por qué?
+      \item Proponga dos acciones, cada una anclada a una cifra.
+    \end{enumerate}
+  \end{alertblock}
+\end{frame}
+
+\begin{frame}{Ejercicio 2 — solución (cálculos y perfiles)}
+  \scriptsize
+  \begin{columns}[T,onlytextwidth]
+    \begin{column}{0.44\textwidth}
+      \centering
+      \begin{tabular}{@{}lrr@{}}
+        \toprule
+        & \textbf{Norte} & \textbf{Sur} \\
+        \midrule
+        $CV$ & 27{,}9\% & 70{,}8\% \\
+        $RIC$ & 2{,}7 & 4{,}1 \\
+        $As_2$ & $+0{,}16$ & $+0{,}98$ \\
+        \bottomrule
+      \end{tabular}
+      \vspace{0.1cm}
+      {\tiny $CV_N = 1{,}9/6{,}8$; \ $CV_S = 4{,}6/6{,}5$;
+      \ $As_{2S} = 3(6{,}5-5{,}0)/4{,}6$}
+    \end{column}
+    \begin{column}{0.53\textwidth}
+      \begin{block}{Perfiles}
+        \scriptsize
+        \textbf{Norte:} casi simétrico, homogéneo, sin atípicos.
+        \azul{Se reporta la media (6,8 min).}
+
+        \vspace{0.1cm}
+        \textbf{Sur:} asimétrico positivo fuerte, muy heterogéneo, 6 atípicos
+        y un máximo de 31 minutos. \azul{Se reporta la mediana (5,0 min).}
+      \end{block}
+    \end{column}
+  \end{columns}
+
+  \vspace{0.08cm}
+  \begin{alertblock}{Punto 5: el problema serio}
+    \tiny
+    El \destacar{Centro Sur}. Aunque atiende más rápido en la mitad de los
+    casos (mediana 5,0 frente a 6,7), su $CV$ del 70,8\% y sus 6 llamadas de
+    hasta 31 minutos indican que \azul{unos clientes reciben un servicio muy
+    malo}. La media de 6,5 esconde ese problema.
+  \end{alertblock}
+\end{frame}
+
+\begin{frame}{Ejercicio 2 — solución (redacción y acciones)}
+  \begin{exampleblock}{Párrafo modelo — Centro Sur}
+    \scriptsize
+    ``Durante el periodo evaluado, las 80 llamadas atendidas en el Centro Sur
+    tuvieron una duración mediana de \azul{5,0 minutos}, inferior a la del
+    Centro Norte (6,7). Sin embargo, la variación equivale al \azul{70,8\%}
+    de la media y se registraron \destacar{6 llamadas atípicas}, con un máximo
+    de 31 minutos. La distribución es asimétrica positiva
+    ($As_2 = +0{,}98$), de modo que el promedio de 6,5 minutos no describe la
+    experiencia típica ni la de los casos problemáticos.''
+  \end{exampleblock}
+
+  \vspace{0.1cm}
+  \begin{alertblock}{Punto 6: dos acciones ancladas}
+    \scriptsize
+    (1) \destacar{Auditar las 6 llamadas atípicas} del Centro Sur para
+    identificar el tipo de consulta que dispara la duración. \quad
+    (2) Fijar una meta de servicio en el \destacar{percentil 75} ($Q_3 = 7{,}9$
+    minutos) en lugar del promedio: obliga a mejorar la cola, que es donde
+    está el problema.
+  \end{alertblock}
+\end{frame}
+
+\begin{frame}[fragile]{La ficha completa, en R}
+  \scriptsize
+  El análisis integral de hoy, hecho en una función que sirve para cualquier
+  variable:
+\begin{lstlisting}[style=Rmini]
+ficha <- function(x) {
+  n  <- length(x);  mu <- mean(x)
+  sg <- sqrt(sum((x - mu)^2) / n)
+  round(c(n = n, media = mu, mediana = median(x),
+          Q1 = quantile(x, .25, names = FALSE),
+          Q3 = quantile(x, .75, names = FALSE),
+          RIC = IQR(x), s = sd(x), CV = sd(x) / mu * 100,
+          As2 = 3 * (mu - median(x)) / sd(x),
+          g2  = sum((x - mu)^4) / n / sg^4 - 3,
+          atipicos = length(boxplot.stats(x)$out)), 3)
+}
+
+ficha(ventas_A)                       # una sucursal
+sapply(split(ventas, sucursal), ficha)  # las tres, lado a lado
+\end{lstlisting}
+
+  \vspace{-0.1cm}
+  \begin{alertblock}{Por qué vale la pena escribirla}
+    \tiny
+    \fx{sapply(split(...))} devuelve \destacar{una columna por grupo} con las
+    once medidas: es exactamente la tabla comparativa de esta sesión, generada
+    sin una sola cuenta a mano. Lo que sigue siendo trabajo suyo es
+    \azul{leerla}: reconocer el perfil y decidir qué medida reportar.
+  \end{alertblock}
+\end{frame}
+
+\begin{frame}{Cierre de la sesión}
+  \begin{block}{Lo que debe quedar claro hoy}
+    \scriptsize
+    \begin{itemize}\setlength{\itemsep}{0.02cm}
+      \item Toda descripción tiene cuatro dimensiones: \azul{centro, posición,
+            dispersión y forma}.
+      \item Tres distribuciones con la misma media pueden ser tres negocios
+            distintos.
+      \item La \azul{forma} decide qué medida de centro es honesta.
+      \item Cuando los números parecen contradecirse, \destacar{mire el
+            gráfico}.
+      \item El protocolo de 6 pasos ordena cualquier análisis: contexto, forma,
+            centro, dispersión, extremos, conclusión.
+    \end{itemize}
+  \end{block}
+
+  \vspace{0.1cm}
+  \begin{alertblock}{Trabajo independiente}
+    \scriptsize
+    Resolver los 20 ejercicios de la lámina siguiente. En la sesión 14
+    recorremos un caso completo de principio a fin y lo resolvemos con
+    \destacar{herramientas tecnológicas}: traiga computador si puede.
+  \end{alertblock}
+\end{frame}
+
+\begin{frame}{Ejercicios propuestos}
+  \vspace{-0.1cm}
+  \begin{beamercolorbox}[wd=\textwidth,sep=0.10cm]{block body}
+    \centering\scriptsize
+    \textbf{1--8:} identificación de perfiles. \quad \textbf{9--14:} lectura de
+    contradicciones. \quad \textbf{15--20:} análisis integral.
+  \end{beamercolorbox}
+  \listatiny
+  \begin{columns}[T,onlytextwidth]
+    \begin{column}{0.47\textwidth}
+      \begin{enumerate}\setlength{\itemsep}{0.16cm}
+        \item $\bar{x}=Me=Mo$ y $CV=9\%$: ¿qué perfil?
+        \item $Mo<Me<\bar{x}$ y $As_2=+1{,}4$: ¿qué perfil?
+        \item Dos modas y $g_2=-1{,}1$: ¿qué perfil?
+        \item $\bar{x}<Me<Mo$: ¿hacia dónde va la cola?
+        \item $CV=65\%$: ¿grupo homogéneo o heterogéneo?
+        \item ¿Qué centro reporta si hay 8 atípicos altos?
+        \item ¿Qué hace si detecta bimodalidad?
+        \item $R=200$ y $RIC=12$: ¿qué está pasando?
+        \item $s=45$ con $\bar{x}=900$: ¿es mucha dispersión?
+        \item $s=4$ con $\bar{x}=8$: ¿es mucha dispersión?
+      \end{enumerate}
+    \end{column}
+    \begin{column}{0.50\textwidth}
+      \begin{enumerate}\setlength{\itemsep}{0.16cm}
+        \setcounter{enumi}{10}
+        \item ¿Por qué la forma se analiza antes que el centro?
+        \item ¿Qué gráfico resuelve una discusión sobre bimodalidad?
+        \item ¿Qué gráfico resuelve una discusión sobre atípicos?
+        \item Enuncie los 6 pasos del protocolo de lectura global
+        \item Sucursal A y B tienen igual $\bar{x}$; A tiene $CV$ menor.
+              ¿Cuál es más predecible?
+        \item ¿Por qué reportar la media de la sucursal B sería deshonesto si
+              $As_2 = 1{,}5$?
+        \item Escriba una frase de interpretación combinando $Me$ y $RIC$
+        \item Escriba una meta de servicio basada en $Q_3$ en vez del promedio
+        \item ¿Qué revisa si el histograma y la caja se contradicen?
+        \item ¿Cuándo un atípico es información valiosa?
+      \end{enumerate}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{Respuestas}{Autoevaluación de los ejercicios propuestos}
+  \listatiny
+  \begin{columns}[T,onlytextwidth]
+    \begin{column}{0.47\textwidth}
+      \begin{enumerate}\setlength{\itemsep}{0.16cm}
+        \item Homogéneo y simétrico
+        \item Asimétrico positivo
+        \item Bimodal
+        \item A la izquierda (asimetría negativa)
+        \item Heterogéneo
+        \item La mediana
+        \item Separar los dos grupos y describir cada uno
+        \item El 50\% central es compacto y hay extremos aislados
+        \item No: $CV = 5\%$
+        \item Sí: $CV = 50\%$
+      \end{enumerate}
+    \end{column}
+    \begin{column}{0.50\textwidth}
+      \begin{enumerate}\setlength{\itemsep}{0.16cm}
+        \setcounter{enumi}{10}
+        \item Porque decide qué medida de centro es válida
+        \item El histograma
+        \item El diagrama de caja
+        \item Contexto, forma, centro, dispersión, extremos, conclusión
+        \item La sucursal A
+        \item Porque el promedio no describe a la mayoría de los casos
+        \item Respuesta abierta, con unidad y contexto
+        \item ``Que el 75\% de las llamadas dure menos de X minutos''
+        \item Los cálculos: uno de los dos está mal construido
+        \item Cuando es un caso legítimo que revela un problema u oportunidad
+      \end{enumerate}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{Referencias}
+  \footnotesize
+  \begin{itemize}
+    \item[{[1]}] Monroy Saldívar, S. (2008). \textit{Estadística descriptiva}.
+      Instituto Politécnico Nacional.
+      \texttt{https://elibro.net/es/lc/uniminuto/titulos/74722}
+    \item[{[2]}] Ordóñez Fernández, F. F. \& González Fernández, J. (2021).
+      \textit{Estadística descriptiva paso a paso}. Ediciones Pirámide.
+      \texttt{https://elibro.net/es/lc/uniminuto/titulos/215449}
+    \item[{[3]}] Llinás Solano, H. (2014). \textit{Introducción a la
+      estadística con aplicaciones en ciencias sociales}. Universidad del
+      Norte. \texttt{https://elibro.net/es/lc/uniminuto/titulos/70062}
+  \end{itemize}
+
+  \vspace{0.35cm}
+  \begin{center}
+    {\Large\color{uniAzul}\textbf{¿Preguntas?}}
+  \end{center}
+\end{frame}
+
+\end{document}

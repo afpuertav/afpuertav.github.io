@@ -1,0 +1,535 @@
+% ============================================================================
+%  ESTADÍSTICA INFERENCIAL — Sesión 13
+%  Semana 13: 2 al 7 de noviembre de 2026   (lunes 2: festivo)
+%  3.1 Concepto de pruebas de hipótesis · 3.2 Tipos de pruebas de hipótesis
+% ============================================================================
+\documentclass[aspectratio=169,10pt]{beamer}
+
+\usepackage[utf8]{inputenc}
+\IfFileExists{spanish.ldf}{\usepackage[spanish,es-noshorthands]{babel}}{}
+\usepackage{amsmath,amssymb}
+\usepackage{booktabs}
+\usepackage{colortbl}
+\usepackage{tikz}
+\usepackage{listings}
+
+\usetheme{Uniminuto}
+
+\uniasignatura{Estadística inferencial}
+\uniprofesor{Andrés Felipe Puerta Velez}
+\unicorreo{andres.puerta-v@uniminuto.edu.co}
+\uninrc{CBASBL061}
+\unisemana{Sesión 13 — Semana 13 · 2 al 7 de noviembre de 2026}
+
+\newcommand{\listatiny}{\setbeamerfont{itemize/enumerate body}{size=\tiny}\tiny}
+
+\newcommand{\fx}[1]{{\ttfamily\color{uniAzul}#1}}
+
+% ------------------------------------------------------------- CÓDIGO R ----
+\lstdefinestyle{Rcode}{
+  language=R,
+  basicstyle=\ttfamily\scriptsize,
+  keywordstyle=\color{uniAzul}\bfseries,
+  commentstyle=\color{uniGris}\itshape,
+  stringstyle=\color{uniTitulo},
+  showstringspaces=false, numbers=none, breaklines=true,
+  columns=fullflexible,
+  backgroundcolor=\color{uniCremaClaro},
+  frame=leftline, framerule=1.2pt, rulecolor=\color{uniNaranja},
+  xleftmargin=0.35cm, framexleftmargin=0.35cm,
+  framexrightmargin=0.15cm, framextopmargin=2pt, framexbottommargin=2pt,
+  aboveskip=0.15cm, belowskip=0.15cm
+}
+\lstdefinestyle{Rmini}{
+  language=R,
+  basicstyle=\ttfamily\tiny,
+  keywordstyle=\color{uniAzul}\bfseries,
+  commentstyle=\color{uniGris}\itshape,
+  stringstyle=\color{uniTitulo},
+  showstringspaces=false, numbers=none, breaklines=true,
+  columns=fullflexible,
+  backgroundcolor=\color{uniCremaClaro},
+  frame=leftline, framerule=1.2pt, rulecolor=\color{uniNaranja},
+  xleftmargin=0.35cm, framexleftmargin=0.35cm,
+  framexrightmargin=0.15cm, framextopmargin=2pt, framexbottommargin=2pt,
+  aboveskip=0.12cm, belowskip=0.12cm
+}
+\lstdefinestyle{Rout}{
+  basicstyle=\ttfamily\tiny\color{black},
+  showstringspaces=false, numbers=none, breaklines=true,
+  columns=fullflexible,
+  backgroundcolor=\color{uniGris!10},
+  frame=leftline, framerule=1.2pt, rulecolor=\color{uniGris},
+  xleftmargin=0.35cm, framexleftmargin=0.35cm,
+  framexrightmargin=0.15cm, framextopmargin=2pt, framexbottommargin=2pt,
+  aboveskip=0.12cm, belowskip=0.12cm
+}
+
+\begin{document}
+
+\portada
+
+\begin{frame}{Orden del día}
+  \begin{enumerate}
+    \item Llamado a lista y retroalimentación del Examen 2
+    \item Presentación de la Unidad 3
+    \item \azul{Tema 3.1: concepto de prueba de hipótesis}
+    \item \azul{Tema 3.2: tipos de pruebas de hipótesis}
+    \item Errores tipo I y II, nivel de significancia y valor $p$
+    \item Ejercicios en clase y cierre
+  \end{enumerate}
+\end{frame}
+
+\begin{frame}{Dónde estamos: empieza la Unidad 3}
+  En la unidad 2 terminamos comparando un intervalo con un valor de
+  referencia: ``el intervalo $(0{,}5724;\ 0{,}6676)$ está por encima de
+  $0{,}60$, luego se cumple la meta''.
+
+  \vspace{0.2cm}
+  \begin{alertblock}{La idea de la Unidad 3}
+    \footnotesize
+    Ese razonamiento informal se vuelve un \destacar{procedimiento formal de
+    decisión}: la prueba de hipótesis. Permite responder con un criterio claro
+    preguntas del tipo ``¿el nuevo proceso sí mejoró?'' o ``¿la máquina está
+    descalibrada?''.
+  \end{alertblock}
+
+  \vspace{0.15cm}
+  {\footnotesize\color{uniGris} Unidad 3: concepto y tipos de pruebas,
+  planteamiento y pasos, software estadístico, correlación y regresión lineal.
+  \destacar{Examen 3: semana 16}.}
+\end{frame}
+
+\seccion{3.1 Concepto de prueba de hipótesis}
+
+\begin{frame}{Las dos hipótesis}
+  \begin{columns}[T,onlytextwidth]
+    \begin{column}{0.48\textwidth}
+      \begin{block}{Hipótesis nula $H_0$}
+        \footnotesize
+        La afirmación que se somete a prueba. Representa el
+        \azul{statu quo}: ``no hay cambio'', ``no hay diferencia'', ``se cumple
+        el valor de referencia''.
+
+        \vspace{0.1cm}
+        Siempre lleva el signo de igualdad: $=$, $\le$ o $\ge$.
+      \end{block}
+    \end{column}
+    \begin{column}{0.48\textwidth}
+      \begin{exampleblock}{Hipótesis alterna $H_1$}
+        \footnotesize
+        Lo que el investigador quiere demostrar. Es la afirmación
+        \azul{contraria} y nunca lleva igualdad: $\neq$, $>$ o $<$.
+      \end{exampleblock}
+    \end{column}
+  \end{columns}
+
+  \vspace{0.25cm}
+  \begin{alertblock}{La lógica es la del juicio penal}
+    \footnotesize
+    $H_0$ es ``inocente'' y se mantiene mientras no haya evidencia suficiente.
+    La muestra es la prueba. Si la evidencia es fuerte, se \destacar{rechaza}
+    $H_0$; si no, se dice que \destacar{no hay evidencia suficiente para
+    rechazarla}, que no es lo mismo que declararla verdadera.
+  \end{alertblock}
+\end{frame}
+
+\begin{frame}{Cómo se plantean}
+  \footnotesize
+  \begin{center}
+  \begin{tabular}{@{}p{5.4cm}p{2.6cm}p{2.6cm}@{}}
+    \toprule
+    \textbf{Afirmación del problema} & \textbf{$H_0$} & \textbf{$H_1$} \\
+    \midrule
+    ``El peso promedio es 2{,}5 kg'' & $\mu=2{,}5$ & $\mu\neq 2{,}5$ \\
+    ``El nuevo proceso reduce el tiempo (antes 15 min)'' &
+      $\mu\ge 15$ & $\mu<15$ \\
+    ``Más del 60\% está satisfecho'' & $p\le 0{,}60$ & $p>0{,}60$ \\
+    ``La máquina no está descalibrada'' & $\mu=\mu_0$ & $\mu\neq\mu_0$ \\
+    \bottomrule
+  \end{tabular}
+  \end{center}
+
+  \vspace{0.25cm}
+  \begin{alertblock}{Regla para no equivocarse}
+    \footnotesize
+    Lo que se quiere \destacar{probar} va en $H_1$. Si el enunciado dice
+    ``demuestre que'', ``verifique si mejora'', ``hay evidencia de que'', eso es
+    $H_1$. La igualdad siempre queda en $H_0$.
+  \end{alertblock}
+\end{frame}
+
+\seccion{3.2 Tipos de pruebas de hipótesis}
+
+\begin{frame}{Unilateral o bilateral}
+  \footnotesize
+  \begin{center}
+  \begin{tabular}{@{}llp{5.6cm}@{}}
+    \toprule
+    \textbf{Tipo} & \textbf{$H_1$} & \textbf{Región de rechazo} \\
+    \midrule
+    Bilateral (dos colas) & $\mu\neq\mu_0$ &
+      Repartida en las dos colas, $\alpha/2$ en cada una \\
+    Unilateral derecha & $\mu>\mu_0$ & Toda en la cola derecha, $\alpha$ \\
+    Unilateral izquierda & $\mu<\mu_0$ & Toda en la cola izquierda, $\alpha$ \\
+    \bottomrule
+  \end{tabular}
+  \end{center}
+
+  \vspace{0.2cm}
+  \begin{columns}[T,onlytextwidth]
+    \begin{column}{0.48\textwidth}
+      \begin{exampleblock}{Valores críticos con $\alpha=0{,}05$}
+        \footnotesize
+        \centering
+        Bilateral: $z=\pm 1{,}96$ \\
+        Unilateral: $z=1{,}645$ (o $-1{,}645$)
+      \end{exampleblock}
+    \end{column}
+    \begin{column}{0.48\textwidth}
+      \begin{alertblock}{Por qué importa}
+        \footnotesize
+        Con el mismo $\alpha$, la prueba unilateral rechaza más fácil: toda la
+        región de rechazo está de un solo lado. Por eso el tipo debe decidirse
+        \destacar{antes} de ver los datos.
+      \end{alertblock}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{Los dos errores posibles}
+  \footnotesize
+  \begin{center}
+  \begin{tabular}{@{}lcc@{}}
+    \toprule
+    & \textbf{$H_0$ es verdadera} & \textbf{$H_0$ es falsa} \\
+    \midrule
+    \textbf{Se rechaza $H_0$} &
+      \cellcolor{uniCrema}Error tipo I ($\alpha$) & Decisión correcta \\
+    \textbf{No se rechaza $H_0$} &
+      Decisión correcta & \cellcolor{uniCrema}Error tipo II ($\beta$) \\
+    \bottomrule
+  \end{tabular}
+  \end{center}
+
+  \vspace{0.25cm}
+  \begin{columns}[T,onlytextwidth]
+    \begin{column}{0.48\textwidth}
+      \begin{alertblock}{Error tipo I}
+        \footnotesize
+        Condenar a un inocente: concluir que hay efecto cuando no lo hay. Su
+        probabilidad es $\alpha$, y \azul{la fija el investigador}.
+      \end{alertblock}
+    \end{column}
+    \begin{column}{0.48\textwidth}
+      \begin{block}{Error tipo II}
+        \footnotesize
+        Absolver a un culpable: no detectar un efecto que sí existe. Su
+        probabilidad es $\beta$. La \azul{potencia} de la prueba es
+        $1-\beta$.
+      \end{block}
+    \end{column}
+  \end{columns}
+
+  \vspace{0.15cm}
+  {\scriptsize\color{uniGris} Reducir $\alpha$ aumenta $\beta$ y viceversa. La
+  única forma de reducir ambos a la vez es \destacar{aumentar $n$}.}
+\end{frame}
+
+\begin{frame}{Nivel de significancia y valor $p$}
+  \begin{columns}[T,onlytextwidth]
+    \begin{column}{0.48\textwidth}
+      \begin{block}{Nivel de significancia $\alpha$}
+        \footnotesize
+        Probabilidad máxima de error tipo I que se está dispuesto a aceptar.
+        Valores usuales: $0{,}10$, $0{,}05$ y $0{,}01$.
+
+        \vspace{0.1cm}
+        Se fija \azul{antes} de calcular nada.
+      \end{block}
+    \end{column}
+    \begin{column}{0.48\textwidth}
+      \begin{exampleblock}{Valor $p$}
+        \footnotesize
+        Probabilidad de obtener un resultado \azul{tan extremo o más} que el
+        observado, \emph{suponiendo que $H_0$ es verdadera}.
+
+        \vspace{0.1cm}
+        Mide qué tan sorprendente es la muestra bajo $H_0$.
+      \end{exampleblock}
+    \end{column}
+  \end{columns}
+
+  \vspace{0.25cm}
+  \begin{alertblock}{Regla de decisión}
+    \footnotesize
+    \centering
+    \destacar{Si $p \le \alpha$, se rechaza $H_0$. Si $p > \alpha$, no se
+    rechaza.}
+
+    \vspace{0.1cm}
+    {\scriptsize En palabras: si lo observado sería muy raro bajo $H_0$,
+    dejamos de creer en $H_0$.}
+  \end{alertblock}
+\end{frame}
+
+\begin{frame}{Lo que el valor $p$ NO es}
+  \small
+  \begin{alertblock}{Tres interpretaciones incorrectas}
+    \footnotesize
+    \begin{itemize}
+      \item No es la probabilidad de que $H_0$ sea verdadera. $H_0$ no tiene
+            probabilidad: es una afirmación fija.
+      \item No es la probabilidad de haberse equivocado al rechazar.
+      \item Un $p$ pequeño no significa que el efecto sea \azul{grande} ni
+            \azul{importante}: solo que es difícil de explicar por azar. Con
+            $n$ enorme, diferencias triviales dan $p$ minúsculos.
+    \end{itemize}
+  \end{alertblock}
+
+  \vspace{0.2cm}
+  \begin{block}{Significancia estadística $\neq$ relevancia práctica}
+    \footnotesize
+    Que un cambio de 0{,}3 minutos en el tiempo de atención sea
+    ``estadísticamente significativo'' no implica que valga la pena invertir en
+    él. Esa segunda decisión es del administrador, no del estadístico.
+  \end{block}
+\end{frame}
+
+\begin{frame}{Ejercicio 1 — en clase}
+  \begin{alertblock}{En parejas (9 minutos)}
+    Plantee $H_0$ y $H_1$ e indique si la prueba es unilateral o bilateral.
+
+    \vspace{0.25cm}
+    \begin{enumerate}
+      \item La norma dice que el contenido debe ser de 2{,}5 kg; se quiere
+            verificar si la máquina está descalibrada.
+      \item Se afirma que un nuevo proceso reduce el tiempo promedio, que era
+            de 15 minutos.
+      \item Se quiere demostrar que más del 60\% de los clientes está
+            satisfecho.
+      \item Se quiere verificar si la proporción de defectuosos cambió respecto
+            al 5\% histórico.
+    \end{enumerate}
+  \end{alertblock}
+\end{frame}
+
+\begin{frame}{Ejercicio 1 — solución}
+  \footnotesize
+  \begin{center}
+  \begin{tabular}{@{}clll@{}}
+    \toprule
+    \textbf{\#} & \textbf{$H_0$} & \textbf{$H_1$} & \textbf{Tipo} \\
+    \midrule
+    1 & $\mu=2{,}5$    & $\mu\neq 2{,}5$ & Bilateral \\
+    2 & $\mu\ge 15$    & $\mu<15$        & Unilateral izquierda \\
+    3 & $p\le 0{,}60$  & $p>0{,}60$      & Unilateral derecha \\
+    4 & $p=0{,}05$     & $p\neq 0{,}05$  & Bilateral \\
+    \bottomrule
+  \end{tabular}
+  \end{center}
+
+  \vspace{0.25cm}
+  \begin{exampleblock}{Cómo se reconoce el tipo}
+    \footnotesize
+    ``Descalibrada'' y ``cambió'' no dicen en qué dirección: \azul{bilateral}.
+    ``Reduce'' y ``más del'' señalan una dirección: \azul{unilateral}, y el
+    sentido de la desigualdad de $H_1$ indica cuál cola.
+  \end{exampleblock}
+\end{frame}
+
+\begin{frame}{Ejercicio 2 — en clase}
+  \begin{alertblock}{Individual (8 minutos)}
+    Una prueba de hipótesis sobre el tiempo promedio de atención arrojó
+    \destacar{$p=0{,}032$}.
+
+    \vspace{0.25cm}
+    \begin{enumerate}
+      \item ¿Cuál es la decisión con $\alpha=0{,}05$?
+      \item ¿Y con $\alpha=0{,}01$?
+      \item Redacte la conclusión del punto 1 en lenguaje del negocio.
+      \item ¿Es correcto decir que ``hay 3,2\% de probabilidad de que $H_0$
+            sea verdadera''?
+    \end{enumerate}
+  \end{alertblock}
+\end{frame}
+
+\begin{frame}{Ejercicio 2 — solución}
+  \small
+  \begin{block}{Decisiones}
+    \footnotesize
+    \begin{itemize}
+      \item Con $\alpha=0{,}05$: como $0{,}032\le 0{,}05$, \azul{se rechaza
+            $H_0$}.
+      \item Con $\alpha=0{,}01$: como $0{,}032>0{,}01$, \azul{no se rechaza
+            $H_0$}.
+    \end{itemize}
+  \end{block}
+
+  \vspace{0.15cm}
+  \begin{exampleblock}{Punto 3}
+    \footnotesize
+    ``Con un nivel de significancia del 5\%, la evidencia muestral es
+    suficiente para concluir que el tiempo promedio de atención difiere del
+    valor de referencia''.
+  \end{exampleblock}
+
+  \vspace{0.1cm}
+  \begin{alertblock}{Punto 4}
+    \footnotesize
+    \destacar{No.} El valor $p$ se calcula \emph{suponiendo} que $H_0$ es
+    verdadera; no puede ser al mismo tiempo la probabilidad de que lo sea.
+  \end{alertblock}
+\end{frame}
+
+\begin{frame}[fragile]{El error tipo I, visto en R}
+  \scriptsize
+  Si $H_0$ es \azul{verdadera} y aun así rechazamos el 5\% de las veces,
+  ¿cuánto es ese 5\% en la práctica?
+\begin{lstlisting}[style=Rmini]
+set.seed(2026)
+# H0 verdadera: la poblacion SI tiene media 100
+rechazos <- replicate(2000, {
+  x <- rnorm(25, mean = 100, sd = 15)
+  t.test(x, mu = 100)$p.value < 0.05      # rechazo con alfa = 0.05
+})
+mean(rechazos)     # proporcion de veces que nos equivocamos
+\end{lstlisting}
+\begin{lstlisting}[style=Rout]
+[1] 0.0505
+\end{lstlisting}
+
+  \vspace{-0.05cm}
+  \begin{alertblock}{Lo que acaba de ocurrir}
+    \scriptsize
+    En 2\,000 estudios donde $H_0$ \destacar{era cierta}, la rechazamos 101
+    veces: el 5\%, exactamente $\alpha$. \azul{El error tipo I no es un
+    accidente: es el precio fijado de antemano.} Bajar $\alpha$ a 0,01 reduce
+    esos falsos positivos, pero a cambio aumenta el error tipo II.
+  \end{alertblock}
+
+  \vspace{0.05cm}
+  {\tiny\color{uniGris} Cambie \fx{mean = 100} por \fx{mean = 105} y la misma
+  simulación le mostrará la \destacar{potencia} de la prueba.}
+\end{frame}
+
+\begin{frame}{Cierre de la sesión}
+  \begin{block}{Lo que debe quedar claro hoy}
+    \begin{itemize}
+      \item $H_0$ lleva la igualdad y es el statu quo; $H_1$ es lo que se
+            quiere probar.
+      \item Bilateral si $H_1$ usa $\neq$; unilateral si usa $>$ o $<$.
+      \item Error tipo I ($\alpha$): rechazar una $H_0$ verdadera. Tipo II
+            ($\beta$): no rechazar una falsa.
+      \item Regla: si $p\le\alpha$ se rechaza $H_0$.
+      \item No rechazar no es demostrar que $H_0$ sea cierta.
+    \end{itemize}
+  \end{block}
+
+  \vspace{0.2cm}
+  \begin{alertblock}{Trabajo independiente para la próxima sesión}
+    \footnotesize
+    Resolver los \destacar{20 ejercicios de la lámina siguiente}. En la sesión
+    14 aplicaremos los cinco pasos completos y usaremos software.
+  \end{alertblock}
+\end{frame}
+
+\begin{frame}{Ejercicios propuestos}
+  \vspace{-0.1cm}
+  \begin{beamercolorbox}[wd=\textwidth,sep=0.10cm]{block body}
+    \centering\scriptsize
+    \textbf{1--8:} plantee $H_0$ y $H_1$ e indique el tipo. \quad
+    \textbf{9--20:} conceptos y decisiones.
+  \end{beamercolorbox}
+  \listatiny
+  \vspace{0.15cm}
+  \begin{columns}[T,onlytextwidth]
+    \begin{column}{0.47\textwidth}
+      \begin{enumerate}\setlength{\itemsep}{0.16cm}
+        \item ``El peso promedio es 500 g''
+        \item ``El tiempo promedio bajó de 20 min''
+        \item ``Más del 40\% usa la app''
+        \item ``La proporción de defectuosos cambió''
+        \item ``El gasto promedio supera 80 mil''
+        \item ``La media es menor que 12''
+        \item ``El proceso no alteró la media de 3{,}2''
+        \item ``Menos del 10\% incumple''
+        \item ¿Qué signo lleva siempre $H_0$?
+        \item ¿Qué es el error tipo I?
+      \end{enumerate}
+    \end{column}
+    \begin{column}{0.50\textwidth}
+      \begin{enumerate}\setlength{\itemsep}{0.16cm}
+        \setcounter{enumi}{10}
+        \item ¿Qué es el error tipo II?
+        \item ¿Quién fija $\alpha$?
+        \item ¿Qué es la potencia de la prueba?
+        \item $p=0{,}032$ y $\alpha=0{,}05$: decisión
+        \item $p=0{,}032$ y $\alpha=0{,}01$: decisión
+        \item $p=0{,}18$ y $\alpha=0{,}10$: decisión
+        \item $z$ crítico bilateral con $\alpha=0{,}05$
+        \item $z$ crítico unilateral con $\alpha=0{,}05$
+        \item ¿$p$ es la probabilidad de que $H_0$ sea verdadera?
+        \item ¿Cómo se reducen $\alpha$ y $\beta$ a la vez?
+      \end{enumerate}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{Respuestas}{Autoevaluación de los ejercicios propuestos}
+  \listatiny
+  \vspace{0.15cm}
+  \begin{columns}[T,onlytextwidth]
+    \begin{column}{0.47\textwidth}
+      \begin{enumerate}\setlength{\itemsep}{0.16cm}
+        \item $\mu=500$ vs. $\mu\neq 500$; bilateral
+        \item $\mu\ge 20$ vs. $\mu<20$; unilateral izq.
+        \item $p\le 0{,}40$ vs. $p>0{,}40$; unilateral der.
+        \item $p=p_0$ vs. $p\neq p_0$; bilateral
+        \item $\mu\le 80$ vs. $\mu>80$; unilateral der.
+        \item $\mu\ge 12$ vs. $\mu<12$; unilateral izq.
+        \item $\mu=3{,}2$ vs. $\mu\neq 3{,}2$; bilateral
+        \item $p\ge 0{,}10$ vs. $p<0{,}10$; unilateral izq.
+        \item La igualdad ($=$, $\le$ o $\ge$)
+        \item Rechazar $H_0$ siendo verdadera
+      \end{enumerate}
+    \end{column}
+    \begin{column}{0.50\textwidth}
+      \begin{enumerate}\setlength{\itemsep}{0.16cm}
+        \setcounter{enumi}{10}
+        \item No rechazar $H_0$ siendo falsa
+        \item El investigador, antes de calcular
+        \item $1-\beta$
+        \item Se rechaza $H_0$
+        \item No se rechaza $H_0$
+        \item No se rechaza $H_0$
+        \item $\pm 1{,}96$
+        \item $1{,}645$ (o $-1{,}645$)
+        \item No
+        \item Aumentando $n$
+      \end{enumerate}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{Referencias}
+  \footnotesize
+  \begin{itemize}
+    \item[{[1]}] Díaz Rodríguez, M. (2022). \textit{Estadística inferencial
+      aplicada}. Universidad del Norte.
+      \texttt{https://elibro.net/es/lc/uniminuto/titulos/221614}
+    \item[{[2]}] Llinás Solano, H. (2014). \textit{Introducción a la
+      estadística con aplicaciones en ciencias sociales}. Universidad del
+      Norte. \texttt{https://elibro.net/es/lc/uniminuto/titulos/70062}
+    \item[{[3]}] Contento Rubio, M. R. (2019). \textit{Estadística con
+      aplicaciones en R}. Editorial Utadeo.
+      \texttt{https://elibro.net/es/lc/uniminuto/titulos/220926}
+  \end{itemize}
+
+  \vspace{0.35cm}
+  \begin{center}
+    {\Large\color{uniAzul}\textbf{¿Preguntas?}}
+  \end{center}
+\end{frame}
+
+\end{document}

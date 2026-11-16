@@ -1,0 +1,499 @@
+% ============================================================================
+%  ESTADÍSTICA INFERENCIAL — Sesión 11
+%  Semana 11: 19 al 24 de octubre de 2026
+%  2.8 Cálculo de intervalos de confianza
+%  2.9 Aplicaciones en el entorno laboral · 2.10 Limitaciones y errores comunes
+%  Cierre de la Unidad 2 y repaso para el Examen 2
+% ============================================================================
+\documentclass[aspectratio=169,10pt]{beamer}
+
+\usepackage[utf8]{inputenc}
+\IfFileExists{spanish.ldf}{\usepackage[spanish,es-noshorthands]{babel}}{}
+\usepackage{amsmath,amssymb}
+\usepackage{booktabs}
+\usepackage{tikz}
+\usepackage{listings}
+
+\usetheme{Uniminuto}
+
+\uniasignatura{Estadística inferencial}
+\uniprofesor{Andrés Felipe Puerta Velez}
+\unicorreo{andres.puerta-v@uniminuto.edu.co}
+\uninrc{CBASBL061}
+\unisemana{Sesión 11 — Semana 11 · 19 al 24 de octubre de 2026}
+
+\newcommand{\listatiny}{\setbeamerfont{itemize/enumerate body}{size=\tiny}\tiny}
+
+\newcommand{\fx}[1]{{\ttfamily\color{uniAzul}#1}}
+
+% ------------------------------------------------------------- CÓDIGO R ----
+\lstdefinestyle{Rcode}{
+  language=R,
+  basicstyle=\ttfamily\scriptsize,
+  keywordstyle=\color{uniAzul}\bfseries,
+  commentstyle=\color{uniGris}\itshape,
+  stringstyle=\color{uniTitulo},
+  showstringspaces=false, numbers=none, breaklines=true,
+  columns=fullflexible,
+  backgroundcolor=\color{uniCremaClaro},
+  frame=leftline, framerule=1.2pt, rulecolor=\color{uniNaranja},
+  xleftmargin=0.35cm, framexleftmargin=0.35cm,
+  framexrightmargin=0.15cm, framextopmargin=2pt, framexbottommargin=2pt,
+  aboveskip=0.15cm, belowskip=0.15cm
+}
+\lstdefinestyle{Rmini}{
+  language=R,
+  basicstyle=\ttfamily\tiny,
+  keywordstyle=\color{uniAzul}\bfseries,
+  commentstyle=\color{uniGris}\itshape,
+  stringstyle=\color{uniTitulo},
+  showstringspaces=false, numbers=none, breaklines=true,
+  columns=fullflexible,
+  backgroundcolor=\color{uniCremaClaro},
+  frame=leftline, framerule=1.2pt, rulecolor=\color{uniNaranja},
+  xleftmargin=0.35cm, framexleftmargin=0.35cm,
+  framexrightmargin=0.15cm, framextopmargin=2pt, framexbottommargin=2pt,
+  aboveskip=0.12cm, belowskip=0.12cm
+}
+\lstdefinestyle{Rout}{
+  basicstyle=\ttfamily\tiny\color{black},
+  showstringspaces=false, numbers=none, breaklines=true,
+  columns=fullflexible,
+  backgroundcolor=\color{uniGris!10},
+  frame=leftline, framerule=1.2pt, rulecolor=\color{uniGris},
+  xleftmargin=0.35cm, framexleftmargin=0.35cm,
+  framexrightmargin=0.15cm, framextopmargin=2pt, framexbottommargin=2pt,
+  aboveskip=0.12cm, belowskip=0.12cm
+}
+
+\begin{document}
+
+\portada
+
+\begin{frame}{Orden del día}
+  \begin{enumerate}
+    \item Llamado a lista y revisión de los ejercicios propuestos
+    \item \azul{Tema 2.8: cálculo de intervalos de confianza}
+    \item \azul{Tema 2.9: aplicaciones en el entorno laboral}
+    \item \azul{Tema 2.10: limitaciones y errores comunes}
+    \item Ejercicios en clase
+    \item \destacar{Repaso para el Examen 2}
+  \end{enumerate}
+\end{frame}
+
+\begin{frame}{Repaso: dónde quedamos}
+  En la sesión 10 vimos la estructura de todo intervalo:
+  \[ \text{estimador} \;\pm\; \text{valor crítico}\times\text{error estándar} \]
+
+  \vspace{0.2cm}
+  \begin{alertblock}{Hoy}
+    \footnotesize
+    Practicamos el cálculo en los tres casos, vemos cómo se decide el tamaño de
+    muestra a partir del margen deseado, y revisamos qué \destacar{no} se puede
+    concluir de un intervalo. Cierra la unidad 2.
+  \end{alertblock}
+
+  \vspace{0.15cm}
+  {\footnotesize\color{uniGris} \destacar{Examen 2}: semana 12, del 26 al 31 de
+  octubre, 33,3\%.}
+\end{frame}
+
+\seccion{2.8 Cálculo de intervalos de confianza}
+
+\begin{frame}{Procedimiento en cinco pasos}
+  \small
+  \begin{enumerate}
+    \item Identificar el \azul{parámetro}: ¿media o proporción?
+    \item Verificar las \azul{condiciones}: ¿$\sigma$ conocida o no? ¿$n\ge 30$?
+          ¿$n\hat p\ge 5$?
+    \item Elegir el \azul{valor crítico} $z$ o $t$ según la confianza (y los
+          grados de libertad si es $t$).
+    \item Calcular el \azul{error estándar} y el margen de error.
+    \item Escribir el intervalo y \azul{redactar la interpretación} en el
+          contexto del problema.
+  \end{enumerate}
+
+  \vspace{0.25cm}
+  \begin{alertblock}{El paso 5 es el que más se olvida}
+    \footnotesize
+    Un intervalo sin interpretación no responde la pregunta del negocio. En el
+    examen, la redacción vale.
+  \end{alertblock}
+\end{frame}
+
+\begin{frame}{Los tres intervalos, lado a lado}
+  \footnotesize
+  \begin{center}
+  \begin{tabular}{@{}p{2.8cm}p{4.0cm}p{4.4cm}@{}}
+    \toprule
+    \textbf{Caso} & \textbf{Fórmula} & \textbf{Ejemplo numérico} \\
+    \midrule
+    Media, $\sigma$ conocida &
+      $\bar{x}\pm z\dfrac{\sigma}{\sqrt{n}}$ &
+      $\bar x=52$, $\sigma=8$, $n=64$, 95\%: \newline
+      $(50{,}04;\ 53{,}96)$ \\
+    \addlinespace
+    Media, $\sigma$ desconocida &
+      $\bar{x}\pm t_{n-1}\dfrac{s}{\sqrt{n}}$ &
+      $\bar x=15{,}6$, $s=2{,}4$, $n=20$, 95\%: \newline
+      $(14{,}48;\ 16{,}72)$ \\
+    \addlinespace
+    Proporción &
+      $\hat{p}\pm z\sqrt{\dfrac{\hat p(1-\hat p)}{n}}$ &
+      $\hat p=0{,}62$, $n=400$, 95\%: \newline
+      $(0{,}5724;\ 0{,}6676)$ \\
+    \bottomrule
+  \end{tabular}
+  \end{center}
+\end{frame}
+
+\begin{frame}{Ejercicio 1 — en clase}
+  \begin{alertblock}{Individual (10 minutos)}
+    Una muestra de \destacar{$n=20$} tiempos de atención da
+    $\bar{x}=15{,}6$ minutos y $s=2{,}4$ minutos.
+
+    \vspace{0.25cm}
+    \begin{enumerate}
+      \item Construya el intervalo al 95\% ($t_{0{,}025;19}=2{,}093$).
+      \item Construya el intervalo al 99\% ($t_{0{,}005;19}=2{,}861$).
+      \item Compare los anchos.
+      \item ¿Podría afirmarse que el tiempo promedio supera los 14 minutos?
+    \end{enumerate}
+  \end{alertblock}
+\end{frame}
+
+\begin{frame}{Ejercicio 1 — solución}
+  \small
+  \begin{block}{Con $s/\sqrt{n}=2{,}4/\sqrt{20}=0{,}5367$}
+    \begin{align*}
+      95\%:\;& 15{,}6\pm 2{,}093(0{,}5367)=15{,}6\pm 1{,}12
+        \Rightarrow \azul{(14{,}48;\ 16{,}72)}\\[0.25em]
+      99\%:\;& 15{,}6\pm 2{,}861(0{,}5367)=15{,}6\pm 1{,}54
+        \Rightarrow \azul{(14{,}06;\ 17{,}14)}
+    \end{align*}
+  \end{block}
+
+  \vspace{0.1cm}
+  \begin{exampleblock}{Puntos 3 y 4}
+    \footnotesize
+    Anchos: $2{,}25$ frente a $3{,}07$ minutos. Subir la confianza cuesta
+    precisión.
+
+    \vspace{0.15cm}
+    Sí: ambos intervalos están completamente por encima de 14 minutos, luego a
+    ambos niveles de confianza se puede afirmar que $\mu>14$.
+  \end{exampleblock}
+\end{frame}
+
+\begin{frame}{Tamaño de muestra a partir del margen deseado}
+  \begin{block}{Se despeja $n$ del margen de error}
+    \[ e=z\frac{\sigma}{\sqrt{n}} \;\Longrightarrow\;
+       n=\left(\frac{z\,\sigma}{e}\right)^{2}
+       \qquad\qquad
+       n=\frac{z^{2}\,p\,q}{e^{2}} \ \text{(proporción)} \]
+  \end{block}
+
+  \vspace{0.2cm}
+  \begin{exampleblock}{Ejemplo}
+    \footnotesize
+    Con $\sigma=8$ y una precisión deseada de $\pm 1$ al 95\%:
+    \[ n=\left(\frac{1{,}96\times 8}{1}\right)^{2}=245{,}86
+       \Rightarrow \azul{246 \text{ facturas}} \]
+    Si basta con $\pm 2$: $n=61{,}47\Rightarrow 62$. \azul{La cuarta parte.}
+  \end{exampleblock}
+
+  \vspace{0.1cm}
+  {\scriptsize\color{uniGris} Es la misma fórmula de la sesión 5, ahora con su
+  origen a la vista: sale de despejar el margen del intervalo.}
+\end{frame}
+
+\seccion{2.9 y 2.10 Aplicaciones y limitaciones}
+
+\begin{frame}{Aplicaciones en el entorno laboral}
+  \footnotesize
+  \begin{center}
+  \begin{tabular}{@{}p{3.2cm}p{8.0cm}@{}}
+    \toprule
+    \textbf{Área} & \textbf{Pregunta que responde un intervalo} \\
+    \midrule
+    Mercadeo & ¿Entre qué valores está la proporción real de clientes
+      satisfechos? ¿Supera la meta del 60\%? \\
+    Producción & ¿Entre qué valores está el peso promedio real del producto?
+      ¿Cumple la norma? \\
+    Finanzas & ¿Entre qué valores está el gasto promedio por cliente, para
+      proyectar ingresos? \\
+    Talento humano & ¿Cuál es el rango creíble de la rotación mensual? \\
+    Auditoría & ¿Cuál es el rango del porcentaje de facturas con error, a
+      partir de una muestra? \\
+    \bottomrule
+  \end{tabular}
+  \end{center}
+
+  \vspace{0.15cm}
+  {\scriptsize\color{uniGris} En todos los casos el valor que se reporta a la
+  gerencia es el intervalo, no el punto: comunica la precisión del
+  estudio\,[1].}
+\end{frame}
+
+\begin{frame}{Limitaciones y errores comunes}
+  \small
+  \begin{alertblock}{Errores de interpretación}
+    \footnotesize
+    \begin{itemize}
+      \item Decir ``hay 95\% de probabilidad de que $\mu$ esté en el
+            intervalo''. La confianza es del método.
+      \item Creer que el 95\% de \emph{los datos} cae en el intervalo. El
+            intervalo es para el \azul{parámetro}, no para las observaciones.
+      \item Concluir que dos grupos no difieren solo porque sus intervalos se
+            traslapan un poco.
+    \end{itemize}
+  \end{alertblock}
+
+  \begin{block}{Errores de cálculo y de diseño}
+    \footnotesize
+    \begin{itemize}
+      \item Usar $z$ cuando el dato es $s$ y $n$ es pequeño.
+      \item Olvidar el $\sqrt{n}$ del error estándar.
+      \item Aplicarlo a una muestra \destacar{no probabilística}: el intervalo
+            no tiene validez, ni corrige el sesgo por más $n$ que se tome.
+    \end{itemize}
+  \end{block}
+\end{frame}
+
+\begin{frame}{Ejercicio 2 — en clase}
+  \begin{alertblock}{En parejas (10 minutos)}
+    Una auditoría revisa \destacar{$n=400$} facturas y encuentra
+    \destacar{248} sin errores.
+
+    \vspace{0.25cm}
+    \begin{enumerate}
+      \item Construya el intervalo del 95\% para $p$.
+      \item Constrúyalo al 99\%.
+      \item La meta interna es 60\%. ¿Se puede afirmar que se cumple, a cada
+            nivel de confianza?
+      \item ¿Qué $n$ se necesitaría para un margen de $\pm 3$ puntos al
+            95\%?
+    \end{enumerate}
+  \end{alertblock}
+\end{frame}
+
+\begin{frame}{Ejercicio 2 — solución}
+  \begin{columns}[T,onlytextwidth]
+    \begin{column}{0.50\textwidth}
+      \begin{block}{Intervalos}
+        \footnotesize
+        $\hat p=0{,}62$, \; error estándar $=0{,}0243$
+        \begin{align*}
+          95\%:\;& 0{,}62\pm 0{,}0476 = \azul{(0{,}5724;\ 0{,}6676)}\\[0.2em]
+          99\%:\;& 0{,}62\pm 0{,}0625 = \azul{(0{,}5575;\ 0{,}6825)}
+        \end{align*}
+      \end{block}
+    \end{column}
+    \begin{column}{0.46\textwidth}
+      \begin{exampleblock}{Punto 3}
+        \footnotesize
+        Al 95\% \azul{sí}: todo el intervalo supera 0{,}60.
+
+        \vspace{0.1cm}
+        Al 99\% \destacar{no}: el intervalo incluye valores por debajo de
+        0{,}60, así que no hay evidencia suficiente.
+      \end{exampleblock}
+      \begin{alertblock}{Punto 4}
+        \footnotesize
+        $n=\dfrac{1{,}96^{2}(0{,}62)(0{,}38)}{0{,}03^{2}}=1005{,}6
+        \Rightarrow \azul{1006}$
+      \end{alertblock}
+    \end{column}
+  \end{columns}
+
+  \vspace{0.05cm}
+  {\scriptsize\color{uniGris} El punto 3 muestra que la conclusión depende del
+  nivel de confianza exigido: exactamente el dilema de las pruebas de
+  hipótesis, tema de la unidad 3.}
+\end{frame}
+
+\seccion{Repaso para el Examen 2}
+
+\begin{frame}{Mapa de la Unidad 2}
+  \scriptsize
+  \begin{center}
+  \begin{tabular}{@{}llp{6.4cm}@{}}
+    \toprule
+    \textbf{Tema} & \textbf{Sesión} & \textbf{Lo esencial} \\
+    \midrule
+    Binomial & 7 & $n$ fijo, dos resultados, $p$ constante, independencia.
+      $E=np$, $V=npq$ \\
+    Poisson & 7 & Conteos por intervalo. $E=V=\lambda$; ajustar $\lambda$ al
+      intervalo \\
+    Normal & 8 & $Z=(X-\mu)/\sigma$; tabla da área a la izquierda; problema
+      directo e inverso \\
+    Medias muestrales & 9 & $\sigma_{\bar X}=\sigma/\sqrt{n}$; TLC con
+      $n\ge 30$ \\
+    $t$ de Student & 9 & Cuando el dato es $s$; $gl=n-1$ \\
+    Estimación & 10 & Puntual vs. intervalo; insesgado, eficiente, consistente \\
+    Intervalos & 10--11 & Media con $\sigma$, media con $s$, proporción;
+      despeje de $n$ \\
+    \bottomrule
+  \end{tabular}
+  \end{center}
+
+  \vspace{0.15cm}
+  \begin{alertblock}{Examen 2 — semana 12}
+    \footnotesize
+    \destacar{26 al 31 de octubre}, en Aulas Virtuales (Moodle), presencial,
+    individual. Vale el \destacar{33,3\%}. Traiga calculadora, formulario y
+    las tablas de $Z$ y $t$.
+  \end{alertblock}
+\end{frame}
+
+\begin{frame}[fragile]{Intervalos de confianza, en R}
+  \scriptsize
+\begin{lstlisting}[style=Rmini]
+# A partir de los resumenes (ejercicio 1: xbar=15.6, s=2.4, n=20)
+15.6 + c(-1, 1) * qt(0.975, 19) * 2.4 / sqrt(20)   # 95%
+15.6 + c(-1, 1) * qt(0.995, 19) * 2.4 / sqrt(20)   # 99%
+
+# A partir de los datos crudos, en una sola linea
+t.test(tiempos, conf.level = 0.95)$conf.int
+
+# Proporcion: 248 satisfechos de 400
+prop.test(248, 400)$conf.int        # metodo de Wilson (el de R)
+p <- 248/400
+p + c(-1, 1) * qnorm(0.975) * sqrt(p * (1 - p) / 400)   # formula del curso
+\end{lstlisting}
+\begin{lstlisting}[style=Rout]
+[1] 14.47677 16.72323
+[1] 14.06464 17.13536
+[1] 0.5702 0.6674
+[1] 0.5724 0.6676
+\end{lstlisting}
+
+  \vspace{-0.12cm}
+  \begin{alertblock}{Por qué \fx{prop.test} no da exactamente lo del curso}
+    \tiny
+    La fórmula del curso es el intervalo de \destacar{Wald}; \fx{prop.test()}
+    usa el de \destacar{Wilson con corrección de continuidad}, que se comporta
+    mejor cuando $n$ es pequeño o $p$ está cerca de 0 o de 1. Con $n=400$ la
+    diferencia es de dos milésimas. \fx{binom.test()} da el intervalo exacto.
+  \end{alertblock}
+\end{frame}
+
+\begin{frame}{Cierre de la sesión}
+  \begin{block}{Lo que debe quedar claro hoy}
+    \begin{itemize}
+      \item Los cinco pasos: parámetro, condiciones, valor crítico, margen,
+            interpretación.
+      \item $z$ si el dato es $\sigma$; $t$ con $gl=n-1$ si el dato es $s$.
+      \item $n=(z\sigma/e)^{2}$ para media y $n=z^{2}pq/e^{2}$ para proporción.
+      \item Un intervalo no dice nada si la muestra no fue probabilística.
+    \end{itemize}
+  \end{block}
+
+  \vspace{0.2cm}
+  \begin{alertblock}{Para el Examen 2 (semana 12)}
+    \footnotesize
+    Resolver los \destacar{20 ejercicios de la lámina siguiente} y repasar los
+    de las sesiones 7 a 10.
+  \end{alertblock}
+\end{frame}
+
+\begin{frame}{Ejercicios propuestos}
+  \vspace{-0.1cm}
+  \begin{beamercolorbox}[wd=\textwidth,sep=0.10cm]{block body}
+    \centering\scriptsize
+    $z$: 1{,}645 / 1{,}96 / 2{,}576. \quad
+    $t_{0{,}025}$: 2{,}145 ($gl$=14), 2{,}093 ($gl$=19), 2{,}045 ($gl$=29). \quad
+    $t_{0{,}005;19}=2{,}861$.
+  \end{beamercolorbox}
+  \listatiny
+  \vspace{0.15cm}
+  \begin{columns}[T,onlytextwidth]
+    \begin{column}{0.47\textwidth}
+      \begin{enumerate}\setlength{\itemsep}{0.16cm}
+        \item $\bar x=52$, $\sigma=8$, $n=64$: IC 95\%
+        \item El mismo, al 99\%
+        \item El mismo, al 90\%
+        \item El mismo con $n=256$, al 95\%
+        \item $\bar x=15{,}6$, $s=2{,}4$, $n=20$: IC 95\%
+        \item El mismo, al 99\%
+        \item $\bar x=100$, $s=12$, $n=15$: IC 95\%
+        \item $\bar x=100$, $s=12$, $n=30$: IC 95\%
+        \item $\hat p=0{,}62$, $n=400$: IC 95\%
+        \item El mismo, al 99\%
+      \end{enumerate}
+    \end{column}
+    \begin{column}{0.50\textwidth}
+      \begin{enumerate}\setlength{\itemsep}{0.16cm}
+        \setcounter{enumi}{10}
+        \item $\hat p=0{,}50$, $n=1000$: IC 95\%
+        \item $\hat p=0{,}30$, $n=200$: IC 95\%
+        \item $n$ para $\sigma=8$ y $e=1$ al 95\%
+        \item $n$ para $\sigma=8$ y $e=2$ al 95\%
+        \item $n$ para $\sigma=2{,}4$ y $e=0{,}5$ al 95\%
+        \item ¿$z$ o $t$? $n=15$, dato $s$
+        \item ¿Vale decir ``95\% de probabilidad de que $\mu$ esté ahí''?
+        \item ¿Sirve un IC con muestreo por conveniencia?
+        \item Si la confianza sube, ¿el IC se ensancha o se angosta?
+        \item Si $n$ se cuadruplica, ¿qué pasa con el margen?
+      \end{enumerate}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{Respuestas}{Autoevaluación de los ejercicios propuestos}
+  \listatiny
+  \vspace{0.15cm}
+  \begin{columns}[T,onlytextwidth]
+    \begin{column}{0.47\textwidth}
+      \begin{enumerate}\setlength{\itemsep}{0.16cm}
+        \item $(50{,}04;\ 53{,}96)$
+        \item $(49{,}42;\ 54{,}58)$
+        \item $(50{,}36;\ 53{,}65)$
+        \item $(51{,}02;\ 52{,}98)$
+        \item $(14{,}48;\ 16{,}72)$
+        \item $(14{,}06;\ 17{,}14)$
+        \item $(93{,}35;\ 106{,}65)$
+        \item $(95{,}52;\ 104{,}48)$
+        \item $(0{,}5724;\ 0{,}6676)$
+        \item $(0{,}5575;\ 0{,}6825)$
+      \end{enumerate}
+    \end{column}
+    \begin{column}{0.50\textwidth}
+      \begin{enumerate}\setlength{\itemsep}{0.16cm}
+        \setcounter{enumi}{10}
+        \item $(0{,}4690;\ 0{,}5310)$
+        \item $(0{,}2365;\ 0{,}3635)$
+        \item $245{,}86\Rightarrow 246$
+        \item $61{,}47\Rightarrow 62$
+        \item $88{,}51\Rightarrow 89$
+        \item $t$ con $gl=14$
+        \item No: la confianza es del método
+        \item No: la probabilidad de selección es desconocida
+        \item Se ensancha
+        \item Se reduce a la mitad
+      \end{enumerate}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{Referencias}
+  \footnotesize
+  \begin{itemize}
+    \item[{[1]}] Díaz Rodríguez, M. (2022). \textit{Estadística inferencial
+      aplicada}. Universidad del Norte.
+      \texttt{https://elibro.net/es/lc/uniminuto/titulos/221614}
+    \item[{[2]}] Llinás Solano, H. (2014). \textit{Introducción a la
+      estadística con aplicaciones en ciencias sociales}. Universidad del
+      Norte. \texttt{https://elibro.net/es/lc/uniminuto/titulos/70062}
+    \item[{[3]}] Contento Rubio, M. R. (2019). \textit{Estadística con
+      aplicaciones en R}. Editorial Utadeo.
+      \texttt{https://elibro.net/es/lc/uniminuto/titulos/220926}
+  \end{itemize}
+
+  \vspace{0.3cm}
+  \begin{center}
+    {\Large\color{uniAzul}\textbf{Éxitos en el Examen 2}}
+  \end{center}
+\end{frame}
+
+\end{document}

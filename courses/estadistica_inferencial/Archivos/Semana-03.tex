@@ -1,0 +1,473 @@
+% ============================================================================
+%  ESTADÍSTICA INFERENCIAL — Sesión 3
+%  Semana 3: 24 al 29 de agosto de 2026
+%  1.3 Regla de Laplace y enfoques para asignar probabilidades
+%  1.4 Axiomas de la probabilidad y reglas de la probabilidad
+% ============================================================================
+\documentclass[aspectratio=169,10pt]{beamer}
+
+\usepackage[utf8]{inputenc}
+\IfFileExists{spanish.ldf}{\usepackage[spanish,es-noshorthands]{babel}}{}
+\usepackage{amsmath,amssymb}
+\usepackage{booktabs}
+\usepackage{tikz}
+
+\usetheme{Uniminuto}
+
+\uniasignatura{Estadística inferencial}
+\uniprofesor{Andrés Felipe Puerta Velez}
+\unicorreo{andres.puerta-v@uniminuto.edu.co}
+\uninrc{CBASBL061}
+\unisemana{Sesión 3 — Semana 3 · 24 al 29 de agosto de 2026}
+
+\newcommand{\listatiny}{\setbeamerfont{itemize/enumerate body}{size=\tiny}\tiny}
+
+\begin{document}
+
+\portada
+
+\begin{frame}{Orden del día}
+  \begin{enumerate}
+    \item Llamado a lista y revisión de los ejercicios propuestos
+    \item Repaso: dónde quedamos
+    \item \azul{Tema 1.3: enfoques para asignar probabilidades y regla de Laplace}
+    \item \azul{Tema 1.4: axiomas y reglas de la probabilidad}
+    \item Ejercicios en clase
+    \item Cierre y ejercicios propuestos
+  \end{enumerate}
+\end{frame}
+
+\begin{frame}{Repaso: dónde quedamos}
+  Ya sabemos \azul{describir} eventos (sesión 1) y \azul{contarlos} (sesión 2).
+  \[ P(A)=\frac{\#A}{\#\Omega} \]
+
+  \vspace{0.2cm}
+  \begin{alertblock}{Las preguntas de hoy}
+    \footnotesize
+    ¿De dónde sale esa fórmula y cuándo tenemos derecho a usarla? ¿Qué pasa si
+    los resultados \emph{no} son igualmente probables? ¿Qué reglas debe cumplir
+    cualquier asignación de probabilidad para ser coherente?
+  \end{alertblock}
+\end{frame}
+
+\seccion{1.3 y 1.4 Probabilidad: enfoques, axiomas y reglas}
+
+% ------------------------------------------------------------- ENFOQUES ----
+\begin{frame}{Tres enfoques para asignar probabilidades}
+  \footnotesize
+  \begin{center}
+  \begin{tabular}{@{}p{2.4cm}p{4.6cm}p{4.6cm}@{}}
+    \toprule
+    \textbf{Enfoque} & \textbf{Cómo se asigna} & \textbf{Cuándo se usa} \\
+    \midrule
+    Clásico \newline (a priori) &
+      $P(A)=\#A/\#\Omega$, suponiendo resultados igualmente probables &
+      Juegos de azar, sorteos, muestreo aleatorio: la simetría está garantizada
+      por el diseño \\
+    \addlinespace
+    Frecuentista \newline (a posteriori) &
+      $P(A)\approx f_r(A)=\dfrac{\text{veces que ocurrió }A}{\text{número de repeticiones}}$ &
+      Cuando hay datos históricos: tasas de defectos, de morosidad, de rotación \\
+    \addlinespace
+    Subjetivo &
+      Grado de creencia de un experto, coherente con los axiomas &
+      Eventos que no se repiten: lanzar un producto nuevo, ganar una licitación \\
+    \bottomrule
+  \end{tabular}
+  \end{center}
+
+  \vspace{0.15cm}
+  {\scriptsize\color{uniGris} Los tres producen números entre 0 y 1 y obedecen
+  las mismas reglas; lo que cambia es de dónde sale el número\,[2].}
+\end{frame}
+
+\begin{frame}{Regla de Laplace}
+  \begin{block}{Enunciado}
+    \small
+    Si $\Omega$ es finito y todos sus resultados son \destacar{igualmente
+    probables}, entonces para cualquier evento $A$
+    \[ P(A)=\frac{\#A}{\#\Omega}
+          =\frac{\text{casos favorables}}{\text{casos posibles}} \]
+  \end{block}
+
+  \vspace{0.2cm}
+  \begin{alertblock}{La condición no es un detalle}
+    \footnotesize
+    Si los resultados no son equiprobables, la fórmula da respuestas
+    equivocadas. Al lanzar dos dados y sumar, $\Omega=\{2,3,\dots,12\}$ tiene 11
+    resultados, pero $P(\text{suma}=7)\neq 1/11$: hay que trabajar con los 36
+    pares ordenados, que sí son equiprobables.
+  \end{alertblock}
+\end{frame}
+
+\begin{frame}{Ejercicio 1 — en clase}
+  \begin{alertblock}{Individual (6 minutos)}
+    Se extrae una carta al azar de una baraja inglesa de \destacar{52 cartas}
+    (13 de cada palo: corazones, diamantes, tréboles y picas).
+
+    \vspace{0.3cm}
+    \begin{enumerate}
+      \item $P(\text{sale un as})$
+      \item $P(\text{sale un corazón})$
+      \item $P(\text{sale un as \emph{o} un corazón})$
+      \item ¿Por qué el punto 3 no es simplemente la suma de 1 y 2?
+    \end{enumerate}
+  \end{alertblock}
+\end{frame}
+
+\begin{frame}{Ejercicio 1 — solución}
+  \begin{columns}[T,onlytextwidth]
+    \begin{column}{0.48\textwidth}
+      \begin{block}{Cálculos}
+        \small
+        \begin{align*}
+          P(\text{As}) &= \tfrac{4}{52}=\tfrac{1}{13}=0{,}0769\\[0.25em]
+          P(\heartsuit) &= \tfrac{13}{52}=0{,}25\\[0.25em]
+          P(\text{As}\cup\heartsuit) &= \tfrac{4}{52}+\tfrac{13}{52}-\tfrac{1}{52}
+             =\tfrac{16}{52}=0{,}3077
+        \end{align*}
+      \end{block}
+    \end{column}
+    \begin{column}{0.48\textwidth}
+      \begin{exampleblock}{Punto 4}
+        \footnotesize
+        Porque el \azul{as de corazones} pertenece a los dos eventos. Si se
+        sumaran sin más, esa carta se contaría dos veces.
+
+        \vspace{0.2cm}
+        Es la misma corrección de la sesión 1:
+        \[ \#(A\cup B)=\#A+\#B-\#(A\cap B) \]
+      \end{exampleblock}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+% ------------------------------------------------------- FRECUENTISTA -----
+\begin{frame}{Enfoque frecuentista}
+  Cuando no hay simetría, la probabilidad se estima observando:
+  \[ P(A)\;\approx\; f_r(A)=\frac{n_A}{n} \]
+  donde $n_A$ es el número de veces que ocurrió $A$ en $n$ repeticiones.
+
+  \vspace{0.2cm}
+  \begin{exampleblock}{Ejemplo}
+    \footnotesize
+    De 2\,000 pedidos despachados el semestre pasado, 160 llegaron tarde:
+    $P(\text{tarde})\approx 160/2000 = 0{,}08$.
+  \end{exampleblock}
+
+  \vspace{0.15cm}
+  \begin{alertblock}{Ley de los grandes números}
+    \footnotesize
+    A medida que $n$ crece, la frecuencia relativa $f_r(A)$ se estabiliza
+    alrededor de la probabilidad verdadera. Es la justificación de fondo de
+    todo el curso: \destacar{con muestras grandes, lo observado se parece a lo
+    real}.
+  \end{alertblock}
+\end{frame}
+
+% --------------------------------------------------------------- AXIOMAS ---
+\begin{frame}{Axiomas de la probabilidad (Kolmogórov)}
+  \begin{block}{Toda asignación de probabilidad debe cumplir}
+    \small
+    \begin{enumerate}
+      \item \textbf{No negatividad:} $P(A)\ge 0$ para todo evento $A$.
+      \item \textbf{Normalización:} $P(\Omega)=1$.
+      \item \textbf{Aditividad:} si $A$ y $B$ son mutuamente excluyentes
+            ($A\cap B=\varnothing$), entonces $P(A\cup B)=P(A)+P(B)$.
+    \end{enumerate}
+  \end{block}
+
+  \vspace{0.25cm}
+  {\footnotesize\color{uniGris} Son solo tres, y de ellos se deduce todo lo
+  demás. Cualquier número que no los respete —una probabilidad negativa, o dos
+  eventos excluyentes cuyas probabilidades sumen más de 1— indica un error de
+  cálculo\,[1].}
+\end{frame}
+
+\begin{frame}{Consecuencias de los axiomas}
+  \small
+  \begin{columns}[T,onlytextwidth]
+    \begin{column}{0.48\textwidth}
+      \begin{block}{Reglas que se deducen}
+        \begin{align*}
+          P(\varnothing) &= 0\\[0.2em]
+          P(A^{c}) &= 1-P(A)\\[0.2em]
+          0 \le P(A) &\le 1\\[0.2em]
+          \text{si } A\subseteq B:\; P(A) &\le P(B)
+        \end{align*}
+      \end{block}
+    \end{column}
+    \begin{column}{0.48\textwidth}
+      \begin{exampleblock}{La regla del complemento es la más útil}
+        \footnotesize
+        Calcular ``al menos uno'' directamente obliga a sumar muchos casos.
+        Calcular ``ninguno'' suele ser un solo caso.
+
+        \vspace{0.2cm}
+        \[ P(\text{al menos un 6})=1-P(\text{ningún 6}) \]
+        \[ = 1-\frac{25}{36}=\frac{11}{36}=0{,}3056 \]
+      \end{exampleblock}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{Regla de la suma}
+  \begin{block}{Caso general}
+    \[ P(A\cup B)=P(A)+P(B)-P(A\cap B) \]
+  \end{block}
+
+  \begin{block}{Si $A$ y $B$ son mutuamente excluyentes}
+    \[ P(A\cup B)=P(A)+P(B) \qquad\text{porque } P(A\cap B)=0 \]
+  \end{block}
+
+  \vspace{0.2cm}
+  \begin{alertblock}{Para tres eventos}
+    \footnotesize
+    \[ P(A\cup B\cup C)=P(A)+P(B)+P(C)-P(A\cap B)-P(A\cap C)-P(B\cap C)
+       +P(A\cap B\cap C) \]
+    Se suman los individuales, se restan los pares y se vuelve a sumar el
+    triple: es el principio de inclusión--exclusión.
+  \end{alertblock}
+\end{frame}
+
+\begin{frame}{Ejercicio 2 — en clase}
+  \begin{alertblock}{En parejas (7 minutos)}
+    Una empresa tiene \destacar{500 empleados}: 300 hombres y 200 mujeres. De
+    ellos, \destacar{150 tienen posgrado} (90 hombres y 60 mujeres). Se elige
+    un empleado al azar.
+
+    \vspace{0.25cm}
+    \begin{enumerate}
+      \item $P(H)$, que sea hombre
+      \item $P(G)$, que tenga posgrado
+      \item $P(H\cap G)$
+      \item $P(H\cup G)$
+      \item $P(G^{c})$, que no tenga posgrado
+    \end{enumerate}
+  \end{alertblock}
+\end{frame}
+
+\begin{frame}{Ejercicio 2 — solución}
+  \begin{columns}[T,onlytextwidth]
+    \begin{column}{0.44\textwidth}
+      \footnotesize
+      \begin{center}
+      \begin{tabular}{@{}lccc@{}}
+        \toprule
+         & Posgrado & No & Total \\
+        \midrule
+        Hombres & 90  & 210 & 300 \\
+        Mujeres & 60  & 140 & 200 \\
+        \midrule
+        Total   & 150 & 350 & 500 \\
+        \bottomrule
+      \end{tabular}
+      \end{center}
+    \end{column}
+    \begin{column}{0.52\textwidth}
+      \begin{block}{Cálculos}
+        \small
+        \begin{align*}
+          P(H) &= 300/500 = \azul{0{,}60}\\
+          P(G) &= 150/500 = \azul{0{,}30}\\
+          P(H\cap G) &= 90/500 = \azul{0{,}18}\\
+          P(H\cup G) &= 0{,}60+0{,}30-0{,}18 = \azul{0{,}72}\\
+          P(G^{c}) &= 1-0{,}30 = \azul{0{,}70}
+        \end{align*}
+      \end{block}
+    \end{column}
+  \end{columns}
+
+  \vspace{0.1cm}
+  {\footnotesize\color{uniGris} Organizar los datos en una \azul{tabla de doble
+  entrada} evita casi todos los errores. La usaremos de nuevo en la sesión 4.}
+\end{frame}
+
+\begin{frame}{Ejercicio 3 — en clase}
+  \begin{alertblock}{Individual (8 minutos)}
+    Se lanzan \destacar{dos dados} corrientes y se observa el par de
+    resultados. Recuerde que $\#\Omega=36$.
+
+    \vspace{0.3cm}
+    \begin{enumerate}
+      \item $P(\text{la suma sea }7)$
+      \item $P(\text{aparezca al menos un }6)$
+      \item $P(\text{la suma sea al menos }10)$
+      \item Resuelva el punto 2 usando la regla del complemento.
+    \end{enumerate}
+  \end{alertblock}
+\end{frame}
+
+\begin{frame}{Ejercicio 3 — solución}
+  \begin{columns}[T,onlytextwidth]
+    \begin{column}{0.52\textwidth}
+      \begin{block}{Conteos sobre los 36 pares}
+        \footnotesize
+        \begin{align*}
+          \text{Suma }7&:\;\{(1,6),(2,5),(3,4),(4,3),(5,2),(6,1)\}\\
+          &\Rightarrow P=\tfrac{6}{36}=\azul{0{,}1667}\\[0.3em]
+          \text{Al menos un }6&:\; 11 \text{ pares}
+            \Rightarrow P=\tfrac{11}{36}=\azul{0{,}3056}\\[0.3em]
+          \text{Suma}\ge 10&:\; 3+2+1=6
+            \Rightarrow P=\tfrac{6}{36}=\azul{0{,}1667}
+        \end{align*}
+      \end{block}
+    \end{column}
+    \begin{column}{0.44\textwidth}
+      \begin{exampleblock}{Punto 4}
+        \footnotesize
+        ``Ningún 6'' significa que ambos dados caen en $\{1,\dots,5\}$:
+        $5\times 5=25$ pares.
+        \[ P=1-\frac{25}{36}=\frac{11}{36} \]
+        Mucho más rápido que enumerar los 11 casos favorables.
+      \end{exampleblock}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{Resumen de reglas}
+  \footnotesize
+  \begin{center}
+  \begin{tabular}{@{}lll@{}}
+    \toprule
+    \textbf{Regla} & \textbf{Expresión} & \textbf{Cuándo} \\
+    \midrule
+    Laplace          & $P(A)=\#A/\#\Omega$ & resultados equiprobables \\
+    Frecuentista     & $P(A)\approx n_A/n$ & hay datos históricos \\
+    Rango            & $0\le P(A)\le 1$ & siempre \\
+    Complemento      & $P(A^{c})=1-P(A)$ & siempre; ideal para ``al menos uno'' \\
+    Suma general     & $P(A\cup B)=P(A)+P(B)-P(A\cap B)$ & siempre \\
+    Suma excluyentes & $P(A\cup B)=P(A)+P(B)$ & si $A\cap B=\varnothing$ \\
+    \bottomrule
+  \end{tabular}
+  \end{center}
+
+  \vspace{0.25cm}
+  \begin{alertblock}{Lo que todavía no sabemos hacer}
+    \footnotesize
+    Calcular $P(A\cap B)$ cuando no viene dado. Para eso necesitamos la
+    \destacar{probabilidad condicional}, tema de la sesión 4.
+  \end{alertblock}
+\end{frame}
+
+\begin{frame}{Cierre de la sesión}
+  \begin{block}{Lo que debe quedar claro hoy}
+    \begin{itemize}
+      \item Hay tres formas de asignar probabilidades: clásica, frecuentista y
+            subjetiva; las tres obedecen los mismos axiomas.
+      \item Laplace solo aplica si los resultados son equiprobables.
+      \item $P(A^{c})=1-P(A)$ resuelve casi todos los ``al menos uno''.
+      \item En la suma siempre se descuenta la intersección, salvo que los
+            eventos sean excluyentes.
+    \end{itemize}
+  \end{block}
+
+  \vspace{0.2cm}
+  \begin{alertblock}{Trabajo independiente para la próxima sesión}
+    \footnotesize
+    Resolver los \destacar{20 ejercicios de la lámina siguiente}; las
+    respuestas están en la lámina posterior. Leer el capítulo de axiomas y
+    reglas de la probabilidad de la referencia [1].
+  \end{alertblock}
+\end{frame}
+
+\begin{frame}{Ejercicios propuestos}
+  \vspace{-0.1cm}
+  \begin{beamercolorbox}[wd=\textwidth,sep=0.14cm]{block body}
+    \centering\scriptsize
+    \textbf{Del 1 al 10:} encuesta a 400 clientes de un banco. 240 usan la
+    aplicación ($A$), 180 tienen tarjeta de crédito ($T$) y 120 tienen ambas.
+  \end{beamercolorbox}
+  \vspace{0.1cm}
+  \listatiny
+  \vspace{0.15cm}
+  \begin{columns}[T,onlytextwidth]
+    \begin{column}{0.47\textwidth}
+      \begin{enumerate}\setlength{\itemsep}{0.16cm}
+        \item $P(A)$
+        \item $P(T)$
+        \item $P(A\cap T)$
+        \item $P(A\cup T)$
+        \item $P(A^{c})$
+        \item $P(T^{c})$
+        \item $P\big((A\cup T)^{c}\big)$
+        \item $P(A\cap T^{c})$
+        \item $P(T\cap A^{c})$
+        \item $P(A\,\triangle\,T)$
+      \end{enumerate}
+    \end{column}
+    \begin{column}{0.50\textwidth}
+      \begin{enumerate}\setlength{\itemsep}{0.16cm}
+        \setcounter{enumi}{10}
+        \item Un dado: $P(\text{par})$
+        \item Un dado: $P(\text{mayor que }4)$
+        \item Un dado: $P(\text{par o mayor que }4)$
+        \item Dos dados: $P(\text{suma}=7)$
+        \item Dos dados: $P(\text{suma}\ge 10)$
+        \item Dos dados: $P(\text{al menos un }6)$
+        \item Baraja: $P(\text{figura: J, Q o K})$
+        \item Baraja: $P(\text{as o rey})$
+        \item Moneda 3 veces: $P(\text{exactamente 2 caras})$
+        \item Moneda 3 veces: $P(\text{al menos una cara})$
+      \end{enumerate}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{Respuestas}{Autoevaluación de los ejercicios propuestos}
+  \listatiny
+  \vspace{0.15cm}
+  \begin{columns}[T,onlytextwidth]
+    \begin{column}{0.47\textwidth}
+      \begin{enumerate}\setlength{\itemsep}{0.16cm}
+        \item $0{,}60$
+        \item $0{,}45$
+        \item $0{,}30$
+        \item $0{,}75$
+        \item $0{,}40$
+        \item $0{,}55$
+        \item $0{,}25$
+        \item $0{,}30$
+        \item $0{,}15$
+        \item $0{,}45$
+      \end{enumerate}
+    \end{column}
+    \begin{column}{0.50\textwidth}
+      \begin{enumerate}\setlength{\itemsep}{0.16cm}
+        \setcounter{enumi}{10}
+        \item $3/6=0{,}5000$
+        \item $2/6=0{,}3333$
+        \item $4/6=0{,}6667$ \;{\color{uniGris}(se resta el 6)}
+        \item $6/36=0{,}1667$
+        \item $6/36=0{,}1667$
+        \item $11/36=0{,}3056$
+        \item $12/52=0{,}2308$
+        \item $8/52=0{,}1538$
+        \item $3/8=0{,}3750$
+        \item $7/8=0{,}8750$ \;{\color{uniTitulo}$=1-1/8$}
+      \end{enumerate}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{Referencias}
+  \footnotesize
+  \begin{itemize}
+    \item[{[1]}] Díaz Rodríguez, M. (2022). \textit{Estadística inferencial
+      aplicada}. Universidad del Norte.
+      \texttt{https://elibro.net/es/lc/uniminuto/titulos/221614}
+    \item[{[2]}] Llinás Solano, H. (2014). \textit{Introducción a la
+      estadística con aplicaciones en ciencias sociales}. Universidad del
+      Norte. \texttt{https://elibro.net/es/lc/uniminuto/titulos/70062}
+    \item[{[3]}] Contento Rubio, M. R. (2019). \textit{Estadística con
+      aplicaciones en R}. Editorial Utadeo.
+      \texttt{https://elibro.net/es/lc/uniminuto/titulos/220926}
+  \end{itemize}
+
+  \vspace{0.35cm}
+  \begin{center}
+    {\Large\color{uniAzul}\textbf{¿Preguntas?}}
+  \end{center}
+\end{frame}
+
+\end{document}

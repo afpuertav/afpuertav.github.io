@@ -1,0 +1,712 @@
+% ============================================================================
+%  ESTADÍSTICA DESCRIPTIVA — Sesión 10
+%  Semana 10: 12 al 17 de octubre de 2026   (lunes 12: festivo)
+%  2.6 Interpretación de resultados: patrones y tendencias
+%  2.7 Redacción de informes estadísticos
+%  Duración prevista: 3 horas
+% ============================================================================
+\documentclass[aspectratio=169,10pt]{beamer}
+
+\usepackage[utf8]{inputenc}
+\IfFileExists{spanish.ldf}{\usepackage[spanish,es-noshorthands]{babel}}{}
+\usepackage{amsmath,amssymb}
+\usepackage{booktabs}
+\usepackage{tikz}
+\usepackage{listings}
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.16}
+
+\usetheme{Uniminuto}
+
+\uniasignatura{Estadística descriptiva}
+\uniprofesor{Andrés Felipe Puerta Velez}
+\unicorreo{andres.puerta-v@uniminuto.edu.co}
+\uninrc{CBASBL031 - CBASBL141}
+\unisemana{Sesión 10 — Semana 10 · 12 al 17 de octubre de 2026}
+
+\newcommand{\listatiny}{\setbeamerfont{itemize/enumerate body}{size=\tiny}\tiny}
+
+\pgfplotsset{
+  uniplot/.style={
+    width=8.0cm, height=3.5cm, axis lines=left,
+    tick label style={font=\tiny,color=uniGris},
+    label style={font=\tiny,color=uniGris},
+    title style={font=\scriptsize\bfseries,color=uniAzul},
+    every axis plot/.append style={fill=uniAzul!70,draw=uniAzul},
+    ymajorgrids, grid style={uniGris!25,very thin},
+  }
+}
+
+\newcommand{\fx}[1]{{\ttfamily\color{uniAzul}#1}}
+
+% ------------------------------------------------------------- CÓDIGO R ----
+\lstdefinestyle{Rcode}{
+  language=R,
+  basicstyle=\ttfamily\scriptsize,
+  keywordstyle=\color{uniAzul}\bfseries,
+  commentstyle=\color{uniGris}\itshape,
+  stringstyle=\color{uniTitulo},
+  showstringspaces=false, numbers=none, breaklines=true,
+  columns=fullflexible,
+  backgroundcolor=\color{uniCremaClaro},
+  frame=leftline, framerule=1.2pt, rulecolor=\color{uniNaranja},
+  xleftmargin=0.35cm, framexleftmargin=0.35cm,
+  framexrightmargin=0.15cm, framextopmargin=2pt, framexbottommargin=2pt,
+  aboveskip=0.15cm, belowskip=0.15cm
+}
+\lstdefinestyle{Rmini}{
+  language=R,
+  basicstyle=\ttfamily\tiny,
+  keywordstyle=\color{uniAzul}\bfseries,
+  commentstyle=\color{uniGris}\itshape,
+  stringstyle=\color{uniTitulo},
+  showstringspaces=false, numbers=none, breaklines=true,
+  columns=fullflexible,
+  backgroundcolor=\color{uniCremaClaro},
+  frame=leftline, framerule=1.2pt, rulecolor=\color{uniNaranja},
+  xleftmargin=0.35cm, framexleftmargin=0.35cm,
+  framexrightmargin=0.15cm, framextopmargin=2pt, framexbottommargin=2pt,
+  aboveskip=0.12cm, belowskip=0.12cm
+}
+\lstdefinestyle{Rout}{
+  basicstyle=\ttfamily\tiny\color{black},
+  showstringspaces=false, numbers=none, breaklines=true,
+  columns=fullflexible,
+  backgroundcolor=\color{uniGris!10},
+  frame=leftline, framerule=1.2pt, rulecolor=\color{uniGris},
+  xleftmargin=0.35cm, framexleftmargin=0.35cm,
+  framexrightmargin=0.15cm, framextopmargin=2pt, framexbottommargin=2pt,
+  aboveskip=0.12cm, belowskip=0.12cm
+}
+
+\begin{document}
+
+\portada
+
+\begin{frame}{Orden del día}
+  \begin{enumerate}
+    \item Llamado a lista y revisión de los ejercicios propuestos
+    \item \azul{Tema 2.6: de la cifra a la afirmación}
+    \item Patrones: concentración, dispersión, forma y atípicos
+    \item Tendencias: comparar grupos y comparar en el tiempo
+    \item Errores de interpretación que cuestan dinero
+    \item \azul{Tema 2.7: redacción del informe estadístico} y taller final
+  \end{enumerate}
+
+  \vspace{0.25cm}
+  {\footnotesize\color{uniGris} Sesión de 3 horas. Hoy no aprendemos fórmulas
+  nuevas: aprendemos a \azul{usar} las que ya tenemos.}
+\end{frame}
+
+\begin{frame}{Todo lo que sabemos del Almacén Bello}
+  \scriptsize
+  \begin{center}
+  \begin{tabular}{@{}lrlr@{}}
+    \toprule
+    \textbf{Medida} & \textbf{Valor} & \textbf{Medida} & \textbf{Valor} \\
+    \midrule
+    $n$ & 40 & Rango $R$ & 240 \\
+    Media $\bar{x}$ & 227{,}00 & $RIC$ & 81{,}27 \\
+    Mediana $Me$ & 224{,}73 & Desviación $s$ & 56{,}34 \\
+    Moda $Mo$ & 218{,}67 & $CV$ & 24{,}8\% \\
+    $Q_1$ & 186{,}29 & Asimetría $As_2$ & $+0{,}121$ \\
+    $Q_3$ & 267{,}56 & Curtosis $g_2$ & $-0{,}741$ \\
+    \bottomrule
+  \end{tabular}
+  \end{center}
+  {\tiny\color{uniGris} Gasto mensual, en miles de pesos, de 40 clientes.
+  Valores calculados con la tabla agrupada.}
+
+  \vspace{0.1cm}
+  \begin{alertblock}{La pregunta de hoy}
+    \scriptsize
+    Tenemos doce números. \destacar{¿Qué le decimos al gerente?} Una lista de
+    cifras no es un análisis: el trabajo profesional consiste en convertirlas
+    en tres o cuatro afirmaciones que sirvan para decidir.
+  \end{alertblock}
+\end{frame}
+
+\seccion{2.6 Interpretación de resultados}
+
+\begin{frame}{Anatomía de una buena interpretación}
+  \footnotesize
+  \begin{block}{Los cuatro elementos}
+    \scriptsize
+    \begin{enumerate}\setlength{\itemsep}{-0.03cm}
+      \item \azul{Qué se midió} y sobre quién: ``el gasto mensual de 40
+            clientes''.
+      \item \azul{La cifra con su unidad}: ``227 mil pesos''.
+      \item \azul{Qué significa} en lenguaje del negocio: ``es el gasto
+            promedio''.
+      \item \azul{Con qué se compara} o qué implica: ``pero la mitad gasta
+            menos de 225 mil''.
+    \end{enumerate}
+  \end{block}
+
+  \vspace{0.1cm}
+  \begin{columns}[T,onlytextwidth]
+    \begin{column}{0.48\textwidth}
+      \begin{alertblock}{Mal}
+        \tiny
+        ``La media es 227 y la desviación 56,34. El CV es 24,8\% y la
+        asimetría 0,121.''
+      \end{alertblock}
+    \end{column}
+    \begin{column}{0.48\textwidth}
+      \begin{exampleblock}{Bien}
+        \tiny
+        ``Los 40 clientes de la muestra gastan en promedio 227 mil pesos al
+        mes, con una variación típica de 56 mil. La mitad gasta menos de 225
+        mil, y el cuarto más gastador supera los 268 mil.''
+      \end{exampleblock}
+    \end{column}
+  \end{columns}
+
+  \vspace{0.05cm}
+  {\tiny\color{uniGris} La segunda versión no tiene ni una fórmula, y contiene
+  exactamente la misma información.}
+\end{frame}
+
+\begin{frame}{Frases plantilla para cada medida}
+  \scriptsize
+  \begin{center}
+  \begin{tabular}{@{}p{2.4cm}p{9.4cm}@{}}
+    \toprule
+    \textbf{Medida} & \textbf{Cómo se enuncia} \\
+    \midrule
+    Media & ``En promedio, cada [unidad] registra [valor] [unidad de medida].'' \\
+    Mediana & ``La mitad de los [casos] está por debajo de [valor].'' \\
+    Moda & ``El valor más frecuente es [valor], con [$f_i$] casos.'' \\
+    $Q_1$, $Q_3$ & ``El 25\% más bajo no supera [valor]; el 25\% más alto
+      supera [valor].'' \\
+    Desviación & ``Los datos se apartan del promedio, en promedio,
+      [valor] [unidad].'' \\
+    $CV$ & ``El grupo es [homogéneo / heterogéneo]: la variación equivale al
+      [valor]\% de la media.'' \\
+    Asimetría & ``La distribución tiene una cola hacia [la derecha / la
+      izquierda]: unos pocos casos [muy altos / muy bajos].'' \\
+    Atípicos & ``[n] casos se salen del patrón general y conviene revisarlos
+      aparte.'' \\
+    \bottomrule
+  \end{tabular}
+  \end{center}
+\end{frame}
+
+\begin{frame}{Patrones: los cinco que siempre se buscan}
+  \scriptsize
+  \begin{center}
+  \begin{tabular}{@{}p{2.5cm}p{4.4cm}p{5.0cm}@{}}
+    \toprule
+    \textbf{Patrón} & \textbf{Cómo se detecta} & \textbf{Qué suele significar} \\
+    \midrule
+    Concentración & $CV$ bajo, $RIC$ estrecho, histograma con pico &
+      Grupo homogéneo; se puede tratar con una sola estrategia \\
+    \addlinespace
+    Dispersión & $CV$ alto, bigotes largos &
+      Hay subgrupos distintos escondidos en el promedio \\
+    \addlinespace
+    Asimetría & $\bar{x} \ne Me$, un bigote más largo &
+      Existe una minoría que jala el promedio \\
+    \addlinespace
+    Atípicos & Puntos fuera de las vallas &
+      Errores de registro o casos excepcionales que hay que estudiar \\
+    \addlinespace
+    Bimodalidad & Dos picos en el histograma &
+      Dos poblaciones mezcladas: hay que separarlas \\
+    \bottomrule
+  \end{tabular}
+  \end{center}
+
+  \vspace{0.05cm}
+  \begin{alertblock}{El patrón del Almacén Bello}
+    \tiny
+    $CV = 24{,}8\%$ (aceptable), $\bar{x}$ ligeramente mayor que $Me$
+    (asimetría positiva leve), sin atípicos, un solo pico.
+    \destacar{Clientela razonablemente homogénea con una minoría de gasto
+    alto}: se puede diseñar una oferta principal y una secundaria.
+  \end{alertblock}
+\end{frame}
+
+\begin{frame}{Tendencias: comparar en el tiempo}
+  \footnotesize
+  \begin{columns}[T,onlytextwidth]
+    \begin{column}{0.50\textwidth}
+      \centering
+      \begin{tikzpicture}
+        \begin{axis}[uniplot, width=6.4cm, height=3.2cm,
+          title={Ventas mensuales (millones)},
+          symbolic x coords={Ene,Feb,Mar,Abr,May,Jun},
+          xtick=data, ymin=100, ymax=170,
+          every axis plot/.append style={fill=none}]
+          \addplot[color=uniAzul,thick,mark=*,mark size=1.4pt,
+                   mark options={fill=uniAzul}]
+            coordinates {(Ene,120) (Feb,128) (Mar,135) (Abr,132) (May,145)
+                         (Jun,158)};
+        \end{axis}
+      \end{tikzpicture}
+    \end{column}
+    \begin{column}{0.47\textwidth}
+      \centering\scriptsize
+      \begin{tabular}{@{}lrr@{}}
+        \toprule
+        \textbf{Mes} & \textbf{Ventas} & \textbf{Var. \%} \\
+        \midrule
+        Enero   & 120 & --- \\
+        Febrero & 128 & $+6{,}7$ \\
+        Marzo   & 135 & $+5{,}5$ \\
+        Abril   & 132 & $-2{,}2$ \\
+        Mayo    & 145 & $+9{,}8$ \\
+        Junio   & 158 & $+9{,}0$ \\
+        \bottomrule
+      \end{tabular}
+    \end{column}
+  \end{columns}
+
+  \vspace{0.1cm}
+  \begin{alertblock}{Cómo se calcula y cómo se lee}
+    \scriptsize
+    \[ \text{Variación \%} = \frac{V_{\text{actual}} - V_{\text{anterior}}}
+       {V_{\text{anterior}}} \times 100 \qquad
+       \text{Enero a junio: } \frac{158-120}{120}\times100 = \destacar{+31{,}7\%} \]
+    \azul{Tendencia creciente} con una caída puntual en abril. El crecimiento
+    acumulado del semestre es del 31,7\%.
+  \end{alertblock}
+\end{frame}
+
+\begin{frame}{Tendencias: comparar grupos}
+  \scriptsize
+  \begin{center}
+  \begin{tabular}{@{}lrrrr@{}}
+    \toprule
+    & \textbf{Bello} & \textbf{Itagüí} & \textbf{Diferencia} &
+    \textbf{Lectura} \\
+    \midrule
+    $n$ & 40 & 38 & --- & Muestras comparables \\
+    Media & 227{,}0 & 198{,}5 & $-28{,}5$ & Itagüí vende menos por cliente \\
+    Mediana & 224{,}7 & 201{,}0 & $-23{,}7$ & La diferencia no viene de atípicos \\
+    $s$ & 56{,}3 & 71{,}2 & $+14{,}9$ & Itagüí es más variable \\
+    $CV$ & 24{,}8\% & 35{,}9\% & $+11{,}1$ & Clientela menos homogénea \\
+    \bottomrule
+  \end{tabular}
+  \end{center}
+
+  \vspace{0.1cm}
+  \begin{alertblock}{Cómo se redacta esta comparación}
+    \scriptsize
+    ``El gasto promedio en Itagüí (198\,500) es 28\,500 pesos menor que en
+    Bello, y la diferencia se mantiene en la mediana, de modo que
+    \destacar{no se explica por unos pocos clientes extremos}. Además, la
+    clientela de Itagüí es más heterogénea ($CV$ del 35,9\% frente al
+    24,8\%), lo que sugiere revisar si allí conviven dos segmentos
+    distintos.''
+  \end{alertblock}
+\end{frame}
+
+\begin{frame}{Cuatro errores de interpretación que cuestan dinero}
+  \scriptsize
+  \begin{center}
+  \begin{tabular}{@{}p{3.0cm}p{4.4cm}p{4.6cm}@{}}
+    \toprule
+    \textbf{Error} & \textbf{Ejemplo} & \textbf{Corrección} \\
+    \midrule
+    Confundir asociación con causa &
+      ``Subieron las ventas cuando pusimos el aviso'' &
+      Pudo ser la temporada, el precio o la competencia \\
+    \addlinespace
+    La falacia del promedio &
+      ``El cliente promedio gasta 227 mil'' &
+      Puede que \azul{ningún} cliente gaste eso; mire la distribución \\
+    \addlinespace
+    Muestra no representativa &
+      Encuestar solo los sábados en la mañana &
+      La conclusión describe a ese momento, no al negocio \\
+    \addlinespace
+    Extrapolar sin base &
+      ``Creciendo 9\% mensual, en un año duplicamos'' &
+      La tendencia pasada no garantiza la futura \\
+    \bottomrule
+  \end{tabular}
+  \end{center}
+
+  \vspace{0.05cm}
+  \begin{alertblock}{La prueba que hay que aplicarse siempre}
+    \tiny
+    Antes de escribir una conclusión, pregúntese: \destacar{¿qué otra
+    explicación tendría estos mismos datos?} Si se le ocurre una, la
+    conclusión debe suavizarse o debe recogerse más información.
+  \end{alertblock}
+\end{frame}
+
+\begin{frame}{Ejercicio 1 — en clase}
+  \begin{alertblock}{En parejas (20 minutos)}
+    \scriptsize
+    Resultados de una encuesta sobre tiempo de entrega (días) en dos
+    proveedores:
+
+    \vspace{0.15cm}
+    \centering
+    \begin{tabular}{@{}lrr@{}}
+      \toprule
+      & \textbf{Proveedor A} & \textbf{Proveedor B} \\
+      \midrule
+      $n$ & 50 & 50 \\
+      Media & 6{,}2 & 5{,}8 \\
+      Mediana & 6{,}0 & 4{,}5 \\
+      $s$ & 1{,}1 & 3{,}9 \\
+      Máximo & 9 & 22 \\
+      \bottomrule
+    \end{tabular}
+
+    \vspace{0.2cm}
+    \raggedright
+    \begin{enumerate}\setlength{\itemsep}{-0.07cm}
+      \item Calcule el $CV$ de cada proveedor.
+      \item ¿Cuál tiene mejor promedio? ¿Cuál es más confiable?
+      \item ¿Qué sugiere la diferencia entre media y mediana en B?
+      \item Redacte tres frases de interpretación para el jefe de compras.
+      \item ¿Con cuál proveedor firmaría? Justifique con dos cifras.
+    \end{enumerate}
+  \end{alertblock}
+\end{frame}
+
+\begin{frame}{Ejercicio 1 — solución}
+  \scriptsize
+  \begin{columns}[T,onlytextwidth]
+    \begin{column}{0.42\textwidth}
+      \begin{exampleblock}{Puntos 1 a 3}
+        \scriptsize
+        \[ CV_A = \frac{1{,}1}{6{,}2}\times100 = \destacar{17{,}7\%} \]
+        \[ CV_B = \frac{3{,}9}{5{,}8}\times100 = \destacar{67{,}2\%} \]
+        B tiene mejor promedio (5,8 frente a 6,2), pero A es
+        \azul{mucho más confiable}.
+
+        \vspace{0.1cm}
+        En B, $\bar{x} > Me$ (5,8 frente a 4,5) y el máximo es 22:
+        \destacar{asimetría positiva fuerte}, con entregas ocasionales muy
+        tardías.
+      \end{exampleblock}
+    \end{column}
+    \begin{column}{0.55\textwidth}
+      \begin{block}{Puntos 4 y 5: redacción}
+        \scriptsize
+        ``El proveedor B entrega en 4,5 días en la mitad de los casos, frente a
+        6 días de A: es \azul{más rápido cuando cumple}.''
+
+        \vspace{0.08cm}
+        ``Sin embargo, la variación de B equivale al 67\% de su media y
+        registra entregas de hasta 22 días.''
+
+        \vspace{0.08cm}
+        ``El proveedor A nunca superó los 9 días y su variación es del 18\%.''
+
+        \vspace{0.1cm}
+        \destacar{Recomendación:} A, si la producción no tolera retrasos; B,
+        solo para pedidos sin urgencia.
+      \end{block}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\seccion{2.7 Redacción del informe estadístico}
+
+\begin{frame}{Estructura del informe}
+  \scriptsize
+  \begin{center}
+  \begin{tabular}{@{}rp{3.1cm}p{7.0cm}@{}}
+    \toprule
+    & \textbf{Sección} & \textbf{Contenido y extensión sugerida} \\
+    \midrule
+    1 & Título y resumen & Qué se estudió y el hallazgo principal (5 líneas) \\
+    2 & Objetivo & La decisión que se quiere apoyar (2 líneas) \\
+    3 & Metodología & Población, muestra, $n$, periodo, instrumento (1 párrafo) \\
+    4 & Variables & Tabla con tipo y escala de cada una \\
+    5 & Resultados & Tablas y gráficos numerados, con su lectura al pie \\
+    6 & Interpretación & Patrones, tendencias y comparaciones (2--3 párrafos) \\
+    7 & Limitaciones & Qué no permite concluir este estudio \\
+    8 & Recomendaciones & Acciones concretas, cada una anclada a una cifra \\
+    9 & Referencias & Fuentes de datos y bibliografía \\
+    \bottomrule
+  \end{tabular}
+  \end{center}
+
+  \vspace{0.05cm}
+  {\tiny\color{uniGris} El resumen se escribe \azul{de último} aunque vaya de
+  primero: solo se puede resumir lo que ya está escrito.}
+\end{frame}
+
+\begin{frame}{Cómo se presentan tablas y gráficos}
+  \scriptsize
+  \begin{columns}[T,onlytextwidth]
+    \begin{column}{0.48\textwidth}
+      \begin{block}{Tablas}
+        \tiny
+        \begin{itemize}\setlength{\itemsep}{-0.05cm}
+          \item Título \azul{arriba}, numerado: ``Tabla 1. Distribución del
+                gasto mensual''
+          \item Unidades en el encabezado, no en cada celda
+          \item Mismo número de decimales en toda la columna
+          \item Fila de totales
+          \item Fuente al pie
+        \end{itemize}
+      \end{block}
+    \end{column}
+    \begin{column}{0.48\textwidth}
+      \begin{block}{Gráficos}
+        \tiny
+        \begin{itemize}\setlength{\itemsep}{-0.05cm}
+          \item Título \azul{abajo}, numerado: ``Figura 1. Histograma del
+                gasto''
+          \item Ejes rotulados con unidades
+          \item Eje vertical desde cero
+          \item Indicar $n$
+          \item Sin efectos 3D
+        \end{itemize}
+      \end{block}
+    \end{column}
+  \end{columns}
+
+  \vspace{0.05cm}
+  \begin{alertblock}{La regla de la referencia cruzada}
+    \tiny
+    Toda tabla y todo gráfico debe estar \destacar{citado en el texto}:
+    ``como muestra la Tabla 1\dots''. Si un elemento no se menciona,
+    \azul{sobra}.
+  \end{alertblock}
+\end{frame}
+
+\begin{frame}{Ejemplo de párrafo de resultados}
+  \begin{exampleblock}{Redacción profesional}
+    \scriptsize
+    ``La Tabla 1 muestra la distribución del gasto mensual de los 40 clientes
+    encuestados en agosto de 2026. El gasto promedio fue de
+    \azul{227\,000 pesos} con una desviación estándar de 56\,340
+    (CV $= 24{,}8\%$), lo que indica una clientela razonablemente
+    homogénea. La mitad de los clientes gastó menos de \azul{224\,730
+    pesos} y el rango intercuartílico fue de 81\,270, de modo que el 50\%
+    central se movió entre 186\,290 y 267\,560 pesos.
+
+    \vspace{0.1cm}
+    El histograma (Figura 1) presenta un único máximo en el intervalo
+    $[192, 232)$ y una \azul{cola hacia la derecha}, confirmada por un
+    coeficiente de asimetría de $+0{,}121$. No se detectaron valores
+    atípicos según el criterio de $1{,}5 \times RIC$.''
+  \end{exampleblock}
+
+  \vspace{0.1cm}
+  \begin{alertblock}{Qué tiene este párrafo}
+    \tiny
+    Cada cifra con su unidad; cada afirmación anclada a una tabla o figura; el
+    vocabulario técnico aparece \destacar{después} de la explicación en
+    lenguaje común, no antes.
+  \end{alertblock}
+\end{frame}
+
+\begin{frame}{Taller final — informe completo}
+  \begin{alertblock}{En grupos de 3 (35 minutos)}
+    \scriptsize
+    Con \destacar{todos} los resultados de la Cafetería El Portal calculados en
+    las sesiones 5, 7, 8 y 9, redacte un informe estadístico completo.
+
+    \vspace{0.12cm}
+    \centering
+    \begin{tabular}{@{}lrlr@{}}
+      \toprule
+      $n$ & 45 & $s$ & 8{,}28 \\
+      $\bar{x}$ & 22{,}33 & $CV$ & 37{,}1\% \\
+      $Me$ & 21{,}92 & $RIC$ & 11{,}88 \\
+      $Mo$ & 21{,}43 & $As_2$ & $+0{,}149$ \\
+      $Q_1$ / $Q_3$ & 16{,}17 / 28{,}05 & Zona principal & Centro (37,8\%) \\
+      \bottomrule
+    \end{tabular}
+
+    \vspace{0.15cm}
+    \raggedright
+    Debe incluir: objetivo, metodología, tabla de variables, una tabla de
+    resultados, la lectura del histograma, \destacar{tres} hallazgos
+    interpretados, \destacar{dos} limitaciones y \destacar{dos}
+    recomendaciones ancladas a cifras. Máximo dos páginas.
+  \end{alertblock}
+\end{frame}
+
+\begin{frame}{Rúbrica: así se evalúa un informe}
+  \scriptsize
+  \begin{center}
+  \begin{tabular}{@{}p{3.4cm}rp{6.6cm}@{}}
+    \toprule
+    \textbf{Criterio} & \textbf{\%} & \textbf{Qué se busca} \\
+    \midrule
+    Corrección de los cálculos & 25 &
+      Las cifras coinciden con los datos; fórmulas bien aplicadas \\
+    Elección de medidas y gráficos & 20 &
+      Coherentes con el tipo y la escala de la variable \\
+    Interpretación & 25 &
+      Frases completas, con unidad y contexto; sin sobreinterpretar \\
+    Limitaciones & 10 &
+      Reconoce el alcance real de la muestra \\
+    Recomendaciones & 10 &
+      Concretas y ancladas a una cifra del estudio \\
+    Presentación & 10 &
+      Tablas y figuras numeradas, citadas y con fuente \\
+    \bottomrule
+  \end{tabular}
+  \end{center}
+
+  \vspace{0.05cm}
+  {\tiny\color{uniGris} Esta misma rúbrica orienta la parte aplicada del
+  Examen 3 (Unidad 3).}
+\end{frame}
+
+\begin{frame}[fragile]{Comparar e interpretar, en R}
+  \scriptsize
+\begin{lstlisting}[style=Rmini]
+# Una medida por grupo: la comparacion de la lamina anterior, en una linea
+tapply(gasto, sucursal, mean)
+tapply(gasto, sucursal, median)
+round(tapply(gasto, sucursal, sd) / tapply(gasto, sucursal, mean) * 100, 1)
+
+# Todo el resumen por grupo
+by(gasto, sucursal, summary)
+
+# Tendencia: variacion porcentual mes a mes
+ventas <- c(120, 128, 135, 132, 145, 158)
+round(diff(ventas) / head(ventas, -1) * 100, 1)
+round((tail(ventas, 1) / ventas[1] - 1) * 100, 1)   # variacion total
+\end{lstlisting}
+\begin{lstlisting}[style=Rout]
+[1]  6.7  5.5 -2.2  9.8  9.0
+[1] 31.7
+\end{lstlisting}
+
+  \vspace{-0.1cm}
+  \begin{alertblock}{Lo que R no hace}
+    \tiny
+    R entrega las cifras en segundos, pero \destacar{no escribe la
+    interpretación}, no reconoce una muestra sesgada y no distingue asociación
+    de causa. Esos tres juicios siguen siendo suyos, y son justamente lo que se
+    evalúa en esta unidad.
+  \end{alertblock}
+\end{frame}
+
+\begin{frame}{Cierre de la sesión}
+  \begin{block}{Lo que debe quedar claro hoy}
+    \scriptsize
+    \begin{itemize}\setlength{\itemsep}{0.02cm}
+      \item Una interpretación necesita \azul{qué se midió, la cifra con
+            unidad, su significado y una comparación}.
+      \item Se buscan cinco patrones: concentración, dispersión, asimetría,
+            atípicos y bimodalidad.
+      \item Las tendencias se leen con \azul{variación porcentual} y con
+            comparaciones entre grupos.
+      \item Asociación no es causa, y el promedio puede no describir a nadie.
+      \item El informe tiene una estructura fija; toda tabla y figura va
+            numerada, citada y con fuente.
+    \end{itemize}
+  \end{block}
+
+  \vspace{0.1cm}
+  \begin{alertblock}{Trabajo independiente}
+    \scriptsize
+    Terminar el informe de El Portal y resolver los 20 ejercicios siguientes.
+    La sesión 11 es el \destacar{repaso integrador de la Unidad 2} y el
+    simulacro del Examen 2.
+  \end{alertblock}
+\end{frame}
+
+\begin{frame}{Ejercicios propuestos}
+  \vspace{-0.1cm}
+  \begin{beamercolorbox}[wd=\textwidth,sep=0.10cm]{block body}
+    \centering\scriptsize
+    \textbf{1--7:} interpretación de cifras. \quad \textbf{8--14:} tendencias
+    y comparación. \quad \textbf{15--20:} informe.
+  \end{beamercolorbox}
+  \listatiny
+  \begin{columns}[T,onlytextwidth]
+    \begin{column}{0.47\textwidth}
+      \begin{enumerate}\setlength{\itemsep}{0.16cm}
+        \item Interprete $\bar{x} = 3{,}4$ hijos por hogar
+        \item Interprete $Me = 2$ en ese mismo estudio
+        \item ¿Qué asimetría sugieren esas dos cifras juntas?
+        \item Interprete $CV = 12\%$
+        \item Interprete $CV = 68\%$
+        \item Interprete $Q_3 = 45$ minutos
+        \item Interprete $g_2 = +1{,}8$
+        \item Ventas: 200 y 230. Variación porcentual
+        \item Ventas: 230 y 207. Variación porcentual
+        \item De 200 a 260 en dos periodos: variación total
+      \end{enumerate}
+    \end{column}
+    \begin{column}{0.50\textwidth}
+      \begin{enumerate}\setlength{\itemsep}{0.16cm}
+        \setcounter{enumi}{10}
+        \item Dos grupos, misma media y distinto $CV$: ¿qué concluye?
+        \item Dos grupos, misma mediana y distinto máximo: ¿qué revisa?
+        \item ¿Por qué comparar medianas y no solo medias?
+        \item Un gráfico sube fuerte pero el eje empieza en 95: ¿qué hace?
+        \item ¿Qué va en la sección de metodología?
+        \item ¿Qué va en limitaciones?
+        \item ¿Dónde se ubica el título de una tabla? ¿Y el de una figura?
+        \item ¿Por qué el resumen se escribe de último?
+        \item Escriba una recomendación anclada a $Q_3 = 267{,}56$
+        \item ¿Qué diferencia hay entre un hallazgo y una recomendación?
+      \end{enumerate}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{Respuestas}{Autoevaluación de los ejercicios propuestos}
+  \listatiny
+  \begin{columns}[T,onlytextwidth]
+    \begin{column}{0.47\textwidth}
+      \begin{enumerate}\setlength{\itemsep}{0.16cm}
+        \item En promedio cada hogar tiene 3,4 hijos
+        \item La mitad de los hogares tiene 2 hijos o menos
+        \item $\bar{x} > Me$: asimetría positiva
+        \item Grupo muy homogéneo
+        \item Grupo muy disperso; la media describe mal
+        \item El 75\% espera menos de 45 minutos
+        \item Leptocúrtica: pico alto y colas pesadas
+        \item $+15{,}0\%$
+        \item $-10{,}0\%$
+        \item $+30{,}0\%$
+      \end{enumerate}
+    \end{column}
+    \begin{column}{0.50\textwidth}
+      \begin{enumerate}\setlength{\itemsep}{0.16cm}
+        \setcounter{enumi}{10}
+        \item Mismo centro, distinta consistencia
+        \item Posibles atípicos o cola larga en uno de ellos
+        \item Porque la mediana no se deja arrastrar por los extremos
+        \item Rehacerlo con el eje desde cero
+        \item Población, muestra, $n$, periodo e instrumento
+        \item El alcance real: tamaño, periodo y posibles sesgos
+        \item Tabla: arriba. Figura: abajo
+        \item Porque solo se resume lo que ya está escrito
+        \item Respuesta abierta: p. ej. programa de fidelización para el
+              cuartil superior
+        \item El hallazgo describe; la recomendación propone una acción
+      \end{enumerate}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{Referencias}
+  \footnotesize
+  \begin{itemize}
+    \item[{[1]}] Monroy Saldívar, S. (2008). \textit{Estadística descriptiva}.
+      Instituto Politécnico Nacional.
+      \texttt{https://elibro.net/es/lc/uniminuto/titulos/74722}
+    \item[{[2]}] Ordóñez Fernández, F. F. \& González Fernández, J. (2021).
+      \textit{Estadística descriptiva paso a paso}. Ediciones Pirámide.
+      \texttt{https://elibro.net/es/lc/uniminuto/titulos/215449}
+    \item[{[3]}] Llinás Solano, H. (2014). \textit{Introducción a la
+      estadística con aplicaciones en ciencias sociales}. Universidad del
+      Norte. \texttt{https://elibro.net/es/lc/uniminuto/titulos/70062}
+  \end{itemize}
+
+  \vspace{0.35cm}
+  \begin{center}
+    {\Large\color{uniAzul}\textbf{¿Preguntas?}}
+  \end{center}
+\end{frame}
+
+\end{document}

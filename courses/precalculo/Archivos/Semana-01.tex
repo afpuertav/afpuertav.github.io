@@ -1,0 +1,840 @@
+% ============================================================================
+%  PRECÁLCULO — Sesión 1
+%  Semana 1: 10 al 15 de agosto de 2026
+%  Presentación del curso · 1.1 Conjuntos numéricos y sus propiedades
+%  Duración prevista: 3 horas
+% ============================================================================
+\documentclass[aspectratio=169,10pt]{beamer}
+
+\usepackage[utf8]{inputenc}
+\IfFileExists{spanish.ldf}{\usepackage[spanish,es-noshorthands]{babel}}{}
+\usepackage{amsmath,amssymb}
+\usepackage{booktabs}
+\usepackage{tikz}
+
+\usetheme{Uniminuto}
+
+\uniasignatura{Precálculo}
+\uniprofesor{Andrés Felipe Puerta Velez}
+\unicorreo{andres.puerta-v@uniminuto.edu.co}
+\uninrc{MATE1161}
+\unisemana{Sesión 1 — Semana 1 · 10 al 15 de agosto de 2026}
+
+\newcommand{\listatiny}{\setbeamerfont{itemize/enumerate body}{size=\tiny}\tiny}
+
+\begin{document}
+
+\portada
+
+\begin{frame}{Orden del día}
+  \begin{enumerate}
+    \item Llamado a lista, presentación del grupo y elección del representante
+    \item ¿Para qué sirve Precálculo en Ingeniería de Software?
+    \item Temario, cronograma, evaluación y acuerdos mínimos
+    \item \azul{Tema 1.1: los conjuntos numéricos y sus propiedades}
+    \item Orden en $\mathbb{R}$: desigualdades, intervalos y valor absoluto
+    \item Ejercicios guiados, taller y cierre
+  \end{enumerate}
+
+  \vspace{0.25cm}
+  {\footnotesize\color{uniGris} Sesión de 3 horas. Traiga cuaderno cuadriculado
+  y lápiz: \destacar{en este curso se escribe a mano}, porque la única forma de
+  aprender a operar es operando.}
+\end{frame}
+
+\begin{frame}{¿Para qué sirve Precálculo en Ingeniería de Software?}
+  \scriptsize
+  \begin{center}
+  \begin{tabular}{@{}p{5.0cm}p{6.8cm}@{}}
+    \toprule
+    \textbf{Lo que verá más adelante} & \textbf{Lo que exige de este curso} \\
+    \midrule
+    Cálculo diferencial e integral &
+      Álgebra fluida: factorizar, simplificar, despejar sin equivocarse \\
+    \addlinespace
+    Estructuras discretas y lógica &
+      Conjuntos, operaciones y notación formal \\
+    \addlinespace
+    Complejidad de algoritmos &
+      Potencias y \azul{logaritmos}: $O(n\log n)$ no se entiende sin ellos \\
+    \addlinespace
+    Gráficos, videojuegos y visión &
+      Trigonometría: senos, cosenos y ángulos \\
+    \addlinespace
+    Criptografía y estructuras de datos &
+      Aritmética entera, divisibilidad, potencias de 2 \\
+    \bottomrule
+  \end{tabular}
+  \end{center}
+
+  \vspace{0.1cm}
+  \begin{alertblock}{La razón de fondo}
+    \scriptsize
+    Un programa es una \destacar{secuencia de operaciones exactas}. Quien no
+    opera bien a mano, no detecta cuándo su código está calculando mal. Este
+    curso es el que le da esa detección automática.
+  \end{alertblock}
+\end{frame}
+
+\begin{frame}{El curso en tres unidades}
+  \scriptsize
+  \begin{center}
+  \begin{tabular}{@{}p{1.2cm}p{4.4cm}p{6.2cm}@{}}
+    \toprule
+    & \textbf{Unidad} & \textbf{Temas} \\
+    \midrule
+    1 & Campos numéricos &
+      Conjuntos numéricos; enteros; racionales; conjuntos; razones y
+      proporciones \\
+    \addlinespace
+    2 & Potenciación, radicación y logaritmación &
+      Potencias; radicación; racionalización; logaritmos y sus propiedades \\
+    \addlinespace
+    3 & Álgebra y trigonometría &
+      Operaciones algebraicas; productos notables; factorización; fracciones
+      algebraicas; funciones trigonométricas \\
+    \bottomrule
+  \end{tabular}
+  \end{center}
+
+  \vspace{0.15cm}
+  \begin{alertblock}{Cómo se conectan}
+    \scriptsize
+    La unidad 1 fija \destacar{con qué números} se trabaja; la unidad 2, las
+    \destacar{operaciones} que se hacen con ellos; la unidad 3, cómo operar
+    cuando en lugar de números hay \destacar{letras}. Cada una se apoya
+    entera en la anterior: \azul{aquí no hay temas sueltos}.
+  \end{alertblock}
+\end{frame}
+
+\begin{frame}{Evaluación: tres exámenes, nada más}
+  \footnotesize
+  \begin{center}
+  \begin{tabular}{@{}llr@{}}
+    \toprule
+    \textbf{Examen} & \textbf{Fecha} & \textbf{Peso} \\
+    \midrule
+    Examen 1 — Unidad 1 & Semana 6: 14 al 19 de septiembre & 35\% \\
+    Examen 2 — Unidad 2 & Semana 12: 26 al 31 de octubre   & 35\% \\
+    Examen 3 — Unidad 3 & Semana 16: 23 al 28 de noviembre & 30\% \\
+    \midrule
+    \textbf{Total} & & \textbf{100\%} \\
+    \bottomrule
+  \end{tabular}
+  \end{center}
+
+  \vspace{0.1cm}
+  \begin{block}{Cómo se presentan}
+    \tiny
+    Individuales, en \azul{Aulas Virtuales (Moodle)}, de forma
+    \azul{presencial en el aula} y con tiempo límite. Cada examen evalúa la
+    \destacar{totalidad} de los temas de su unidad.
+  \end{block}
+
+  \vspace{0.08cm}
+  \begin{alertblock}{Lo que esto implica}
+    \tiny
+    No hay quices ni talleres calificables que suban la nota. \destacar{La
+    práctica semanal no se califica, pero es lo único que hace pasar el
+    examen.}
+  \end{alertblock}
+\end{frame}
+
+\begin{frame}{Acuerdos mínimos del curso}
+  \scriptsize
+  \begin{columns}[T,onlytextwidth]
+    \begin{column}{0.48\textwidth}
+      \begin{block}{De trabajo}
+        \tiny
+        \begin{itemize}\setlength{\itemsep}{-0.04cm}
+          \item Se resuelve \azul{a mano}, mostrando el procedimiento.
+          \item Cada sesión abre con las dudas de los ejercicios propuestos.
+          \item La calculadora se usa para verificar, no para reemplazar el
+                procedimiento.
+          \item Preguntar en clase es parte del trabajo, no una interrupción.
+        \end{itemize}
+      \end{block}
+    \end{column}
+    \begin{column}{0.48\textwidth}
+      \begin{alertblock}{De convivencia}
+        \tiny
+        \begin{itemize}\setlength{\itemsep}{-0.04cm}
+          \item Puntualidad al inicio y después del descanso.
+          \item Celular en silencio; se usa solo cuando el ejercicio lo pida.
+          \item Respeto por el error ajeno: \destacar{equivocarse en el
+                tablero es la forma más rápida de aprender}.
+        \end{itemize}
+      \end{alertblock}
+    \end{column}
+  \end{columns}
+
+  \vspace{0.1cm}
+  \begin{exampleblock}{El compromiso que de verdad importa}
+    \tiny
+    \destacar{Media hora diaria de ejercicios} rinde más que cinco horas la
+    noche anterior al examen. Las matemáticas no se entienden mirando: se
+    entienden con el lápiz en la mano.
+  \end{exampleblock}
+\end{frame}
+
+\seccion{Unidad 1. Campos numéricos}
+
+\begin{frame}{1.1 Los conjuntos numéricos}
+  \centering
+  \begin{tikzpicture}[scale=0.82]
+    \draw[uniGris,fill=uniGris!8,rounded corners] (0,0) rectangle (10.4,4.1);
+    \node[font=\scriptsize\bfseries,color=uniGris] at (9.6,3.8) {$\mathbb{R}$};
+    \draw[uniAzul,fill=uniAzul!10,rounded corners] (0.25,0.25) rectangle (6.9,3.5);
+    \node[font=\scriptsize\bfseries,color=uniAzul] at (6.4,3.2) {$\mathbb{Q}$};
+    \draw[uniNaranja,fill=uniNaranja!12,rounded corners] (0.5,0.5) rectangle (4.9,2.9);
+    \node[font=\scriptsize\bfseries,color=uniNaranja] at (4.4,2.6) {$\mathbb{Z}$};
+    \draw[uniTitulo,fill=uniTitulo!12,rounded corners] (0.75,0.75) rectangle (3.2,2.3);
+    \node[font=\scriptsize\bfseries,color=uniTitulo] at (2.8,2.0) {$\mathbb{N}$};
+    \node[font=\tiny] at (1.9,1.4) {$0,\,1,\,2,\,3,\dots$};
+    \node[font=\tiny] at (4.05,1.4) {$-1,\,-2,\dots$};
+    \node[font=\tiny,align=center] at (5.9,1.7) {$\tfrac{1}{2},\ -\tfrac{7}{3}$\\ $0{,}25;\ 0{,}\overline{3}$};
+    \draw[uniAmarillo!70!black,fill=uniAmarillo!18,rounded corners] (7.05,0.25) rectangle (10.15,3.5);
+    \node[font=\scriptsize\bfseries,color=uniAmarillo!70!black] at (9.7,3.2) {$\mathbb{I}$};
+    \node[font=\tiny,align=center,color=uniGris] at (8.6,1.875)
+      {(irracionales)\\[0.15em] $\sqrt{2},\ \pi,\ e,\ \varphi$};
+  \end{tikzpicture}
+
+  \vspace{0.1cm}
+  \begin{alertblock}{La cadena de inclusiones}
+    \tiny
+    \[ \mathbb{N} \subset \mathbb{Z} \subset \mathbb{Q} \subset \mathbb{R}
+       \qquad\text{y}\qquad \mathbb{R} = \mathbb{Q} \cup \mathbb{I},
+       \qquad \mathbb{Q} \cap \mathbb{I} = \varnothing \]
+    Cada conjunto \destacar{contiene} al anterior: todo natural es entero, todo
+    entero es racional y todo racional es real. \azul{Lo contrario no es
+    cierto.}
+  \end{alertblock}
+\end{frame}
+
+\begin{frame}{Naturales y enteros: por qué hubo que ampliarlos}
+  \scriptsize
+  \begin{center}
+  \begin{tabular}{@{}p{1.6cm}p{3.6cm}p{3.0cm}p{3.4cm}@{}}
+    \toprule
+    \textbf{Conjunto} & \textbf{Qué contiene} & \textbf{Qué se puede} &
+    \textbf{Qué falla} \\
+    \midrule
+    $\mathbb{N}$ & $0, 1, 2, 3, \dots$ &
+      Sumar y multiplicar & $3 - 5$ no existe \\
+    \addlinespace
+    $\mathbb{Z}$ & $\dots, -2, -1, 0, 1, 2, \dots$ &
+      Sumar, restar y multiplicar & $3 \div 5$ no existe \\
+    \addlinespace
+    $\mathbb{Q}$ & $\dfrac{a}{b}$ con $a,b \in \mathbb{Z}$, $b \ne 0$ &
+      Las cuatro operaciones & $\sqrt{2}$ no existe \\
+    \addlinespace
+    $\mathbb{R}$ & Todos los puntos de la recta &
+      Además, raíces de positivos & $\sqrt{-1}$ no existe \\
+    \bottomrule
+  \end{tabular}
+  \end{center}
+
+  \vspace{0.1cm}
+  \begin{alertblock}{La lógica de toda la historia}
+    \scriptsize
+    Cada conjunto nuevo aparece porque una operación \destacar{se salía} del
+    anterior. Es el mismo patrón que en programación: se amplía el tipo de dato
+    cuando el que se tiene \azul{ya no alcanza}. Y en la siguiente asignatura
+    aparecerán los complejos $\mathbb{C}$, justamente para que $\sqrt{-1}$
+    tenga sentido.
+  \end{alertblock}
+\end{frame}
+
+\begin{frame}{Racionales: la forma de reconocerlos}
+  \scriptsize
+  \begin{columns}[T,onlytextwidth]
+    \begin{column}{0.46\textwidth}
+      \begin{block}{Definición}
+        \scriptsize
+        \[ \mathbb{Q} = \left\{ \frac{a}{b} \;:\; a, b \in \mathbb{Z},\
+           b \neq 0 \right\} \]
+        Todo racional se puede escribir como \azul{cociente de dos enteros}.
+      \end{block}
+    \end{column}
+    \begin{column}{0.50\textwidth}
+      \begin{exampleblock}{Su expresión decimal}
+        \scriptsize
+        Un número es racional \azul{si y solo si} su decimal es
+        \destacar{finito} o \destacar{periódico}:
+        \[ \tfrac{1}{4} = 0{,}25 \qquad \tfrac{1}{3} = 0{,}\overline{3}
+           \qquad \tfrac{5}{11} = 0{,}\overline{45} \]
+      \end{exampleblock}
+    \end{column}
+  \end{columns}
+
+  \vspace{0.08cm}
+  \begin{block}{De decimal periódico a fracción: el truco que hay que saber}
+    \tiny
+    Sea $x = 0{,}\overline{45}$. Como el periodo tiene 2 cifras, se multiplica
+    por $100$:
+    \[ 100x = 45{,}\overline{45} \qquad x = 0{,}\overline{45} \]
+    Restando: \ $99x = 45 \Rightarrow x = \dfrac{45}{99} = \destacar{\dfrac{5}{11}}$
+  \end{block}
+
+  {\tiny\color{uniGris} Regla general: se multiplica por $10^{k}$, con $k$ el
+  número de cifras del periodo, y se resta la ecuación original.}
+\end{frame}
+
+\begin{frame}{Irracionales: los que no se pueden escribir como fracción}
+  \scriptsize
+  \begin{columns}[T,onlytextwidth]
+    \begin{column}{0.44\textwidth}
+      \begin{block}{Los más conocidos}
+        \tiny
+        \[ \sqrt{2} = 1{,}41421356\dots \]
+        \[ \pi = 3{,}14159265\dots \]
+        \[ e = 2{,}71828182\dots \]
+        \[ \varphi = \tfrac{1+\sqrt{5}}{2} = 1{,}61803398\dots \]
+        Decimal \destacar{infinito y no periódico}.
+      \end{block}
+    \end{column}
+    \begin{column}{0.52\textwidth}
+      \begin{exampleblock}{Por qué $\sqrt{2}$ no es racional}
+        \tiny
+        Suponga que sí: $\sqrt{2} = \frac{a}{b}$ ya simplificada. Al elevar
+        al cuadrado:
+        \[ 2 = \frac{a^2}{b^2} \;\Rightarrow\; a^2 = 2b^2 \]
+        Entonces $a^2$ es par, luego $a$ es par: $a = 2k$. Sustituyendo:
+        \[ 4k^2 = 2b^2 \;\Rightarrow\; b^2 = 2k^2 \]
+        Entonces $b$ también es par. Pero si ambos son pares,
+        \destacar{la fracción no estaba simplificada}: contradicción.
+      \end{exampleblock}
+    \end{column}
+  \end{columns}
+
+  \vspace{0.02cm}
+  \begin{alertblock}{Dos advertencias}
+    \tiny
+    (1) $3{,}1416$ \destacar{no es} $\pi$: es una aproximación racional. \quad
+    (2) No toda raíz es irracional: $\sqrt{9} = 3$ es natural. Solo lo es
+    cuando el radicando \azul{no es un cuadrado perfecto}.
+  \end{alertblock}
+\end{frame}
+
+\begin{frame}{Ejercicio 1 — en clase}
+  \begin{alertblock}{Individual (10 minutos)}
+    \scriptsize
+    Para cada número, marque \destacar{todos} los conjuntos a los que
+    pertenece: $\mathbb{N}$, $\mathbb{Z}$, $\mathbb{Q}$, $\mathbb{I}$,
+    $\mathbb{R}$.
+
+    \vspace{0.25cm}
+    \centering
+    \begin{tabular}{@{}llll@{}}
+      1. \ $7$ & 2. \ $-4$ & 3. \ $\dfrac{3}{5}$ & 4. \ $\sqrt{16}$ \\[0.6em]
+      5. \ $\sqrt{7}$ & 6. \ $0$ & 7. \ $-\dfrac{9}{3}$ & 8. \ $0{,}75$ \\[0.6em]
+      9. \ $0{,}\overline{6}$ & 10. \ $\pi$ & 11. \ $\dfrac{22}{7}$ &
+      12. \ $-\sqrt{25}$ \\
+    \end{tabular}
+
+    \vspace{0.25cm}
+    \raggedright
+    Al terminar: \destacar{¿cuál de los doce es el más engañoso y por qué?}
+  \end{alertblock}
+\end{frame}
+
+\begin{frame}{Ejercicio 1 — solución}
+  \tiny
+  \begin{center}
+  \begin{tabular}{@{}clcccc@{}}
+    \toprule
+    \textbf{\#} & \textbf{Número} & $\mathbb{N}$ & $\mathbb{Z}$ &
+    $\mathbb{Q}$ & $\mathbb{I}$ \\
+    \midrule
+     1 & $7$                          & Sí & Sí & Sí & No \\
+     2 & $-4$                         & No & Sí & Sí & No \\
+     3 & $3/5$                        & No & No & Sí & No \\
+     4 & $\sqrt{16} = 4$              & Sí & Sí & Sí & No \\
+     5 & $\sqrt{7} = 2{,}6457\dots$   & No & No & No & Sí \\
+     6 & $0$                          & Sí & Sí & Sí & No \\
+     7 & $-9/3 = -3$                  & No & Sí & Sí & No \\
+     8 & $0{,}75 = 3/4$               & No & No & Sí & No \\
+     9 & $0{,}\overline{6} = 2/3$     & No & No & Sí & No \\
+    10 & $\pi$                        & No & No & No & Sí \\
+    11 & $22/7 = 3{,}\overline{142857}$ & No & No & Sí & No \\
+    12 & $-\sqrt{25} = -5$            & No & Sí & Sí & No \\
+    \bottomrule
+  \end{tabular}
+  \end{center}
+  {\tiny\color{uniGris} Todos son reales: la columna $\mathbb{R}$ sería ``Sí''
+  en las doce filas.}
+
+  \vspace{0.05cm}
+  \begin{alertblock}{El más engañoso: el 11}
+    \tiny
+    $22/7$ se usa como aproximación de $\pi$, pero \destacar{es racional}: es
+    un cociente de enteros y su decimal es periódico. \azul{Parecerse a un
+    irracional no vuelve irracional a un número.} Los otros dos tramposos son
+    el 4 y el 12: llevan raíz, pero el radicando es cuadrado perfecto.
+  \end{alertblock}
+\end{frame}
+
+\begin{frame}{Propiedades de las operaciones en $\mathbb{R}$}
+  \tiny
+  \begin{center}
+  \begin{tabular}{@{}p{2.3cm}p{4.2cm}p{4.6cm}@{}}
+    \toprule
+    \textbf{Propiedad} & \textbf{Suma} & \textbf{Multiplicación} \\
+    \midrule
+    Clausurativa & $a+b \in \mathbb{R}$ & $a\cdot b \in \mathbb{R}$ \\
+    Conmutativa  & $a+b = b+a$ & $a\cdot b = b\cdot a$ \\
+    Asociativa   & $(a+b)+c = a+(b+c)$ & $(a\cdot b)\cdot c = a\cdot(b\cdot c)$ \\
+    Modulativa   & $a+0 = a$ \quad (neutro: $0$) &
+      $a\cdot 1 = a$ \quad (neutro: $1$) \\
+    Invertiva    & $a+(-a) = 0$ &
+      $a\cdot \dfrac{1}{a} = 1$ \quad ($a \neq 0$) \\
+    \addlinespace
+    Distributiva & \multicolumn{2}{l}{$a\cdot(b+c) = a\cdot b + a\cdot c$} \\
+    \bottomrule
+  \end{tabular}
+  \end{center}
+
+  \vspace{0.1cm}
+  \begin{alertblock}{Las dos excepciones que hay que recordar}
+    \tiny
+    (1) La \destacar{resta y la división no son conmutativas ni asociativas}:
+    $5-3 \neq 3-5$ y $(8\div4)\div2 \neq 8\div(4\div2)$. \quad
+    (2) El \destacar{cero no tiene inverso multiplicativo}: por eso dividir
+    entre cero no está definido, ni en matemáticas ni en su código.
+  \end{alertblock}
+
+  \vspace{0.05cm}
+  {\tiny\color{uniGris} La distributiva es la que más se usa en todo el
+  semestre: es la que permite ``abrir'' paréntesis y, leída al revés, la que
+  permite \azul{factorizar} en la unidad 3.}
+\end{frame}
+
+\begin{frame}{Ejercicio 2 — en clase}
+  \begin{alertblock}{En parejas (10 minutos)}
+    \scriptsize
+    Indique qué propiedad justifica cada igualdad:
+
+    \vspace{0.25cm}
+    \begin{columns}[T,onlytextwidth]
+      \begin{column}{0.48\textwidth}
+        \begin{enumerate}\setlength{\itemsep}{0.05cm}
+          \item $7 + 12 = 12 + 7$
+          \item $3(x+5) = 3x + 15$
+          \item $(2+9)+8 = 2+(9+8)$
+          \item $-6 + 6 = 0$
+          \item $\sqrt{5}\cdot 1 = \sqrt{5}$
+        \end{enumerate}
+      \end{column}
+      \begin{column}{0.48\textwidth}
+        \begin{enumerate}\setlength{\itemsep}{0.05cm}
+          \setcounter{enumi}{5}
+          \item $\tfrac{4}{7}\cdot\tfrac{7}{4} = 1$
+          \item $(5\cdot 3)\cdot 2 = 5\cdot(3\cdot 2)$
+          \item $8 + 0 = 8$
+          \item $2a + 2b = 2(a+b)$
+          \item $\pi \cdot e = e \cdot \pi$
+        \end{enumerate}
+      \end{column}
+    \end{columns}
+  \end{alertblock}
+\end{frame}
+
+\begin{frame}{Ejercicio 2 — solución}
+  \scriptsize
+  \begin{columns}[T,onlytextwidth]
+    \begin{column}{0.48\textwidth}
+      \begin{block}{Respuestas 1 a 5}
+        \scriptsize
+        \begin{enumerate}\setlength{\itemsep}{-0.02cm}
+          \item Conmutativa de la suma
+          \item Distributiva
+          \item Asociativa de la suma
+          \item Invertiva de la suma (opuesto)
+          \item Modulativa del producto
+        \end{enumerate}
+      \end{block}
+    \end{column}
+    \begin{column}{0.48\textwidth}
+      \begin{block}{Respuestas 6 a 10}
+        \scriptsize
+        \begin{enumerate}\setlength{\itemsep}{-0.02cm}
+          \setcounter{enumi}{5}
+          \item Invertiva del producto (recíproco)
+          \item Asociativa del producto
+          \item Modulativa de la suma
+          \item Distributiva \azul{leída al revés}
+          \item Conmutativa del producto
+        \end{enumerate}
+      \end{block}
+    \end{column}
+  \end{columns}
+
+  \vspace{0.1cm}
+  \begin{alertblock}{El punto 9 es el importante}
+    \scriptsize
+    $2a + 2b = 2(a+b)$ es la distributiva usada de derecha a izquierda: eso
+    \destacar{es factorizar}. Cuando lleguemos a la unidad 3 no será una
+    técnica nueva, sino esta misma propiedad leída al revés.
+  \end{alertblock}
+\end{frame}
+
+\begin{frame}{Orden en $\mathbb{R}$: la recta numérica}
+  \centering
+  \begin{tikzpicture}[scale=1.0]
+    \draw[uniGris,->] (-0.4,0) -- (11.6,0);
+    \foreach \x/\l in {0.5/-3, 2/-2, 3.5/-1, 5/0, 6.5/1, 8/2, 9.5/3, 11/4}
+      \draw[uniGris] (\x,-0.12) -- (\x,0.12)
+        node[below=3pt,font=\tiny,color=uniGris] {$\l$};
+    \fill[uniAzul] (7.1,0) circle (2.2pt)
+      node[above=3pt,font=\tiny,color=uniAzul] {$\sqrt{2}$};
+    \fill[uniTitulo] (9.7,0) circle (2.2pt)
+      node[above=3pt,font=\tiny,color=uniTitulo] {$\pi$};
+    \fill[uniNaranja] (4.25,0) circle (2.2pt)
+      node[above=3pt,font=\tiny,color=uniNaranja] {$-\tfrac{1}{2}$};
+  \end{tikzpicture}
+
+  \vspace{0.3cm}
+  \begin{alertblock}{Lo que dice la recta}
+    \scriptsize
+    A cada punto le corresponde \destacar{un} número real y a cada número real
+    \destacar{un} punto: no quedan huecos. Y el orden es visual:
+    \azul{$a < b$ significa que $a$ está a la izquierda de $b$}. Por eso
+    $-5 < -2$, aunque $5 > 2$.
+  \end{alertblock}
+
+  \vspace{0.1cm}
+  \begin{exampleblock}{Reglas de las desigualdades}
+    \scriptsize
+    Si $a < b$: \quad $a + c < b + c$ (sumar no cambia nada) \quad y \quad
+    $ac < bc$ si $c > 0$, \ pero \ \destacar{$ac > bc$ si $c < 0$}.
+    \vspace{0.05cm}
+    {\tiny\color{uniGris} Multiplicar por un negativo \azul{invierte} la
+    desigualdad: es el error número uno al resolver inecuaciones.}
+  \end{exampleblock}
+\end{frame}
+
+\begin{frame}{Intervalos y valor absoluto}
+  \scriptsize
+  \begin{center}
+  \begin{tabular}{@{}p{2.2cm}p{3.0cm}p{3.0cm}p{3.4cm}@{}}
+    \toprule
+    \textbf{Nombre} & \textbf{Notación} & \textbf{Desigualdad} &
+    \textbf{Se lee} \\
+    \midrule
+    Abierto & $(a,\,b)$ & $a < x < b$ & Sin los extremos \\
+    Cerrado & $[a,\,b]$ & $a \le x \le b$ & Con los dos extremos \\
+    Semiabierto & $[a,\,b)$ & $a \le x < b$ & Con $a$, sin $b$ \\
+    Infinito & $[a,\,\infty)$ & $x \ge a$ & $\infty$ \azul{nunca} se cierra \\
+    \bottomrule
+  \end{tabular}
+  \end{center}
+
+  \vspace{0.1cm}
+  \begin{columns}[T,onlytextwidth]
+    \begin{column}{0.46\textwidth}
+      \begin{block}{Valor absoluto}
+        \tiny
+        \[ |x| = \begin{cases} x & \text{si } x \ge 0 \\
+                              -x & \text{si } x < 0 \end{cases} \]
+        Es la \azul{distancia al cero}, y por eso nunca es negativo:
+        $|{-7}| = 7$, \ $|7| = 7$.
+      \end{block}
+    \end{column}
+    \begin{column}{0.50\textwidth}
+      \begin{alertblock}{El error clásico}
+        \tiny
+        $|-x| \neq -x$ en general. Si $x = -3$, entonces $-x = 3$ y
+        $|-x| = |3| = 3$. \destacar{El signo menos delante de la letra no
+        significa ``número negativo''}: significa ``el opuesto de''.
+      \end{alertblock}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{Ejercicio 3 — en clase}
+  \begin{alertblock}{Individual (12 minutos)}
+    \scriptsize
+    \textbf{Parte A.} Escriba cada conjunto en notación de intervalo y
+    represéntelo en la recta:
+
+    \vspace{0.15cm}
+    \begin{columns}[T,onlytextwidth]
+      \begin{column}{0.48\textwidth}
+        \begin{enumerate}\setlength{\itemsep}{-0.02cm}
+          \item $-2 \le x < 5$
+          \item $x > 3$
+          \item $-1 < x \le 4$
+        \end{enumerate}
+      \end{column}
+      \begin{column}{0.48\textwidth}
+        \begin{enumerate}\setlength{\itemsep}{-0.02cm}
+          \setcounter{enumi}{3}
+          \item $x \le 0$
+          \item Todos los reales
+        \end{enumerate}
+      \end{column}
+    \end{columns}
+
+    \vspace{0.2cm}
+    \textbf{Parte B.} Calcule:
+    \[ |{-9}| \qquad |4 - 11| \qquad |3| - |{-3}| \qquad
+       |{-2}| \cdot |{-5}| \qquad |x| \text{ si } x = -\tfrac{2}{3} \]
+  \end{alertblock}
+\end{frame}
+
+\begin{frame}{Ejercicio 3 — solución}
+  \scriptsize
+  \begin{columns}[T,onlytextwidth]
+    \begin{column}{0.44\textwidth}
+      \begin{block}{Parte A}
+        \tiny
+        \begin{enumerate}\setlength{\itemsep}{-0.02cm}
+          \item $[-2,\,5)$
+          \item $(3,\,\infty)$
+          \item $(-1,\,4]$
+          \item $(-\infty,\,0]$
+          \item $(-\infty,\,\infty) = \mathbb{R}$
+        \end{enumerate}
+      \end{block}
+    \end{column}
+    \begin{column}{0.52\textwidth}
+      \begin{block}{Parte B}
+        \tiny
+        \[ |{-9}| = 9 \qquad |4-11| = |{-7}| = 7 \]
+        \[ |3| - |{-3}| = 3 - 3 = 0 \]
+        \[ |{-2}|\cdot|{-5}| = 2 \cdot 5 = 10 \]
+        \[ \left|-\tfrac{2}{3}\right| = \tfrac{2}{3} \]
+      \end{block}
+    \end{column}
+  \end{columns}
+
+  \vspace{0.08cm}
+  \begin{alertblock}{Dos trampas frecuentes}
+    \tiny
+    En $|4-11|$ \destacar{primero se opera adentro} y después se toma el valor
+    absoluto: no es $|4| - |11| = -7$. \quad
+    Y en el punto 5 de la parte A, los infinitos \destacar{siempre} llevan
+    paréntesis: $[-\infty, \infty]$ está mal escrito, porque $\infty$ no es un
+    número que se pueda alcanzar.
+  \end{alertblock}
+\end{frame}
+
+\begin{frame}{Ejercicio 4 — en clase (taller principal)}
+  \begin{alertblock}{En grupos de 3 (20 minutos)}
+    \scriptsize
+    \begin{enumerate}\setlength{\itemsep}{0.02cm}
+      \item Convierta a fracción: \ $0{,}\overline{7}$, \quad
+            $0{,}\overline{27}$, \quad $1{,}\overline{3}$.
+      \item Ubique en una misma recta numérica, ordenados de menor a mayor:
+            \[ -\tfrac{5}{2}, \quad \sqrt{2}, \quad -1{,}5, \quad
+               \tfrac{7}{4}, \quad 0{,}\overline{3}, \quad -\sqrt{4} \]
+      \item ¿Verdadero o falso? Justifique cada uno con un ejemplo o un
+            contraejemplo:
+            \begin{itemize}\setlength{\itemsep}{-0.04cm}
+              \item[a)] Todo entero es racional.
+              \item[b)] Todo racional es entero.
+              \item[c)] La suma de dos irracionales es siempre irracional.
+              \item[d)] Entre dos racionales distintos siempre hay otro
+                        racional.
+            \end{itemize}
+    \end{enumerate}
+  \end{alertblock}
+\end{frame}
+
+\begin{frame}{Ejercicio 4 — solución}
+  \scriptsize
+  \begin{columns}[T,onlytextwidth]
+    \begin{column}{0.42\textwidth}
+      \begin{block}{Punto 1}
+        \tiny
+        $x = 0{,}\overline{7}$: \ $10x = 7{,}\overline{7}$, \
+        $9x = 7 \Rightarrow x = \destacar{\tfrac{7}{9}}$
+
+        \vspace{0.08cm}
+        $x = 0{,}\overline{27}$: \ $100x - x = 27$, \
+        $x = \tfrac{27}{99} = \destacar{\tfrac{3}{11}}$
+
+        \vspace{0.08cm}
+        $x = 1{,}\overline{3}$: \ $10x - x = 12$, \
+        $x = \tfrac{12}{9} = \destacar{\tfrac{4}{3}}$
+      \end{block}
+    \end{column}
+    \begin{column}{0.54\textwidth}
+      \begin{exampleblock}{Punto 2: el orden}
+        \tiny
+        \[ -\tfrac{5}{2} < -\sqrt{4} < -1{,}5 < 0{,}\overline{3}
+           < \sqrt{2} < \tfrac{7}{4} \]
+        En decimales: $-2{,}5 < -2 < -1{,}5 < 0{,}33 < 1{,}41 < 1{,}75$.
+        \vspace{0.05cm}
+        {\color{uniGris} Pasar todo a decimal es la forma segura de ordenar
+        cuando hay fracciones y raíces mezcladas.}
+      \end{exampleblock}
+    \end{column}
+  \end{columns}
+
+  \vspace{0.05cm}
+  \begin{alertblock}{Punto 3}
+    \tiny
+    \textbf{a) Verdadero:} $n = \frac{n}{1}$. \quad
+    \textbf{b) Falso:} $\frac{1}{2}$ no es entero. \quad
+    \textbf{c) Falso:} $\sqrt{2} + (-\sqrt{2}) = 0$, que es racional. \quad
+    \textbf{d) Verdadero:} el promedio $\frac{a+b}{2}$ siempre está entre los
+    dos y sigue siendo racional. \destacar{Esa es la propiedad de densidad.}
+  \end{alertblock}
+\end{frame}
+
+\begin{frame}{Errores frecuentes en esta sesión}
+  \scriptsize
+  \begin{center}
+  \begin{tabular}{@{}p{5.0cm}p{6.8cm}@{}}
+    \toprule
+    \textbf{Error} & \textbf{Corrección} \\
+    \midrule
+    Creer que toda raíz es irracional &
+      $\sqrt{16}=4$ es natural; solo lo es si el radicando no es cuadrado
+      perfecto \\
+    \addlinespace
+    Tomar $22/7$ o $3{,}1416$ como $\pi$ &
+      Son \azul{aproximaciones racionales}; $\pi$ es irracional \\
+    \addlinespace
+    Decir que $-5 > -2$ porque $5 > 2$ &
+      En los negativos el orden se invierte: $-5 < -2$ \\
+    \addlinespace
+    Escribir $[-\infty,\ \infty]$ &
+      El infinito nunca se cierra: $(-\infty,\ \infty)$ \\
+    \addlinespace
+    Calcular $|a-b|$ como $|a|-|b|$ &
+      Primero se opera dentro de las barras \\
+    \addlinespace
+    Asumir que $-x$ es negativo &
+      Es \azul{el opuesto de $x$}: si $x<0$, entonces $-x>0$ \\
+    \bottomrule
+  \end{tabular}
+  \end{center}
+\end{frame}
+
+\begin{frame}{Cierre de la sesión}
+  \begin{block}{Lo que debe quedar claro hoy}
+    \scriptsize
+    \begin{itemize}\setlength{\itemsep}{0.02cm}
+      \item $\mathbb{N} \subset \mathbb{Z} \subset \mathbb{Q} \subset
+            \mathbb{R}$, y $\mathbb{R} = \mathbb{Q} \cup \mathbb{I}$.
+      \item Un número es racional si su decimal es \azul{finito o periódico};
+            irracional si es infinito y no periódico.
+      \item Las propiedades de $+$ y $\cdot$: clausurativa, conmutativa,
+            asociativa, modulativa, invertiva y \azul{distributiva}.
+      \item La distributiva leída al revés \destacar{es factorizar}: volverá
+            en la unidad 3.
+      \item Intervalos, desigualdades y valor absoluto como distancia al cero.
+    \end{itemize}
+  \end{block}
+
+  \vspace{0.08cm}
+  \begin{alertblock}{Trabajo independiente}
+    \tiny
+    Resolver los 20 ejercicios de la lámina siguiente. En la sesión 2
+    trabajamos las \destacar{operaciones con enteros}: signos, jerarquía de
+    operaciones y los errores que se arrastran todo el semestre.
+  \end{alertblock}
+\end{frame}
+
+\begin{frame}{Ejercicios propuestos}
+  \vspace{-0.1cm}
+  \begin{beamercolorbox}[wd=\textwidth,sep=0.10cm]{block body}
+    \centering\scriptsize
+    \textbf{1--7:} clasificación. \quad \textbf{8--13:} propiedades y
+    conversión. \quad \textbf{14--20:} orden, intervalos y valor absoluto.
+  \end{beamercolorbox}
+  \listatiny
+  \vspace{0.15cm}
+  \begin{columns}[T,onlytextwidth]
+    \begin{column}{0.47\textwidth}
+      \begin{enumerate}\setlength{\itemsep}{0.16cm}
+        \item ¿A qué conjuntos pertenece $-\sqrt{36}$?
+        \item ¿A qué conjuntos pertenece $\sqrt{10}$?
+        \item ¿A qué conjuntos pertenece $\tfrac{18}{6}$?
+        \item ¿$0$ es natural? ¿Es entero? ¿Es racional?
+        \item Dé un irracional entre $1$ y $2$
+        \item Dé un racional entre $\tfrac{1}{3}$ y $\tfrac{1}{2}$
+        \item ¿Es $0{,}101001000100001\dots$ racional?
+        \item Convierta $0{,}\overline{8}$ a fracción
+        \item Convierta $0{,}\overline{36}$ a fracción
+        \item Convierta $2{,}\overline{5}$ a fracción
+      \end{enumerate}
+    \end{column}
+    \begin{column}{0.50\textwidth}
+      \begin{enumerate}\setlength{\itemsep}{0.16cm}
+        \setcounter{enumi}{10}
+        \item ¿Qué propiedad es $5(x-2) = 5x-10$?
+        \item ¿Qué propiedad es $(a+b)+c=a+(b+c)$?
+        \item ¿Por qué $0$ no tiene inverso multiplicativo?
+        \item Ordene: $-3$, $-\tfrac{7}{2}$, $\sqrt{9}$, $0$, $-\sqrt{2}$
+        \item Escriba $-4 \le x < 1$ como intervalo
+        \item Escriba $(2,\ \infty)$ como desigualdad
+        \item Calcule $|{-12}| + |5-9|$
+        \item Calcule $|3-3|$
+        \item Si $x<0$, ¿cuánto vale $|x|$?
+        \item ¿Es cierto que $|a+b| = |a|+|b|$ siempre?
+      \end{enumerate}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{Respuestas}{Autoevaluación de los ejercicios propuestos}
+  \listatiny
+  \vspace{0.15cm}
+  \begin{columns}[T,onlytextwidth]
+    \begin{column}{0.47\textwidth}
+      \begin{enumerate}\setlength{\itemsep}{0.16cm}
+        \item $-\sqrt{36}=-6$: $\mathbb{Z}$, $\mathbb{Q}$, $\mathbb{R}$
+        \item Irracional: $\mathbb{I}$, $\mathbb{R}$
+        \item $18/6 = 3$: $\mathbb{N}$, $\mathbb{Z}$, $\mathbb{Q}$, $\mathbb{R}$
+        \item Sí, sí y sí
+        \item Por ejemplo $\sqrt{2}$ o $\sqrt{3}$
+        \item Por ejemplo $\tfrac{5}{12}$ (el promedio)
+        \item No: infinito sin periodo, es irracional
+        \item $\tfrac{8}{9}$
+        \item $\tfrac{36}{99} = \tfrac{4}{11}$
+        \item $\tfrac{23}{9}$
+      \end{enumerate}
+    \end{column}
+    \begin{column}{0.50\textwidth}
+      \begin{enumerate}\setlength{\itemsep}{0.16cm}
+        \setcounter{enumi}{10}
+        \item Distributiva
+        \item Asociativa de la suma
+        \item Porque no existe $y$ con $0\cdot y = 1$
+        \item $-\tfrac{7}{2} < -3 < -\sqrt{2} < 0 < \sqrt{9}$
+        \item $[-4,\ 1)$
+        \item $x > 2$
+        \item $12 + 4 = 16$
+        \item $0$
+        \item $|x| = -x$, que es positivo
+        \item No: con $a=3$, $b=-3$ da $0 \neq 6$
+      \end{enumerate}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{Referencias}
+  \footnotesize
+  \begin{itemize}
+    \item[{[1]}] Ramos del Olmo, Á. M. (2016). \textit{Matemáticas básicas
+      para el acceso a la universidad}. Ediciones Pirámide.
+      \texttt{https://elibro.net/es/ereader/uniminuto/49134}
+    \item[{[2]}] González Pulido, J. W., Chacón Benavides, J. A. \&
+      Fonseca Correa, L. Á. (2023). \textit{Matemática básica} (1.\textsuperscript{a} ed.).
+      Universidad Mariana.
+      \texttt{https://elibro.net/es/ereader/uniminuto/280647}
+    \item[{[3]}] Placencia Valero, J. (2008). \textit{Compendio de matemática
+      básica elemental} (1.\textsuperscript{a} ed.). Editorial Tébar Flores.
+      \texttt{https://elibro.net/es/ereader/uniminuto/269758}
+  \end{itemize}
+
+  \vspace{0.35cm}
+  \begin{center}
+    {\Large\color{uniAzul}\textbf{¿Preguntas?}}
+  \end{center}
+\end{frame}
+
+\end{document}

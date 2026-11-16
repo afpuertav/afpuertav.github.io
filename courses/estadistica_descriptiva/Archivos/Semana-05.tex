@@ -1,0 +1,776 @@
+% ============================================================================
+%  ESTADÍSTICA DESCRIPTIVA — Sesión 5
+%  Semana 5: 7 al 12 de septiembre de 2026
+%  1.8 Aplicación del proceso estadístico en casos prácticos
+%  Repaso integrador de la Unidad 1  ·  Preparación del Examen 1
+%  Duración prevista: 3 horas
+% ============================================================================
+\documentclass[aspectratio=169,10pt]{beamer}
+
+\usepackage[utf8]{inputenc}
+\IfFileExists{spanish.ldf}{\usepackage[spanish,es-noshorthands]{babel}}{}
+\usepackage{amsmath,amssymb}
+\usepackage{booktabs}
+\usepackage{tikz}
+\usepackage{listings}
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.16}
+
+\usetheme{Uniminuto}
+
+\uniasignatura{Estadística descriptiva}
+\uniprofesor{Andrés Felipe Puerta Velez}
+\unicorreo{andres.puerta-v@uniminuto.edu.co}
+\uninrc{CBASBL031 - CBASBL141}
+\unisemana{Sesión 5 — Semana 5 · 7 al 12 de septiembre de 2026}
+
+\newcommand{\listatiny}{\setbeamerfont{itemize/enumerate body}{size=\tiny}\tiny}
+
+\pgfplotsset{
+  uniplot/.style={
+    width=8.0cm, height=3.7cm,
+    axis lines=left,
+    tick label style={font=\tiny,color=uniGris},
+    label style={font=\tiny,color=uniGris},
+    title style={font=\scriptsize\bfseries,color=uniAzul},
+    every axis plot/.append style={fill=uniAzul!70,draw=uniAzul},
+    ymajorgrids, grid style={uniGris!25,very thin},
+  }
+}
+
+\newcommand{\fx}[1]{{\ttfamily\color{uniAzul}#1}}
+
+% ------------------------------------------------------------- CÓDIGO R ----
+\lstdefinestyle{Rcode}{
+  language=R,
+  basicstyle=\ttfamily\scriptsize,
+  keywordstyle=\color{uniAzul}\bfseries,
+  commentstyle=\color{uniGris}\itshape,
+  stringstyle=\color{uniTitulo},
+  showstringspaces=false, numbers=none, breaklines=true,
+  columns=fullflexible,
+  backgroundcolor=\color{uniCremaClaro},
+  frame=leftline, framerule=1.2pt, rulecolor=\color{uniNaranja},
+  xleftmargin=0.35cm, framexleftmargin=0.35cm,
+  framexrightmargin=0.15cm, framextopmargin=2pt, framexbottommargin=2pt,
+  aboveskip=0.15cm, belowskip=0.15cm
+}
+\lstdefinestyle{Rmini}{
+  language=R,
+  basicstyle=\ttfamily\tiny,
+  keywordstyle=\color{uniAzul}\bfseries,
+  commentstyle=\color{uniGris}\itshape,
+  stringstyle=\color{uniTitulo},
+  showstringspaces=false, numbers=none, breaklines=true,
+  columns=fullflexible,
+  backgroundcolor=\color{uniCremaClaro},
+  frame=leftline, framerule=1.2pt, rulecolor=\color{uniNaranja},
+  xleftmargin=0.35cm, framexleftmargin=0.35cm,
+  framexrightmargin=0.15cm, framextopmargin=2pt, framexbottommargin=2pt,
+  aboveskip=0.12cm, belowskip=0.12cm
+}
+\lstdefinestyle{Rout}{
+  basicstyle=\ttfamily\tiny\color{black},
+  showstringspaces=false, numbers=none, breaklines=true,
+  columns=fullflexible,
+  backgroundcolor=\color{uniGris!10},
+  frame=leftline, framerule=1.2pt, rulecolor=\color{uniGris},
+  xleftmargin=0.35cm, framexleftmargin=0.35cm,
+  framexrightmargin=0.15cm, framextopmargin=2pt, framexbottommargin=2pt,
+  aboveskip=0.12cm, belowskip=0.12cm
+}
+
+\begin{document}
+
+\portada
+
+\begin{frame}{Orden del día}
+  \begin{enumerate}
+    \item Llamado a lista y revisión de los ejercicios propuestos
+    \item El proceso estadístico completo, paso a paso
+    \item \azul{Caso integrador: Cafetería El Portal} (taller largo)
+    \item \azul{Cómo se redacta un informe descriptivo}
+    \item Repaso integrador de la Unidad 1
+    \item Simulacro del Examen 1 y recomendaciones
+  \end{enumerate}
+
+  \vspace{0.25cm}
+  {\footnotesize\color{uniGris} Sesión de 3 horas. La próxima semana
+  \destacar{no hay clase nueva}: se presenta el Examen 1 (35\%) en Aulas
+  Virtuales, presencial en el aula.}
+\end{frame}
+
+\begin{frame}{El proceso estadístico completo}
+  \scriptsize
+  \begin{center}
+  \begin{tabular}{@{}rp{4.3cm}p{6.6cm}@{}}
+    \toprule
+    & \textbf{Paso} & \textbf{Pregunta que se responde} \\
+    \midrule
+    1 & Definir el problema & ¿Qué decisión quiero tomar con estos datos? \\
+    2 & Definir población y muestra & ¿A quién describo? ¿Con cuántos datos? \\
+    3 & Identificar las variables & ¿De qué tipo y en qué escala está cada una? \\
+    4 & Organizar: tablas & ¿Agrupo o no? ¿Cuántas clases? \\
+    5 & Representar: gráficos & ¿Qué gráfico corresponde a esta variable? \\
+    6 & Describir: medidas & (Unidad 2) ¿Dónde está el centro y cuánto varía? \\
+    7 & Interpretar y decidir & ¿Qué le digo al gerente y qué le recomiendo? \\
+    \bottomrule
+  \end{tabular}
+  \end{center}
+
+  \vspace{0.1cm}
+  \begin{alertblock}{Dónde estamos}
+    \scriptsize
+    Hoy recorremos los pasos \destacar{1 a 5 y el 7}. El paso 6 es la unidad 2.
+    Lo importante es que el proceso \azul{siempre es el mismo}, cambie el
+    negocio o el dato.
+  \end{alertblock}
+\end{frame}
+
+\seccion{Caso integrador: Cafetería El Portal}
+
+\begin{frame}{Paso 1 y 2 — el problema y los datos}
+  \begin{exampleblock}{La situación}
+    \footnotesize
+    La \azul{Cafetería El Portal}, en Bello, quiere decidir si abre una segunda
+    sede y en qué zona. También quiere saber si le conviene lanzar un combo de
+    precio medio. Para eso encuesta a \destacar{45 clientes} durante una
+    semana.
+  \end{exampleblock}
+
+  \vspace{0.2cm}
+  \begin{columns}[T,onlytextwidth]
+    \begin{column}{0.48\textwidth}
+      \begin{block}{Población y muestra}
+        \scriptsize
+        \textbf{Población:} todos los clientes de la cafetería.
+
+        \textbf{Muestra:} los 45 encuestados. \quad $n = 45$
+
+        \textbf{Unidad de observación:} un cliente.
+      \end{block}
+    \end{column}
+    \begin{column}{0.48\textwidth}
+      \begin{alertblock}{Las dos preguntas del gerente}
+        \scriptsize
+        (1) ¿De qué zona vienen mis clientes? \\
+        (2) ¿Cuánto consume un cliente por visita, y cómo se reparte ese
+        consumo?
+      \end{alertblock}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{Paso 3 — identificar las variables}
+  \footnotesize
+  \begin{center}
+  \begin{tabular}{@{}p{3.1cm}p{3.5cm}p{2.6cm}p{2.6cm}@{}}
+    \toprule
+    \textbf{Variable} & \textbf{Registro} & \textbf{Tipo} & \textbf{Escala} \\
+    \midrule
+    Zona de residencia & Centro / Norte / Sur / Otras & Cualitativa nominal
+      & Nominal \\
+    \addlinespace
+    Consumo por visita & Miles de pesos & Cuantitativa continua & Razón \\
+    \bottomrule
+  \end{tabular}
+  \end{center}
+
+  \vspace{0.2cm}
+  \begin{alertblock}{Por qué este paso va antes que todo}
+    \scriptsize
+    De esta tabla salen \destacar{todas} las decisiones siguientes: la zona no
+    se agrupa en clases ni se acumula, y el consumo sí se agrupa y sí admite
+    ojiva. Equivocarse aquí arrastra el error hasta la conclusión final.
+  \end{alertblock}
+\end{frame}
+
+\begin{frame}{Los datos crudos}
+  \footnotesize
+  \textbf{Zona de residencia} (45 respuestas):
+
+  \vspace{0.1cm}
+  \begin{beamercolorbox}[wd=\textwidth,sep=0.1cm]{block body}
+    \centering\tiny\ttfamily
+    C N S C O C N S C N C S O N C S C N O C S N C O C N S C N S C O C S N C N S C O C S N C S
+  \end{beamercolorbox}
+  {\tiny C = Centro \quad N = Norte \quad S = Sur \quad O = Otras}
+
+  \vspace{0.15cm}
+  \textbf{Consumo por visita} (miles de pesos), ya ordenado:
+
+  \vspace{0.1cm}
+  \begin{beamercolorbox}[wd=\textwidth,sep=0.1cm]{block body}
+    \centering\tiny\ttfamily
+    6 \ 7 \ 9 \ 10 \ 11 \ 12 \ 13 \ 14 \ 15 \ 16 \ 16 \ 17 \ 17 \ 17 \ 18 \\
+    19 \ 19 \ 20 \ 20 \ 21 \ 21 \ 22 \ 22 \ 22 \ 23 \ 23 \ 23 \ 24 \ 25 \ 25 \\
+    26 \ 27 \ 27 \ 28 \ 28 \ 29 \ 29 \ 30 \ 31 \ 32 \ 33 \ 34 \ 37 \ 39 \ 42
+  \end{beamercolorbox}
+
+  \vspace{0.1cm}
+  {\scriptsize\color{uniGris} Primer reflejo profesional: \azul{ordenar} y
+  contar cuántos datos hay. Aquí $n = 45$ en las dos variables, porque cada
+  encuestado respondió las dos preguntas.}
+\end{frame}
+
+\begin{frame}{Paso 4a — tabla de la variable cualitativa}
+  \scriptsize
+  \begin{columns}[T,onlytextwidth]
+    \begin{column}{0.52\textwidth}
+      \centering
+      \begin{tabular}{@{}lrrrr@{}}
+        \toprule
+        \textbf{Zona} & \textbf{$f_i$} & \textbf{$h_i$} & \textbf{$\%_i$} &
+        \textbf{Áng.} \\
+        \midrule
+        Centro & 17 & 0{,}378 & 37{,}8 & $136^\circ$ \\
+        Norte  & 11 & 0{,}244 & 24{,}4 & $88^\circ$ \\
+        Sur    & 11 & 0{,}244 & 24{,}4 & $88^\circ$ \\
+        Otras  &  6 & 0{,}133 & 13{,}3 & $48^\circ$ \\
+        \midrule
+        \textbf{Total} & \textbf{45} & \textbf{1{,}000} & \textbf{100{,}0} &
+        $\mathbf{360^\circ}$ \\
+        \bottomrule
+      \end{tabular}
+    \end{column}
+    \begin{column}{0.44\textwidth}
+      \begin{exampleblock}{El cálculo}
+        \scriptsize
+        \[ h_1 = \tfrac{17}{45} = 0{,}378 \]
+        \[ \text{áng.}_1 = 0{,}378 \times 360 = 136^\circ \]
+        Control: $17+11+11+6 = 45$ \checkmark
+      \end{exampleblock}
+    \end{column}
+  \end{columns}
+
+  \vspace{0.1cm}
+  \begin{alertblock}{Sin columnas acumuladas}
+    \scriptsize
+    La zona es \destacar{nominal}: $F_i$ y $H_i$ no se incluyen. ``El 60\% vive
+    en Centro o Norte'' sería un número que depende del orden en que escribí
+    las filas.
+  \end{alertblock}
+\end{frame}
+
+\begin{frame}{Paso 4b — tabla de la variable cuantitativa}
+  \scriptsize
+  \begin{columns}[T,onlytextwidth]
+    \begin{column}{0.40\textwidth}
+      \begin{block}{Los cálculos previos}
+        \scriptsize
+        \[ R = 42 - 6 = 36 \]
+        \[ k = 1+3{,}322\log_{10}(45) \]
+        \[ k = 1+5{,}49 = 6{,}49 \]
+        \[ \Rightarrow k = 6 \]
+        \[ A = \tfrac{36}{6} = 6 \]
+      \end{block}
+      \begin{alertblock}{¿6 o 7 clases?}
+        \tiny
+        Sturges da 6{,}49: ambos son defendibles. Se toma \destacar{6} porque
+        deja una amplitud exacta de 6 y clases redondas. Sturges orienta, no
+        obliga.
+      \end{alertblock}
+    \end{column}
+    \begin{column}{0.57\textwidth}
+      \centering
+      \begin{tabular}{@{}lrrrrrr@{}}
+        \toprule
+        \textbf{Clase} & \textbf{$x_i$} & \textbf{$f_i$} & \textbf{$F_i$} &
+        \textbf{$h_i$} & \textbf{$H_i$} & \textbf{$\%_i$} \\
+        \midrule
+        $[6,\ 12)$  &  9 &  5 &  5 & 0{,}111 & 0{,}111 & 11{,}1 \\
+        $[12,\ 18)$ & 15 &  9 & 14 & 0{,}200 & 0{,}311 & 20{,}0 \\
+        $[18,\ 24)$ & 21 & 13 & 27 & 0{,}289 & 0{,}600 & 28{,}9 \\
+        $[24,\ 30)$ & 27 & 10 & 37 & 0{,}222 & 0{,}822 & 22{,}2 \\
+        $[30,\ 36)$ & 33 &  5 & 42 & 0{,}111 & 0{,}933 & 11{,}1 \\
+        $[36,\ 42]$ & 39 &  3 & 45 & 0{,}067 & 1{,}000 &  6{,}7 \\
+        \midrule
+        \textbf{Tot.} & & \textbf{45} & & \textbf{1{,}000} & &
+        \textbf{100{,}0} \\
+        \bottomrule
+      \end{tabular}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{Paso 5 — los gráficos}
+  \centering
+  \begin{columns}[T,onlytextwidth]
+    \begin{column}{0.49\textwidth}
+      \begin{tikzpicture}
+        \begin{axis}[uniplot, width=6.3cm, height=3.5cm,
+          title={Zona de residencia},
+          ybar, bar width=0.5cm, ylabel={$f_i$},
+          symbolic x coords={Centro,Norte,Sur,Otras},
+          xtick=data, ymin=0, ymax=19, enlarge x limits=0.22,
+          nodes near coords,
+          nodes near coords style={font=\tiny,color=uniAzul}]
+          \addplot coordinates {(Centro,17) (Norte,11) (Sur,11) (Otras,6)};
+        \end{axis}
+      \end{tikzpicture}
+    \end{column}
+    \begin{column}{0.49\textwidth}
+      \begin{tikzpicture}
+        \begin{axis}[uniplot, width=6.3cm, height=3.5cm,
+          title={Consumo por visita (miles \$)},
+          ybar interval, bar width=1, ylabel={$f_i$},
+          xtick={6,12,18,24,30,36,42}, ymin=0, ymax=14.5]
+          \addplot coordinates {(6,5) (12,9) (18,13) (24,10) (30,5) (36,3)
+                                (42,0)};
+        \end{axis}
+      \end{tikzpicture}
+    \end{column}
+  \end{columns}
+
+  \vspace{0.05cm}
+  \begin{alertblock}{Lo que muestran}
+    \scriptsize
+    Barras \destacar{separadas} para la zona (nominal, ordenada de mayor a
+    menor). Barras \destacar{pegadas} para el consumo (continua). El
+    histograma tiene un pico en $[18,24)$ y una \azul{cola a la derecha}:
+    distribución asimétrica positiva.
+  \end{alertblock}
+\end{frame}
+
+\begin{frame}{Paso 5 — la ojiva y lo que permite leer}
+  \centering
+  \begin{tikzpicture}
+    \begin{axis}[uniplot, width=7.6cm, height=3.5cm,
+      title={Ojiva del consumo por visita},
+      xlabel={Consumo (miles \$)}, ylabel={$F_i$},
+      xtick={6,12,18,24,30,36,42}, ymin=0, ymax=49, xmin=5, xmax=43,
+      every axis plot/.append style={fill=none}]
+      \addplot[color=uniAzul,thick,mark=*,mark size=1.3pt,
+               mark options={fill=uniAzul}]
+        coordinates {(6,0) (12,5) (18,14) (24,27) (30,37) (36,42) (42,45)};
+      \draw[uniTitulo,dashed] (axis cs:5,22.5) -- (axis cs:21.9,22.5)
+                              -- (axis cs:21.9,0);
+    \end{axis}
+  \end{tikzpicture}
+
+  \vspace{-0.05cm}
+  \begin{alertblock}{Tres lecturas para el gerente}
+    \scriptsize
+    (1) $H_3 = 0{,}600$: el \destacar{60\%} consume menos de 24 mil. \quad
+    (2) $1-H_4 = 0{,}178$: solo el \destacar{17,8\%} consume 30 mil o más.
+    \quad (3) Buscando $F = 22{,}5$ se obtiene un consumo mediano de
+    \destacar{unos 22 mil}.
+  \end{alertblock}
+\end{frame}
+
+\begin{frame}{Paso 7 — de los números a la decisión}
+  \begin{block}{Respuesta a la pregunta 1: ¿dónde abrir la segunda sede?}
+    \scriptsize
+    El \azul{Centro} concentra el 37,8\% de los clientes. Norte y Sur quedan
+    \destacar{empatadas} con el 24,4\% cada una (juntas suman el 48,9\%).
+    Si la sede actual está en el Centro, Norte y Sur son las candidatas más
+    razonables para la segunda sede; el empate obliga a decidir con un
+    criterio adicional (costo del local, cercanía, competencia en la zona).
+  \end{block}
+
+  \vspace{0.1cm}
+  \begin{block}{Respuesta a la pregunta 2: ¿el combo de precio medio?}
+    \scriptsize
+    El 60\% de los clientes consume menos de 24 mil y la clase más frecuente
+    es \azul{$[18, 24)$}. Un combo alrededor de \destacar{20 a 22 mil} apunta
+    justo al grupo más numeroso. Los clientes de 30 mil o más son solo el
+    17,8\%: no justifican una línea premium por ahora.
+  \end{block}
+
+  \vspace{0.1cm}
+  \begin{alertblock}{El límite de lo que podemos afirmar}
+    \scriptsize
+    Todo esto describe a los \destacar{45 encuestados}. Extenderlo a todos los
+    clientes es hablar de quienes no se midieron. Además, la muestra se tomó
+    \azul{una sola semana}:
+    si esa semana fue atípica, las conclusiones cambian.
+  \end{alertblock}
+\end{frame}
+
+\seccion{Cómo se redacta el informe}
+
+\begin{frame}{Plantilla de informe descriptivo}
+  \scriptsize
+  \begin{center}
+  \begin{tabular}{@{}p{2.9cm}p{9.0cm}@{}}
+    \toprule
+    \textbf{Sección} & \textbf{Qué va ahí} \\
+    \midrule
+    Objetivo & Una frase: qué se quería saber y para qué decisión \\
+    Datos y método & Población, muestra, $n$, cómo se recogieron, fecha \\
+    Variables & Tabla con tipo y escala de cada una \\
+    Resultados & Tablas y gráficos, cada uno con título y numeración \\
+    Interpretación & Lo que dicen los números, en lenguaje del negocio \\
+    Limitaciones & Tamaño de muestra, periodo, sesgos posibles \\
+    Recomendación & Qué se propone hacer, y con qué evidencia \\
+    \bottomrule
+  \end{tabular}
+  \end{center}
+
+  \vspace{0.1cm}
+  \begin{alertblock}{La regla de oro de la redacción}
+    \scriptsize
+    Cada cifra que aparezca debe venir acompañada de \destacar{qué mide, sobre
+    cuántos casos y en qué unidad}. ``El promedio es 21'' no dice nada;
+    ``el consumo promedio de los 45 encuestados fue de 21 mil pesos por
+    visita'' sí.
+  \end{alertblock}
+\end{frame}
+
+\begin{frame}{Ejercicio en clase — escriba el informe}
+  \begin{alertblock}{En grupos de 3 (25 minutos)}
+    \footnotesize
+    Con las tablas y gráficos de la Cafetería El Portal, redacte un informe de
+    \destacar{máximo una página} siguiendo la plantilla.
+
+    \vspace{0.2cm}
+    \begin{enumerate}\setlength{\itemsep}{-0.05cm}
+      \item Escriba el objetivo en una sola frase.
+      \item Describa datos y método en tres líneas.
+      \item Redacte tres hallazgos, cada uno con su cifra y su unidad.
+      \item Enuncie dos limitaciones reales del estudio.
+      \item Cierre con una recomendación concreta y accionable.
+    \end{enumerate}
+
+    \vspace{0.15cm}
+    Al final, dos grupos leen su informe y el curso señala qué cifras están
+    mal enunciadas.
+  \end{alertblock}
+\end{frame}
+
+\seccion{Repaso integrador de la Unidad 1}
+
+\begin{frame}{Mapa de la unidad}
+  \centering
+  \begin{tikzpicture}[scale=0.92,every node/.style={font=\tiny,align=center},
+    nodo/.style={draw=uniAzul,fill=uniAzul!10,rounded corners,inner sep=3pt,
+                 minimum width=2.3cm,minimum height=0.6cm},
+    flecha/.style={->,>=latex,uniGris}]
+    \node[nodo] (a) at (0,0) {Población y muestra\\ parámetro / estadístico};
+    \node[nodo] (b) at (3.6,0) {Tipo de variable\\ y escala};
+    \node[nodo] (c) at (7.2,0) {Tabla de\\ frecuencias};
+    \node[nodo] (d) at (10.8,0) {Gráfico};
+    \node[nodo,fill=uniCrema,draw=uniTitulo] (e) at (7.2,-1.6)
+      {Interpretación y decisión};
+    \node[nodo,fill=uniCremaClaro,draw=uniNaranja] (f) at (3.6,-1.6)
+      {¿Agrupada o\\ no agrupada?};
+    \draw[flecha] (a)--(b); \draw[flecha] (b)--(c); \draw[flecha] (c)--(d);
+    \draw[flecha] (b)--(f); \draw[flecha] (f)--(c);
+    \draw[flecha] (c)--(e); \draw[flecha] (d)--(e);
+  \end{tikzpicture}
+
+  \vspace{0.2cm}
+  \begin{alertblock}{Si tuviera que recordar una sola idea}
+    \scriptsize
+    \destacar{La escala de la variable manda.} Determina si se agrupa, si se
+    acumula, qué gráfico corresponde y —desde la unidad 2— qué medida se
+    puede calcular.
+  \end{alertblock}
+\end{frame}
+
+\begin{frame}{Formulario de la Unidad 1}
+  \scriptsize
+  \begin{columns}[T,onlytextwidth]
+    \begin{column}{0.48\textwidth}
+      \begin{block}{Frecuencias}
+        \scriptsize
+        \[ h_i = \frac{f_i}{n} \qquad \%_i = h_i \times 100 \]
+        \[ F_i = \sum_{j\le i} f_j \qquad H_i = \sum_{j\le i} h_j \]
+        \[ \sum f_i = n \qquad \sum h_i = 1 \]
+      \end{block}
+    \end{column}
+    \begin{column}{0.48\textwidth}
+      \begin{block}{Agrupamiento}
+        \scriptsize
+        \[ R = x_{\max} - x_{\min} \]
+        \[ k = 1 + 3{,}322\,\log_{10}(n) \]
+        \[ A = \frac{R}{k} \ \text{(hacia arriba)} \]
+        \[ x_i = \frac{L_{\inf}+L_{\sup}}{2} \]
+      \end{block}
+    \end{column}
+  \end{columns}
+
+  \vspace{0.1cm}
+  \begin{exampleblock}{Sector circular y lectura de acumuladas}
+    \scriptsize
+    \[ \text{ángulo}_i = h_i \times 360^\circ \qquad
+       P(X < L_{\sup,i}) = H_i \qquad P(X \ge L_{\sup,i}) = 1 - H_i \]
+  \end{exampleblock}
+\end{frame}
+
+\begin{frame}{Simulacro del Examen 1 — parte A}
+  \begin{alertblock}{Individual (15 minutos, sin apuntes)}
+    \scriptsize
+    \begin{enumerate}\setlength{\itemsep}{-0.05cm}
+      \item Una empresa mide el tiempo de entrega de sus 800 pedidos y toma 60.
+            Identifique población, muestra y $n$.
+      \item ``El tiempo promedio de los 60 pedidos es 3,2 días.''
+            ¿Parámetro o estadístico? ¿Símbolo?
+      \item Clasifique: código de producto; nivel de riesgo (bajo/medio/alto);
+            unidades vendidas; peso del paquete.
+      \item ¿Cuáles de las cuatro admiten media? ¿Cuáles admiten moda?
+      \item Con $n = 60$, $x_{\min} = 1$ y $x_{\max} = 13$: calcule $R$, $k$ y $A$.
+      \item Escriba los intervalos de clase resultantes.
+    \end{enumerate}
+  \end{alertblock}
+\end{frame}
+
+\begin{frame}{Simulacro — solución de la parte A}
+  \scriptsize
+  \begin{columns}[T,onlytextwidth]
+    \begin{column}{0.49\textwidth}
+      \begin{block}{Preguntas 1 a 4}
+        \scriptsize
+        \textbf{1.} Población: los 800 pedidos. Muestra: los 60 medidos.
+        $n = 60$.
+
+        \textbf{2.} Estadístico: $\bar{x} = 3{,}2$.
+
+        \textbf{3.} Código: cualitativa nominal. Riesgo: cualitativa ordinal.
+        Unidades: cuantitativa discreta. Peso: cuantitativa continua.
+
+        \textbf{4.} Media: unidades y peso. Moda: las cuatro.
+      \end{block}
+    \end{column}
+    \begin{column}{0.49\textwidth}
+      \begin{exampleblock}{Preguntas 5 y 6}
+        \scriptsize
+        \[ R = 13-1 = 12 \]
+        \[ k = 1+3{,}322\log_{10}(60) = 1+5{,}91 = 6{,}91 \Rightarrow 7 \]
+        \[ A = \tfrac{12}{7} = 1{,}71 \Rightarrow 2 \]
+        Intervalos: $[1,3)$, $[3,5)$, $[5,7)$, $[7,9)$, $[9,11)$, $[11,13)$,
+        $[13,15]$.
+      \end{exampleblock}
+    \end{column}
+  \end{columns}
+
+  \vspace{0.05cm}
+  {\tiny\color{uniGris} Nota: al redondear $A$ hacia arriba, $k\cdot A = 14 > R$;
+  la última clase puede quedar vacía o puede reducirse a 6 clases con $A=2$
+  ajustando el inicio. Ambas soluciones se aceptan si están justificadas.}
+\end{frame}
+
+\begin{frame}{Simulacro del Examen 1 — parte B}
+  \begin{alertblock}{Individual (15 minutos)}
+    \scriptsize
+    Se tiene la siguiente tabla de la variable ``ventas diarias'' (millones):
+
+    \vspace{0.15cm}
+    \centering
+    \begin{tabular}{@{}lrrrrr@{}}
+      \toprule
+      \textbf{Clase} & $[10,20)$ & $[20,30)$ & $[30,40)$ & $[40,50)$ &
+      $[50,60]$ \\
+      \midrule
+      $f_i$ & 6 & 14 & 20 & 8 & 2 \\
+      \bottomrule
+    \end{tabular}
+
+    \vspace{0.2cm}
+    \raggedright
+    \begin{enumerate}\setlength{\itemsep}{-0.05cm}
+      \item Complete $x_i$, $F_i$, $h_i$ y $H_i$.
+      \item ¿Qué porcentaje de días vendió menos de 40 millones?
+      \item ¿Qué porcentaje vendió 40 millones o más?
+      \item ¿Cuál es la clase modal?
+      \item ¿Qué forma tiene la distribución? Justifique sin calcular nada.
+      \item ¿Qué gráfico usaría para mostrarle esto a la junta y por qué?
+    \end{enumerate}
+  \end{alertblock}
+\end{frame}
+
+\begin{frame}{Simulacro — solución de la parte B}
+  \scriptsize
+  \begin{columns}[T,onlytextwidth]
+    \begin{column}{0.50\textwidth}
+      \centering
+      \begin{tabular}{@{}lrrrrr@{}}
+        \toprule
+        \textbf{Clase} & \textbf{$x_i$} & \textbf{$f_i$} & \textbf{$F_i$} &
+        \textbf{$h_i$} & \textbf{$H_i$} \\
+        \midrule
+        $[10,20)$ & 15 &  6 &  6 & 0{,}12 & 0{,}12 \\
+        $[20,30)$ & 25 & 14 & 20 & 0{,}28 & 0{,}40 \\
+        $[30,40)$ & 35 & 20 & 40 & 0{,}40 & 0{,}80 \\
+        $[40,50)$ & 45 &  8 & 48 & 0{,}16 & 0{,}96 \\
+        $[50,60]$ & 55 &  2 & 50 & 0{,}04 & 1{,}00 \\
+        \midrule
+        \textbf{Tot.} & & \textbf{50} & & \textbf{1{,}00} & \\
+        \bottomrule
+      \end{tabular}
+    \end{column}
+    \begin{column}{0.47\textwidth}
+      \begin{exampleblock}{Respuestas 2 a 6}
+        \scriptsize
+        \textbf{2.} $H_3 = 0{,}80 \Rightarrow \destacar{80\%}$
+
+        \textbf{3.} $1-0{,}80 = \destacar{20\%}$
+
+        \textbf{4.} Clase modal: $[30,40)$, con $f=20$
+
+        \textbf{5.} Asimétrica \azul{negativa}: el pico está a la derecha del
+        centro y la cola larga queda a la izquierda.
+
+        \textbf{6.} Histograma: la variable es continua y agrupada, y la junta
+        necesita ver la forma.
+      \end{exampleblock}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{Recomendaciones para el Examen 1}
+  \begin{block}{Qué se evalúa}
+    \scriptsize
+    \begin{itemize}\setlength{\itemsep}{0.02cm}
+      \item Identificar población, muestra, parámetro y estadístico.
+      \item Clasificar variables y escalas, y decir qué se puede calcular.
+      \item Construir tablas de frecuencia, agrupadas y no agrupadas.
+      \item Leer e interpretar $F_i$ y $H_i$ en lenguaje corriente.
+      \item Elegir el gráfico correcto y detectar gráficos engañosos.
+    \end{itemize}
+  \end{block}
+
+  \vspace{0.1cm}
+  \begin{alertblock}{Cinco consejos concretos}
+    \scriptsize
+    (1) Lea el enunciado dos veces y subraye ``a lo sumo'', ``menos de'',
+    ``más de''. \quad (2) Verifique siempre $\sum f_i = n$. \quad
+    (3) Escriba las unidades. \quad (4) Redondee al final, no en cada paso.
+    \quad (5) Si le piden interpretar, \destacar{escriba una frase completa},
+    no un número suelto.
+  \end{alertblock}
+
+  \vspace{0.05cm}
+  {\tiny\color{uniGris} Examen 1: semana 6 (14--19 de septiembre), 35\% de la
+  nota, en Aulas Virtuales (Moodle), presencial en el aula.}
+\end{frame}
+
+\begin{frame}[fragile]{El caso completo, en R}
+  \scriptsize
+  Todo el proceso estadístico de hoy —pasos 3 a 5— en un solo guion:
+\begin{lstlisting}[style=Rmini]
+# Paso 3: declarar el tipo de cada variable
+zona    <- factor(zona)                 # nominal
+consumo <- as.numeric(consumo)          # continua
+
+# Paso 4a: tabla de la cualitativa
+table(zona)
+round(prop.table(table(zona)) * 100, 1)
+
+# Paso 4b: tabla de la cuantitativa
+limites <- seq(6, 42, by = 6)
+clases  <- cut(consumo, breaks = limites, right = FALSE, include.lowest = TRUE)
+data.frame(xi = head(limites, -1) + 3,
+           fi = as.vector(table(clases)),
+           Fi = as.vector(cumsum(table(clases))),
+           hi = round(as.vector(prop.table(table(clases))), 3))
+
+# Paso 5: los graficos
+barplot(table(zona)); hist(consumo, breaks = limites, right = FALSE)
+\end{lstlisting}
+
+  \vspace{-0.1cm}
+  {\tiny\color{uniGris} La ventaja no es la velocidad: es que el guion
+  \destacar{queda escrito}. Si mañana llegan 20 encuestas más, se cambia el
+  vector y todo se recalcula solo.}
+\end{frame}
+
+\begin{frame}{Ejercicios propuestos}
+  \vspace{-0.1cm}
+  \begin{beamercolorbox}[wd=\textwidth,sep=0.10cm]{block body}
+    \centering\scriptsize
+    Repaso general de la Unidad 1. Resuélvalos antes del examen.
+  \end{beamercolorbox}
+  \setbeamerfont{itemize/enumerate body}{size=\tiny}\tiny
+  \begin{columns}[T,onlytextwidth]
+    \begin{column}{0.47\textwidth}
+      \begin{enumerate}\setlength{\itemsep}{0.16cm}
+        \item Defina población, muestra y unidad de observación
+        \item Diferencia entre parámetro y estadístico, con símbolos
+        \item Dé un ejemplo propio de cada tipo de variable
+        \item ¿Por qué el estrato no admite media?
+        \item ¿Qué distingue la escala intervalar de la de razón?
+        \item Con $n=45$, $f_2=9$: calcule $h_2$ y $\%_2$
+        \item Si $H_3=0{,}60$: ¿qué significa exactamente?
+        \item $x_{\min}=6$, $x_{\max}=42$, $n=45$: calcule $R$, $k$, $A$
+        \item Escriba los intervalos del ejercicio anterior
+        \item Marca de clase de $[24,30)$
+      \end{enumerate}
+    \end{column}
+    \begin{column}{0.50\textwidth}
+      \begin{enumerate}\setlength{\itemsep}{0.16cm}
+        \setcounter{enumi}{10}
+        \item ¿Cuál es la clase modal del consumo en El Portal?
+        \item ¿Qué \% consume menos de 18 mil?
+        \item ¿Qué \% consume 24 mil o más?
+        \item Ángulo del sector ``Norte'' en el circular
+        \item ¿Por qué la zona no lleva $F_i$?
+        \item ¿Qué gráfico para la zona? ¿Y para el consumo?
+        \item Enuncie los 7 pasos del proceso estadístico
+        \item Escriba dos limitaciones del estudio de El Portal
+        \item Redacte una recomendación de una línea para el gerente
+        \item ¿Por qué no se puede afirmar algo sobre quien no se midió?
+      \end{enumerate}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{Respuestas}{Autoevaluación de los ejercicios propuestos}
+  \setbeamerfont{itemize/enumerate body}{size=\tiny}\tiny
+  \begin{columns}[T,onlytextwidth]
+    \begin{column}{0.47\textwidth}
+      \begin{enumerate}\setlength{\itemsep}{0.16cm}
+        \item Conjunto total / subconjunto observado / cada elemento
+        \item Parámetro describe la población ($\mu,\sigma,p$); estadístico
+              la muestra ($\bar x,s,\hat p$)
+        \item Respuesta abierta
+        \item Es ordinal: las distancias entre estratos no son iguales
+        \item El cero de razón es absoluto; el de intervalo es convencional
+        \item $h_2 = 0{,}200$; \ $\%_2 = 20{,}0\%$
+        \item El 60\% de los datos está por debajo de ese límite superior
+        \item $R=36$; \ $k=6{,}49 \Rightarrow 6$; \ $A=6$
+        \item $[6,12)$, $[12,18)$, $[18,24)$, $[24,30)$, $[30,36)$, $[36,42]$
+        \item $x_i = 27$
+      \end{enumerate}
+    \end{column}
+    \begin{column}{0.50\textwidth}
+      \begin{enumerate}\setlength{\itemsep}{0.16cm}
+        \setcounter{enumi}{10}
+        \item $[18,24)$, con $f_3 = 13$
+        \item $H_2 = 31{,}1\%$
+        \item $1-H_3 = 40{,}0\%$
+        \item $0{,}244\times360 = 88^\circ$
+        \item Es nominal: acumular no tendría significado
+        \item Barras (o circular) y histograma, respectivamente
+        \item Problema, población/muestra, variables, tablas, gráficos,
+              medidas, interpretación
+        \item Muestra pequeña; una sola semana de observación
+        \item Respuesta abierta, con cifra y unidad
+        \item Porque los datos solo respaldan lo que se observó; del resto
+              no hay evidencia
+      \end{enumerate}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{Referencias}
+  \footnotesize
+  \begin{itemize}
+    \item[{[1]}] Monroy Saldívar, S. (2008). \textit{Estadística descriptiva}.
+      Instituto Politécnico Nacional.
+      \texttt{https://elibro.net/es/lc/uniminuto/titulos/74722}
+    \item[{[2]}] Ordóñez Fernández, F. F. \& González Fernández, J. (2021).
+      \textit{Estadística descriptiva paso a paso}. Ediciones Pirámide.
+      \texttt{https://elibro.net/es/lc/uniminuto/titulos/215449}
+    \item[{[3]}] Llinás Solano, H. (2014). \textit{Introducción a la
+      estadística con aplicaciones en ciencias sociales}. Universidad del
+      Norte. \texttt{https://elibro.net/es/lc/uniminuto/titulos/70062}
+  \end{itemize}
+
+  \vspace{0.35cm}
+  \begin{center}
+    {\Large\color{uniAzul}\textbf{Éxitos en el Examen 1}}
+  \end{center}
+\end{frame}
+
+\end{document}

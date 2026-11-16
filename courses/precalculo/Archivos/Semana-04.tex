@@ -1,0 +1,700 @@
+% ============================================================================
+%  PRECÁLCULO — Sesión 4
+%  Semana 4: 31 de agosto al 5 de septiembre de 2026
+%  1.4 Conjuntos
+%  Duración prevista: 3 horas
+% ============================================================================
+\documentclass[aspectratio=169,10pt]{beamer}
+
+\usepackage[utf8]{inputenc}
+\IfFileExists{spanish.ldf}{\usepackage[spanish,es-noshorthands]{babel}}{}
+\usepackage{amsmath,amssymb}
+\usepackage{booktabs}
+\usepackage{tikz}
+
+\usetheme{Uniminuto}
+
+\uniasignatura{Precálculo}
+\uniprofesor{Andrés Felipe Puerta Velez}
+\unicorreo{andres.puerta-v@uniminuto.edu.co}
+\uninrc{MATE1161}
+\unisemana{Sesión 4 — Semana 4 · 31 de agosto al 5 de septiembre de 2026}
+
+\newcommand{\listatiny}{\setbeamerfont{itemize/enumerate body}{size=\tiny}\tiny}
+
+% --- diagrama de Venn de dos conjuntos -------------------------------------
+% \vennII{etiqueta A}{etiqueta B}{sombreado: 0 nada,1 union,2 interseccion,
+%         3 A-B, 4 complemento de la union}
+\newcommand{\vennII}[3]{%
+  \begin{tikzpicture}[scale=0.45]
+    \draw[uniGris,fill=uniGris!6] (-2.6,-1.9) rectangle (4.6,1.9);
+    \node[font=\tiny,color=uniGris] at (4.2,1.6) {$U$};
+    \begin{scope}
+      \clip (0,0) circle (1.5);
+      \ifnum#3=2 \fill[uniNaranja!45] (2,0) circle (1.5); \fi
+    \end{scope}
+    \ifnum#3=1
+      \fill[uniAzul!25] (0,0) circle (1.5);
+      \fill[uniAzul!25] (2,0) circle (1.5);
+    \fi
+    \ifnum#3=3
+      \begin{scope}
+        \clip (0,0) circle (1.5);
+        \fill[uniAzul!25] (-2.6,-1.9) rectangle (4.6,1.9);
+        \fill[white] (2,0) circle (1.5);
+      \end{scope}
+    \fi
+    \ifnum#3=4
+      \fill[uniTitulo!25] (-2.6,-1.9) rectangle (4.6,1.9);
+      \fill[white] (0,0) circle (1.5);
+      \fill[white] (2,0) circle (1.5);
+    \fi
+    \draw[uniAzul,thick] (0,0) circle (1.5);
+    \draw[uniTitulo,thick] (2,0) circle (1.5);
+    \node[font=\tiny,color=uniAzul] at (-1.0,1.2) {#1};
+    \node[font=\tiny,color=uniTitulo] at (3.0,1.2) {#2};
+  \end{tikzpicture}}
+
+\begin{document}
+
+\portada
+
+\begin{frame}{Orden del día}
+  \begin{enumerate}
+    \item Llamado a lista y revisión de los ejercicios propuestos
+    \item Repaso: dónde quedamos
+    \item \azul{Tema 1.4: notación, pertenencia, subconjuntos y cardinal}
+    \item Operaciones: unión, intersección, diferencia y complemento
+    \item Leyes de conjuntos y De Morgan
+    \item Conteo con diagramas de Venn, taller y cierre
+  \end{enumerate}
+
+  \vspace{0.25cm}
+  {\footnotesize\color{uniGris} Sesión de 3 horas. Este es el tema que más
+  directamente reaparece en su carrera: \destacar{estructuras discretas,
+  lógica, bases de datos y filtros de consulta} son conjuntos con otro
+  nombre.}
+\end{frame}
+
+\begin{frame}{Repaso: dónde quedamos}
+  \footnotesize
+  En la sesión 3 operamos con racionales: simplificar, mcm, producto,
+  cociente y fracciones complejas.
+
+  \vspace{0.2cm}
+  \begin{alertblock}{La pregunta de hoy}
+    \footnotesize
+    Hasta ahora trabajamos con \azul{números sueltos}. Hoy trabajamos con
+    \destacar{colecciones de objetos} y con las operaciones que se hacen entre
+    ellas. Ya usamos conjuntos sin nombrarlos: $\mathbb{N}$, $\mathbb{Z}$,
+    $\mathbb{Q}$ y $\mathbb{R}$ de la sesión 1 \azul{son conjuntos}, y
+    $\mathbb{R} = \mathbb{Q}\cup\mathbb{I}$ es una unión.
+  \end{alertblock}
+
+  \vspace{0.2cm}
+  \begin{block}{Dónde lo va a volver a ver}
+    \footnotesize
+    Un \azul{\texttt{WHERE}} en una consulta es una intersección; un
+    \azul{\texttt{OR}} es una unión; un \azul{\texttt{NOT}} es un complemento.
+    Lo de hoy es la matemática de eso.
+  \end{block}
+\end{frame}
+
+\seccion{1.4 Conjuntos}
+
+\begin{frame}{Notación y pertenencia}
+  \scriptsize
+  \begin{columns}[T,onlytextwidth]
+    \begin{column}{0.48\textwidth}
+      \begin{block}{Por extensión}
+        \tiny
+        Se listan los elementos:
+        \[ A = \{1,\,2,\,3,\,4,\,5\} \]
+        \azul{No se repiten} elementos y \azul{no importa el orden}:
+        $\{1,2\} = \{2,1\}$.
+      \end{block}
+    \end{column}
+    \begin{column}{0.48\textwidth}
+      \begin{block}{Por comprensión}
+        \tiny
+        Se da la propiedad que los define:
+        \[ A = \{x \in \mathbb{N} \;:\; 1 \le x \le 5\} \]
+        Se lee: ``los $x$ naturales \azul{tales que} están entre 1 y 5''.
+      \end{block}
+    \end{column}
+  \end{columns}
+
+  \vspace{0.12cm}
+  \begin{center}
+  \begin{tabular}{@{}p{2.2cm}p{4.0cm}p{5.4cm}@{}}
+    \toprule
+    \textbf{Símbolo} & \textbf{Se lee} & \textbf{Ejemplo} \\
+    \midrule
+    $3 \in A$ & 3 pertenece a $A$ & Relaciona \azul{elemento} con conjunto \\
+    $8 \notin A$ & 8 no pertenece a $A$ & \\
+    $B \subseteq A$ & $B$ está contenido en $A$ &
+      Relaciona \azul{conjunto} con conjunto \\
+    $|A|$ o $n(A)$ & Cardinal de $A$ & $|A| = 5$ \\
+    $\varnothing$ & Conjunto vacío & $|\varnothing| = 0$ \\
+    \bottomrule
+  \end{tabular}
+  \end{center}
+
+  \vspace{0.05cm}
+  {\tiny\color{uniGris} \destacar{Error clásico:} escribir $\{3\} \in A$. Lo
+  correcto es $3 \in A$ o bien $\{3\} \subseteq A$. El símbolo $\in$ es para
+  elementos; $\subseteq$, para conjuntos.}
+\end{frame}
+
+\begin{frame}{Subconjuntos y conjunto de partes}
+  \scriptsize
+  \begin{columns}[T,onlytextwidth]
+    \begin{column}{0.48\textwidth}
+      \begin{block}{Definiciones}
+        \tiny
+        $B \subseteq A$ si \azul{todo} elemento de $B$ está en $A$.
+
+        \vspace{0.08cm}
+        $B \subset A$ (propio) si además $B \neq A$.
+
+        \vspace{0.08cm}
+        $A = B$ si $A \subseteq B$ y $B \subseteq A$.
+
+        \vspace{0.08cm}
+        \destacar{$\varnothing \subseteq A$ siempre}, para cualquier $A$.
+      \end{block}
+    \end{column}
+    \begin{column}{0.48\textwidth}
+      \begin{exampleblock}{Conjunto de partes}
+        \tiny
+        $\mathcal{P}(A)$ es el conjunto de \azul{todos} los subconjuntos de
+        $A$. Si $A = \{a,b,c\}$:
+        \[ \varnothing,\ \{a\},\ \{b\},\ \{c\},\ \{a,b\},\ \{a,c\},\
+           \{b,c\},\ \{a,b,c\} \]
+        \[ |\mathcal{P}(A)| = 2^{|A|} = 2^3 = \destacar{8} \]
+      \end{exampleblock}
+    \end{column}
+  \end{columns}
+
+  \vspace{0.1cm}
+  \begin{alertblock}{Por qué $2^n$, y por qué le va a servir}
+    \scriptsize
+    Cada elemento tiene dos opciones: \azul{entra o no entra} en el
+    subconjunto. Con $n$ elementos hay $2\cdot 2\cdots 2 = 2^n$ combinaciones.
+    \destacar{Es el mismo razonamiento que cuenta cuántos números representa un
+    byte:} 8 bits, cada uno con dos estados, $2^8 = 256$.
+  \end{alertblock}
+\end{frame}
+
+\begin{frame}{Las cuatro operaciones}
+  \scriptsize
+  \begin{center}
+  \begin{tabular}{@{}cccc@{}}
+    \vennII{$A$}{$B$}{1} & \vennII{$A$}{$B$}{2} &
+    \vennII{$A$}{$B$}{3} & \vennII{$A$}{$B$}{4} \\[-0.15em]
+    {\tiny $A \cup B$} & {\tiny $A \cap B$} &
+    {\tiny $A - B$} & {\tiny $(A \cup B)^{c}$} \\
+  \end{tabular}
+  \end{center}
+
+  \vspace{0.1cm}
+  \begin{center}
+  \begin{tabular}{@{}p{2.6cm}p{4.2cm}p{4.8cm}@{}}
+    \toprule
+    \textbf{Operación} & \textbf{Definición} & \textbf{Se lee} \\
+    \midrule
+    $A \cup B$ & $\{x : x\in A$ \azul{o} $x \in B\}$ & Todo lo que esté en
+      alguno de los dos \\
+    $A \cap B$ & $\{x : x\in A$ \azul{y} $x \in B\}$ & Solo lo que esté en los
+      dos \\
+    $A - B$ & $\{x : x\in A$ y $x \notin B\}$ & Lo de $A$ quitando lo de $B$ \\
+    $A^{c}$ & $\{x \in U : x \notin A\}$ & Todo lo que \azul{no} está en $A$ \\
+    \bottomrule
+  \end{tabular}
+  \end{center}
+
+  \vspace{0.05cm}
+  {\tiny\color{uniGris} El complemento \destacar{siempre} se toma respecto de
+  un conjunto universal $U$: sin decir cuál es $U$, la expresión $A^c$ no
+  significa nada.}
+\end{frame}
+
+\begin{frame}{Ejemplo guiado — todas las operaciones con los mismos datos}
+  \scriptsize
+  \[ U = \{1,2,3,4,5,6,7,8,9,10\} \qquad A = \{1,2,3,4,5\}
+     \qquad B = \{4,5,6,7\} \]
+
+  \vspace{0.1cm}
+  \begin{center}
+  \begin{tabular}{@{}lll@{}}
+    \toprule
+    \textbf{Operación} & \textbf{Resultado} & \textbf{Cómo se obtuvo} \\
+    \midrule
+    $A \cup B$ & $\{1,2,3,4,5,6,7\}$ & Todo, sin repetir el 4 y el 5 \\
+    $A \cap B$ & $\{4,5\}$ & Lo que aparece en las dos listas \\
+    $A - B$ & $\{1,2,3\}$ & De $A$, quitando 4 y 5 \\
+    $B - A$ & $\{6,7\}$ & \destacar{No es lo mismo que $A-B$} \\
+    $A^{c}$ & $\{6,7,8,9,10\}$ & Lo de $U$ que no está en $A$ \\
+    $A \triangle B$ & $\{1,2,3,6,7\}$ & Lo que está en uno pero no en ambos \\
+    \bottomrule
+  \end{tabular}
+  \end{center}
+
+  \vspace{0.08cm}
+  \begin{alertblock}{Dos observaciones}
+    \tiny
+    La \destacar{unión y la intersección son conmutativas}, pero la
+    \destacar{diferencia no}: $A-B \neq B-A$. \quad
+    La diferencia simétrica cumple $A \triangle B = (A\cup B) - (A\cap B)$:
+    es ``lo que no comparten''.
+  \end{alertblock}
+\end{frame}
+
+\begin{frame}{Leyes de conjuntos y De Morgan}
+  \scriptsize
+  \begin{center}
+  \begin{tabular}{@{}p{2.6cm}p{4.4cm}p{4.6cm}@{}}
+    \toprule
+    \textbf{Ley} & \textbf{Con $\cup$} & \textbf{Con $\cap$} \\
+    \midrule
+    Conmutativa & $A\cup B = B\cup A$ & $A\cap B = B\cap A$ \\
+    Asociativa & $(A\cup B)\cup C = A\cup(B\cup C)$ &
+      $(A\cap B)\cap C = A\cap(B\cap C)$ \\
+    Distributiva & $A\cap(B\cup C) = (A\cap B)\cup(A\cap C)$ &
+      $A\cup(B\cap C) = (A\cup B)\cap(A\cup C)$ \\
+    Identidad & $A\cup\varnothing = A$ & $A\cap U = A$ \\
+    Complemento & $A\cup A^{c} = U$ & $A\cap A^{c} = \varnothing$ \\
+    \bottomrule
+  \end{tabular}
+  \end{center}
+
+  \vspace{0.1cm}
+  \begin{exampleblock}{Leyes de De Morgan}
+    \scriptsize
+    \[ (A\cup B)^{c} = A^{c}\cap B^{c} \qquad\qquad
+       (A\cap B)^{c} = A^{c}\cup B^{c} \]
+    Verificación con los datos anteriores:
+    $(A\cup B)^c = \{8,9,10\}$ \ y \ $A^c\cap B^c
+    = \{6,7,8,9,10\}\cap\{1,2,3,8,9,10\} = \{8,9,10\}$ \checkmark
+  \end{exampleblock}
+
+  \vspace{0.05cm}
+  {\tiny\color{uniGris} En palabras: \destacar{negar un ``o'' lo convierte en
+  ``y''}, y al revés. Es exactamente lo que hace \azul{\texttt{!(a || b)} =
+  \texttt{!a \&\& !b}} en cualquier lenguaje de programación.}
+\end{frame}
+
+\begin{frame}{Ejercicio 1 — en clase}
+  \begin{alertblock}{Individual (12 minutos)}
+    \scriptsize
+    Sean \ $U = \{x \in \mathbb{N} : 1 \le x \le 12\}$, \quad
+    $A = \{2,4,6,8,10\}$, \quad $B = \{1,2,3,4,5\}$, \quad
+    $C = \{5,6,7,8\}$.
+
+    \vspace{0.25cm}
+    Determine, listando los elementos:
+
+    \vspace{0.15cm}
+    \begin{columns}[T,onlytextwidth]
+      \begin{column}{0.48\textwidth}
+        \begin{enumerate}\setlength{\itemsep}{0.02cm}
+          \item $A \cup B$
+          \item $A \cap C$
+          \item $B - C$
+          \item $A^{c}$
+          \item $(A \cap B)^{c}$
+        \end{enumerate}
+      \end{column}
+      \begin{column}{0.48\textwidth}
+        \begin{enumerate}\setlength{\itemsep}{0.02cm}
+          \setcounter{enumi}{5}
+          \item $A \cap (B \cup C)$
+          \item $(A\cap B)\cup(A\cap C)$
+          \item $B \triangle C$
+          \item $|A \cup B \cup C|$
+          \item $|\mathcal{P}(C)|$
+        \end{enumerate}
+      \end{column}
+    \end{columns}
+  \end{alertblock}
+\end{frame}
+
+\begin{frame}{Ejercicio 1 — solución}
+  \tiny
+  \begin{columns}[T,onlytextwidth]
+    \begin{column}{0.49\textwidth}
+      \begin{block}{Puntos 1 a 5}
+        \tiny
+        \begin{enumerate}\setlength{\itemsep}{-0.02cm}
+          \item $\{1,2,3,4,5,6,8,10\}$
+          \item $\{6,8\}$
+          \item $\{1,2,3,4\}$
+          \item $\{1,3,5,7,9,11,12\}$
+          \item $A\cap B = \{2,4\}$, luego
+                $\{1,3,5,6,7,8,9,10,11,12\}$
+        \end{enumerate}
+      \end{block}
+    \end{column}
+    \begin{column}{0.49\textwidth}
+      \begin{block}{Puntos 6 a 10}
+        \tiny
+        \begin{enumerate}\setlength{\itemsep}{-0.02cm}
+          \setcounter{enumi}{5}
+          \item $B\cup C = \{1,\dots,8\}$, luego $\{2,4,6,8\}$
+          \item $\{2,4\}\cup\{6,8\} = \{2,4,6,8\}$
+          \item $\{1,2,3,4,6,7,8\}$
+          \item $|\{1,\dots,8\}\cup\{10\}| = 9$
+          \item $2^{4} = 16$
+        \end{enumerate}
+      \end{block}
+    \end{column}
+  \end{columns}
+
+  \vspace{0.1cm}
+  \begin{alertblock}{Compare el 6 con el 7}
+    \tiny
+    Dan lo mismo, y no es casualidad: es la \destacar{ley distributiva}
+    $A\cap(B\cup C) = (A\cap B)\cup(A\cap C)$ verificada con números. Cuando
+    una ley se cumple en un ejemplo concreto, deja de ser una fórmula que
+    memorizar.
+  \end{alertblock}
+\end{frame}
+
+\begin{frame}{Conteo con diagramas de Venn}
+  \scriptsize
+  \begin{columns}[T,onlytextwidth]
+    \begin{column}{0.44\textwidth}
+      \centering
+      \begin{tikzpicture}[scale=0.72]
+        \draw[uniGris,fill=uniGris!6] (-2.4,-2.0) rectangle (4.6,2.0);
+        \node[font=\tiny,color=uniGris] at (4.2,1.7) {$U = 100$};
+        \draw[uniAzul,thick,fill=uniAzul,fill opacity=0.18] (0,0) circle (1.6);
+        \draw[uniTitulo,thick,fill=uniTitulo,fill opacity=0.18] (2.1,0) circle (1.6);
+        \node[font=\tiny,color=uniAzul] at (-1.1,1.3) {Python};
+        \node[font=\tiny,color=uniTitulo] at (3.2,1.3) {Java};
+        \node[font=\scriptsize] at (-0.5,0) {35};
+        \node[font=\scriptsize] at (1.05,0) {25};
+        \node[font=\scriptsize] at (2.6,0) {20};
+        \node[font=\scriptsize,color=uniGris] at (3.9,-1.6) {20};
+      \end{tikzpicture}
+    \end{column}
+    \begin{column}{0.54\textwidth}
+      \begin{block}{El problema}
+        \tiny
+        De 100 estudiantes: \azul{60} programan en Python, \azul{45} en Java y
+        \azul{25} en ambos.
+        \vspace{0.06cm}
+        \[ |P\cup J| = |P| + |J| - |P\cap J| = 60+45-25 = \destacar{80} \]
+        Solo Python: $60-25 = 35$. \quad Solo Java: $45-25 = 20$. \quad
+        Ninguno: $100-80 = \destacar{20}$.
+      \end{block}
+    \end{column}
+  \end{columns}
+
+  \vspace{0.08cm}
+  \begin{alertblock}{Principio de inclusión-exclusión}
+    \tiny
+    \[ |A\cup B| = |A|+|B|-|A\cap B| \]
+    \[ |A\cup B\cup C| = |A|+|B|+|C|-|A\cap B|-|A\cap C|-|B\cap C|+|A\cap B\cap C| \]
+    Se resta lo que se contó dos veces y se devuelve lo que se restó de más.
+    \destacar{Siempre se empieza a llenar el diagrama por el centro.}
+  \end{alertblock}
+\end{frame}
+
+\begin{frame}{Ejercicio 2 — en clase (taller principal)}
+  \begin{alertblock}{En grupos de 3 (25 minutos)}
+    \scriptsize
+    En un grupo de \destacar{120 estudiantes} de Ingeniería de Software:
+
+    \vspace{0.15cm}
+    \centering
+    \begin{tabular}{@{}lr@{\hspace{1.4cm}}lr@{}}
+      Saben Python & 70 & Python y Java & 25 \\
+      Saben Java   & 50 & Python y C++  & 20 \\
+      Saben C++    & 40 & Java y C++    & 15 \\
+      & & Los tres lenguajes & 10 \\
+    \end{tabular}
+
+    \vspace{0.2cm}
+    \raggedright
+    \begin{enumerate}\setlength{\itemsep}{-0.05cm}
+      \item Dibuje el diagrama de Venn y complete \destacar{las siete
+            regiones}, empezando por el centro.
+      \item ¿Cuántos saben al menos un lenguaje?
+      \item ¿Cuántos no saben ninguno?
+      \item ¿Cuántos saben \destacar{exactamente uno}?
+      \item ¿Cuántos saben \destacar{exactamente dos}?
+      \item Verifique que las siete regiones sumen lo del punto 2.
+    \end{enumerate}
+  \end{alertblock}
+\end{frame}
+
+\begin{frame}{Ejercicio 2 — solución}
+  \scriptsize
+  \begin{columns}[T,onlytextwidth]
+    \begin{column}{0.44\textwidth}
+      \centering
+      \begin{tikzpicture}[scale=0.68]
+        \draw[uniGris,fill=uniGris!6] (-2.6,-2.9) rectangle (4.6,2.6);
+        \node[font=\tiny,color=uniGris] at (4.0,2.3) {$U=120$};
+        \draw[uniAzul,thick] (0,0.5) circle (1.7);
+        \draw[uniTitulo,thick] (2.0,0.5) circle (1.7);
+        \draw[uniNaranja,thick] (1.0,-1.1) circle (1.7);
+        \node[font=\tiny,color=uniAzul] at (-1.3,1.9) {Python};
+        \node[font=\tiny,color=uniTitulo] at (3.3,1.9) {Java};
+        \node[font=\tiny,color=uniNaranja] at (1.0,-2.6) {C++};
+        \node[font=\scriptsize] at (-0.5,0.9) {35};
+        \node[font=\scriptsize] at (2.5,0.9) {20};
+        \node[font=\scriptsize] at (1.0,-1.9) {15};
+        \node[font=\scriptsize] at (1.0,1.1) {15};
+        \node[font=\scriptsize] at (0.1,-0.7) {10};
+        \node[font=\scriptsize] at (1.9,-0.7) {5};
+        \node[font=\scriptsize] at (1.0,-0.1) {10};
+        \node[font=\scriptsize,color=uniGris] at (3.9,-2.5) {10};
+      \end{tikzpicture}
+    \end{column}
+    \begin{column}{0.54\textwidth}
+      \begin{block}{Los cálculos}
+        \tiny
+        Del centro hacia afuera:
+        \[ P\cap J \text{ solo} = 25-10 = 15 \qquad
+           P\cap C \text{ solo} = 20-10 = 10 \]
+        \[ J\cap C \text{ solo} = 15-10 = 5 \]
+        \[ \text{Solo } P = 70-15-10-10 = 35 \]
+        \[ \text{Solo } J = 50-15-5-10 = 20 \qquad
+           \text{Solo } C = 40-10-5-10 = 15 \]
+      \end{block}
+    \end{column}
+  \end{columns}
+
+  \vspace{0.05cm}
+  \begin{alertblock}{Respuestas}
+    \tiny
+    \textbf{2.} $70+50+40-25-20-15+10 = \destacar{110}$. \quad
+    \textbf{3.} $120-110 = \destacar{10}$. \quad
+    \textbf{4.} $35+20+15 = \destacar{70}$. \quad
+    \textbf{5.} $15+10+5 = \destacar{30}$. \quad
+    \textbf{6.} $70+30+10 = 110$ \checkmark
+  \end{alertblock}
+\end{frame}
+
+\begin{frame}{Ejercicio 3 — en clase}
+  \begin{alertblock}{En parejas (12 minutos)}
+    \scriptsize
+    \begin{enumerate}\setlength{\itemsep}{0.08cm}
+      \item Verifique con $A=\{1,2,3,4,5\}$, $B=\{4,5,6,7\}$ y
+            $U=\{1,\dots,10\}$ que $(A\cap B)^{c} = A^{c}\cup B^{c}$.
+      \item Escriba por comprensión: $\{2,4,6,8,10,\dots\}$ y
+            $\{1,4,9,16,25\}$.
+      \item ¿Verdadero o falso? Justifique.
+            \begin{itemize}\setlength{\itemsep}{-0.04cm}
+              \item[a)] $\varnothing \subseteq \{1,2\}$
+              \item[b)] $\varnothing \in \{1,2\}$
+              \item[c)] $\{1\} \in \{1,2\}$
+              \item[d)] $\{1\} \subseteq \{1,2\}$
+            \end{itemize}
+      \item Si $|A| = 6$, ¿cuántos subconjuntos tiene $A$? ¿Cuántos son
+            propios?
+      \item Dé un ejemplo de conjuntos $A$ y $B$ con $A - B = B - A$.
+    \end{enumerate}
+  \end{alertblock}
+\end{frame}
+
+\begin{frame}{Ejercicio 3 — solución}
+  \scriptsize
+  \begin{columns}[T,onlytextwidth]
+    \begin{column}{0.49\textwidth}
+      \begin{block}{Puntos 1 y 2}
+        \tiny
+        \textbf{1.} $A\cap B = \{4,5\}$, luego
+        $(A\cap B)^c = \{1,2,3,6,7,8,9,10\}$.
+
+        $A^c = \{6,\dots,10\}$, \ $B^c = \{1,2,3,8,9,10\}$;
+        su unión es $\{1,2,3,6,7,8,9,10\}$ \checkmark
+
+        \vspace{0.1cm}
+        \textbf{2.} $\{x\in\mathbb{N} : x \text{ es par},\ x\ge 2\}$ \ y \
+        $\{n^2 : n\in\mathbb{N},\ 1\le n\le 5\}$
+      \end{block}
+    \end{column}
+    \begin{column}{0.49\textwidth}
+      \begin{alertblock}{Punto 3: el corazón del tema}
+        \tiny
+        \textbf{a) V:} el vacío está contenido en todo conjunto. \\
+        \textbf{b) F:} $\varnothing$ no es \azul{elemento} de $\{1,2\}$; los
+        elementos son 1 y 2. \\
+        \textbf{c) F:} $\{1\}$ es un conjunto, no un elemento de $\{1,2\}$. \\
+        \textbf{d) V:} $\{1\}$ sí está \azul{contenido}.
+      \end{alertblock}
+    \end{column}
+  \end{columns}
+
+  \vspace{0.05cm}
+  \begin{exampleblock}{Puntos 4 y 5}
+    \tiny
+    \textbf{4.} $2^6 = \destacar{64}$ subconjuntos; propios,
+    $64 - 1 = \destacar{63}$ (todos menos el mismo $A$).
+
+    \vspace{0.06cm}
+    \textbf{5.} Solo ocurre cuando $A = B$: entonces ambas diferencias son
+    $\varnothing$. \destacar{Es el único caso}, y encontrarlo es el punto del
+    ejercicio.
+  \end{exampleblock}
+\end{frame}
+
+\begin{frame}{Errores frecuentes en esta sesión}
+  \scriptsize
+  \begin{center}
+  \begin{tabular}{@{}p{5.2cm}p{6.6cm}@{}}
+    \toprule
+    \textbf{Error} & \textbf{Corrección} \\
+    \midrule
+    Escribir $\{3\} \in A$ &
+      $\in$ es para elementos: $3 \in A$ o $\{3\} \subseteq A$ \\
+    \addlinespace
+    Confundir $\varnothing$ con $\{\varnothing\}$ &
+      El primero es vacío; el segundo tiene \azul{un} elemento \\
+    \addlinespace
+    Suponer que $A-B = B-A$ &
+      La diferencia \azul{no} es conmutativa \\
+    \addlinespace
+    Calcular $A^{c}$ sin definir $U$ &
+      El complemento siempre es respecto de un universal \\
+    \addlinespace
+    En Venn: poner $|A\cap B|$ solo en la zona central &
+      Ese número incluye a los que están en los tres; se resta primero \\
+    \addlinespace
+    Sumar $|A|+|B|$ y olvidar restar la intersección &
+      Los comunes quedarían contados dos veces \\
+    \bottomrule
+  \end{tabular}
+  \end{center}
+\end{frame}
+
+\begin{frame}{Cierre de la sesión}
+  \begin{block}{Lo que debe quedar claro hoy}
+    \scriptsize
+    \begin{itemize}\setlength{\itemsep}{0.02cm}
+      \item Un conjunto se define por \azul{extensión} o por
+            \azul{comprensión}; no hay repeticiones ni orden.
+      \item $\in$ relaciona elemento con conjunto; $\subseteq$, conjunto con
+            conjunto.
+      \item $|\mathcal{P}(A)| = 2^{|A|}$, por el argumento de ``entra o no
+            entra''.
+      \item Unión, intersección, diferencia y complemento, con sus diagramas.
+      \item \azul{De Morgan}: negar un ``o'' lo vuelve ``y'', y viceversa.
+      \item Inclusión-exclusión: se resta lo contado dos veces y se devuelve lo
+            restado de más.
+    \end{itemize}
+  \end{block}
+
+  \vspace{0.08cm}
+  \begin{alertblock}{Trabajo independiente}
+    \tiny
+    Resolver los 20 ejercicios de la lámina siguiente. En la sesión 5 cerramos
+    la unidad con \destacar{razones y proporciones}, y hacemos el repaso
+    integrador y el simulacro del Examen 1.
+  \end{alertblock}
+\end{frame}
+
+\begin{frame}{Ejercicios propuestos}
+  \vspace{-0.1cm}
+  \begin{beamercolorbox}[wd=\textwidth,sep=0.10cm]{block body}
+    \centering\scriptsize
+    Con $U=\{1,\dots,10\}$, \ $A=\{1,3,5,7,9\}$, \ $B=\{2,3,5,7\}$, \
+    $C=\{1,2,3,4\}$.
+  \end{beamercolorbox}
+  \listatiny
+  \vspace{0.15cm}
+  \begin{columns}[T,onlytextwidth]
+    \begin{column}{0.47\textwidth}
+      \begin{enumerate}\setlength{\itemsep}{0.16cm}
+        \item $A \cup B$
+        \item $A \cap B$
+        \item $A - C$
+        \item $C - A$
+        \item $B^{c}$
+        \item $(A\cup C)^{c}$
+        \item $A^{c}\cap C^{c}$
+        \item $A \cap (B\cup C)$
+        \item $B \triangle C$
+        \item $|A\cup B\cup C|$
+      \end{enumerate}
+    \end{column}
+    \begin{column}{0.50\textwidth}
+      \begin{enumerate}\setlength{\itemsep}{0.16cm}
+        \setcounter{enumi}{10}
+        \item $|\mathcal{P}(B)|$
+        \item ¿Es $B \subseteq A$?
+        \item ¿Es $\{3,5\} \subseteq A\cap B$?
+        \item Escriba $A$ por comprensión
+        \item ¿Cuántos subconjuntos propios tiene $C$?
+        \item De 80 personas, 50 leen X, 35 leen Y y 20 leen ambos:
+              ¿cuántas no leen ninguno?
+        \item En el caso anterior, ¿cuántas leen solo X?
+        \item Enuncie las dos leyes de De Morgan
+        \item ¿Qué operación de conjuntos corresponde a un \texttt{AND}?
+        \item ¿Y a un \texttt{NOT}?
+      \end{enumerate}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{Respuestas}{Autoevaluación de los ejercicios propuestos}
+  \listatiny
+  \vspace{0.15cm}
+  \begin{columns}[T,onlytextwidth]
+    \begin{column}{0.47\textwidth}
+      \begin{enumerate}\setlength{\itemsep}{0.16cm}
+        \item $\{1,2,3,5,7,9\}$
+        \item $\{3,5,7\}$
+        \item $\{5,7,9\}$
+        \item $\{2,4\}$
+        \item $\{1,4,6,8,9,10\}$
+        \item $\{6,8,10\}$
+        \item $\{6,8,10\}$ \ (De Morgan: igual al 6)
+        \item $\{1,3,5,7\}$
+        \item $\{1,4,5,7\}$
+        \item $|\{1,2,3,4,5,7,9\}| = 7$
+      \end{enumerate}
+    \end{column}
+    \begin{column}{0.50\textwidth}
+      \begin{enumerate}\setlength{\itemsep}{0.16cm}
+        \setcounter{enumi}{10}
+        \item $2^4 = 16$
+        \item No: $2 \in B$ pero $2 \notin A$
+        \item Sí
+        \item $\{x\in\mathbb{N} : x \text{ impar},\ 1\le x\le 9\}$
+        \item $2^4 - 1 = 15$
+        \item $80 - (50+35-20) = 15$
+        \item $50-20 = 30$
+        \item $(A\cup B)^c = A^c\cap B^c$; \ $(A\cap B)^c = A^c\cup B^c$
+        \item La intersección
+        \item El complemento
+      \end{enumerate}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{Referencias}
+  \footnotesize
+  \begin{itemize}
+    \item[{[1]}] Ramos del Olmo, Á. M. (2016). \textit{Matemáticas básicas
+      para el acceso a la universidad}. Ediciones Pirámide.
+      \texttt{https://elibro.net/es/ereader/uniminuto/49134}
+    \item[{[2]}] González Pulido, J. W., Chacón Benavides, J. A. \&
+      Fonseca Correa, L. Á. (2023). \textit{Matemática básica} (1.\textsuperscript{a} ed.).
+      Universidad Mariana.
+      \texttt{https://elibro.net/es/ereader/uniminuto/280647}
+    \item[{[3]}] Placencia Valero, J. (2008). \textit{Compendio de matemática
+      básica elemental} (1.\textsuperscript{a} ed.). Editorial Tébar Flores.
+      \texttt{https://elibro.net/es/ereader/uniminuto/269758}
+  \end{itemize}
+
+  \vspace{0.35cm}
+  \begin{center}
+    {\Large\color{uniAzul}\textbf{¿Preguntas?}}
+  \end{center}
+\end{frame}
+
+\end{document}

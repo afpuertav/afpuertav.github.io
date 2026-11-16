@@ -1,0 +1,530 @@
+% ============================================================================
+%  MATEMÁTICAS OPERATIVAS — Sesión 14
+%  Semana 14: 9 al 14 de noviembre de 2026
+%  3.3 Factorización · 3.4 Fracciones algebraicas
+%  Duración prevista: 3 horas
+% ============================================================================
+\documentclass[aspectratio=169,10pt]{beamer}
+
+\usepackage[utf8]{inputenc}
+\IfFileExists{spanish.ldf}{\usepackage[spanish,es-noshorthands]{babel}}{}
+\usepackage{amsmath,amssymb}
+\usepackage{booktabs}
+\usepackage{tikz}
+
+\usetheme{Uniminuto}
+
+\uniasignatura{Matemáticas Operativas}
+\uniprofesor{Andrés Felipe Puerta Velez}
+\unicorreo{andres.puerta-v@uniminuto.edu.co}
+\uninrc{CBASBL011}
+\unisemana{Sesión 14 — Semana 14 · 9 al 14 de noviembre de 2026}
+
+\newcommand{\listatiny}{\setbeamerfont{itemize/enumerate body}{size=\tiny}\tiny}
+
+\begin{document}
+
+\portada
+
+\begin{frame}{Orden del día}
+  \begin{enumerate}
+    \item Revisión de los ejercicios propuestos de la sesión 13
+    \item \azul{Tema 3.3: los casos de factorización}
+    \item La estrategia: en qué orden intentar
+    \item \azul{Tema 3.4: fracciones algebraicas}
+    \item Simplificar y operar; restricciones
+    \item Taller principal, errores frecuentes y cierre
+  \end{enumerate}
+
+  \vspace{0.25cm}
+  {\footnotesize\color{uniGris} Sesión de 3 horas. Factorizar es
+  \destacar{la habilidad algebraica más rentable del curso}: sin ella no se
+  simplifican fracciones ni se resuelven ecuaciones. Y las fracciones
+  algebraicas son las de la sesión 3 con letras.}
+\end{frame}
+
+% ===========================================================================
+\seccion{3.3 Factorización}
+% ===========================================================================
+
+\begin{frame}{Factorizar es desandar el camino}
+  \scriptsize
+  \begin{center}
+  \begin{tabular}{@{}p{5.0cm}p{1.4cm}p{5.2cm}@{}}
+    \toprule
+    \textbf{Desarrollar (sesión 13)} & &
+    \textbf{Factorizar (hoy)} \\
+    \midrule
+    $(x+9)(x-9) = x^{2}-81$ & $\longleftrightarrow$ &
+      $x^{2}-81 = (x+9)(x-9)$ \\
+    $(x+5)^{2} = x^{2}+10x+25$ & $\longleftrightarrow$ &
+      $x^{2}+10x+25 = (x+5)^{2}$ \\
+    $2x(x^{2}-4) = 2x^{3}-8x$ & $\longleftrightarrow$ &
+      $2x^{3}-8x = 2x(x-2)(x+2)$ \\
+    \bottomrule
+  \end{tabular}
+  \end{center}
+
+  \vspace{0.12cm}
+  \begin{block}{Qué significa}
+    \tiny
+    Factorizar es escribir una suma como un \azul{producto}. Sirve porque
+    \destacar{solo con productos se puede cancelar} en fracciones y
+    \destacar{solo con productos vale la regla $ab=0 \Rightarrow a=0$ o
+    $b=0$} que resuelve ecuaciones.
+  \end{block}
+
+  \vspace{0.08cm}
+  {\tiny\color{uniGris} \azul{Verificación siempre disponible:} multiplique la
+  respuesta y compruebe que vuelve a la expresión original. Es el único tema
+  del curso donde la comprobación es \destacar{automática}.}
+\end{frame}
+
+\begin{frame}{Los seis casos que hay que reconocer}
+  \scriptsize
+  \begin{center}
+  \begin{tabular}{@{}p{3.4cm}p{4.0cm}p{4.6cm}@{}}
+    \toprule
+    \textbf{Caso} & \textbf{Se reconoce por} & \textbf{Ejemplo} \\
+    \midrule
+    Factor común &
+      Algo repetido en todos los términos &
+      $2x^{3}-8x = 2x(x^{2}-4)$ \\
+    \addlinespace
+    Diferencia de cuadrados &
+      Dos términos, resta, ambos cuadrados &
+      $9x^{2}-25y^{2} = (3x-5y)(3x+5y)$ \\
+    \addlinespace
+    Trinomio cuadrado perfecto &
+      Extremos cuadrados y medio $=2ab$ &
+      $4x^{2}-12x+9 = (2x-3)^{2}$ \\
+    \addlinespace
+    Trinomio $x^{2}+bx+c$ &
+      Dos números que sumen $b$ y multipliquen $c$ &
+      $x^{2}-5x-14 = (x-7)(x+2)$ \\
+    \addlinespace
+    Agrupación &
+      Cuatro términos &
+      $xy+2x+3y+6 = (x+3)(y+2)$ \\
+    \addlinespace
+    Suma o diferencia de cubos &
+      Dos términos, ambos cubos &
+      $x^{3}+8 = (x+2)(x^{2}-2x+4)$ \\
+    \bottomrule
+  \end{tabular}
+  \end{center}
+
+  \vspace{0.05cm}
+  {\tiny\color{uniGris} Para los cubos:
+  $a^{3}\pm b^{3} = (a\pm b)(a^{2}\mp ab+b^{2})$. \destacar{El signo del
+  binomio es el del enunciado; el del medio del trinomio es el contrario.}}
+\end{frame}
+
+\begin{frame}{La estrategia: en qué orden intentar}
+  \scriptsize
+  \begin{center}
+  \begin{tikzpicture}[scale=0.95,every node/.style={font=\tiny,align=center},
+    nodo/.style={draw=uniAzul,fill=uniAzul!10,rounded corners,inner sep=3pt,
+                 minimum width=2.5cm,minimum height=0.62cm},
+    flecha/.style={->,>=latex,uniGris,thick}]
+    \node[nodo,fill=uniCrema,draw=uniTitulo] (a) at (0,0)
+      {1. ¿Factor\\ común?};
+    \node[nodo] (b) at (3.2,0) {2. ¿Cuántos\\ términos quedan?};
+    \node[nodo] (c) at (6.6,0) {3. Caso según\\ ese número};
+    \node[nodo] (d) at (10.0,0) {4. ¿Cada factor\\ se puede más?};
+    \draw[flecha] (a)--(b); \draw[flecha] (b)--(c); \draw[flecha] (c)--(d);
+  \end{tikzpicture}
+  \end{center}
+
+  \vspace{0.1cm}
+  \begin{center}
+  \begin{tabular}{@{}cp{9.8cm}@{}}
+    \toprule
+    \textbf{Términos} & \textbf{Casos posibles} \\
+    \midrule
+    2 & Diferencia de cuadrados; suma o diferencia de cubos \\
+    3 & Trinomio cuadrado perfecto; trinomio $x^{2}+bx+c$ \\
+    4 & Agrupación \\
+    \bottomrule
+  \end{tabular}
+  \end{center}
+
+  \vspace{0.1cm}
+  \begin{alertblock}{Los pasos 1 y 4 son los que se olvidan}
+    \tiny
+    \destacar{Siempre} se empieza sacando factor común, aunque sea un número.
+    Y \destacar{siempre} se termina preguntando si algún factor todavía
+    factoriza: $2x^{3}-8x = 2x(x^{2}-4)$ está \azul{incompleto}; falta
+    $2x(x-2)(x+2)$.
+  \end{alertblock}
+\end{frame}
+
+\begin{frame}{Ejercicio 1 — factorizar}
+  \scriptsize
+  \begin{alertblock}{En parejas, 12 minutos. Factorización completa.}
+    \tiny
+    \textbf{1.} $x^{2}-64$ \qquad
+    \textbf{2.} $x^{2}+9x+20$ \qquad
+    \textbf{3.} $3x^{3}-27x$ \qquad
+    \textbf{4.} $x^{2}+10x+25$ \qquad
+    \textbf{5.} $x^{3}-27$ \qquad
+    \textbf{6.} $2x^{2}+7x+3$
+  \end{alertblock}
+
+  \vspace{0.06cm}
+  \begin{block}{Solución}
+    \tiny
+    \textbf{1.} $\destacar{(x-8)(x+8)}$ \qquad
+    \textbf{2.} $\destacar{(x+4)(x+5)}$ \ {\color{uniGris}(suman 9,
+    multiplican 20)} \qquad
+    \textbf{3.} $3x(x^{2}-9) = \destacar{3x(x-3)(x+3)}$
+
+    \vspace{0.08cm}
+    \textbf{4.} $\destacar{(x+5)^{2}}$ \qquad
+    \textbf{5.} $\destacar{(x-3)(x^{2}+3x+9)}$ \qquad
+    \textbf{6.} $\destacar{(2x+1)(x+3)}$
+  \end{block}
+
+  \vspace{0.05cm}
+  {\tiny\color{uniGris} El \destacar{3} es el que separa: quien se queda en
+  $3x(x^{2}-9)$ pierde la mitad del punto. Y el \destacar{6} tiene
+  coeficiente distinto de $1$: hay que buscar dos números que multipliquen
+  $2\cdot 3 = 6$ y sumen $7$, es decir $6$ y $1$.}
+\end{frame}
+
+% ===========================================================================
+\seccion{3.4 Fracciones algebraicas}
+% ===========================================================================
+
+\begin{frame}{Qué es y qué hay que declarar}
+  \scriptsize
+  \begin{block}{Definición}
+    \tiny
+    Un cociente de polinomios, $\dfrac{P(x)}{Q(x)}$, con $Q(x)\neq 0$. Se
+    opera \azul{exactamente igual} que las fracciones numéricas de la sesión
+    3. Lo único nuevo es que \destacar{el denominador puede anularse para
+    ciertos valores de $x$}, y esos valores hay que excluirlos.
+  \end{block}
+
+  \vspace{0.1cm}
+  \begin{center}\tiny
+  \begin{tabular}{@{}p{3.2cm}p{4.0cm}p{4.6cm}@{}}
+    \toprule
+    \textbf{Fracción} & \textbf{Se anula el denominador si\dots} &
+    \textbf{Restricción} \\
+    \midrule
+    $\dfrac{x+1}{x-5}$ & $x-5=0$ & $x\neq 5$ \\
+    \addlinespace
+    $\dfrac{7}{x^{2}-9}$ & $x^{2}-9=0$ & $x\neq 3$ y $x\neq -3$ \\
+    \addlinespace
+    $\dfrac{x}{x^{2}+4}$ & Nunca: $x^{2}+4>0$ &
+      \destacar{Ninguna} \\
+    \bottomrule
+  \end{tabular}
+  \end{center}
+
+  \vspace{0.08cm}
+  {\tiny\color{uniGris} \destacar{Primer reflejo del tema:} factorice el
+  denominador \azul{antes} de operar y anote qué valores quedan prohibidos.
+  Esas restricciones \destacar{sobreviven a la simplificación} y hay que
+  escribirlas en la respuesta.}
+\end{frame}
+
+\begin{frame}{Simplificar: solo se cancelan factores}
+  \scriptsize
+  \begin{columns}[T,onlytextwidth]
+    \begin{column}{0.44\textwidth}
+      \begin{alertblock}{Mal}
+        \tiny
+        $\dfrac{x+4}{x} \neq 4$ \qquad
+        $\dfrac{x^{2}+16}{x+4} \neq x+4$
+
+        \vspace{0.06cm}
+        \destacar{Se tacharon términos que estaban sumando.} Con $x=1$:
+        $\tfrac{5}{1}=5$, no $4$.
+      \end{alertblock}
+    \end{column}
+    \begin{column}{0.52\textwidth}
+      \begin{exampleblock}{Bien: factorizar, cancelar, declarar}
+        \tiny
+        \[ \frac{x^{2}-36}{x^{2}+12x+36}
+         = \frac{(x-6)(x+6)}{(x+6)^{2}}
+         = \destacar{\frac{x-6}{x+6}} \]
+        con $x\neq -6$.
+      \end{exampleblock}
+    \end{column}
+  \end{columns}
+
+  \vspace{0.12cm}
+  \begin{block}{La regla, en una frase}
+    \tiny
+    \destacar{Solo se cancelan factores completos, nunca sumandos.} Y para
+    tener factores hay que \azul{factorizar primero} —de ahí que el tema 3.3
+    vaya justo antes—. Si arriba o abajo hay un $+$ o un $-$ sin paréntesis
+    alrededor, todavía no se puede cancelar nada.
+  \end{block}
+
+  \vspace{0.06cm}
+  {\tiny\color{uniGris} Es el mismo principio de la sesión 3: allí
+  $\tfrac{3+5}{3}$ tampoco era $5$. \azul{Con letras el error se ve menos, y
+  por eso se comete más.}}
+\end{frame}
+
+\begin{frame}{Operar fracciones algebraicas}
+  \scriptsize
+  \begin{columns}[T,onlytextwidth]
+    \begin{column}{0.48\textwidth}
+      \begin{exampleblock}{Multiplicar y dividir}
+        \tiny
+        Se factoriza todo y se cancela en cruz. \destacar{Nunca se desarrollan
+        los productos.}
+        \[ \frac{x^{2}-4}{x+5}\cdot\frac{x+5}{x-2}
+         = \frac{(x-2)(x+2)}{(x+5)}\cdot\frac{(x+5)}{(x-2)} \]
+        \[ = \destacar{x+2}, \quad x\neq -5,\ x\neq 2 \]
+      \end{exampleblock}
+    \end{column}
+    \begin{column}{0.48\textwidth}
+      \begin{exampleblock}{Sumar y restar}
+        \tiny
+        Mínimo común denominador, igual que en la sesión 3.
+        \[ \frac{1}{x}+\frac{3}{x+2}
+         = \frac{(x+2)+3x}{x(x+2)} \]
+        \[ = \destacar{\frac{4x+2}{x^{2}+2x}}, \quad x\neq 0,-2 \]
+      \end{exampleblock}
+    \end{column}
+  \end{columns}
+
+  \vspace{0.12cm}
+  \begin{alertblock}{El paréntesis al restar}
+    \tiny
+    \[ \frac{x}{x-3}-\frac{2}{x+3}
+     = \frac{x(x+3)-2(x-3)}{(x-3)(x+3)}
+     = \frac{x^{2}+3x-2x+6}{x^{2}-9}
+     = \destacar{\frac{x^{2}+x+6}{x^{2}-9}} \]
+    \azul{Note el $-2(x-3) = -2x+6$}, no $-2x-6$. Escriba siempre el
+    paréntesis, aunque parezca innecesario: es donde más se pierde.
+  \end{alertblock}
+\end{frame}
+
+\begin{frame}{Ejercicio 2 — taller principal}
+  \begin{alertblock}{En grupos de tres, 20 minutos. Se socializa en el tablero.}
+    \scriptsize
+    \begin{enumerate}\setlength{\itemsep}{0.0cm}
+      \item Factorice completamente: \ $5x^{2}-45$ \ y \ $x^{4}-16$
+      \item Factorice: \ $xy+2x+3y+6$
+      \item Simplifique y declare restricciones: \
+            $\dfrac{x^{2}+3x-10}{x^{2}-4}$
+      \item Efectúe: \ $\dfrac{x+1}{x^{2}-9}\div\dfrac{x^{2}+2x+1}{x+3}$
+      \item Efectúe: \ $\dfrac{2}{x-1}+\dfrac{3}{x+1}$
+      \item Verifique el punto 3 reemplazando $x=1$ en la expresión original y
+            en la simplificada.
+    \end{enumerate}
+  \end{alertblock}
+\end{frame}
+
+\begin{frame}{Ejercicio 2 — solución}
+  \scriptsize
+  \begin{columns}[T,onlytextwidth]
+    \begin{column}{0.49\textwidth}
+      \begin{block}{Puntos 1 a 3}
+        \tiny
+        \textbf{1.} $5(x^{2}-9)=\destacar{5(x-3)(x+3)}$; \
+        $(x^{2}-4)(x^{2}+4)=\destacar{(x-2)(x+2)(x^{2}+4)}$
+
+        \vspace{0.08cm}
+        \textbf{2.} $x(y+2)+3(y+2)=\destacar{(x+3)(y+2)}$
+
+        \vspace{0.08cm}
+        \textbf{3.} $\dfrac{(x+5)(x-2)}{(x-2)(x+2)}
+        = \destacar{\dfrac{x+5}{x+2}}$, \ $x\neq \pm 2$
+      \end{block}
+    \end{column}
+    \begin{column}{0.49\textwidth}
+      \begin{block}{Puntos 4 a 6}
+        \tiny
+        \textbf{4.} $\dfrac{(x+1)}{(x-3)(x+3)}\cdot\dfrac{(x+3)}{(x+1)^{2}}
+        = \destacar{\dfrac{1}{x^{2}-2x-3}}$
+
+        \vspace{0.08cm}
+        \textbf{5.} $\dfrac{2(x+1)+3(x-1)}{x^{2}-1}
+        = \destacar{\dfrac{5x-1}{x^{2}-1}}$
+
+        \vspace{0.08cm}
+        \textbf{6.} Original: $\tfrac{1+3-10}{1-4}=\tfrac{-6}{-3}=2$;
+        simplificada: $\tfrac{6}{3}=2$ \checkmark
+      \end{block}
+    \end{column}
+  \end{columns}
+
+  \vspace{0.08cm}
+  {\tiny\color{uniGris} El punto \destacar{6} es la técnica que hay que
+  adoptar para todo el tema: \azul{si la expresión original y la simplificada
+  no dan lo mismo en un valor permitido, hubo un error}. Cuesta veinte
+  segundos y salva ejercicios completos.}
+\end{frame}
+
+\begin{frame}{Errores frecuentes en esta sesión}
+  \scriptsize
+  \begin{center}
+  \begin{tabular}{@{}p{5.0cm}p{7.0cm}@{}}
+    \toprule
+    \textbf{Error} & \textbf{Lo correcto} \\
+    \midrule
+    $\dfrac{x+4}{x} = 4$ &
+      Solo se cancelan \azul{factores}; factorice primero \\
+    \addlinespace
+    Quedarse en $2x(x^{2}-4)$ &
+      Factorización \azul{incompleta}: $2x(x-2)(x+2)$ \\
+    \addlinespace
+    No declarar las restricciones &
+      Anótelas \azul{antes} de simplificar \\
+    \addlinespace
+    $-2(x-3) = -2x-6$ &
+      Es $-2x+6$: escriba el paréntesis \\
+    \addlinespace
+    Buscar común denominador para multiplicar &
+      Solo hace falta para sumar y restar \\
+    \addlinespace
+    Desarrollar antes de cancelar &
+      Factorice; desarrollar duplica el trabajo \\
+    \bottomrule
+  \end{tabular}
+  \end{center}
+\end{frame}
+
+\begin{frame}{Cierre de la sesión}
+  \scriptsize
+  \begin{block}{Lo que hay que llevarse}
+    \tiny
+    \textbf{1.} Factorizar es escribir una suma como producto, y siempre se
+    puede verificar multiplicando. \quad
+    \textbf{2.} El orden: factor común, contar términos, aplicar el caso,
+    revisar si falta. \quad
+    \textbf{3.} En fracciones algebraicas, \destacar{solo se cancelan
+    factores}. \quad
+    \textbf{4.} Las restricciones se anotan antes y sobreviven al final. \quad
+    \textbf{5.} Reemplazar un número verifica cualquier simplificación.
+  \end{block}
+
+  \vspace{0.1cm}
+  \begin{alertblock}{Para la próxima sesión}
+    \tiny
+    Resolver los \destacar{20 ejercicios propuestos} y la guía de la unidad en
+    Aulas Virtuales.
+
+    \vspace{0.05cm}
+    En la sesión 15 —la última de clase— vemos \azul{ecuaciones de primer y
+    segundo grado con aplicaciones}, hacemos el repaso de la Unidad 3 y el
+    simulacro del Examen 3. La factorización de hoy es la herramienta con la
+    que se resuelven las cuadráticas.
+
+    \vspace{0.05cm}
+    \destacar{Recuerde: lunes 16 de noviembre es festivo} (Independencia de
+    Cartagena).
+  \end{alertblock}
+\end{frame}
+
+\begin{frame}{Ejercicios propuestos}
+  \vspace{-0.1cm}
+  \begin{beamercolorbox}[wd=\textwidth,sep=0.10cm]{block body}
+    \centering\scriptsize
+    \textbf{1--10:} factorice completamente. \quad
+    \textbf{11--15:} simplifique con restricciones. \quad
+    \textbf{16--20:} opere.
+  \end{beamercolorbox}
+  \listatiny
+  \vspace{0.15cm}
+  \begin{columns}[T,onlytextwidth]
+    \begin{column}{0.47\textwidth}
+      \begin{enumerate}\setlength{\itemsep}{0.16cm}
+        \item $x^{2}-121$
+        \item $x^{2}+14x+49$
+        \item $x^{2}-3x-40$
+        \item $4x^{2}-20x+25$
+        \item $6x^{3}-24x$
+        \item $x^{3}+64$
+        \item $ax+ay+bx+by$
+        \item $16x^{2}-81y^{2}$
+        \item $3x^{2}+10x+8$
+        \item $x^{4}-81$
+        \item $\tfrac{x^{2}-49}{x^{2}-14x+49}$
+        \item $\tfrac{x^{2}+6x+8}{x^{2}-4}$
+      \end{enumerate}
+    \end{column}
+    \begin{column}{0.50\textwidth}
+      \begin{enumerate}\setlength{\itemsep}{0.16cm}
+        \setcounter{enumi}{12}
+        \item $\tfrac{4x^{2}-9}{2x^{2}+3x}$
+        \item $\tfrac{2x^{2}-50}{4x+20}$
+        \item $\tfrac{x^{3}-8}{x^{2}-4}$
+        \item $\tfrac{1}{x-4}+\tfrac{1}{x+4}$
+        \item $\tfrac{3}{x}-\tfrac{2}{x+1}$
+        \item $\tfrac{x^{2}-1}{x+2}\cdot\tfrac{x+2}{x-1}$
+        \item $\tfrac{x+3}{x^{2}-4}\div\tfrac{x^{2}+6x+9}{x-2}$
+        \item $\tfrac{x}{x^{2}-1}-\tfrac{1}{x+1}$
+      \end{enumerate}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{Respuestas}{Autoevaluación de los ejercicios propuestos}
+  \listatiny
+  \vspace{0.15cm}
+  \begin{columns}[T,onlytextwidth]
+    \begin{column}{0.47\textwidth}
+      \begin{enumerate}\setlength{\itemsep}{0.16cm}
+        \item $(x-11)(x+11)$
+        \item $(x+7)^{2}$
+        \item $(x-8)(x+5)$
+        \item $(2x-5)^{2}$
+        \item $6x(x-2)(x+2)$
+        \item $(x+4)(x^{2}-4x+16)$
+        \item $(a+b)(x+y)$
+        \item $(4x-9y)(4x+9y)$
+        \item $(3x+4)(x+2)$
+        \item $(x-3)(x+3)(x^{2}+9)$
+        \item $\tfrac{x+7}{x-7}$, \ $x\neq 7$
+      \end{enumerate}
+    \end{column}
+    \begin{column}{0.50\textwidth}
+      \begin{enumerate}\setlength{\itemsep}{0.16cm}
+        \setcounter{enumi}{11}
+        \item $\tfrac{x+4}{x-2}$, \ $x\neq \pm 2$
+        \item $\tfrac{2x-3}{x}$, \ $x\neq 0,-\tfrac{3}{2}$
+        \item $\tfrac{x-5}{2}$, \ $x\neq -5$
+        \item $\tfrac{x^{2}+2x+4}{x+2}$, \ $x\neq \pm 2$
+        \item $\tfrac{2x}{x^{2}-16}$
+        \item $\tfrac{x+3}{x^{2}+x}$
+        \item $x+1$, \ $x\neq -2,\ x\neq 1$
+        \item $\tfrac{1}{(x+2)(x+3)}$
+        \item $\tfrac{1}{x^{2}-1}$
+      \end{enumerate}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{Referencias}
+  \footnotesize
+  \begin{itemize}
+    \item[{[1]}] Ramos del Olmo, Á. M. (2016). \textit{Matemáticas básicas
+      para el acceso a la universidad}. Ediciones Pirámide.
+      \texttt{https://elibro.net/es/ereader/uniminuto/49134}
+    \item[{[2]}] González Pulido, J. W., Chacón Benavides, J. A. \&
+      Fonseca Correa, L. Á. (2023). \textit{Matemática básica}
+      (1.\textsuperscript{a} ed.). Universidad Mariana.
+      \texttt{https://elibro.net/es/ereader/uniminuto/280647}
+    \item[{[3]}] Torrijos, M. (2018). \textit{Apuntes de matemática básica}.
+      Universidad Católica de Colombia.
+      \texttt{https://elibro.net/es/ereader/uniminuto/197048}
+    \item[{[4]}] Ramírez, A. \& Rojas, L. (2016). \textit{Matemáticas básicas
+      con aplicaciones a la ingeniería}. Ecoe Ediciones.
+      \texttt{https://elibro.net/es/ereader/uniminuto/114355}
+  \end{itemize}
+
+  \vspace{0.3cm}
+  \begin{center}
+    {\Large\color{uniAzul}\textbf{¿Preguntas?}}
+  \end{center}
+\end{frame}
+
+\end{document}

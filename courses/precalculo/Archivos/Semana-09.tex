@@ -1,0 +1,594 @@
+% ============================================================================
+%  PRECÁLCULO — Sesión 9
+%  Semana 9: 5 al 10 de octubre de 2026
+%  2.3 Racionalización y sus procesos
+%  Duración prevista: 3 horas
+% ============================================================================
+\documentclass[aspectratio=169,10pt]{beamer}
+
+\usepackage[utf8]{inputenc}
+\IfFileExists{spanish.ldf}{\usepackage[spanish,es-noshorthands]{babel}}{}
+\usepackage{amsmath,amssymb}
+\usepackage{booktabs}
+\usepackage{tikz}
+
+\usetheme{Uniminuto}
+
+\uniasignatura{Precálculo}
+\uniprofesor{Andrés Felipe Puerta Velez}
+\unicorreo{andres.puerta-v@uniminuto.edu.co}
+\uninrc{MATE1161}
+\unisemana{Sesión 9 — Semana 9 · 5 al 10 de octubre de 2026}
+
+\newcommand{\listatiny}{\setbeamerfont{itemize/enumerate body}{size=\tiny}\tiny}
+
+\begin{document}
+
+\portada
+
+\begin{frame}{Orden del día}
+  \begin{enumerate}
+    \item Llamado a lista y revisión de los ejercicios propuestos
+    \item Repaso: dónde quedamos
+    \item \azul{Tema 2.3: por qué y cómo se racionaliza}
+    \item Caso monomio: raíz cuadrada y raíz de índice $n$
+    \item Caso binomio: el conjugado
+    \item Racionalizar el numerador; taller y cierre
+  \end{enumerate}
+
+  \vspace{0.25cm}
+  {\footnotesize\color{uniGris} Sesión de 3 horas. Todo lo de hoy se apoya en
+  una sola idea de la sesión 8: \destacar{multiplicar por 1 escrito de forma
+  conveniente}.}
+\end{frame}
+
+\begin{frame}{Repaso: dónde quedamos}
+  \footnotesize
+  En la sesión 8 simplificamos radicales, sumamos semejantes y operamos
+  productos y cocientes de raíces.
+
+  \vspace{0.15cm}
+  \begin{alertblock}{Las dos herramientas que hoy se usan todo el tiempo}
+    \scriptsize
+    \[ \left(\sqrt{a}\right)^{2} = a \qquad\qquad
+       (a+b)(a-b) = a^{2}-b^{2} \]
+    La primera es la definición de raíz. La segunda es la
+    \azul{diferencia de cuadrados} que apareció en el ejercicio 3 de la sesión
+    pasada: $(\sqrt5+\sqrt3)(\sqrt5-\sqrt3) = 5-3 = 2$.
+  \end{alertblock}
+
+  \vspace{0.15cm}
+  \begin{block}{La pregunta de hoy}
+    \footnotesize
+    \destacar{¿Cómo se quita una raíz del denominador sin cambiar el valor de
+    la fracción?}
+  \end{block}
+\end{frame}
+
+\seccion{2.3 Racionalización}
+
+\begin{frame}{Por qué racionalizar}
+  \scriptsize
+  \begin{columns}[T,onlytextwidth]
+    \begin{column}{0.48\textwidth}
+      \begin{block}{Las tres razones}
+        \tiny
+        \textbf{1. Forma canónica.} Un resultado se entrega sin raíces en el
+        denominador; es la convención del curso y de los textos.
+
+        \vspace{0.06cm}
+        \textbf{2. Comparar y sumar.} Con denominador entero es inmediato
+        buscar denominador común.
+
+        \vspace{0.06cm}
+        \textbf{3. Cálculo numérico.} Dividir entre un irracional propaga más
+        error que multiplicar por él.
+      \end{block}
+    \end{column}
+    \begin{column}{0.48\textwidth}
+      \begin{exampleblock}{Un ejemplo del punto 3}
+        \tiny
+        \[ \frac{1}{\sqrt{2}} \quad\text{frente a}\quad \frac{\sqrt{2}}{2} \]
+        Con $\sqrt2 \approx 1{,}414$:
+        \[ 1 \div 1{,}414 = 0{,}7072\dots \]
+        \[ 1{,}414 \div 2 = 0{,}707 \]
+        La segunda es \azul{una división entre 2}: exacta y sin arrastre de
+        error.
+      \end{exampleblock}
+    \end{column}
+  \end{columns}
+
+  \vspace{0.1cm}
+  \begin{alertblock}{La única regla del tema}
+    \scriptsize
+    \destacar{Se multiplica arriba y abajo por lo mismo.} Eso es multiplicar
+    por $1$, así que \azul{el valor de la fracción no cambia}: solo cambia su
+    aspecto. Todo el trabajo consiste en elegir bien por qué multiplicar.
+  \end{alertblock}
+\end{frame}
+
+\begin{frame}{Caso 1 — un solo radical cuadrado en el denominador}
+  \scriptsize
+  \begin{block}{Se multiplica por esa misma raíz}
+    \tiny
+    \[ \frac{a}{\sqrt{b}}\cdot\frac{\sqrt{b}}{\sqrt{b}}
+       = \frac{a\sqrt{b}}{b} \]
+  \end{block}
+
+  \vspace{0.08cm}
+  \begin{columns}[T,onlytextwidth]
+    \begin{column}{0.48\textwidth}
+      \begin{exampleblock}{Ejemplo 1}
+        \tiny
+        \[ \frac{3}{\sqrt{5}} = \frac{3}{\sqrt5}\cdot\frac{\sqrt5}{\sqrt5}
+           = \destacar{\frac{3\sqrt{5}}{5}} \]
+      \end{exampleblock}
+      \begin{exampleblock}{Ejemplo 2}
+        \tiny
+        \[ \frac{7}{2\sqrt{3}} = \frac{7\sqrt3}{2\cdot 3}
+           = \destacar{\frac{7\sqrt{3}}{6}} \]
+        {\color{uniGris} El 2 no se toca: solo estorba la raíz.}
+      \end{exampleblock}
+    \end{column}
+    \begin{column}{0.48\textwidth}
+      \begin{exampleblock}{Ejemplo 3 — simplificar primero}
+        \tiny
+        \[ \frac{8}{\sqrt{2}} = \frac{8\sqrt2}{2} = \destacar{4\sqrt{2}} \]
+      \end{exampleblock}
+      \begin{alertblock}{Cuidado}
+        \tiny
+        Después de racionalizar, \destacar{casi siempre se puede simplificar}.
+        Dejar $\tfrac{8\sqrt2}{2}$ como respuesta final es un ejercicio a
+        medias.
+      \end{alertblock}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{Caso 2 — raíz de índice $n$}
+  \scriptsize
+  \begin{block}{Se completa el exponente hasta el índice}
+    \tiny
+    $\dfrac{a}{\sqrt[n]{b^{m}}}\cdot\dfrac{\sqrt[n]{b^{\,n-m}}}
+    {\sqrt[n]{b^{\,n-m}}} = \dfrac{a\sqrt[n]{b^{\,n-m}}}{b}$ \quad
+    La idea: dentro de la raíz hay $b^{m}$ y hace falta llegar a $b^{n}$ para
+    que la raíz \azul{desaparezca}.
+  \end{block}
+
+  \vspace{0.05cm}
+  \begin{columns}[T,onlytextwidth]
+    \begin{column}{0.48\textwidth}
+      \begin{exampleblock}{Ejemplo 1}
+        \tiny
+        Falta $2^{2}$ para completar $2^{3}$:
+        \[ \frac{5}{\sqrt[3]{2}}\cdot\frac{\sqrt[3]{2^{2}}}{\sqrt[3]{2^{2}}}
+           = \frac{5\sqrt[3]{4}}{\sqrt[3]{8}}
+           = \destacar{\frac{5\sqrt[3]{4}}{2}} \]
+      \end{exampleblock}
+    \end{column}
+    \begin{column}{0.48\textwidth}
+      \begin{exampleblock}{Ejemplo 2}
+        \tiny
+        Como $\sqrt[3]{9}=\sqrt[3]{3^{2}}$, falta un $3$:
+        \[ \frac{2}{\sqrt[3]{9}}\cdot\frac{\sqrt[3]{3}}{\sqrt[3]{3}}
+           = \frac{2\sqrt[3]{3}}{\sqrt[3]{27}}
+           = \destacar{\frac{2\sqrt[3]{3}}{3}} \]
+      \end{exampleblock}
+    \end{column}
+  \end{columns}
+
+  \vspace{0.05cm}
+  \begin{alertblock}{El error que se comete siempre}
+    \tiny
+    Multiplicar por $\sqrt[3]{2}$ en vez de $\sqrt[3]{2^{2}}$: eso deja
+    $\sqrt[3]{4}$ abajo y \destacar{la raíz no desapareció}.
+  \end{alertblock}
+\end{frame}
+
+\begin{frame}{Caso 3 — binomio con raíces: el conjugado}
+  \scriptsize
+  {\tiny El conjugado de $a+b$ es $a-b$, y su producto es $a^{2}-b^{2}$:
+  \destacar{una diferencia de cuadrados que elimina las raíces}.}
+
+  \vspace{0.08cm}
+  \begin{columns}[T,onlytextwidth]
+    \begin{column}{0.50\textwidth}
+      \begin{exampleblock}{Ejemplo guiado}
+        \tiny
+        \[ \frac{2}{\sqrt{7}-\sqrt{3}}
+           \cdot\frac{\sqrt{7}+\sqrt{3}}{\sqrt{7}+\sqrt{3}} \]
+        \[ = \frac{2(\sqrt7+\sqrt3)}{(\sqrt7)^{2}-(\sqrt3)^{2}}
+           = \frac{2(\sqrt7+\sqrt3)}{7-3} \]
+        \[ = \frac{2(\sqrt7+\sqrt3)}{4}
+           = \destacar{\frac{\sqrt{7}+\sqrt{3}}{2}} \]
+      \end{exampleblock}
+    \end{column}
+    \begin{column}{0.46\textwidth}
+      \begin{exampleblock}{Otro caso}
+        \tiny
+        \[ \frac{6}{\sqrt{5}+2}\cdot\frac{\sqrt5-2}{\sqrt5-2}
+           = \frac{6(\sqrt5-2)}{5-4} \]
+        \[ = \destacar{6\sqrt{5}-12} \]
+        {\color{uniGris} Aquí el denominador quedó en $1$ y desapareció.}
+      \end{exampleblock}
+    \end{column}
+  \end{columns}
+
+  \vspace{0.05cm}
+  \begin{alertblock}{Lo único que cambia es el signo del medio}
+    \tiny
+    Conjugado de $\sqrt5+2$ es $\sqrt5-2$. \quad De $3-\sqrt2$ es $3+\sqrt2$.
+    \destacar{No se cambia el orden de los términos ni se tocan las raíces:}
+    solo el signo que los separa.
+  \end{alertblock}
+\end{frame}
+
+\begin{frame}{Racionalizar el numerador}
+  \scriptsize
+  \begin{columns}[T,onlytextwidth]
+    \begin{column}{0.50\textwidth}
+      \begin{block}{El mismo procedimiento, al revés}
+        \tiny
+        A veces conviene dejar la raíz abajo y quitarla de arriba:
+        \[ \frac{\sqrt{x+h}-\sqrt{x}}{h}
+           \cdot\frac{\sqrt{x+h}+\sqrt{x}}{\sqrt{x+h}+\sqrt{x}} \]
+        \[ = \frac{(x+h)-x}{h\left(\sqrt{x+h}+\sqrt{x}\right)}
+           = \destacar{\frac{1}{\sqrt{x+h}+\sqrt{x}}} \]
+      \end{block}
+    \end{column}
+    \begin{column}{0.46\textwidth}
+      \begin{alertblock}{Por qué se lo muestro hoy}
+        \tiny
+        Esa expresión es el \destacar{cociente incremental} con el que se
+        define la derivada en Cálculo Diferencial.
+
+        \vspace{0.08cm}
+        Tal como está, al hacer $h \to 0$ queda $\tfrac{0}{0}$. Racionalizada,
+        \azul{el problema desaparece}.
+
+        \vspace{0.08cm}
+        No hay que resolverlo hoy: solo ver que \destacar{esta técnica no se
+        queda en Precálculo}.
+      \end{alertblock}
+    \end{column}
+  \end{columns}
+
+  \vspace{0.08cm}
+  {\tiny\color{uniGris} Regla práctica: \destacar{se racionaliza donde estorbe}.
+  En una fracción normal, el denominador; en un límite, casi siempre el
+  numerador.}
+\end{frame}
+
+\begin{frame}{Ejercicio 1 — en clase}
+  \begin{alertblock}{Individual (12 minutos)}
+    \scriptsize
+    Racionalice y simplifique:
+
+    \vspace{0.3cm}
+    \centering
+    \begin{tabular}{@{}llll@{}}
+      1. \ $\dfrac{8}{\sqrt{2}}$ &
+      2. \ $\dfrac{\sqrt{3}}{\sqrt{7}}$ &
+      3. \ $\dfrac{5}{2\sqrt{5}}$ &
+      4. \ $\dfrac{9}{\sqrt{3}}$ \\[1.3em]
+      5. \ $\dfrac{1}{\sqrt[3]{3}}$ &
+      6. \ $\dfrac{2}{\sqrt[3]{9}}$ &
+      7. \ $\dfrac{4}{\sqrt[4]{8}}$ &
+      8. \ $\dfrac{\sqrt{6}}{\sqrt{10}}$ \\
+    \end{tabular}
+  \end{alertblock}
+\end{frame}
+
+\begin{frame}{Ejercicio 1 — solución}
+  \scriptsize
+  \begin{center}
+  \begin{tabular}{@{}clc@{\hspace{0.9cm}}clc@{}}
+    \toprule
+    \textbf{\#} & \textbf{Se multiplica por} & \textbf{Resultado} &
+    \textbf{\#} & \textbf{Se multiplica por} & \textbf{Resultado} \\
+    \midrule
+    1 & $\sqrt2$ & $4\sqrt{2}$ &
+    5 & $\sqrt[3]{3^{2}}$ & $\dfrac{\sqrt[3]{9}}{3}$ \\[0.4em]
+    2 & $\sqrt7$ & $\dfrac{\sqrt{21}}{7}$ &
+    6 & $\sqrt[3]{3}$ & $\dfrac{2\sqrt[3]{3}}{3}$ \\[0.4em]
+    3 & $\sqrt5$ & $\dfrac{\sqrt{5}}{2}$ &
+    7 & $\sqrt[4]{2}$ & $2\sqrt[4]{2}$ \\[0.4em]
+    4 & $\sqrt3$ & $3\sqrt{3}$ &
+    8 & $\sqrt{10}$ & $\dfrac{\sqrt{15}}{5}$ \\
+    \bottomrule
+  \end{tabular}
+  \end{center}
+
+  \vspace{0.1cm}
+  \begin{alertblock}{Los dos que exigen atención}
+    \tiny
+    \textbf{3.} $\tfrac{5\sqrt5}{2\cdot 5} = \tfrac{\sqrt5}{2}$: hay que
+    \destacar{simplificar el 5}. \quad
+    \textbf{7.} $\sqrt[4]{8}=\sqrt[4]{2^3}$, falta un $2$:
+    $\tfrac{4\sqrt[4]{2}}{2} = 2\sqrt[4]{2}$.
+  \end{alertblock}
+\end{frame}
+
+\begin{frame}{Ejercicio 2 — en clase}
+  \begin{alertblock}{En parejas (18 minutos)}
+    \scriptsize
+    Racionalice con el conjugado y simplifique:
+
+    \vspace{0.3cm}
+    \begin{columns}[T,onlytextwidth]
+      \begin{column}{0.48\textwidth}
+        \begin{enumerate}\setlength{\itemsep}{0.24cm}
+          \item $\dfrac{12}{\sqrt{5}-1}$
+          \item $\dfrac{1}{2+\sqrt{3}}$
+          \item $\dfrac{14}{3+\sqrt{2}}$
+        \end{enumerate}
+      \end{column}
+      \begin{column}{0.48\textwidth}
+        \begin{enumerate}\setlength{\itemsep}{0.24cm}
+          \setcounter{enumi}{3}
+          \item $\dfrac{\sqrt{7}-\sqrt{5}}{\sqrt{7}+\sqrt{5}}$
+          \item $\dfrac{1}{\sqrt{5}-\sqrt{2}}$
+          \item $\dfrac{1}{\sqrt{x}+2}$ \ (con $x \ge 0$, $x\neq 4$)
+        \end{enumerate}
+      \end{column}
+    \end{columns}
+  \end{alertblock}
+\end{frame}
+
+\begin{frame}{Ejercicio 2 — solución}
+  \tiny
+  \begin{columns}[T,onlytextwidth]
+    \begin{column}{0.49\textwidth}
+      \begin{block}{Puntos 1 a 3}
+        \tiny
+        \begin{align*}
+          1)\;& \frac{12(\sqrt5+1)}{5-1} = \frac{12(\sqrt5+1)}{4}
+                = \destacar{3\sqrt{5}+3} \\[0.3em]
+          2)\;& \frac{2-\sqrt3}{4-3} = \destacar{2-\sqrt{3}} \\[0.3em]
+          3)\;& \frac{14(3-\sqrt2)}{9-2} = \frac{14(3-\sqrt2)}{7}
+                = \destacar{6-2\sqrt{2}}
+        \end{align*}
+      \end{block}
+    \end{column}
+    \begin{column}{0.49\textwidth}
+      \begin{block}{Puntos 4 a 6}
+        \tiny
+        \begin{align*}
+          4)\;& \frac{(\sqrt7-\sqrt5)^{2}}{7-5}
+                = \frac{12-2\sqrt{35}}{2} = \destacar{6-\sqrt{35}} \\[0.3em]
+          5)\;& \frac{\sqrt5+\sqrt2}{5-2}
+                = \destacar{\frac{\sqrt{5}+\sqrt{2}}{3}} \\[0.3em]
+          6)\;& \destacar{\frac{\sqrt{x}-2}{x-4}}
+        \end{align*}
+      \end{block}
+    \end{column}
+  \end{columns}
+
+  \vspace{0.08cm}
+  \begin{alertblock}{El punto 4, con detalle}
+    \tiny
+    Al multiplicar arriba y abajo por $\sqrt7-\sqrt5$, el numerador queda
+    $(\sqrt7-\sqrt5)^2 = 7 - 2\sqrt{35} + 5 = 12-2\sqrt{35}$. \destacar{Ahí
+    sí hay que desarrollar el cuadrado del binomio}, no es una diferencia de
+    cuadrados. \azul{El conjugado va abajo; arriba se multiplica normal.}
+  \end{alertblock}
+\end{frame}
+
+\begin{frame}{Ejercicio 3 — en clase (taller principal)}
+  \begin{alertblock}{En grupos de 3 (20 minutos)}
+    \tiny
+    \setbeamerfont{itemize/enumerate body}{size=\tiny}
+    \begin{enumerate}\setlength{\itemsep}{0.05cm}
+      \item Racionalice: \ $\dfrac{3}{\sqrt{11}+3}$
+      \item Racionalice: \ $\dfrac{\sqrt{2}}{\sqrt{6}-2}$
+      \item Racionalice: \ $\dfrac{10}{\sqrt{6}+1}$
+      \item Sume, racionalizando primero:
+            \ $\dfrac{1}{\sqrt{2}} + \dfrac{1}{\sqrt{8}}$
+      \item Verifique numéricamente que $\dfrac{1}{2+\sqrt3}$ y $2-\sqrt3$ son
+            el mismo número (use $\sqrt3\approx 1{,}732$).
+      \item Encuentre el error: \\
+            \hspace*{0.3cm}
+            $\dfrac{4}{\sqrt{3}} = \dfrac{4\sqrt3}{\sqrt3\cdot\sqrt3}
+            = \dfrac{4\sqrt3}{9}$
+    \end{enumerate}
+  \end{alertblock}
+\end{frame}
+
+\begin{frame}{Ejercicio 3 — solución}
+  \scriptsize
+  \begin{columns}[T,onlytextwidth]
+    \begin{column}{0.48\textwidth}
+      \begin{block}{Puntos 1 a 4}
+        \tiny
+        \textbf{1.} $\dfrac{3(\sqrt{11}-3)}{11-9}
+        = \destacar{\dfrac{3\sqrt{11}-9}{2}}$
+
+        \vspace{0.06cm}
+        \textbf{2.} $\dfrac{\sqrt2(\sqrt6+2)}{6-4}
+        = \dfrac{\sqrt{12}+2\sqrt2}{2} = \destacar{\sqrt{3}+\sqrt{2}}$
+
+        \vspace{0.06cm}
+        \textbf{3.} $\dfrac{10(\sqrt6-1)}{6-1} = \destacar{2\sqrt{6}-2}$
+
+        \vspace{0.06cm}
+        \textbf{4.} $\tfrac{\sqrt2}{2} + \tfrac{\sqrt2}{4}
+        = \destacar{\tfrac{3\sqrt{2}}{4}}$
+      \end{block}
+    \end{column}
+    \begin{column}{0.50\textwidth}
+      \begin{alertblock}{Puntos 5 y 6}
+        \tiny
+        \textbf{5.} $\tfrac{1}{2+1{,}732} = \tfrac{1}{3{,}732}
+        = 0{,}268$ \ y \ $2-1{,}732 = 0{,}268$ \checkmark
+        \azul{Racionalizar no cambia el valor, solo la forma.}
+
+        \vspace{0.08cm}
+        \textbf{6.} El error está en el denominador:
+        $\sqrt3\cdot\sqrt3 = \destacar{3}$, no $9$. Lo correcto es
+        $\tfrac{4\sqrt3}{3}$.
+      \end{alertblock}
+    \end{column}
+  \end{columns}
+
+  \vspace{0.05cm}
+  {\tiny\color{uniGris} En el \destacar{2}, $\sqrt2\cdot\sqrt6 = \sqrt{12}
+  = 2\sqrt3$, y al dividir entre 2 queda $\sqrt3$. \azul{Simplificar al final
+  es parte del ejercicio}, no un extra.}
+\end{frame}
+
+\begin{frame}{Errores frecuentes en esta sesión}
+  \scriptsize
+  \begin{center}
+  \begin{tabular}{@{}p{5.2cm}p{6.6cm}@{}}
+    \toprule
+    \textbf{Error} & \textbf{Corrección} \\
+    \midrule
+    $\sqrt{a}\cdot\sqrt{a} = a^{2}$ &
+      Es $a$: la raíz y el cuadrado se cancelan \\
+    \addlinespace
+    Multiplicar solo el denominador &
+      Se multiplica \azul{arriba y abajo}, o la fracción cambia \\
+    \addlinespace
+    Con $\sqrt[3]{2}$, multiplicar por $\sqrt[3]{2}$ &
+      Hay que multiplicar por $\sqrt[3]{2^{2}}$ para completar el índice \\
+    \addlinespace
+    Cambiar el signo de los dos términos del conjugado &
+      Solo cambia el signo \azul{del medio} \\
+    \addlinespace
+    Aplicar diferencia de cuadrados en el numerador &
+      Arriba se multiplica normal; si hay binomio, se desarrolla \\
+    \addlinespace
+    Dejar el resultado sin simplificar &
+      Casi siempre queda un factor común por cancelar \\
+    \bottomrule
+  \end{tabular}
+  \end{center}
+\end{frame}
+
+\begin{frame}{Cierre de la sesión}
+  \begin{block}{Lo que debe quedar claro hoy}
+    \scriptsize
+    \begin{itemize}\setlength{\itemsep}{0.02cm}
+      \item Racionalizar es \azul{multiplicar por 1} escrito de forma
+            conveniente: el valor no cambia.
+      \item Monomio con $\sqrt{\ }$: se multiplica por esa misma raíz.
+      \item Raíz de índice $n$: se \azul{completa el exponente} hasta el
+            índice.
+      \item Binomio: se usa el \azul{conjugado}, que produce una diferencia de
+            cuadrados.
+      \item A veces se racionaliza el \destacar{numerador}: es lo que se hará
+            en Cálculo.
+      \item Después de racionalizar, \destacar{siempre} se revisa si se puede
+            simplificar.
+    \end{itemize}
+  \end{block}
+
+  \vspace{0.08cm}
+  \begin{alertblock}{Trabajo independiente}
+    \tiny
+    Resolver los 20 ejercicios de la lámina siguiente. En la sesión 10 empiezan
+    los \destacar{logaritmos}: la operación que despeja el exponente y que
+    explica por qué la búsqueda binaria es tan rápida.
+  \end{alertblock}
+\end{frame}
+
+\begin{frame}{Ejercicios propuestos}
+  \vspace{-0.1cm}
+  \begin{beamercolorbox}[wd=\textwidth,sep=0.10cm]{block body}
+    \centering\scriptsize
+    \textbf{1--7:} monomio. \quad \textbf{8--12:} índice $n$. \quad
+    \textbf{13--20:} conjugado y aplicaciones.
+  \end{beamercolorbox}
+  \listatiny
+  \vspace{0.15cm}
+  \begin{columns}[T,onlytextwidth]
+    \begin{column}{0.47\textwidth}
+      \begin{enumerate}\setlength{\itemsep}{0.16cm}
+        \item $\dfrac{1}{\sqrt{7}}$
+        \item $\dfrac{6}{\sqrt{3}}$
+        \item $\dfrac{10}{\sqrt{5}}$
+        \item $\dfrac{3}{2\sqrt{2}}$
+        \item $\dfrac{\sqrt{2}}{\sqrt{5}}$
+        \item $\dfrac{15}{\sqrt{10}}$
+        \item $\dfrac{a}{\sqrt{b}}$
+        \item $\dfrac{1}{\sqrt[3]{5}}$
+        \item $\dfrac{4}{\sqrt[3]{2}}$
+        \item $\dfrac{3}{\sqrt[3]{4}}$
+      \end{enumerate}
+    \end{column}
+    \begin{column}{0.50\textwidth}
+      \begin{enumerate}\setlength{\itemsep}{0.16cm}
+        \setcounter{enumi}{10}
+        \item $\dfrac{1}{\sqrt[4]{2}}$
+        \item $\dfrac{5}{\sqrt[5]{16}}$
+        \item $\dfrac{1}{\sqrt{3}+1}$
+        \item $\dfrac{4}{\sqrt{6}-\sqrt{2}}$
+        \item $\dfrac{2}{5-\sqrt{3}}$
+        \item $\dfrac{\sqrt{3}}{\sqrt{3}-1}$
+        \item $\dfrac{\sqrt{5}+1}{\sqrt{5}-1}$
+        \item $\dfrac{1}{\sqrt{x}-3}$
+        \item ¿Cuál es el conjugado de $7-2\sqrt{5}$?
+        \item ¿Por qué racionalizar no cambia el valor?
+      \end{enumerate}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{Respuestas}{Autoevaluación de los ejercicios propuestos}
+  \listatiny
+  \vspace{0.15cm}
+  \begin{columns}[T,onlytextwidth]
+    \begin{column}{0.47\textwidth}
+      \begin{enumerate}\setlength{\itemsep}{0.16cm}
+        \item $\tfrac{\sqrt{7}}{7}$
+        \item $2\sqrt{3}$
+        \item $2\sqrt{5}$
+        \item $\tfrac{3\sqrt{2}}{4}$
+        \item $\tfrac{\sqrt{10}}{5}$
+        \item $\tfrac{3\sqrt{10}}{2}$
+        \item $\tfrac{a\sqrt{b}}{b}$
+        \item $\tfrac{\sqrt[3]{25}}{5}$
+        \item $2\sqrt[3]{4}$
+        \item $\tfrac{3\sqrt[3]{2}}{2}$
+      \end{enumerate}
+    \end{column}
+    \begin{column}{0.50\textwidth}
+      \begin{enumerate}\setlength{\itemsep}{0.16cm}
+        \setcounter{enumi}{10}
+        \item $\tfrac{\sqrt[4]{8}}{2}$
+        \item $\tfrac{5\sqrt[5]{2}}{2}$
+        \item $\tfrac{\sqrt{3}-1}{2}$
+        \item $\sqrt{6}+\sqrt{2}$
+        \item $\tfrac{5+\sqrt{3}}{11}$
+        \item $\tfrac{3+\sqrt{3}}{2}$
+        \item $\tfrac{3+\sqrt{5}}{2}$
+        \item $\tfrac{\sqrt{x}+3}{x-9}$
+        \item $7+2\sqrt{5}$
+        \item Porque se multiplica por una fracción igual a $1$
+      \end{enumerate}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{Referencias}
+  \footnotesize
+  \begin{itemize}
+    \item[{[1]}] Ramos del Olmo, Á. M. (2016). \textit{Matemáticas básicas
+      para el acceso a la universidad}. Ediciones Pirámide.
+      \texttt{https://elibro.net/es/ereader/uniminuto/49134}
+    \item[{[2]}] González Pulido, J. W., Chacón Benavides, J. A. \&
+      Fonseca Correa, L. Á. (2023). \textit{Matemática básica} (1.\textsuperscript{a} ed.).
+      Universidad Mariana.
+      \texttt{https://elibro.net/es/ereader/uniminuto/280647}
+    \item[{[3]}] Placencia Valero, J. (2008). \textit{Compendio de matemática
+      básica elemental} (1.\textsuperscript{a} ed.). Editorial Tébar Flores.
+      \texttt{https://elibro.net/es/ereader/uniminuto/269758}
+  \end{itemize}
+
+  \vspace{0.35cm}
+  \begin{center}
+    {\Large\color{uniAzul}\textbf{¿Preguntas?}}
+  \end{center}
+\end{frame}
+
+\end{document}

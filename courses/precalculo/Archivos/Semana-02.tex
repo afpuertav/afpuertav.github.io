@@ -1,0 +1,731 @@
+% ============================================================================
+%  PRECÁLCULO — Sesión 2
+%  Semana 2: 17 al 22 de agosto de 2026   (lunes 17: festivo)
+%  1.2 Operaciones básicas con números enteros
+%  Duración prevista: 3 horas
+% ============================================================================
+\documentclass[aspectratio=169,10pt]{beamer}
+
+\usepackage[utf8]{inputenc}
+\IfFileExists{spanish.ldf}{\usepackage[spanish,es-noshorthands]{babel}}{}
+\usepackage{amsmath,amssymb}
+\usepackage{booktabs}
+\usepackage{tikz}
+
+\usetheme{Uniminuto}
+
+\uniasignatura{Precálculo}
+\uniprofesor{Andrés Felipe Puerta Velez}
+\unicorreo{andres.puerta-v@uniminuto.edu.co}
+\uninrc{MATE1161}
+\unisemana{Sesión 2 — Semana 2 · 17 al 22 de agosto de 2026}
+
+\newcommand{\listatiny}{\setbeamerfont{itemize/enumerate body}{size=\tiny}\tiny}
+
+\begin{document}
+
+\portada
+
+\begin{frame}{Orden del día}
+  \begin{enumerate}
+    \item Llamado a lista y revisión de los ejercicios propuestos
+    \item Repaso: dónde quedamos
+    \item \azul{Tema 1.2: suma, resta, producto y cociente de enteros}
+    \item Potencias de enteros y jerarquía de operaciones
+    \item Divisibilidad: primos, MCD y mcm
+    \item Talleres guiados, errores frecuentes y cierre
+  \end{enumerate}
+
+  \vspace{0.25cm}
+  {\footnotesize\color{uniGris} Sesión de 3 horas. Lo de hoy parece elemental y
+  \destacar{es donde se pierde la mitad de los exámenes} de todo el semestre:
+  un signo mal puesto arruina un problema entero.}
+\end{frame}
+
+\begin{frame}{Repaso: dónde quedamos}
+  \footnotesize
+  En la sesión 1 vimos los conjuntos numéricos, las propiedades de las
+  operaciones y el orden en $\mathbb{R}$.
+
+  \vspace{0.2cm}
+  \begin{alertblock}{La pregunta de hoy}
+    \footnotesize
+    Ya sabemos \azul{qué} números existen. Ahora: \destacar{¿cómo se opera con
+    ellos cuando hay signos negativos de por medio?} Y sobre todo, ¿en qué
+    orden se hacen las operaciones cuando aparecen todas juntas?
+  \end{alertblock}
+
+  \vspace{0.2cm}
+  \begin{block}{Dos ideas de la sesión pasada que hoy se usan todo el tiempo}
+    \footnotesize
+    El \azul{opuesto} de $a$ es $-a$, y cumple $a + (-a) = 0$. \quad
+    El \azul{valor absoluto} $|a|$ es la distancia al cero, y nunca es
+    negativo.
+  \end{block}
+\end{frame}
+
+\seccion{1.2 Operaciones con números enteros}
+
+\begin{frame}{Suma y resta: dos reglas y nada más}
+  \scriptsize
+  \begin{columns}[T,onlytextwidth]
+    \begin{column}{0.48\textwidth}
+      \begin{block}{Signos iguales}
+        \scriptsize
+        Se \azul{suman} los valores absolutos y se conserva el signo.
+        \[ -6 + (-9) = -15 \qquad 7 + 4 = 11 \]
+      \end{block}
+    \end{column}
+    \begin{column}{0.48\textwidth}
+      \begin{block}{Signos distintos}
+        \scriptsize
+        Se \azul{restan} los valores absolutos y se pone el signo del
+        \destacar{mayor en valor absoluto}.
+        \[ -8 + 15 = 7 \qquad 12 - 20 = -8 \]
+      \end{block}
+    \end{column}
+  \end{columns}
+
+  \vspace{0.15cm}
+  \begin{exampleblock}{La resta no existe}
+    \scriptsize
+    Restar es sumar el opuesto: \quad $a - b = a + (-b)$
+    \[ -7 - (-3) = -7 + 3 = \destacar{-4} \qquad\qquad
+       5 - 9 = 5 + (-9) = \destacar{-4} \]
+    Por eso \azul{menos por menos da más} en la resta: $-(-3) = +3$. Quitar una
+    deuda es ganar.
+  \end{exampleblock}
+
+  \vspace{0.05cm}
+  {\tiny\color{uniGris} En la recta numérica: sumar un positivo es moverse a la
+  derecha, sumar un negativo es moverse a la izquierda. Nada más.}
+\end{frame}
+
+\begin{frame}{Producto y cociente: la ley de los signos}
+  \scriptsize
+  \begin{columns}[T,onlytextwidth]
+    \begin{column}{0.44\textwidth}
+      \centering
+      \begin{tabular}{@{}ccc@{}}
+        \toprule
+        & $+$ & $-$ \\
+        \midrule
+        $+$ & $+$ & $-$ \\
+        $-$ & $-$ & $+$ \\
+        \bottomrule
+      \end{tabular}
+
+      \vspace{0.15cm}
+      \[ (-5)(6) = -30 \qquad (-4)(-9) = 36 \]
+      \[ \frac{-36}{-4} = 9 \qquad \frac{48}{-6} = -8 \]
+    \end{column}
+    \begin{column}{0.52\textwidth}
+      \begin{exampleblock}{¿Por qué $(-)(-) = +$?}
+        \tiny
+        Porque si no, se rompería la distributiva. Observe:
+        \[ (-3)\big[\,5 + (-5)\,\big] = (-3)(0) = 0 \]
+        Pero distribuyendo:
+        \[ (-3)(5) + (-3)(-5) = -15 + (-3)(-5) \]
+        Para que el total sea $0$, necesariamente $(-3)(-5) = +15$.
+      \end{exampleblock}
+    \end{column}
+  \end{columns}
+
+  \vspace{0.1cm}
+  \begin{alertblock}{La regla práctica para varios factores}
+    \scriptsize
+    Se cuentan los factores negativos: si son \destacar{pares}, el resultado es
+    positivo; si son \destacar{impares}, negativo.
+    \[ (-3)(4)(-2) = \destacar{+24} \qquad (-1)(-2)(-3) = \destacar{-6} \]
+  \end{alertblock}
+\end{frame}
+
+\begin{frame}{Potencias de enteros: la trampa del signo}
+  \scriptsize
+  \begin{columns}[T,onlytextwidth]
+    \begin{column}{0.48\textwidth}
+      \begin{block}{Con paréntesis}
+        \scriptsize
+        \[ (-2)^4 = (-2)(-2)(-2)(-2) = \destacar{16} \]
+        \[ (-2)^3 = (-2)(-2)(-2) = \destacar{-8} \]
+        La base \azul{es} $-2$.
+      \end{block}
+    \end{column}
+    \begin{column}{0.48\textwidth}
+      \begin{alertblock}{Sin paréntesis}
+        \scriptsize
+        \[ -2^4 = -(2^4) = \destacar{-16} \]
+        \[ -2^3 = -(2^3) = \destacar{-8} \]
+        La base es $2$; el menos queda \azul{afuera}.
+      \end{alertblock}
+    \end{column}
+  \end{columns}
+
+  \vspace{0.15cm}
+  \begin{exampleblock}{La regla que resuelve todos los casos}
+    \scriptsize
+    El exponente afecta \destacar{solo a lo que está pegado a él}. Si el signo
+    menos no está dentro del paréntesis, no entra en la potencia.
+    \[ -5^2 + (-5)^2 = -25 + 25 = \destacar{0} \]
+  \end{exampleblock}
+
+  \vspace{0.05cm}
+  {\tiny\color{uniGris} Con exponente \azul{par} el paréntesis cambia todo; con
+  exponente \azul{impar} los dos dan lo mismo, porque el resultado es negativo
+  de cualquier forma. Verifíquelo con $-2^3$ y $(-2)^3$.}
+\end{frame}
+
+\begin{frame}{Jerarquía de operaciones}
+  \scriptsize
+  \begin{center}
+  \begin{tabular}{@{}cp{4.4cm}p{6.0cm}@{}}
+    \toprule
+    & \textbf{Se hace} & \textbf{Detalle} \\
+    \midrule
+    1 & \azul{Paréntesis} & De adentro hacia afuera: $(\ )$, $[\ ]$, $\{\ \}$ \\
+    2 & \azul{Potencias y raíces} & Antes que cualquier producto \\
+    3 & \azul{Productos y cocientes} &
+      \destacar{De izquierda a derecha}, en el orden en que aparecen \\
+    4 & \azul{Sumas y restas} &
+      \destacar{De izquierda a derecha} \\
+    \bottomrule
+  \end{tabular}
+  \end{center}
+
+  \vspace{0.1cm}
+  \begin{alertblock}{El punto 3 es el que casi nadie respeta}
+    \scriptsize
+    La multiplicación \destacar{no va antes} que la división: van al mismo
+    nivel y se resuelven en el orden en que aparecen.
+    \[ 18 \div (-3) \cdot 2 = (-6)\cdot 2 = \destacar{-12}
+       \qquad\text{y no}\qquad 18 \div (-6) = -3 \]
+    Lo mismo pasa con la suma y la resta.
+  \end{alertblock}
+\end{frame}
+
+\begin{frame}{Ejemplo guiado 1 — paso a paso}
+  \scriptsize
+  \[ 5 + 3 \cdot (8-2)^2 \div 9 - (-4) \]
+
+  \vspace{0.05cm}
+  \begin{center}
+  \begin{tabular}{@{}clp{5.6cm}@{}}
+    \toprule
+    \textbf{Paso} & \textbf{Expresión} & \textbf{Qué se hizo} \\
+    \midrule
+    1 & $5 + 3\cdot(6)^2 \div 9 - (-4)$ & Paréntesis: $8-2=6$ \\
+    2 & $5 + 3\cdot 36 \div 9 - (-4)$   & Potencia: $6^2 = 36$ \\
+    3 & $5 + 108 \div 9 - (-4)$         & Producto (va antes por estar a la izquierda) \\
+    4 & $5 + 12 - (-4)$                 & Cociente: $108\div 9 = 12$ \\
+    5 & $5 + 12 + 4$                    & Resta del opuesto: $-(-4) = +4$ \\
+    6 & $\destacar{21}$                 & Suma de izquierda a derecha \\
+    \bottomrule
+  \end{tabular}
+  \end{center}
+
+  \vspace{0.1cm}
+  \begin{alertblock}{Cómo se escribe en el examen}
+    \tiny
+    \destacar{Una línea por paso.} No se saltan pasos ni se hacen dos
+    operaciones a la vez: así es como aparecen los errores de signo, y así es
+    como se pierden puntos que ya se tenían.
+  \end{alertblock}
+\end{frame}
+
+\begin{frame}{Ejemplo guiado 2 — con signos de agrupación anidados}
+  \scriptsize
+  \[ -\big[\,2 - (5-8)\,\big] + (-3)^2 \]
+
+  \vspace{0.1cm}
+  \begin{columns}[T,onlytextwidth]
+    \begin{column}{0.52\textwidth}
+      \begin{block}{Desarrollo}
+        \tiny
+        \begin{align*}
+          &= -\big[\,2 - (-3)\,\big] + (-3)^2 &&\text{paréntesis interno} \\
+          &= -\big[\,2 + 3\,\big] + (-3)^2 &&\text{resta del opuesto} \\
+          &= -\,[\,5\,] + 9 &&\text{corchete y potencia} \\
+          &= -5 + 9 \;=\; \destacar{4}
+        \end{align*}
+      \end{block}
+    \end{column}
+    \begin{column}{0.46\textwidth}
+      \begin{alertblock}{El error que se comete aquí}
+        \tiny
+        Escribir $-[2 - (-3)] = -2 - 3$. \destacar{El menos de afuera afecta a
+        todo el corchete}, no solo al primer término: primero se resuelve lo de
+        adentro y después se aplica el signo.
+      \end{alertblock}
+    \end{column}
+  \end{columns}
+
+  \vspace{0.1cm}
+  \begin{exampleblock}{Una segunda verificación, siempre}
+    \scriptsize
+    Rehaga el ejercicio \azul{distribuyendo el menos} desde el principio:
+    $-[2-(5-8)] = -2 + (5-8) = -2 + (-3) = -5$. Mismo resultado.
+    \destacar{Dos caminos que coinciden es la mejor señal de que está bien.}
+  \end{exampleblock}
+\end{frame}
+
+\begin{frame}{Ejercicio 1 — en clase}
+  \begin{alertblock}{Individual (10 minutos)}
+    \scriptsize
+    Calcule mentalmente o en el cuaderno, en menos de un minuto cada uno:
+
+    \vspace{0.25cm}
+    \centering
+    \begin{tabular}{@{}llll@{}}
+      1. \ $-8 + 15$ & 2. \ $12 - 20$ & 3. \ $-6 - 9$ &
+      4. \ $-7 - (-3)$ \\[0.7em]
+      5. \ $(-5)(6)$ & 6. \ $(-4)(-9)$ & 7. \ $\dfrac{-36}{-4}$ &
+      8. \ $\dfrac{48}{-6}$ \\[0.9em]
+      9. \ $(-2)^5$ & 10. \ $-3^2$ & 11. \ $(-3)^2$ &
+      12. \ $(-1)^{100}$ \\
+    \end{tabular}
+
+    \vspace{0.25cm}
+    \raggedright
+    Al terminar, compare con su compañero: \destacar{si difieren en alguno,
+    ese es el que hay que discutir}.
+  \end{alertblock}
+\end{frame}
+
+\begin{frame}{Ejercicio 1 — solución}
+  \scriptsize
+  \begin{center}
+  \begin{tabular}{@{}llllllll@{}}
+    \toprule
+    1 & $7$ & 2 & $-8$ & 3 & $-15$ & 4 & $-4$ \\
+    5 & $-30$ & 6 & $36$ & 7 & $9$ & 8 & $-8$ \\
+    9 & $-32$ & 10 & $-9$ & 11 & $9$ & 12 & $1$ \\
+    \bottomrule
+  \end{tabular}
+  \end{center}
+
+  \vspace{0.15cm}
+  \begin{alertblock}{Los tres que separan al grupo}
+    \scriptsize
+    \textbf{4.} $-7-(-3) = -7+3 = -4$. No es $-10$: el doble signo se convierte
+    en suma. \quad
+    \textbf{10 y 11.} $-3^2 = -9$ pero $(-3)^2 = 9$. \destacar{El paréntesis
+    es la diferencia entre aprobar y no aprobar.} \quad
+    \textbf{12.} $(-1)$ elevado a exponente par siempre da $1$; a exponente
+    impar, $-1$.
+  \end{alertblock}
+\end{frame}
+
+\begin{frame}{Ejercicio 2 — en clase}
+  \begin{alertblock}{En parejas (15 minutos)}
+    \scriptsize
+    Resuelva mostrando \destacar{todos} los pasos, uno por línea:
+
+    \vspace{0.25cm}
+    \begin{columns}[T,onlytextwidth]
+      \begin{column}{0.48\textwidth}
+        \begin{enumerate}\setlength{\itemsep}{0.15cm}
+          \item $20 - 3(7-9)^2$
+          \item $(-2)^3 + 16 \div (-8) - 5$
+          \item $-5^2 + (-5)^2$
+        \end{enumerate}
+      \end{column}
+      \begin{column}{0.48\textwidth}
+        \begin{enumerate}\setlength{\itemsep}{0.15cm}
+          \setcounter{enumi}{3}
+          \item $6 + \dfrac{14 - (3-8)}{-19}$
+          \item $2(-3)^2 - (-4)(5)$
+          \item $-\big[\,7 - (2-6)\,\big] - (-3)$
+        \end{enumerate}
+      \end{column}
+    \end{columns}
+  \end{alertblock}
+\end{frame}
+
+\begin{frame}{Ejercicio 2 — solución}
+  \tiny
+  \begin{columns}[T,onlytextwidth]
+    \begin{column}{0.49\textwidth}
+      \begin{block}{Puntos 1 a 3}
+        \tiny
+        \begin{align*}
+          1)\;& 20 - 3(-2)^2 = 20 - 3(4) = 20-12 = \destacar{8} \\[0.25em]
+          2)\;& -8 + 16\div(-8) - 5 = -8 + (-2) - 5 = \destacar{-15} \\[0.25em]
+          3)\;& -25 + 25 = \destacar{0}
+        \end{align*}
+      \end{block}
+    \end{column}
+    \begin{column}{0.49\textwidth}
+      \begin{block}{Puntos 4 a 6}
+        \tiny
+        \begin{align*}
+          4)\;& 6 + \tfrac{14-(-5)}{-19} = 6 + \tfrac{19}{-19}
+                = 6 - 1 = \destacar{5} \\[0.25em]
+          5)\;& 2(9) - (-20) = 18 + 20 = \destacar{38} \\[0.25em]
+          6)\;& -[\,7+4\,] + 3 = -11 + 3 = \destacar{-8}
+        \end{align*}
+      \end{block}
+    \end{column}
+  \end{columns}
+
+  \vspace{0.1cm}
+  \begin{alertblock}{Dos observaciones}
+    \tiny
+    En el \destacar{1} el $(-2)$ está elevado al cuadrado, así que da $+4$; el
+    $3$ multiplica después. \quad
+    En el \destacar{4} la raya de fracción \azul{agrupa}: es como un paréntesis
+    invisible, y primero se resuelve todo el numerador.
+  \end{alertblock}
+\end{frame}
+
+\seccion{Divisibilidad, MCD y mcm}
+
+\begin{frame}{Múltiplos, divisores y números primos}
+  \scriptsize
+  \begin{columns}[T,onlytextwidth]
+    \begin{column}{0.48\textwidth}
+      \begin{block}{Definiciones}
+        \tiny
+        $b$ \azul{divide} a $a$ si existe $k$ entero con $a = b\cdot k$.
+        Se escribe $b \mid a$.
+
+        \vspace{0.08cm}
+        Entonces $a$ es \azul{múltiplo} de $b$, y $b$ es \azul{divisor} de $a$.
+
+        \vspace{0.08cm}
+        Un número es \destacar{primo} si tiene exactamente dos divisores: $1$ y
+        él mismo. \azul{El $1$ no es primo.}
+      \end{block}
+    \end{column}
+    \begin{column}{0.48\textwidth}
+      \begin{alertblock}{Criterios rápidos}
+        \tiny
+        \textbf{2:} termina en cifra par. \quad
+        \textbf{3:} la suma de sus cifras es múltiplo de 3. \\
+        \textbf{4:} las dos últimas cifras forman múltiplo de 4. \\
+        \textbf{5:} termina en 0 o 5. \quad
+        \textbf{9:} la suma de cifras es múltiplo de 9. \\
+        \textbf{10:} termina en 0.
+      \end{alertblock}
+    \end{column}
+  \end{columns}
+
+  \vspace{0.1cm}
+  \begin{exampleblock}{Descomposición en factores primos}
+    \scriptsize
+    Todo entero mayor que 1 se escribe de \destacar{una única forma} como
+    producto de primos:
+    \[ 36 = 2^2\cdot 3^2 \qquad 48 = 2^4\cdot 3 \qquad
+       60 = 2^2\cdot 3\cdot 5 \]
+    Este es el paso previo a todo lo demás: sin descomponer, ni el MCD ni el
+    mcm salen.
+  \end{exampleblock}
+\end{frame}
+
+\begin{frame}{MCD y mcm: cuál se usa cuándo}
+  \scriptsize
+  \begin{columns}[T,onlytextwidth]
+    \begin{column}{0.48\textwidth}
+      \begin{block}{Máximo común divisor}
+        \tiny
+        Factores \azul{comunes} con el \azul{menor} exponente.
+        \[ 36 = 2^2\cdot 3^2 \qquad 48 = 2^4\cdot 3 \]
+        \[ \mathrm{MCD} = 2^2\cdot 3 = \destacar{12} \]
+        Sirve para \destacar{repartir en partes iguales} y para
+        \destacar{simplificar fracciones}.
+      \end{block}
+    \end{column}
+    \begin{column}{0.48\textwidth}
+      \begin{block}{Mínimo común múltiplo}
+        \tiny
+        \azul{Todos} los factores con el \azul{mayor} exponente.
+        \[ \mathrm{mcm} = 2^4\cdot 3^2 = \destacar{144} \]
+        Sirve para \destacar{sincronizar ciclos} y para el
+        \destacar{denominador común} de la sesión 3.
+      \end{block}
+    \end{column}
+  \end{columns}
+
+  \vspace{0.1cm}
+  \begin{alertblock}{La verificación que nunca falla}
+    \scriptsize
+    Para dos números: \quad
+    $\mathrm{MCD}(a,b)\cdot \mathrm{mcm}(a,b) = a\cdot b$
+    \[ 12 \cdot 144 = 1\,728 = 36\cdot 48 \ \checkmark \]
+    {\tiny\color{uniGris} Ojo: esta identidad vale para \azul{dos} números, no
+    para tres o más.}
+  \end{alertblock}
+\end{frame}
+
+\begin{frame}{Ejercicio 3 — en clase}
+  \begin{alertblock}{En parejas (12 minutos)}
+    \scriptsize
+    \begin{enumerate}\setlength{\itemsep}{0.08cm}
+      \item Descomponga en factores primos: $24$, $36$ y $60$.
+      \item Calcule $\mathrm{MCD}(24,36,60)$ y $\mathrm{mcm}(24,36,60)$.
+      \item Verifique que $\mathrm{MCD}(36,48)\cdot\mathrm{mcm}(36,48)
+            = 36\cdot 48$.
+      \item Dos rutas de bus salen de la misma terminal: una cada
+            \destacar{12 minutos} y otra cada \destacar{18 minutos}. Si acaban
+            de salir juntas, ¿en cuántos minutos vuelven a coincidir?
+      \item Un piso rectangular de $84 \times 126$ cm se quiere cubrir con
+            baldosas cuadradas \destacar{del mayor tamaño posible}, sin cortar
+            ninguna. ¿Cuánto mide el lado?
+    \end{enumerate}
+  \end{alertblock}
+\end{frame}
+
+\begin{frame}{Ejercicio 3 — solución}
+  \scriptsize
+  \begin{columns}[T,onlytextwidth]
+    \begin{column}{0.46\textwidth}
+      \begin{block}{Puntos 1 a 3}
+        \tiny
+        \[ 24 = 2^3\cdot 3 \qquad 36 = 2^2\cdot 3^2 \qquad
+           60 = 2^2\cdot 3\cdot 5 \]
+        Comunes con menor exponente:
+        \[ \mathrm{MCD} = 2^2\cdot 3 = \destacar{12} \]
+        Todos con mayor exponente:
+        \[ \mathrm{mcm} = 2^3\cdot 3^2\cdot 5 = \destacar{360} \]
+        \[ 12\cdot 144 = 1\,728 = 36\cdot 48 \ \checkmark \]
+      \end{block}
+    \end{column}
+    \begin{column}{0.50\textwidth}
+      \begin{exampleblock}{Puntos 4 y 5}
+        \tiny
+        \textbf{4.} Coinciden en un múltiplo común de 12 y 18, y el primero es
+        el \azul{mcm}:
+        \[ 12 = 2^2\cdot 3,\quad 18 = 2\cdot 3^2 \Rightarrow
+           \mathrm{mcm} = 2^2\cdot 3^2 = \destacar{36 \text{ min}} \]
+
+        \textbf{5.} El lado debe dividir a 84 y a 126, y ser el mayor posible:
+        es el \azul{MCD}.
+        \[ 84 = 2^2\cdot 3\cdot 7,\quad 126 = 2\cdot 3^2\cdot 7 \Rightarrow
+           \mathrm{MCD} = 2\cdot 3\cdot 7 = \destacar{42 \text{ cm}} \]
+      \end{exampleblock}
+    \end{column}
+  \end{columns}
+
+  \vspace{0.05cm}
+  {\tiny\color{uniGris} \destacar{Cómo saber cuál usar:} si el problema
+  \azul{parte o reparte} algo, es MCD; si algo \azul{se repite y se
+  reencuentra}, es mcm.}
+\end{frame}
+
+\begin{frame}{Ejercicio 4 — en clase (taller principal)}
+  \begin{alertblock}{En grupos de 3 (20 minutos)}
+    \scriptsize
+    \begin{enumerate}\setlength{\itemsep}{0.06cm}
+      \item En Bogotá la temperatura era de $-8\,^\circ$C a las 5 a.m., subió
+            $15\,^\circ$ al mediodía y bajó $6\,^\circ$ en la noche.
+            ¿Cuál fue la temperatura final?
+      \item Una cuenta tiene un sobregiro de \$120\,000. Se consigna
+            \$450\,000 y luego se pagan \$85\,000. ¿Cuál es el saldo?
+      \item Un servidor registra estas variaciones de memoria libre, en MB:
+            $-340$, $+1\,200$, $-560$, $-90$, $+75$. ¿Cuál es la variación
+            neta?
+      \item Escriba una sola expresión con paréntesis, potencias, producto y
+            división cuyo resultado sea exactamente $\destacar{10}$; después
+            intercámbiela con otro grupo para que la resuelva.
+      \item Encuentre el error: \\
+            \hspace*{0.3cm} $-4^2 + (-6)\div 2 \cdot 3 = 16 - 6 \div 6 = 16 - 1 = 15$
+    \end{enumerate}
+  \end{alertblock}
+\end{frame}
+
+\begin{frame}{Ejercicio 4 — solución}
+  \scriptsize
+  \begin{columns}[T,onlytextwidth]
+    \begin{column}{0.46\textwidth}
+      \begin{block}{Puntos 1 a 3}
+        \tiny
+        \textbf{1.} $-8 + 15 - 6 = \destacar{1\,^\circ\text{C}}$
+
+        \vspace{0.1cm}
+        \textbf{2.} $-120\,000 + 450\,000 - 85\,000
+        = \destacar{\$245\,000}$
+
+        \vspace{0.1cm}
+        \textbf{3.} $-340 + 1\,200 - 560 - 90 + 75 = \destacar{+285}$ MB:
+        la memoria libre \azul{aumentó}.
+      \end{block}
+    \end{column}
+    \begin{column}{0.50\textwidth}
+      \begin{alertblock}{Punto 5: los dos errores}
+        \tiny
+        \textbf{(a)} $-4^2 = \destacar{-16}$, no $+16$: el menos está fuera de
+        la potencia.
+
+        \vspace{0.08cm}
+        \textbf{(b)} $(-6)\div 2\cdot 3$ va \destacar{de izquierda a derecha}:
+        $(-3)\cdot 3 = -9$, no $-6\div 6$.
+
+        \vspace{0.08cm}
+        Lo correcto: \ $-16 + (-9) = \destacar{-25}$.
+      \end{alertblock}
+    \end{column}
+  \end{columns}
+
+  \vspace{0.05cm}
+  \begin{exampleblock}{Punto 4: un ejemplo posible}
+    \tiny
+    \[ (3-1)^3 + 12 \div (-6) \cdot (-1) = 8 + 2 = 10 \]
+    Hay infinitas respuestas correctas. Lo que se evalúa es que
+    \destacar{use las cuatro cosas} y que al resolverla dé 10.
+  \end{exampleblock}
+\end{frame}
+
+\begin{frame}{Errores frecuentes en esta sesión}
+  \scriptsize
+  \begin{center}
+  \begin{tabular}{@{}p{5.2cm}p{6.6cm}@{}}
+    \toprule
+    \textbf{Error} & \textbf{Corrección} \\
+    \midrule
+    $-3^2 = 9$ &
+      $-3^2 = -9$; solo $(-3)^2 = 9$ \\
+    \addlinespace
+    $-7-(-3) = -10$ &
+      $-7+3 = -4$: el doble signo se vuelve suma \\
+    \addlinespace
+    Hacer la multiplicación antes que la división &
+      Van al mismo nivel: de \azul{izquierda a derecha} \\
+    \addlinespace
+    $-[2-(-3)] = -2-3$ &
+      El menos afecta a \azul{todo} el corchete: $-[5] = -5$ \\
+    \addlinespace
+    Operar el numerador y el denominador por separado sin agrupar &
+      La raya de fracción es un paréntesis invisible \\
+    \addlinespace
+    Confundir MCD con mcm &
+      MCD: comunes con menor exponente. mcm: todos con mayor exponente \\
+    \bottomrule
+  \end{tabular}
+  \end{center}
+\end{frame}
+
+\begin{frame}{Cierre de la sesión}
+  \begin{block}{Lo que debe quedar claro hoy}
+    \scriptsize
+    \begin{itemize}\setlength{\itemsep}{0.02cm}
+      \item Signos iguales se suman; signos distintos se restan y manda el
+            mayor en valor absoluto.
+      \item Restar es \azul{sumar el opuesto}: $a - b = a + (-b)$.
+      \item Ley de signos: pares de negativos dan positivo, impares dan
+            negativo.
+      \item $-a^n \neq (-a)^n$ cuando $n$ es \destacar{par}.
+      \item Jerarquía: paréntesis, potencias, $\times\div$ y $+-$, estos dos
+            últimos \azul{de izquierda a derecha}.
+      \item MCD para repartir; mcm para sincronizar y para denominadores
+            comunes.
+    \end{itemize}
+  \end{block}
+
+  \vspace{0.08cm}
+  \begin{alertblock}{Trabajo independiente}
+    \tiny
+    Resolver los 20 ejercicios de la lámina siguiente. En la sesión 3 pasamos a
+    los \destacar{racionales}: sumar, restar, multiplicar y dividir fracciones,
+    donde el mcm de hoy se vuelve la herramienta principal.
+  \end{alertblock}
+\end{frame}
+
+\begin{frame}{Ejercicios propuestos}
+  \vspace{-0.1cm}
+  \begin{beamercolorbox}[wd=\textwidth,sep=0.10cm]{block body}
+    \centering\scriptsize
+    \textbf{1--8:} signos. \quad \textbf{9--15:} jerarquía. \quad
+    \textbf{16--20:} divisibilidad y aplicaciones.
+  \end{beamercolorbox}
+  \listatiny
+  \vspace{0.15cm}
+  \begin{columns}[T,onlytextwidth]
+    \begin{column}{0.47\textwidth}
+      \begin{enumerate}\setlength{\itemsep}{0.16cm}
+        \item $-14 + 23$
+        \item $-11 - 17$
+        \item $9 - (-15)$
+        \item $(-7)(-8)$
+        \item $(-72) \div 9$
+        \item $(-2)(3)(-4)(-1)$
+        \item $(-1)^{37}$
+        \item $-4^3$ \ y \ $(-4)^3$
+        \item $15 - 4 \cdot 3$
+        \item $(15-4)\cdot 3$
+      \end{enumerate}
+    \end{column}
+    \begin{column}{0.50\textwidth}
+      \begin{enumerate}\setlength{\itemsep}{0.16cm}
+        \setcounter{enumi}{10}
+        \item $24 \div 6 \cdot 2$
+        \item $-3^2 + (-3)^2 - 3^2$
+        \item $8 - [\,5 - (2-7)\,]$
+        \item $\dfrac{(-4)^2 - 6}{-5}$
+        \item $2 - 3[\,4 - (6-9)\,]$
+        \item Descomponga $180$ en factores primos
+        \item $\mathrm{MCD}(45, 75)$
+        \item $\mathrm{mcm}(8, 12, 20)$
+        \item Tres luces parpadean cada 6, 10 y 15 s. ¿Cada cuánto coinciden?
+        \item ¿Es $2\,346$ divisible por 3? ¿Y por 4?
+      \end{enumerate}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{Respuestas}{Autoevaluación de los ejercicios propuestos}
+  \listatiny
+  \vspace{0.15cm}
+  \begin{columns}[T,onlytextwidth]
+    \begin{column}{0.47\textwidth}
+      \begin{enumerate}\setlength{\itemsep}{0.16cm}
+        \item $9$
+        \item $-28$
+        \item $24$
+        \item $56$
+        \item $-8$
+        \item $-24$ \ (tres negativos: impar)
+        \item $-1$
+        \item $-64$ \ y \ $-64$ \ (exponente impar: coinciden)
+        \item $15-12 = 3$
+        \item $11\cdot 3 = 33$
+      \end{enumerate}
+    \end{column}
+    \begin{column}{0.50\textwidth}
+      \begin{enumerate}\setlength{\itemsep}{0.16cm}
+        \setcounter{enumi}{10}
+        \item $4\cdot 2 = 8$
+        \item $-9+9-9 = -9$
+        \item $8 - [\,5+5\,] = -2$
+        \item $\dfrac{16-6}{-5} = -2$
+        \item $2 - 3[\,7\,] = -19$
+        \item $180 = 2^2\cdot 3^2\cdot 5$
+        \item $15$
+        \item $120$
+        \item $\mathrm{mcm}(6,10,15) = 30$ s
+        \item Por 3 sí ($2+3+4+6=15$); por 4 no ($46$ no es múltiplo de 4)
+      \end{enumerate}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{Referencias}
+  \footnotesize
+  \begin{itemize}
+    \item[{[1]}] Ramos del Olmo, Á. M. (2016). \textit{Matemáticas básicas
+      para el acceso a la universidad}. Ediciones Pirámide.
+      \texttt{https://elibro.net/es/ereader/uniminuto/49134}
+    \item[{[2]}] González Pulido, J. W., Chacón Benavides, J. A. \&
+      Fonseca Correa, L. Á. (2023). \textit{Matemática básica} (1.\textsuperscript{a} ed.).
+      Universidad Mariana.
+      \texttt{https://elibro.net/es/ereader/uniminuto/280647}
+    \item[{[3]}] Placencia Valero, J. (2008). \textit{Compendio de matemática
+      básica elemental} (1.\textsuperscript{a} ed.). Editorial Tébar Flores.
+      \texttt{https://elibro.net/es/ereader/uniminuto/269758}
+  \end{itemize}
+
+  \vspace{0.35cm}
+  \begin{center}
+    {\Large\color{uniAzul}\textbf{¿Preguntas?}}
+  \end{center}
+\end{frame}
+
+\end{document}

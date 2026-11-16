@@ -1,0 +1,519 @@
+% ============================================================================
+%  ESTADÍSTICA INFERENCIAL — Sesión 14
+%  Semana 14: 9 al 14 de noviembre de 2026
+%  3.3 Planteamiento y pasos para solucionar una prueba de hipótesis
+%  3.4 Uso de software estadístico
+% ============================================================================
+\documentclass[aspectratio=169,10pt]{beamer}
+
+\usepackage[utf8]{inputenc}
+\IfFileExists{spanish.ldf}{\usepackage[spanish,es-noshorthands]{babel}}{}
+\usepackage{amsmath,amssymb}
+\usepackage{booktabs}
+\usepackage{tikz}
+\usepackage{listings}
+
+\usetheme{Uniminuto}
+
+\uniasignatura{Estadística inferencial}
+\uniprofesor{Andrés Felipe Puerta Velez}
+\unicorreo{andres.puerta-v@uniminuto.edu.co}
+\uninrc{CBASBL061}
+\unisemana{Sesión 14 — Semana 14 · 9 al 14 de noviembre de 2026}
+
+\newcommand{\listatiny}{\setbeamerfont{itemize/enumerate body}{size=\tiny}\tiny}
+
+
+\newcommand{\fx}[1]{{\ttfamily\color{uniAzul}#1}}
+
+% ------------------------------------------------------------- CÓDIGO R ----
+\lstdefinestyle{Rcode}{
+  language=R,
+  basicstyle=\ttfamily\scriptsize,
+  keywordstyle=\color{uniAzul}\bfseries,
+  commentstyle=\color{uniGris}\itshape,
+  stringstyle=\color{uniTitulo},
+  showstringspaces=false, numbers=none, breaklines=true,
+  columns=fullflexible,
+  backgroundcolor=\color{uniCremaClaro},
+  frame=leftline, framerule=1.2pt, rulecolor=\color{uniNaranja},
+  xleftmargin=0.35cm, framexleftmargin=0.35cm,
+  framexrightmargin=0.15cm, framextopmargin=2pt, framexbottommargin=2pt,
+  aboveskip=0.15cm, belowskip=0.15cm
+}
+\lstdefinestyle{Rmini}{
+  language=R,
+  basicstyle=\ttfamily\tiny,
+  keywordstyle=\color{uniAzul}\bfseries,
+  commentstyle=\color{uniGris}\itshape,
+  stringstyle=\color{uniTitulo},
+  showstringspaces=false, numbers=none, breaklines=true,
+  columns=fullflexible,
+  backgroundcolor=\color{uniCremaClaro},
+  frame=leftline, framerule=1.2pt, rulecolor=\color{uniNaranja},
+  xleftmargin=0.35cm, framexleftmargin=0.35cm,
+  framexrightmargin=0.15cm, framextopmargin=2pt, framexbottommargin=2pt,
+  aboveskip=0.12cm, belowskip=0.12cm
+}
+\lstdefinestyle{Rout}{
+  basicstyle=\ttfamily\tiny\color{black},
+  showstringspaces=false, numbers=none, breaklines=true,
+  columns=fullflexible,
+  backgroundcolor=\color{uniGris!10},
+  frame=leftline, framerule=1.2pt, rulecolor=\color{uniGris},
+  xleftmargin=0.35cm, framexleftmargin=0.35cm,
+  framexrightmargin=0.15cm, framextopmargin=2pt, framexbottommargin=2pt,
+  aboveskip=0.12cm, belowskip=0.12cm
+}
+
+\begin{document}
+
+\portada
+
+\begin{frame}{Orden del día}
+  \begin{enumerate}
+    \item Llamado a lista y revisión de los ejercicios propuestos
+    \item Repaso: dónde quedamos
+    \item \azul{Tema 3.3: los cinco pasos de una prueba de hipótesis}
+    \item Pruebas para la media y para la proporción
+    \item \azul{Tema 3.4: uso de software estadístico}
+    \item Ejercicios en clase y cierre
+  \end{enumerate}
+\end{frame}
+
+\begin{frame}{Repaso: dónde quedamos}
+  En la sesión 13 vimos \azul{qué} es una prueba de hipótesis: $H_0$ y $H_1$,
+  errores tipo I y II, $\alpha$ y el valor $p$, con la regla
+  \[ p\le\alpha \;\Rightarrow\; \text{se rechaza } H_0 \]
+
+  \vspace{0.2cm}
+  \begin{alertblock}{Hoy}
+    \footnotesize
+    Vemos \destacar{cómo} se ejecuta, paso a paso y con números, y cómo se lee
+    la salida de un software cuando el cálculo lo hace la máquina.
+  \end{alertblock}
+\end{frame}
+
+\seccion{3.3 Planteamiento y pasos}
+
+\begin{frame}{Los cinco pasos}
+  \small
+  \begin{enumerate}
+    \item \azul{Plantear} $H_0$ y $H_1$, e identificar si es unilateral o
+          bilateral.
+    \item \azul{Fijar} el nivel de significancia $\alpha$ y determinar el
+          estadístico de prueba ($z$ o $t$).
+    \item \azul{Definir} la región de rechazo (valor crítico) o decidir que se
+          usará el valor $p$.
+    \item \azul{Calcular} el estadístico con los datos de la muestra.
+    \item \azul{Decidir} y \azul{redactar} la conclusión en el contexto del
+          problema.
+  \end{enumerate}
+
+  \vspace{0.25cm}
+  \begin{alertblock}{Dos caminos equivalentes}
+    \footnotesize
+    \destacar{Valor crítico:} se rechaza si el estadístico cae en la región de
+    rechazo. \quad
+    \destacar{Valor $p$:} se rechaza si $p\le\alpha$. Siempre llevan a la misma
+    decisión.
+  \end{alertblock}
+\end{frame}
+
+\begin{frame}{Estadísticos de prueba}
+  \footnotesize
+  \begin{center}
+  \begin{tabular}{@{}p{3.4cm}p{3.6cm}p{4.2cm}@{}}
+    \toprule
+    \textbf{Parámetro} & \textbf{Condición} & \textbf{Estadístico} \\
+    \midrule
+    Media, $\sigma$ conocida & $n\ge 30$ o población normal &
+      $z=\dfrac{\bar{x}-\mu_0}{\sigma/\sqrt{n}}$ \\[0.8em]
+    Media, $\sigma$ desconocida & población aprox. normal &
+      $t=\dfrac{\bar{x}-\mu_0}{s/\sqrt{n}}$, \; $gl=n-1$ \\[0.8em]
+    Proporción & $np_0\ge 5$ y $n(1-p_0)\ge 5$ &
+      $z=\dfrac{\hat{p}-p_0}{\sqrt{p_0(1-p_0)/n}}$ \\
+    \bottomrule
+  \end{tabular}
+  \end{center}
+
+  \vspace{0.2cm}
+  \begin{alertblock}{Detalle que se olvida}
+    \footnotesize
+    En la prueba de proporción el error estándar se calcula con
+    \destacar{$p_0$}, el valor de $H_0$, no con $\hat p$. En el intervalo de
+    confianza sí se usaba $\hat p$, porque allí no hay ningún $p_0$ supuesto.
+  \end{alertblock}
+\end{frame}
+
+\begin{frame}{Ejercicio 1 — en clase}
+  \begin{alertblock}{Individual (10 minutos)}
+    El tiempo promedio histórico de atención es de \destacar{15 minutos} con
+    $\sigma=2{,}4$. Tras un cambio de proceso, una muestra de
+    \destacar{$n=36$} servicios da $\bar{x}=14{,}2$ minutos. Se quiere probar
+    si el proceso \destacar{redujo} el tiempo, con $\alpha=0{,}05$.
+
+    \vspace{0.25cm}
+    \begin{enumerate}
+      \item Plantee $H_0$ y $H_1$ e indique el tipo de prueba.
+      \item Calcule el estadístico de prueba.
+      \item Compare con el valor crítico y decida.
+      \item Redacte la conclusión.
+    \end{enumerate}
+  \end{alertblock}
+\end{frame}
+
+\begin{frame}{Ejercicio 1 — solución}
+  \small
+  \begin{block}{Pasos 1 a 4}
+    \footnotesize
+    \begin{enumerate}
+      \item $H_0:\mu\ge 15$ \quad vs. \quad $H_1:\mu<15$. Unilateral
+            izquierda.
+      \item $\sigma$ es conocida y $n=36\ge 30$: se usa $z$.
+      \item Valor crítico: $z_{0{,}05}=\azul{-1{,}645}$. Se rechaza si
+            $z<-1{,}645$.
+      \item \[ z=\frac{14{,}2-15}{2{,}4/\sqrt{36}}
+                =\frac{-0{,}8}{0{,}40}=\azul{-2{,}00}
+             \qquad p=\azul{0{,}0228} \]
+    \end{enumerate}
+  \end{block}
+
+  \vspace{0.1cm}
+  \begin{exampleblock}{Paso 5}
+    \footnotesize
+    Como $-2{,}00<-1{,}645$ (y $0{,}0228\le 0{,}05$), \destacar{se rechaza
+    $H_0$}. Con un nivel de significancia del 5\%, hay evidencia suficiente
+    para concluir que el nuevo proceso redujo el tiempo promedio de atención.
+  \end{exampleblock}
+\end{frame}
+
+\begin{frame}{Ejercicio 2 — en clase}
+  \begin{alertblock}{En parejas (10 minutos)}
+    Un proveedor asegura que el contenido promedio de sus empaques es de
+    \destacar{500 g}. Una muestra de \destacar{$n=25$} empaques da
+    $\bar{x}=512$ g y $s=28$ g. Se quiere verificar si el contenido
+    \destacar{difiere} de 500 g, con $\alpha=0{,}05$.
+
+    \vspace{0.25cm}
+    \begin{enumerate}
+      \item Plantee las hipótesis e indique el tipo.
+      \item ¿Se usa $z$ o $t$? ¿Con cuántos grados de libertad?
+      \item Calcule el estadístico y compárelo con el valor crítico
+            $t_{0{,}025;24}=2{,}064$.
+      \item Decida y redacte la conclusión.
+    \end{enumerate}
+  \end{alertblock}
+\end{frame}
+
+\begin{frame}{Ejercicio 2 — solución}
+  \small
+  \begin{block}{Desarrollo}
+    \footnotesize
+    $H_0:\mu=500$ \; vs. \; $H_1:\mu\neq 500$. Bilateral. Como el dato es $s$,
+    se usa $t$ con $gl=24$.
+    \[ t=\frac{512-500}{28/\sqrt{25}}=\frac{12}{5{,}6}=\azul{2{,}1429}
+       \qquad p=\azul{0{,}0425} \]
+  \end{block}
+
+  \vspace{0.1cm}
+  \begin{exampleblock}{Decisión}
+    \footnotesize
+    $|2{,}1429|>2{,}064$, y además $0{,}0425\le 0{,}05$: \destacar{se rechaza
+    $H_0$}. Al 5\% de significancia hay evidencia de que el contenido
+    promedio difiere de los 500 g declarados.
+  \end{exampleblock}
+
+  \vspace{0.1cm}
+  \begin{alertblock}{Observación}
+    \footnotesize
+    Con $\alpha=0{,}01$ la decisión se invertiría: $0{,}0425>0{,}01$. El
+    resultado está \azul{en el límite}, algo que conviene reportar en vez de
+    ocultar.
+  \end{alertblock}
+\end{frame}
+
+\begin{frame}{Ejercicio 3 — en clase}
+  \begin{alertblock}{Individual (9 minutos)}
+    La meta de satisfacción es del \destacar{60\%}. En una encuesta a
+    \destacar{$n=400$} clientes, 248 se declaran satisfechos
+    ($\hat{p}=0{,}62$). Se quiere probar si la satisfacción
+    \destacar{supera} la meta, con $\alpha=0{,}05$.
+
+    \vspace{0.25cm}
+    \begin{enumerate}
+      \item Plantee las hipótesis.
+      \item Calcule el estadístico usando $p_0=0{,}60$.
+      \item Decida con el valor crítico $z_{0{,}05}=1{,}645$.
+      \item ¿Coincide con la conclusión del intervalo de confianza de la
+            sesión 11?
+    \end{enumerate}
+  \end{alertblock}
+\end{frame}
+
+\begin{frame}{Ejercicio 3 — solución}
+  \small
+  \begin{block}{Desarrollo}
+    \footnotesize
+    $H_0:p\le 0{,}60$ \; vs. \; $H_1:p>0{,}60$. Unilateral derecha.
+    \[ z=\frac{0{,}62-0{,}60}{\sqrt{\dfrac{0{,}60(0{,}40)}{400}}}
+        =\frac{0{,}02}{0{,}0245}=\azul{0{,}8165}
+       \qquad p=\azul{0{,}2071} \]
+  \end{block}
+
+  \vspace{0.1cm}
+  \begin{alertblock}{Decisión y punto 4}
+    \footnotesize
+    $0{,}8165<1{,}645$ y $0{,}2071>0{,}05$: \destacar{no se rechaza $H_0$}. No
+    hay evidencia suficiente para afirmar que la satisfacción supere el 60\%.
+
+    \vspace{0.15cm}
+    En la sesión 11 el intervalo del 95\% $(0{,}5724;\ 0{,}6676)$
+    \azul{contenía} el valor 0{,}60. Ambos métodos coinciden: el 0{,}60 sigue
+    siendo un valor plausible.
+  \end{alertblock}
+\end{frame}
+
+\seccion{3.4 Uso de software estadístico}
+
+\begin{frame}[fragile]{Las cinco pruebas de la unidad, en R}
+  \scriptsize
+\begin{lstlisting}[style=Rmini]
+# 1. Prueba t para una media (sigma desconocida)
+t.test(contenido, mu = 500)                       # bilateral
+t.test(contenido, mu = 500, alternative = "greater")   # unilateral derecha
+
+# 2. Prueba para una proporcion
+prop.test(248, 400, p = 0.60, alternative = "greater")
+binom.test(248, 400, p = 0.60, alternative = "greater")  # exacta
+
+# 3. Comparacion de dos medias independientes
+t.test(ventas ~ sucursal)
+
+# 4. Comparacion de dos proporciones
+prop.test(c(120, 96), c(200, 200))
+
+# 5. Valores criticos y valores p, a mano
+qnorm(0.95);  qt(0.975, df = 24)
+2 * (1 - pt(2.1429, df = 24))      # valor p bilateral
+\end{lstlisting}
+
+  \vspace{-0.12cm}
+  {\tiny\color{uniGris} \fx{alternative} acepta \fx{"two.sided"} (predeterminado),
+  \fx{"greater"} y \fx{"less"}. \destacar{Elegirlo mal es el error más costoso}:
+  cambia el valor $p$ y puede invertir la decisión.}
+\end{frame}
+
+\begin{frame}[fragile]{Cómo se lee una salida de R}
+  \scriptsize
+  Los programas hacen los pasos 3 y 4. Los pasos 1, 2 y 5 siguen siendo suyos.
+\begin{lstlisting}[style=Rout]
+	One Sample t-test
+
+data:  contenido
+t = 2.1429, df = 24, p-value = 0.0425
+alternative hypothesis: true mean is not equal to 500
+95 percent confidence interval:
+ 500.4422 523.5578
+sample estimates:
+mean of x
+      512
+\end{lstlisting}
+
+  \vspace{-0.05cm}
+  \begin{alertblock}{Qué mirar, y en qué orden}
+    \tiny
+    (1) \fx{alternative}: verificar que R hizo la prueba que usted planteó. \quad
+    (2) \fx{df = 24}: confirma que $n = 25$. \quad
+    (3) \fx{p-value = 0.0425} $< 0{,}05$: \destacar{se rechaza $H_0$}. \quad
+    (4) El intervalo $(500{,}44;\ 523{,}58)$ \destacar{no contiene 500}, lo que
+    confirma el rechazo: prueba e intervalo siempre coinciden.
+  \end{alertblock}
+\end{frame}
+
+\begin{frame}[fragile]{De la salida a la conclusión escrita}
+  \scriptsize
+\begin{lstlisting}[style=Rmini]
+prueba <- t.test(contenido, mu = 500)
+prueba$statistic     # el estadistico t
+prueba$parameter     # los grados de libertad
+prueba$p.value       # el valor p
+prueba$conf.int      # el intervalo de confianza
+prueba$estimate      # la media muestral
+\end{lstlisting}
+
+  \vspace{0.05cm}
+  \begin{exampleblock}{El párrafo que se entrega}
+    \tiny
+    ``Con una muestra de 25 envases se obtuvo un contenido medio de
+    \azul{512 ml} ($s = 28$). La prueba $t$ para una media rechaza
+    $H_0: \mu = 500$ ($t = 2{,}14$; $gl = 24$; $p = 0{,}0425$) al nivel del
+    5\%. El intervalo de confianza del 95\% para el contenido medio es
+    \azul{(500,44; 523,56) ml}, de modo que hay evidencia de que el llenado
+    supera los 500 ml declarados.''
+  \end{exampleblock}
+
+  \vspace{0.05cm}
+  \begin{alertblock}{Los tres elementos que nunca faltan}
+    \tiny
+    El \destacar{estadístico con sus grados de libertad}, el
+    \destacar{valor $p$} y el \destacar{tamaño del efecto} —aquí, el intervalo
+    y la media—. Un valor $p$ solo no dice si la diferencia importa en la
+    práctica.
+  \end{alertblock}
+\end{frame}
+
+\begin{frame}{Lo que el software no hace}
+  \scriptsize
+  \begin{center}
+  \begin{tabular}{@{}p{4.6cm}p{7.2cm}@{}}
+    \toprule
+    \textbf{Decisión} & \textbf{Por qué sigue siendo suya} \\
+    \midrule
+    Plantear $H_0$ y $H_1$ &
+      R prueba lo que usted le escriba, aunque no tenga sentido \\
+    \addlinespace
+    Elegir la prueba adecuada &
+      \fx{t.test()} corre igual con datos que no cumplen sus supuestos \\
+    \addlinespace
+    Fijar $\alpha$ antes de ver los datos &
+      Ajustar $\alpha$ después de ver el $p$ invalida la prueba \\
+    \addlinespace
+    Juzgar si la muestra es probabilística &
+      Con datos mal recogidos, R devuelve un $p$ igual de convincente \\
+    \addlinespace
+    Decidir si la diferencia importa &
+      Con $n$ grande, diferencias irrelevantes salen significativas \\
+    \bottomrule
+  \end{tabular}
+  \end{center}
+
+  \vspace{0.05cm}
+  \begin{alertblock}{La frase que resume la sesión}
+    \tiny
+    \destacar{R calcula el valor $p$; usted decide si la pregunta valía la
+    pena.} Por eso el examen se resuelve a mano: para que la herramienta sea
+    un acelerador y no una excusa.
+  \end{alertblock}
+\end{frame}
+
+\begin{frame}{Cierre de la sesión}
+  \begin{block}{Lo que debe quedar claro hoy}
+    \begin{itemize}
+      \item Los cinco pasos: plantear, fijar $\alpha$, definir región, calcular,
+            decidir y redactar.
+      \item $z$ si el dato es $\sigma$; $t$ con $gl=n-1$ si el dato es $s$.
+      \item En proporciones el error estándar se calcula con $p_0$.
+      \item Valor crítico y valor $p$ llevan siempre a la misma decisión.
+      \item El software calcula, pero no piensa por uno.
+    \end{itemize}
+  \end{block}
+
+  \vspace{0.2cm}
+  \begin{alertblock}{Trabajo independiente para la próxima sesión}
+    \footnotesize
+    Resolver los \destacar{20 ejercicios de la lámina siguiente}. La sesión 15
+    cierra la unidad con \azul{correlación y regresión lineal}, y hay repaso
+    para el Examen 3.
+  \end{alertblock}
+\end{frame}
+
+\begin{frame}{Ejercicios propuestos}
+  \vspace{-0.1cm}
+  \begin{beamercolorbox}[wd=\textwidth,sep=0.10cm]{block body}
+    \centering\scriptsize
+    $z$ crítico: $\pm1{,}96$ (bilat. 5\%), $1{,}645$ (unilat. 5\%). \quad
+    $t_{0{,}025;24}=2{,}064$, \; $t_{0{,}025;19}=2{,}093$.
+  \end{beamercolorbox}
+  \listatiny
+  \vspace{0.15cm}
+  \begin{columns}[T,onlytextwidth]
+    \begin{column}{0.47\textwidth}
+      \begin{enumerate}\setlength{\itemsep}{0.16cm}
+        \item Primer paso de una prueba de hipótesis
+        \item ¿Quién decide $\alpha$ y cuándo?
+        \item Estadístico si $\sigma$ es conocida
+        \item Estadístico si el dato es $s$
+        \item Estadístico para una proporción
+        \item ¿Con $p_0$ o con $\hat p$ el error estándar?
+        \item $\bar x=14{,}2$, $\mu_0=15$, $\sigma=2{,}4$, $n=36$: valor de $z$
+        \item Valor $p$ del punto 7 (cola izquierda)
+        \item Decisión del punto 7 con $\alpha=0{,}05$
+        \item $\bar x=512$, $\mu_0=500$, $s=28$, $n=25$: valor de $t$
+      \end{enumerate}
+    \end{column}
+    \begin{column}{0.50\textwidth}
+      \begin{enumerate}\setlength{\itemsep}{0.16cm}
+        \setcounter{enumi}{10}
+        \item Grados de libertad del punto 10
+        \item Decisión del punto 10 con $\alpha=0{,}05$
+        \item Decisión del punto 10 con $\alpha=0{,}01$
+        \item $\hat p=0{,}62$, $p_0=0{,}60$, $n=400$: valor de $z$
+        \item Decisión del punto 14 con $\alpha=0{,}05$
+        \item ¿Coincide con el IC de la sesión 11?
+        \item ¿Qué se mira primero en una salida de software?
+        \item ¿El software verifica si la prueba es la adecuada?
+        \item Si $p=0{,}07$ y $\alpha=0{,}10$: decisión
+        \item ¿Rechazar $H_0$ prueba que $H_1$ es cierta?
+      \end{enumerate}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{Respuestas}{Autoevaluación de los ejercicios propuestos}
+  \listatiny
+  \vspace{0.15cm}
+  \begin{columns}[T,onlytextwidth]
+    \begin{column}{0.47\textwidth}
+      \begin{enumerate}\setlength{\itemsep}{0.16cm}
+        \item Plantear $H_0$ y $H_1$
+        \item El investigador, antes de calcular
+        \item $z=(\bar x-\mu_0)/(\sigma/\sqrt n)$
+        \item $t=(\bar x-\mu_0)/(s/\sqrt n)$, $gl=n-1$
+        \item $z=(\hat p-p_0)/\sqrt{p_0(1-p_0)/n}$
+        \item Con $p_0$
+        \item $z=-2{,}00$
+        \item $0{,}0228$
+        \item Se rechaza $H_0$
+        \item $t=2{,}1429$
+      \end{enumerate}
+    \end{column}
+    \begin{column}{0.50\textwidth}
+      \begin{enumerate}\setlength{\itemsep}{0.16cm}
+        \setcounter{enumi}{10}
+        \item $gl=24$
+        \item Se rechaza ($p=0{,}0425$)
+        \item No se rechaza
+        \item $z=0{,}8165$
+        \item No se rechaza ($p=0{,}2071$)
+        \item Sí: el IC contenía $0{,}60$
+        \item El valor $p$
+        \item No
+        \item Se rechaza $H_0$
+        \item No: solo que la evidencia es incompatible con $H_0$
+      \end{enumerate}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{Referencias}
+  \footnotesize
+  \begin{itemize}
+    \item[{[1]}] Díaz Rodríguez, M. (2022). \textit{Estadística inferencial
+      aplicada}. Universidad del Norte.
+      \texttt{https://elibro.net/es/lc/uniminuto/titulos/221614}
+    \item[{[2]}] Llinás Solano, H. (2014). \textit{Introducción a la
+      estadística con aplicaciones en ciencias sociales}. Universidad del
+      Norte. \texttt{https://elibro.net/es/lc/uniminuto/titulos/70062}
+    \item[{[3]}] Contento Rubio, M. R. (2019). \textit{Estadística con
+      aplicaciones en R}. Editorial Utadeo.
+      \texttt{https://elibro.net/es/lc/uniminuto/titulos/220926}
+  \end{itemize}
+
+  \vspace{0.35cm}
+  \begin{center}
+    {\Large\color{uniAzul}\textbf{¿Preguntas?}}
+  \end{center}
+\end{frame}
+
+\end{document}

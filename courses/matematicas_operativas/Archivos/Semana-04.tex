@@ -1,0 +1,629 @@
+% ============================================================================
+%  MATEMÁTICAS OPERATIVAS — Sesión 4
+%  Semana 4: 31 de agosto al 5 de septiembre de 2026
+%  1.4 Conjuntos
+%  Duración prevista: 3 horas
+% ============================================================================
+\documentclass[aspectratio=169,10pt]{beamer}
+
+\usepackage[utf8]{inputenc}
+\IfFileExists{spanish.ldf}{\usepackage[spanish,es-noshorthands]{babel}}{}
+\usepackage{amsmath,amssymb}
+\usepackage{booktabs}
+\usepackage{tikz}
+
+\usetheme{Uniminuto}
+
+\uniasignatura{Matemáticas Operativas}
+\uniprofesor{Andrés Felipe Puerta Velez}
+\unicorreo{andres.puerta-v@uniminuto.edu.co}
+\uninrc{CBASBL011}
+\unisemana{Sesión 4 — Semana 4 · 31 de agosto al 5 de septiembre de 2026}
+
+\newcommand{\listatiny}{\setbeamerfont{itemize/enumerate body}{size=\tiny}\tiny}
+
+\begin{document}
+
+\portada
+
+\begin{frame}{Orden del día}
+  \begin{enumerate}
+    \item Revisión de los ejercicios propuestos de la sesión 3
+    \item \azul{Tema 1.4: qué es un conjunto y cómo se describe}
+    \item Pertenencia, subconjunto y conjuntos especiales
+    \item Unión, intersección, diferencia y complemento
+    \item Diagramas de Venn y problemas de conteo
+    \item Taller principal, errores frecuentes y cierre
+  \end{enumerate}
+
+  \vspace{0.25cm}
+  {\footnotesize\color{uniGris} Sesión de 3 horas. Es el tema más visual de la
+  unidad: casi todo se resuelve \destacar{dibujando}. Y es el que después
+  permite leer bien una tabla cruzada o clasificar población en un informe.}
+\end{frame}
+
+% ===========================================================================
+\seccion{1.4 Conjuntos}
+% ===========================================================================
+
+\begin{frame}{Qué es un conjunto y cómo se describe}
+  \scriptsize
+  \begin{block}{Definición de trabajo}
+    \tiny
+    Un \azul{conjunto} es una colección bien definida de objetos, llamados
+    \azul{elementos}. ``Bien definida'' significa que de cualquier objeto se
+    puede decir \destacar{sin discusión} si pertenece o no. ``Los números pares
+    menores que 10'' es un conjunto; ``las películas buenas'' no lo es.
+  \end{block}
+
+  \vspace{0.1cm}
+  \begin{columns}[T,onlytextwidth]
+    \begin{column}{0.48\textwidth}
+      \begin{exampleblock}{Por extensión}
+        \tiny
+        Se listan los elementos entre llaves:
+        \[ A = \{2,4,6,8\} \]
+        Sirve cuando son pocos. El orden no importa y
+        \destacar{no se repiten} elementos.
+      \end{exampleblock}
+    \end{column}
+    \begin{column}{0.48\textwidth}
+      \begin{exampleblock}{Por comprensión}
+        \tiny
+        Se da la propiedad que los caracteriza:
+        \[ A = \{x \in \mathbb{N} : x \text{ es par},\ x<10\} \]
+        Sirve cuando son muchos o infinitos.
+      \end{exampleblock}
+    \end{column}
+  \end{columns}
+
+  \vspace{0.1cm}
+  {\tiny\color{uniGris} Se leen los dos puntos como \azul{``tal que''}. Y
+  $\{1,2,2,3\}$ es el mismo conjunto que $\{1,2,3\}$: en un conjunto un
+  elemento \destacar{está o no está}, no está ``dos veces''.}
+\end{frame}
+
+\begin{frame}{Pertenencia, inclusión y conjuntos especiales}
+  \scriptsize
+  \begin{center}
+  \begin{tabular}{@{}p{2.2cm}p{3.0cm}p{6.4cm}@{}}
+    \toprule
+    \textbf{Símbolo} & \textbf{Se lee} & \textbf{Relaciona} \\
+    \midrule
+    $a \in A$ & $a$ pertenece a $A$ &
+      Un \azul{elemento} con un \azul{conjunto} \\
+    $B \subseteq A$ & $B$ está contenido en $A$ &
+      Un \azul{conjunto} con otro \azul{conjunto} \\
+    $\varnothing$ & Conjunto vacío &
+      No tiene elementos; $\varnothing\subseteq A$ siempre \\
+    $U$ & Conjunto universal &
+      Todo lo que se considera en el problema \\
+    $\#A$ o $|A|$ & Cardinal &
+      Cuántos elementos tiene $A$ \\
+    \bottomrule
+  \end{tabular}
+  \end{center}
+
+  \vspace{0.1cm}
+  \begin{alertblock}{La confusión clásica: $\in$ frente a $\subseteq$}
+    \tiny
+    Con $A=\{1,2,3\}$: \quad
+    $2 \in A$ \checkmark \quad
+    $\{2\} \subseteq A$ \checkmark \quad
+    $2 \subseteq A$ \destacar{mal} \quad
+    $\{2\} \in A$ \destacar{mal}.
+
+    \vspace{0.04cm}
+    \azul{Regla:} a la izquierda de $\in$ va un elemento; a la izquierda de
+    $\subseteq$ va un conjunto (con llaves).
+  \end{alertblock}
+
+  \vspace{0.06cm}
+  {\tiny\color{uniGris} Un conjunto de $n$ elementos tiene $2^{n}$
+  subconjuntos. Con $A=\{1,2,3\}$ son $8$, contando $\varnothing$ y el propio
+  $A$.}
+\end{frame}
+
+\begin{frame}{Las cuatro operaciones}
+  \scriptsize
+  \begin{center}
+  \begin{tikzpicture}[scale=0.62,every node/.style={font=\tiny}]
+    % unión
+    \begin{scope}[shift={(0,0)}]
+      \draw[uniGris] (-1.5,-1.35) rectangle (3.0,1.5);
+      \fill[uniAzul,opacity=0.30] (0,0) circle (1.05);
+      \fill[uniAzul,opacity=0.30] (1.5,0) circle (1.05);
+      \draw[uniAzul,thick] (0,0) circle (1.05);
+      \draw[uniAzul,thick] (1.5,0) circle (1.05);
+      \node at (-0.5,0) {$A$}; \node at (2.0,0) {$B$};
+      \node[uniTitulo] at (0.75,-1.65) {$A\cup B$};
+    \end{scope}
+    % intersección
+    \begin{scope}[shift={(5.2,0)}]
+      \draw[uniGris] (-1.5,-1.35) rectangle (3.0,1.5);
+      \begin{scope}
+        \clip (0,0) circle (1.05);
+        \fill[uniNaranja,opacity=0.45] (1.5,0) circle (1.05);
+      \end{scope}
+      \draw[uniAzul,thick] (0,0) circle (1.05);
+      \draw[uniAzul,thick] (1.5,0) circle (1.05);
+      \node at (-0.5,0) {$A$}; \node at (2.0,0) {$B$};
+      \node[uniTitulo] at (0.75,-1.65) {$A\cap B$};
+    \end{scope}
+    % diferencia
+    \begin{scope}[shift={(10.4,0)}]
+      \draw[uniGris] (-1.5,-1.35) rectangle (3.0,1.5);
+      \begin{scope}
+        \clip (0,0) circle (1.05);
+        \fill[uniTitulo,opacity=0.35] (-1.5,-1.35) rectangle (3.0,1.5);
+        \fill[white] (1.5,0) circle (1.05);
+      \end{scope}
+      \draw[uniAzul,thick] (0,0) circle (1.05);
+      \draw[uniAzul,thick] (1.5,0) circle (1.05);
+      \node at (-0.5,0) {$A$}; \node at (2.0,0) {$B$};
+      \node[uniTitulo] at (0.75,-1.65) {$A\setminus B$};
+    \end{scope}
+  \end{tikzpicture}
+  \end{center}
+
+  \vspace{0.12cm}
+  \begin{center}
+  \begin{tabular}{@{}llp{6.4cm}@{}}
+    \toprule
+    $A\cup B$ & Unión & Los que están en $A$, en $B$ \azul{o en ambos} \\
+    $A\cap B$ & Intersección & Los que están en $A$ \azul{y} en $B$ \\
+    $A\setminus B$ & Diferencia & Los de $A$ que \azul{no} están en $B$ \\
+    $A^{c}$ & Complemento & Los de $U$ que \azul{no} están en $A$ \\
+    \bottomrule
+  \end{tabular}
+  \end{center}
+\end{frame}
+
+\begin{frame}{Ejemplo guiado — operar con conjuntos}
+  \scriptsize
+  \begin{block}{Datos}
+    \tiny
+    $U=\{1,2,3,4,5,6,7,8,9,10\}$, \quad
+    $A=\{1,2,3,4,5\}$, \quad
+    $B=\{4,5,6,7\}$, \quad
+    $C=\{2,4,6,8,10\}$
+  \end{block}
+
+  \vspace{0.08cm}
+  \begin{columns}[T,onlytextwidth]
+    \begin{column}{0.49\textwidth}
+      \begin{exampleblock}{Operaciones simples}
+        \tiny
+        $A\cup B = \{1,2,3,4,5,6,7\}$
+
+        $A\cap B = \{4,5\}$
+
+        $A\setminus B = \{1,2,3\}$
+
+        $B\setminus A = \{6,7\}$
+
+        $A^{c} = \{6,7,8,9,10\}$
+      \end{exampleblock}
+    \end{column}
+    \begin{column}{0.49\textwidth}
+      \begin{exampleblock}{Combinadas}
+        \tiny
+        $A\cap C = \{2,4\}$
+
+        $(A\cup B)\cap C = \{2,4,6\}$
+
+        $(A\cap B)^{c} = \{1,2,3,6,7,8,9,10\}$
+
+        $\#(A\cup B) = 7$, \ $\#(A\cap B)=2$
+      \end{exampleblock}
+    \end{column}
+  \end{columns}
+
+  \vspace{0.08cm}
+  {\tiny\color{uniGris} \destacar{Los paréntesis mandan también aquí:}
+  $(A\cup B)\cap C$ no es lo mismo que $A\cup(B\cap C) = \{1,2,3,4,5,6\}$.
+  Resuelva siempre lo de adentro primero, igual que con números.}
+\end{frame}
+
+\begin{frame}{Ejercicio 1 — operaciones}
+  \scriptsize
+  \begin{alertblock}{En parejas, 10 minutos}
+    \tiny
+    Con $U=\{x\in\mathbb{N}: x\le 12\}$, \ $P=\{2,4,6,8,10,12\}$, \
+    $M=\{3,6,9,12\}$, \ $T=\{1,2,3,4,5\}$, halle:
+
+    \vspace{0.05cm}
+    \textbf{1.} $P\cap M$ \qquad
+    \textbf{2.} $P\cup M$ \qquad
+    \textbf{3.} $T\setminus P$ \qquad
+    \textbf{4.} $M^{c}$ \qquad
+    \textbf{5.} $\#(P\cup T)$
+  \end{alertblock}
+
+  \vspace{0.06cm}
+  \begin{block}{Solución}
+    \tiny
+    \textbf{1.} $\{6,12\}$ \ {\color{uniGris}(múltiplos de 2 y de 3, o sea
+    de 6)} \qquad
+    \textbf{2.} $\{2,3,4,6,8,9,10,12\}$
+
+    \vspace{0.08cm}
+    \textbf{3.} $\{1,3,5\}$ \qquad
+    \textbf{4.} $\{1,2,4,5,7,8,10,11\}$ \qquad
+    \textbf{5.} $P\cup T = \{1,2,3,4,5,6,8,10,12\}$, luego
+    $\destacar{9}$
+  \end{block}
+
+  \vspace{0.05cm}
+  {\tiny\color{uniGris} En el \destacar{5}, el error típico es sumar
+  $6+5=11$. Los elementos $2$ y $4$ están en los dos conjuntos y
+  \azul{se cuentan una sola vez}.}
+\end{frame}
+
+\begin{frame}{El principio de inclusión-exclusión}
+  \scriptsize
+  \begin{block}{La fórmula que evita contar dos veces}
+    \scriptsize
+    \[ \#(A\cup B) = \#A + \#B - \#(A\cap B) \]
+    Se resta la intersección porque, al sumar $\#A$ y $\#B$, los elementos
+    comunes \destacar{quedaron contados dos veces}.
+  \end{block}
+
+  \vspace{0.1cm}
+  \begin{exampleblock}{Ejemplo}
+    \tiny
+    En un grupo de $40$ estudiantes, $25$ usan transporte público, $18$ van a
+    pie y $9$ hacen ambas cosas según el día. ¿Cuántos no usan ninguna de las
+    dos?
+    \[ \#(P\cup A) = 25+18-9 = 34
+       \qquad\Longrightarrow\qquad
+       40-34 = \destacar{6} \]
+  \end{exampleblock}
+
+  \vspace{0.08cm}
+  \begin{alertblock}{Para tres conjuntos}
+    \tiny
+    \[ \#(A\cup B\cup C) = \#A+\#B+\#C
+       -\#(A\cap B)-\#(A\cap C)-\#(B\cap C)+\#(A\cap B\cap C) \]
+    Se quita lo que se contó dos veces y se \azul{devuelve} lo que se quitó
+    tres veces. Con el diagrama de Venn no hace falta memorizarla.
+  \end{alertblock}
+\end{frame}
+
+\begin{frame}{Cómo se llena un diagrama de Venn}
+  \scriptsize
+  \begin{alertblock}{La única regla: se llena de adentro hacia afuera}
+    \tiny
+    Empiece por la región \destacar{central} (los que están en los tres), siga
+    por las intersecciones de a dos \azul{restando} lo ya puesto, y termine
+    por las regiones exclusivas. Si empieza por afuera, se equivoca.
+  \end{alertblock}
+
+  \vspace{0.1cm}
+  \begin{columns}[T,onlytextwidth]
+    \begin{column}{0.42\textwidth}
+      \begin{center}
+      \begin{tikzpicture}[scale=0.72,every node/.style={font=\tiny}]
+        \draw[uniGris] (-2.3,-2.1) rectangle (2.9,2.2);
+        \node[uniGris] at (2.6,1.95) {$U$};
+        \draw[uniAzul,thick] (-0.55,0.35) circle (1.25);
+        \draw[uniAzul,thick] (0.85,0.35) circle (1.25);
+        \draw[uniAzul,thick] (0.15,-0.85) circle (1.25);
+        \node[uniAzul] at (-1.65,1.45) {$A$};
+        \node[uniAzul] at (1.95,1.45) {$B$};
+        \node[uniAzul] at (0.15,-2.4) {};
+        \node[uniAzul] at (1.35,-1.75) {$C$};
+        \node at (-1.05,0.75) {8}; \node at (1.35,0.75) {6};
+        \node at (0.15,-1.35) {5};
+        \node at (0.15,0.85) {4};
+        \node at (-0.45,-0.35) {3}; \node at (0.75,-0.35) {2};
+        \node at (0.15,0.05) {7};
+        \node at (2.35,-1.75) {5};
+      \end{tikzpicture}
+      \end{center}
+    \end{column}
+    \begin{column}{0.55\textwidth}
+      \begin{block}{Cómo se lee este diagrama}
+        \tiny
+        $\#(A\cap B\cap C) = 7$ \ (el centro).
+
+        Solo $A$ y $B$: $4$. \quad Solo $A$ y $C$: $3$. \quad
+        Solo $B$ y $C$: $2$.
+
+        Solo $A$: $8$. \quad Solo $B$: $6$. \quad Solo $C$: $5$.
+
+        Fuera de todo: $5$.
+
+        \vspace{0.06cm}
+        \destacar{Total} $= 8+6+5+4+3+2+7+5 = \destacar{40}$
+
+        \vspace{0.04cm}
+        $\#A = 8+4+3+7 = 22$, \quad
+        $\#(A\cap B) = 4+7 = 11$
+      \end{block}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{Ejercicio 2 — problema de conteo}
+  \begin{alertblock}{En parejas, 15 minutos}
+    \scriptsize
+    En una encuesta a $120$ personas sobre tres servicios de un centro de
+    atención:
+
+    \vspace{0.06cm}
+    {\tiny
+    $62$ usaron el servicio $A$; \ $54$ el $B$; \ $48$ el $C$; \
+    $22$ usaron $A$ y $B$; \ $18$ usaron $A$ y $C$; \ $16$ usaron $B$ y $C$; \
+    $8$ usaron los tres.}
+
+    \vspace{0.08cm}
+    \begin{enumerate}\setlength{\itemsep}{-0.02cm}
+      \item ¿Cuántos usaron al menos uno de los tres?
+      \item ¿Cuántos no usaron ninguno?
+      \item ¿Cuántos usaron \azul{solo} el servicio $A$?
+      \item ¿Cuántos usaron exactamente dos servicios?
+    \end{enumerate}
+  \end{alertblock}
+\end{frame}
+
+\begin{frame}{Ejercicio 2 — solución}
+  \scriptsize
+  \begin{columns}[T,onlytextwidth]
+    \begin{column}{0.49\textwidth}
+      \begin{block}{Puntos 1 y 2}
+        \tiny
+        \textbf{1.} Inclusión-exclusión:
+        \[ 62+54+48-22-18-16+8 \]
+        \[ = 164 - 56 + 8 = \destacar{116} \]
+
+        \vspace{0.06cm}
+        \textbf{2.} $120 - 116 = \destacar{4}$ personas no usaron ninguno.
+      \end{block}
+    \end{column}
+    \begin{column}{0.49\textwidth}
+      \begin{block}{Puntos 3 y 4}
+        \tiny
+        \textbf{3.} Solo $A$ $= 62 - 22 - 18 + 8 = \destacar{30}$
+
+        \vspace{0.06cm}
+        {\color{uniGris}(se quitan los que comparten con $B$ y con $C$, y se
+        devuelve el centro, que se quitó dos veces)}
+
+        \vspace{0.08cm}
+        \textbf{4.} Exactamente dos:
+        $(22-8)+(18-8)+(16-8) = 14+10+8 = \destacar{32}$
+      \end{block}
+    \end{column}
+  \end{columns}
+
+  \vspace{0.08cm}
+  {\tiny\color{uniGris} \azul{Verificación:} solo $A$ $=30$, solo $B =
+  54-22-16+8 = 24$, solo $C = 48-18-16+8 = 22$; más los $32$ de exactamente
+  dos y los $8$ del centro: $30+24+22+32+8 = \destacar{116}$ \checkmark
+  Coincide con el punto 1.}
+\end{frame}
+
+\begin{frame}{Ejercicio 3 — taller principal}
+  \begin{alertblock}{En grupos de tres, 20 minutos. Se socializa en el tablero.}
+    \scriptsize
+    Sea $U=\{1,2,\dots,15\}$, \ $A=\{x\in U: x \text{ es par}\}$, \
+    $B=\{x\in U: x \text{ es múltiplo de }3\}$, \
+    $C=\{x\in U: x \le 6\}$.
+
+    \vspace{0.08cm}
+    \begin{enumerate}\setlength{\itemsep}{0.0cm}
+      \item Escriba $A$, $B$ y $C$ por extensión.
+      \item Halle $A\cap B$ y explique con palabras qué son esos números.
+      \item Halle $(A\cup B)^{c}$.
+      \item Halle $C\setminus(A\cup B)$.
+      \item ¿Es cierto que $C \subseteq A\cup B$? Justifique.
+      \item Compruebe con estos conjuntos que
+            $\#(A\cup B) = \#A+\#B-\#(A\cap B)$.
+    \end{enumerate}
+  \end{alertblock}
+\end{frame}
+
+\begin{frame}{Ejercicio 3 — solución}
+  \scriptsize
+  \begin{columns}[T,onlytextwidth]
+    \begin{column}{0.49\textwidth}
+      \begin{block}{Puntos 1 a 3}
+        \tiny
+        \textbf{1.} $A=\{2,4,6,8,10,12,14\}$, \
+        $B=\{3,6,9,12,15\}$, \ $C=\{1,2,3,4,5,6\}$
+
+        \vspace{0.08cm}
+        \textbf{2.} $A\cap B = \{6,12\}$: los múltiplos de $2$
+        \azul{y} de $3$, es decir los \destacar{múltiplos de 6}.
+
+        \vspace{0.08cm}
+        \textbf{3.} $A\cup B=\{2,3,4,6,8,9,10,12,14,15\}$, luego
+        $(A\cup B)^{c} = \destacar{\{1,5,7,11,13\}}$
+      \end{block}
+    \end{column}
+    \begin{column}{0.49\textwidth}
+      \begin{block}{Puntos 4 a 6}
+        \tiny
+        \textbf{4.} $C\setminus(A\cup B) = \destacar{\{1,5\}}$
+
+        \vspace{0.08cm}
+        \textbf{5.} \destacar{No}: $1\in C$ pero $1\notin A\cup B$.
+        Basta \azul{un} contraejemplo.
+
+        \vspace{0.08cm}
+        \textbf{6.} $\#A=7$, $\#B=5$, $\#(A\cap B)=2$:
+        \[ 7+5-2 = 10 = \#(A\cup B) \ \checkmark \]
+      \end{block}
+    \end{column}
+  \end{columns}
+
+  \vspace{0.08cm}
+  {\tiny\color{uniGris} El punto \destacar{2} conecta con la sesión 2: la
+  intersección de los múltiplos de $2$ y los de $3$ son los múltiplos de su
+  \azul{mcm}, que es $6$. No es casualidad.}
+\end{frame}
+
+\begin{frame}{Errores frecuentes en esta sesión}
+  \scriptsize
+  \begin{center}
+  \begin{tabular}{@{}p{5.2cm}p{6.8cm}@{}}
+    \toprule
+    \textbf{Error} & \textbf{Lo correcto} \\
+    \midrule
+    Escribir $2 \subseteq A$ &
+      $2$ es elemento: $2\in A$. Conjunto sería $\{2\}\subseteq A$ \\
+    \addlinespace
+    $\#(A\cup B) = \#A+\#B$ &
+      Solo si $A\cap B=\varnothing$; si no, hay que restar \\
+    \addlinespace
+    Llenar el Venn de afuera hacia adentro &
+      Empiece por el centro y vaya restando \\
+    \addlinespace
+    Confundir $A\setminus B$ con $B\setminus A$ &
+      No es conmutativa: $\{1,2,3\}$ frente a $\{6,7\}$ \\
+    \addlinespace
+    Calcular $A^{c}$ sin fijar $U$ &
+      El complemento \azul{depende del universo} \\
+    \addlinespace
+    Leer ``al menos uno'' como ``exactamente uno'' &
+      ``Al menos uno'' es la unión; ``exactamente uno'' excluye
+      las intersecciones \\
+    \bottomrule
+  \end{tabular}
+  \end{center}
+\end{frame}
+
+\begin{frame}{Cierre de la sesión}
+  \scriptsize
+  \begin{block}{Lo que hay que llevarse}
+    \tiny
+    \textbf{1.} Un conjunto se describe por extensión (lista) o por
+    comprensión (propiedad). \quad
+    \textbf{2.} $\in$ relaciona elemento con conjunto; $\subseteq$, conjunto
+    con conjunto. \quad
+    \textbf{3.} Unión es ``o''; intersección es ``y''; el complemento depende
+    del universo. \quad
+    \textbf{4.} $\#(A\cup B) = \#A+\#B-\#(A\cap B)$. \quad
+    \textbf{5.} El diagrama de Venn se llena \destacar{del centro hacia
+    afuera}.
+  \end{block}
+
+  \vspace{0.1cm}
+  \begin{alertblock}{Para la próxima sesión}
+    \tiny
+    Resolver los \destacar{20 ejercicios propuestos} y la guía de la unidad en
+    Aulas Virtuales.
+
+    \vspace{0.05cm}
+    En la sesión 5 vemos \azul{razones y proporciones} —incluidos porcentajes
+    y regla de tres— y hacemos el \destacar{repaso integrador de la Unidad 1}
+    con un simulacro del Examen 1, que es en la semana 6.
+  \end{alertblock}
+\end{frame}
+
+\begin{frame}{Ejercicios propuestos}
+  \vspace{-0.1cm}
+  \begin{beamercolorbox}[wd=\textwidth,sep=0.10cm]{block body}
+    \centering\scriptsize
+    Con $U=\{1,2,\dots,10\}$, \ $A=\{1,3,5,7,9\}$, \ $B=\{2,3,5,7\}$, \
+    $D=\{1,2,3,4\}$.
+  \end{beamercolorbox}
+  \listatiny
+  \vspace{0.15cm}
+  \begin{columns}[T,onlytextwidth]
+    \begin{column}{0.47\textwidth}
+      \begin{enumerate}\setlength{\itemsep}{0.16cm}
+        \item $A\cup B$
+        \item $A\cap B$
+        \item $A\setminus B$
+        \item $B\setminus A$
+        \item $A^{c}$
+        \item $(A\cap B)^{c}$
+        \item $A\cap B\cap D$
+        \item $(A\cup D)\cap B$
+        \item $\#(A\cup D)$
+        \item ¿Es $B\subseteq A$?
+      \end{enumerate}
+    \end{column}
+    \begin{column}{0.50\textwidth}
+      \begin{enumerate}\setlength{\itemsep}{0.16cm}
+        \setcounter{enumi}{10}
+        \item ¿Cuántos subconjuntos tiene $D$?
+        \item Escriba $A$ por comprensión
+        \item ¿Es $\varnothing \subseteq B$? Justifique
+        \item ¿Es $\{3,5\}\subseteq A\cap B$?
+        \item De $80$ personas, $45$ leen prensa, $38$ oyen radio y $20$ hacen
+              las dos. ¿Cuántas hacen al menos una?
+        \item En el 15, ¿cuántas no hacen ninguna?
+        \item En el 15, ¿cuántas solo leen prensa?
+        \item De $60$ clientes, $30$ compran en línea, $25$ en tienda y $12$
+              en ambas. ¿Cuántos solo en tienda?
+        \item Si $\#A=14$, $\#B=9$ y $\#(A\cup B)=20$, halle $\#(A\cap B)$
+        \item Si $A\cap B=\varnothing$, ¿cuánto vale $\#(A\cup B)$?
+      \end{enumerate}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{Respuestas}{Autoevaluación de los ejercicios propuestos}
+  \listatiny
+  \vspace{0.15cm}
+  \begin{columns}[T,onlytextwidth]
+    \begin{column}{0.47\textwidth}
+      \begin{enumerate}\setlength{\itemsep}{0.16cm}
+        \item $\{1,2,3,5,7,9\}$
+        \item $\{3,5,7\}$
+        \item $\{1,9\}$
+        \item $\{2\}$
+        \item $\{2,4,6,8,10\}$
+        \item $\{1,2,4,6,8,9,10\}$
+        \item $\{3\}$
+        \item $\{2,3,5,7\}$
+        \item $A\cup D=\{1,2,3,4,5,7,9\}$: $7$
+        \item No: $2\in B$ y $2\notin A$
+      \end{enumerate}
+    \end{column}
+    \begin{column}{0.50\textwidth}
+      \begin{enumerate}\setlength{\itemsep}{0.16cm}
+        \setcounter{enumi}{10}
+        \item $2^{4}=16$
+        \item $\{x\in U : x \text{ es impar}\}$
+        \item Sí: el vacío está contenido en todo conjunto
+        \item Sí
+        \item $45+38-20 = 63$
+        \item $80-63 = 17$
+        \item $45-20 = 25$
+        \item $25-12 = 13$
+        \item $14+9-20 = 3$
+        \item $\#A + \#B$
+      \end{enumerate}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{Referencias}
+  \footnotesize
+  \begin{itemize}
+    \item[{[1]}] Ramos del Olmo, Á. M. (2016). \textit{Matemáticas básicas
+      para el acceso a la universidad}. Ediciones Pirámide.
+      \texttt{https://elibro.net/es/ereader/uniminuto/49134}
+    \item[{[2]}] González Pulido, J. W., Chacón Benavides, J. A. \&
+      Fonseca Correa, L. Á. (2023). \textit{Matemática básica}
+      (1.\textsuperscript{a} ed.). Universidad Mariana.
+      \texttt{https://elibro.net/es/ereader/uniminuto/280647}
+    \item[{[3]}] Torrijos, M. (2018). \textit{Apuntes de matemática básica}.
+      Universidad Católica de Colombia.
+      \texttt{https://elibro.net/es/ereader/uniminuto/197048}
+    \item[{[4]}] Ramírez, A. \& Rojas, L. (2016). \textit{Matemáticas básicas
+      con aplicaciones a la ingeniería}. Ecoe Ediciones.
+      \texttt{https://elibro.net/es/ereader/uniminuto/114355}
+  \end{itemize}
+
+  \vspace{0.3cm}
+  \begin{center}
+    {\Large\color{uniAzul}\textbf{¿Preguntas?}}
+  \end{center}
+\end{frame}
+
+\end{document}

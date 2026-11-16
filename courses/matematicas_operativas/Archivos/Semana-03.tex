@@ -1,0 +1,564 @@
+% ============================================================================
+%  MATEMÁTICAS OPERATIVAS — Sesión 3
+%  Semana 3: 24 al 29 de agosto de 2026
+%  1.3 Operaciones básicas con números racionales
+%  Duración prevista: 3 horas
+% ============================================================================
+\documentclass[aspectratio=169,10pt]{beamer}
+
+\usepackage[utf8]{inputenc}
+\IfFileExists{spanish.ldf}{\usepackage[spanish,es-noshorthands]{babel}}{}
+\usepackage{amsmath,amssymb}
+\usepackage{booktabs}
+\usepackage{tikz}
+\usepackage{cancel}
+
+\usetheme{Uniminuto}
+
+\uniasignatura{Matemáticas Operativas}
+\uniprofesor{Andrés Felipe Puerta Velez}
+\unicorreo{andres.puerta-v@uniminuto.edu.co}
+\uninrc{CBASBL011}
+\unisemana{Sesión 3 — Semana 3 · 24 al 29 de agosto de 2026}
+
+\newcommand{\listatiny}{\setbeamerfont{itemize/enumerate body}{size=\tiny}\tiny}
+
+\begin{document}
+
+\portada
+
+\begin{frame}{Orden del día}
+  \begin{enumerate}
+    \item Revisión de los ejercicios propuestos de la sesión 2
+    \item \azul{Tema 1.3: qué es un racional y cómo se simplifica}
+    \item Suma y resta: el mínimo común denominador
+    \item Multiplicación, división y potencias
+    \item Fracciones complejas y problemas en contexto
+    \item Taller principal, errores frecuentes y cierre
+  \end{enumerate}
+
+  \vspace{0.25cm}
+  {\footnotesize\color{uniGris} Sesión de 3 horas. Todo lo de hoy vuelve en la
+  Unidad 3 con letras en lugar de números: \destacar{quien opere bien
+  fracciones numéricas operará bien fracciones algebraicas}.}
+\end{frame}
+
+\begin{frame}{Repaso y punto de partida}
+  \scriptsize
+  \begin{columns}[T,onlytextwidth]
+    \begin{column}{0.48\textwidth}
+      \begin{block}{Lo que traemos de la sesión 2}
+        \tiny
+        Factorización en primos, MCD y mcm. \destacar{El mcm de hoy se llama
+        mínimo común denominador}: es exactamente el mismo cálculo.
+      \end{block}
+    \end{column}
+    \begin{column}{0.48\textwidth}
+      \begin{block}{Qué es un racional}
+        \tiny
+        $\dfrac{a}{b}$ con $a,b$ enteros y $b\neq 0$. El de arriba se llama
+        \azul{numerador} (cuántas partes se toman) y el de abajo
+        \azul{denominador} (en cuántas se dividió).
+      \end{block}
+    \end{column}
+  \end{columns}
+
+  \vspace{0.12cm}
+  \begin{exampleblock}{Fracciones equivalentes: la idea central del tema}
+    \tiny
+    \[ \frac{2}{3} = \frac{4}{6} = \frac{84}{126}
+       \qquad\text{porque}\qquad
+       \frac{a}{b} = \frac{a\cdot k}{b\cdot k}\ \ (k\neq 0) \]
+    Multiplicar arriba y abajo por lo mismo \destacar{no cambia el valor}.
+    Hacia arriba se llama \azul{amplificar} (para sumar); hacia abajo,
+    \azul{simplificar} (para responder).
+  \end{exampleblock}
+
+  \vspace{0.06cm}
+  {\tiny\color{uniGris} Para simplificar $\tfrac{84}{126}$ de un solo paso,
+  divida entre el $\mathrm{MCD}(84,126)=42$. Ahí se ve para qué servía el MCD
+  de la semana pasada.}
+\end{frame}
+
+% ===========================================================================
+\seccion{1.3 Operaciones con números racionales}
+% ===========================================================================
+
+\begin{frame}{Suma y resta: el mínimo común denominador}
+  \scriptsize
+  \begin{block}{Procedimiento}
+    \tiny
+    \textbf{1.} Halle el mcm de los denominadores. \quad
+    \textbf{2.} Amplifique cada fracción hasta ese denominador. \quad
+    \textbf{3.} Sume o reste \azul{solo los numeradores}. \quad
+    \textbf{4.} Simplifique el resultado.
+  \end{block}
+
+  \vspace{0.04cm}
+  \begin{columns}[T,onlytextwidth]
+    \begin{column}{0.48\textwidth}
+      \begin{exampleblock}{$\tfrac{3}{4}+\tfrac{5}{6}$}
+        \tiny
+        $4=2^{2}$, $6=2\cdot 3$ $\Rightarrow$ m.c.d. $=12$
+        \[ \frac{9}{12}+\frac{10}{12}
+           = \destacar{\frac{19}{12}} \]
+        {\color{uniGris}Como $19>12$, es una fracción impropia:
+        $1\tfrac{7}{12}$.}
+      \end{exampleblock}
+    \end{column}
+    \begin{column}{0.48\textwidth}
+      \begin{exampleblock}{$\tfrac{5}{8}-\tfrac{7}{12}+\tfrac{1}{6}$}
+        \tiny
+        $8=2^{3}$, $12=2^{2}3$, $6=2\cdot 3$ $\Rightarrow$ m.c.d. $=24$
+        \[ \frac{15}{24}-\frac{14}{24}+\frac{4}{24}
+           = \destacar{\frac{5}{24}} \]
+      \end{exampleblock}
+    \end{column}
+  \end{columns}
+
+  \vspace{-0.02cm}
+  \begin{alertblock}{El error que hay que erradicar hoy}
+    \tiny
+    $\tfrac{3}{4}+\tfrac{5}{6} \;\neq\; \tfrac{3+5}{4+6} = \tfrac{8}{10}$. \
+    \destacar{Los denominadores no se suman.} Compruebe con decimales:
+    $0{,}75+0{,}833 = 1{,}583$, y $\tfrac{19}{12}=1{,}583$ \checkmark, mientras
+    que $\tfrac{8}{10}=0{,}8$.
+  \end{alertblock}
+\end{frame}
+
+\begin{frame}{Multiplicar, dividir y elevar}
+  \scriptsize
+  \begin{columns}[T,onlytextwidth]
+    \begin{column}{0.31\textwidth}
+      \begin{block}{Multiplicación}
+        \tiny
+        \[ \frac{a}{b}\cdot\frac{c}{d} = \frac{ac}{bd} \]
+        \destacar{No hace falta común denominador.} Simplifique
+        \azul{en cruz} antes de multiplicar.
+        \[ \frac{2}{3}\cdot\frac{9}{14} = \frac{18}{42}
+           = \destacar{\frac{3}{7}} \]
+      \end{block}
+    \end{column}
+    \begin{column}{0.33\textwidth}
+      \begin{block}{División}
+        \tiny
+        \[ \frac{a}{b}\div\frac{c}{d}
+           = \frac{a}{b}\cdot\frac{d}{c} \]
+        Se invierte \azul{la segunda}.
+        \[ \frac{7}{9}\div\frac{14}{27}
+           = \frac{7}{9}\cdot\frac{27}{14}
+           = \destacar{\frac{3}{2}} \]
+      \end{block}
+    \end{column}
+    \begin{column}{0.31\textwidth}
+      \begin{block}{Potencias}
+        \tiny
+        \[ \left(\frac{a}{b}\right)^{n} = \frac{a^{n}}{b^{n}} \]
+        El exponente afecta a \azul{los dos}.
+        \[ \left(\frac{3}{4}\right)^{2} = \frac{9}{16}
+           \qquad
+           \left(-\frac{2}{5}\right)^{3} = -\frac{8}{125} \]
+      \end{block}
+    \end{column}
+  \end{columns}
+
+  \vspace{-0.05cm}
+  \begin{alertblock}{Dos observaciones que sorprenden}
+    \tiny
+    \textbf{(1)} Multiplicar por una fracción menor que $1$ \destacar{achica}
+    el resultado. \quad
+    \textbf{(2)} Dividir entre una fracción menor que $1$ \destacar{agranda}:
+    $\tfrac{7}{9}\div\tfrac{14}{27} = \tfrac{3}{2} > \tfrac{7}{9}$.
+    ``Dividir'' no siempre achica.
+  \end{alertblock}
+\end{frame}
+
+\begin{frame}{Ejercicio 1 — las cuatro operaciones}
+  \scriptsize
+  \begin{alertblock}{Individual, 10 minutos. Simplifique siempre la respuesta.}
+    \tiny
+    \textbf{1.} $\tfrac{7}{10}-\tfrac{2}{15}$ \qquad
+    \textbf{2.} $-\tfrac{5}{6}\cdot\tfrac{3}{20}$ \qquad
+    \textbf{3.} $-\tfrac{3}{8}\div\left(-\tfrac{9}{16}\right)$ \qquad
+    \textbf{4.} simplifique $\tfrac{210}{315}$
+  \end{alertblock}
+
+  \vspace{0.04cm}
+  \begin{block}{Solución}
+    \tiny
+    \textbf{1.} m.c.d. $=30$: \ $\tfrac{21}{30}-\tfrac{4}{30}
+    = \destacar{\tfrac{17}{30}}$
+
+    \vspace{0.08cm}
+    \textbf{2.} $-\tfrac{15}{120} = \destacar{-\tfrac{1}{8}}$
+    \ {\color{uniGris}(o simplificando antes: $\tfrac{5}{20}=\tfrac14$ y
+    $\tfrac{3}{6}=\tfrac12$)}
+
+    \vspace{0.08cm}
+    \textbf{3.} $-\tfrac{3}{8}\cdot\left(-\tfrac{16}{9}\right)
+    = +\tfrac{48}{72} = \destacar{\tfrac{2}{3}}$
+
+    \vspace{0.08cm}
+    \textbf{4.} $\mathrm{MCD}(210,315)=105$: \
+    $\destacar{\tfrac{2}{3}}$
+  \end{block}
+\end{frame}
+
+\begin{frame}{Jerarquía con fracciones}
+  \scriptsize
+  \begin{columns}[T,onlytextwidth]
+    \begin{column}{0.48\textwidth}
+      \begin{exampleblock}{Sin paréntesis}
+        \tiny
+        \[ \frac{1}{2}+\frac{2}{3}\cdot\frac{3}{8} \]
+        Primero el producto:
+        $\tfrac{2}{3}\cdot\tfrac{3}{8}=\tfrac{1}{4}$
+        \[ \frac{1}{2}+\frac{1}{4} = \destacar{\frac{3}{4}} \]
+      \end{exampleblock}
+    \end{column}
+    \begin{column}{0.48\textwidth}
+      \begin{exampleblock}{Con paréntesis}
+        \tiny
+        \[ \left(\frac{1}{2}+\frac{2}{3}\right)\cdot\frac{3}{8} \]
+        Primero la suma: $\tfrac{7}{6}$
+        \[ \frac{7}{6}\cdot\frac{3}{8} = \destacar{\frac{7}{16}} \]
+      \end{exampleblock}
+    \end{column}
+  \end{columns}
+
+  \vspace{0.12cm}
+  \begin{alertblock}{Dos respuestas distintas para los mismos números}
+    \tiny
+    $\tfrac{3}{4} = 0{,}75$ frente a $\tfrac{7}{16} = 0{,}4375$.
+    \destacar{El paréntesis no es decorativo}: cambia el resultado. En el
+    examen, la mitad de los errores de esta unidad son de jerarquía, no de
+    fracciones.
+  \end{alertblock}
+
+  \vspace{0.06cm}
+  {\tiny\color{uniGris} \azul{Un caso más:}
+  $\tfrac{5}{6}-\tfrac{3}{4}\cdot\tfrac{2}{9}
+  = \tfrac{5}{6}-\tfrac{1}{6} = \tfrac{4}{6} = \tfrac{2}{3}$. Note que el
+  producto se simplificó antes de restar.}
+\end{frame}
+
+\begin{frame}{Fracciones complejas}
+  \scriptsize
+  \begin{block}{Una fracción cuyos términos son fracciones}
+    \tiny
+    Se resuelve en dos movimientos: \azul{convertir arriba y abajo en una sola
+    fracción}, y luego \azul{dividir}.
+  \end{block}
+
+  \vspace{0.04cm}
+  \begin{columns}[T,onlytextwidth]
+    \begin{column}{0.49\textwidth}
+      \begin{exampleblock}{Ejemplo}
+        \tiny
+        \[ \frac{\ \frac{2}{3}+\frac{1}{4}\ }
+                {\ \frac{5}{6}-\frac{1}{3}\ }
+         = \frac{\ \frac{11}{12}\ }{\ \frac{3}{6}\ }
+         = \frac{11}{12}\cdot\frac{6}{3}
+         = \destacar{\frac{11}{6}} \]
+      \end{exampleblock}
+    \end{column}
+    \begin{column}{0.49\textwidth}
+      \begin{exampleblock}{Otro, con resultado negativo}
+        \tiny
+        \[ \frac{\ \frac{1}{2}-\frac{3}{5}\ }{\ \frac{1}{10}\ }
+         = \frac{-\frac{1}{10}}{\frac{1}{10}}
+         = -\frac{1}{10}\cdot\frac{10}{1}
+         = \destacar{-1} \]
+      \end{exampleblock}
+    \end{column}
+  \end{columns}
+
+  \vspace{0.0cm}
+  {\tiny\color{uniGris} \destacar{Nunca cancele término a término} entre el
+  numerador y el denominador de una fracción compleja. Solo se puede después
+  de haber convertido cada piso en \azul{una sola} fracción. Esta es la misma
+  regla que reaparecerá en la Unidad 3.}
+\end{frame}
+
+\begin{frame}{Ejercicio 2 — jerarquía y fracciones complejas}
+  \scriptsize
+  \begin{alertblock}{En parejas, 12 minutos}
+    \tiny
+    \textbf{1.} $\tfrac{7}{8}+\tfrac{1}{6}\cdot\tfrac{3}{2}$ \qquad
+    \textbf{2.} $\tfrac{1}{2}\cdot\tfrac{4}{5}\div\tfrac{2}{15}$ \qquad
+    \textbf{3.} $\left(\tfrac{3}{4}-\tfrac{1}{6}\right)
+                 \div\left(\tfrac{1}{2}+\tfrac{1}{3}\right)$ \qquad
+    \textbf{4.} $2\tfrac{1}{3}+3\tfrac{3}{4}$ \ (pase a impropia y sume)
+  \end{alertblock}
+
+  \vspace{0.04cm}
+  \begin{block}{Solución}
+    \tiny
+    \textbf{1.} $\tfrac{7}{8}+\tfrac{1}{4}
+    = \tfrac{7}{8}+\tfrac{2}{8} = \destacar{\tfrac{9}{8}}$ \qquad
+    \textbf{2.} $\tfrac{4}{10}\cdot\tfrac{15}{2}
+    = \tfrac{60}{20} = \destacar{3}$
+
+    \vspace{0.08cm}
+    \textbf{3.} $\tfrac{7}{12}\div\tfrac{5}{6}
+    = \tfrac{7}{12}\cdot\tfrac{6}{5} = \destacar{\tfrac{7}{10}}$ \qquad
+    \textbf{4.} $\tfrac{7}{3}+\tfrac{15}{4}
+    = \tfrac{28}{12}+\tfrac{45}{12} = \tfrac{73}{12}
+    = \destacar{6\tfrac{1}{12}}$
+  \end{block}
+\end{frame}
+
+\begin{frame}{Fracciones en problemas: la palabra ``de''}
+  \scriptsize
+  \begin{block}{La traducción que resuelve la mitad de los problemas}
+    \tiny
+    En un enunciado, \destacar{``de'' significa multiplicar}. ``Los dos
+    tercios \azul{de} 45'' es $\tfrac{2}{3}\cdot 45 = 30$. Y ``\azul{del}
+    resto'' significa multiplicar por lo que queda, \destacar{no} por el
+    total: ahí se equivoca casi todo el mundo.
+  \end{block}
+
+  \vspace{0.1cm}
+  \begin{exampleblock}{Ejemplo desarrollado}
+    \tiny
+    Un vehículo recorre $\tfrac{2}{7}$ de una ruta y luego $\tfrac{1}{3}$
+    \azul{del resto}. ¿Qué fracción de la ruta le falta?
+
+    \vspace{0.06cm}
+    Resto tras el primer tramo: $1-\tfrac{2}{7} = \tfrac{5}{7}$.
+    Segundo tramo: $\tfrac{1}{3}\cdot\tfrac{5}{7} = \tfrac{5}{21}$.
+    \[ \text{Recorrido} = \tfrac{2}{7}+\tfrac{5}{21} = \tfrac{11}{21}
+       \qquad
+       \text{Falta} = 1-\tfrac{11}{21} = \destacar{\tfrac{10}{21}} \]
+  \end{exampleblock}
+
+  \vspace{0.05cm}
+  {\tiny\color{uniGris} Si hubiera leído ``$\tfrac{1}{3}$ de la ruta'' en vez
+  de ``del resto'', el recorrido sería $\tfrac{2}{7}+\tfrac{1}{3}
+  =\tfrac{13}{21}$ y faltaría $\tfrac{8}{21}$. \destacar{Dos palabras cambian
+  la respuesta.}}
+\end{frame}
+
+\begin{frame}{Ejercicio 3 — taller principal}
+  \begin{alertblock}{En grupos de tres, 20 minutos. Se socializa en el tablero.}
+    \scriptsize
+    \begin{enumerate}\setlength{\itemsep}{0.02cm}
+      \item Un presupuesto destina $\tfrac{2}{5}$ a personal y $\tfrac{1}{3}$ a
+            insumos. ¿Qué fracción queda disponible?
+      \item Un tanque está a $\tfrac{3}{4}$ de su capacidad y se consume
+            $\tfrac{2}{5}$ de lo que hay. ¿Qué fracción del tanque queda?
+      \item Una receta para 2 personas lleva $\tfrac{3}{4}$ de taza de
+            harina. ¿Cuánto lleva para 5 personas?
+      \item Calcule: $-\dfrac{2}{3}+\dfrac{5}{12}-\dfrac{1}{4}$
+      \item Ordene de menor a mayor: $\tfrac{5}{8}$, \ $\tfrac{7}{12}$, \
+            $\tfrac{2}{3}$
+    \end{enumerate}
+  \end{alertblock}
+\end{frame}
+
+\begin{frame}{Ejercicio 3 — solución}
+  \scriptsize
+  \begin{columns}[T,onlytextwidth]
+    \begin{column}{0.49\textwidth}
+      \begin{block}{Puntos 1 a 3}
+        \tiny
+        \textbf{1.} $1-\tfrac{2}{5}-\tfrac{1}{3}
+        = \tfrac{15-6-5}{15} = \destacar{\tfrac{4}{15}}$
+
+        \vspace{0.08cm}
+        \textbf{2.} Queda $\tfrac{3}{5}$ de lo que había:
+        $\tfrac{3}{4}\cdot\tfrac{3}{5} = \destacar{\tfrac{9}{20}}$
+        \ {\color{uniGris}(se consumió $\tfrac{3}{10}$)}
+
+        \vspace{0.08cm}
+        \textbf{3.} $\tfrac{3}{4}\div 2 = \tfrac{3}{8}$ por persona;
+        $\tfrac{3}{8}\cdot 5 = \destacar{\tfrac{15}{8}}$ tazas
+        $= 1\tfrac{7}{8}$
+      \end{block}
+    \end{column}
+    \begin{column}{0.49\textwidth}
+      \begin{block}{Puntos 4 y 5}
+        \tiny
+        \textbf{4.} m.c.d. $=12$:
+        $\tfrac{-8+5-3}{12} = \tfrac{-6}{12}
+        = \destacar{-\tfrac{1}{2}}$
+
+        \vspace{0.1cm}
+        \textbf{5.} m.c.d. $=24$:
+        $\tfrac{15}{24},\ \tfrac{14}{24},\ \tfrac{16}{24}$
+        \[ \tfrac{7}{12} < \tfrac{5}{8} < \tfrac{2}{3} \]
+        {\color{uniGris}En decimales: $0{,}583 < 0{,}625 < 0{,}667$}
+      \end{block}
+    \end{column}
+  \end{columns}
+
+  \vspace{0.08cm}
+  {\tiny\color{uniGris} El punto \destacar{2} es el que separa a quien entendió
+  ``de'': el $\tfrac{2}{5}$ se aplica a \azul{lo que hay} ($\tfrac{3}{4}$), no
+  al tanque completo. Si se aplicara al total daría $\tfrac{7}{20}$, que es
+  otra respuesta.}
+\end{frame}
+
+\begin{frame}{Errores frecuentes en esta sesión}
+  \scriptsize
+  \begin{center}
+  \begin{tabular}{@{}p{5.4cm}p{6.6cm}@{}}
+    \toprule
+    \textbf{Error} & \textbf{Lo correcto} \\
+    \midrule
+    $\frac{3}{4}+\frac{5}{6} = \frac{8}{10}$ &
+      Los denominadores \azul{no} se suman; hay que igualarlos \\
+    \addlinespace
+    Buscar común denominador para multiplicar &
+      Solo hace falta para sumar y restar \\
+    \addlinespace
+    Invertir la primera fracción al dividir &
+      Se invierte \azul{la segunda} \\
+    \addlinespace
+    $\left(\frac{3}{4}\right)^{2} = \frac{9}{4}$ &
+      El exponente afecta arriba \azul{y} abajo: $\frac{9}{16}$ \\
+    \addlinespace
+    No simplificar la respuesta &
+      $\frac{48}{72}$ está incompleto; se pide $\frac{2}{3}$ \\
+    \addlinespace
+    Aplicar ``del resto'' al total &
+      Multiplique por lo que \azul{queda}, no por el total \\
+    \bottomrule
+  \end{tabular}
+  \end{center}
+\end{frame}
+
+\begin{frame}{Cierre de la sesión}
+  \scriptsize
+  \begin{block}{Lo que hay que llevarse}
+    \tiny
+    \textbf{1.} Amplificar y simplificar no cambian el valor: son la misma
+    fracción escrita distinto. \quad
+    \textbf{2.} Sumar exige común denominador; multiplicar, no. \quad
+    \textbf{3.} Dividir es multiplicar por la inversa de la segunda. \quad
+    \textbf{4.} En una fracción compleja, primero un solo piso arriba y un
+    solo piso abajo. \quad
+    \textbf{5.} ``De'' significa multiplicar; ``del resto'', multiplicar por
+    lo que queda.
+  \end{block}
+
+  \vspace{0.1cm}
+  \begin{alertblock}{Para la próxima sesión}
+    \tiny
+    Resolver los \destacar{20 ejercicios propuestos} y la guía de la unidad en
+    Aulas Virtuales.
+
+    \vspace{0.05cm}
+    En la sesión 4 vemos \azul{conjuntos}: unión, intersección, diferencia,
+    complemento y diagramas de Venn. Es el tema más visual de la unidad y el
+    que después sirve para leer tablas y clasificar información.
+  \end{alertblock}
+\end{frame}
+
+\begin{frame}{Ejercicios propuestos}
+  \vspace{-0.1cm}
+  \begin{beamercolorbox}[wd=\textwidth,sep=0.10cm]{block body}
+    \centering\scriptsize
+    \textbf{1--8:} opere y simplifique. \quad \textbf{9--12:} jerarquía y
+    complejas. \quad \textbf{13--16:} simplifique u ordene. \quad
+    \textbf{17--20:} problemas.
+  \end{beamercolorbox}
+  \listatiny
+  \vspace{0.15cm}
+  \begin{columns}[T,onlytextwidth]
+    \begin{column}{0.47\textwidth}
+      \begin{enumerate}\setlength{\itemsep}{0.16cm}
+        \item $\tfrac{2}{5}+\tfrac{7}{10}$
+        \item $\tfrac{5}{6}-\tfrac{3}{8}$
+        \item $\tfrac{4}{9}\cdot\tfrac{27}{16}$
+        \item $\tfrac{3}{7}\div\tfrac{9}{14}$
+        \item $-\tfrac{2}{3}+\tfrac{5}{12}-\tfrac{1}{4}$
+        \item $\tfrac{1}{2}\cdot\tfrac{4}{5}\div\tfrac{2}{15}$
+        \item $\left(\tfrac{2}{3}\right)^{3}$
+        \item $\left(-\tfrac{3}{5}\right)^{2}$
+        \item $\tfrac{7}{8}+\tfrac{1}{6}\cdot\tfrac{3}{2}$
+        \item $\left(\tfrac{7}{8}+\tfrac{1}{6}\right)\cdot\tfrac{3}{2}$
+      \end{enumerate}
+    \end{column}
+    \begin{column}{0.50\textwidth}
+      \begin{enumerate}\setlength{\itemsep}{0.16cm}
+        \setcounter{enumi}{10}
+        \item $\left(\tfrac{3}{4}-\tfrac{1}{6}\right)
+              \div\left(\tfrac{1}{2}+\tfrac{1}{3}\right)$
+        \item $\tfrac{5}{6}-\tfrac{3}{4}\cdot\tfrac{2}{9}$
+        \item Simplifique $\tfrac{144}{180}$
+        \item Simplifique $\tfrac{96}{144}$
+        \item Ordene: $\tfrac{3}{5},\ \tfrac{5}{9},\ \tfrac{7}{12}$
+        \item Convierta $3\tfrac{2}{5}$ a impropia
+        \item $\tfrac{3}{8}$ de un lote de $240$ unidades
+        \item Gasta $\tfrac{1}{4}$ y luego $\tfrac{2}{3}$ del resto: ¿qué
+              fracción queda?
+        \item Media hora es qué fracción de un día
+        \item Una tabla de $\tfrac{7}{2}$ m se corta en piezas de
+              $\tfrac{7}{8}$ m: ¿cuántas salen?
+      \end{enumerate}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{Respuestas}{Autoevaluación de los ejercicios propuestos}
+  \listatiny
+  \vspace{0.15cm}
+  \begin{columns}[T,onlytextwidth]
+    \begin{column}{0.47\textwidth}
+      \begin{enumerate}\setlength{\itemsep}{0.16cm}
+        \item $\tfrac{11}{10}$
+        \item $\tfrac{11}{24}$
+        \item $\tfrac{3}{4}$
+        \item $\tfrac{2}{3}$
+        \item $-\tfrac{1}{2}$
+        \item $3$
+        \item $\tfrac{8}{27}$
+        \item $\tfrac{9}{25}$
+        \item $\tfrac{9}{8}$
+        \item $\tfrac{25}{16}$
+      \end{enumerate}
+    \end{column}
+    \begin{column}{0.50\textwidth}
+      \begin{enumerate}\setlength{\itemsep}{0.16cm}
+        \setcounter{enumi}{10}
+        \item $\tfrac{7}{10}$
+        \item $\tfrac{2}{3}$
+        \item $\tfrac{4}{5}$
+        \item $\tfrac{2}{3}$
+        \item $\tfrac{5}{9} < \tfrac{7}{12} < \tfrac{3}{5}$
+        \item $\tfrac{17}{5}$
+        \item $90$ unidades
+        \item $\tfrac{1}{4}$
+        \item $\tfrac{1}{48}$
+        \item $4$ piezas
+      \end{enumerate}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{Referencias}
+  \footnotesize
+  \begin{itemize}
+    \item[{[1]}] Ramos del Olmo, Á. M. (2016). \textit{Matemáticas básicas
+      para el acceso a la universidad}. Ediciones Pirámide.
+      \texttt{https://elibro.net/es/ereader/uniminuto/49134}
+    \item[{[2]}] González Pulido, J. W., Chacón Benavides, J. A. \&
+      Fonseca Correa, L. Á. (2023). \textit{Matemática básica}
+      (1.\textsuperscript{a} ed.). Universidad Mariana.
+      \texttt{https://elibro.net/es/ereader/uniminuto/280647}
+    \item[{[3]}] Torrijos, M. (2018). \textit{Apuntes de matemática básica}.
+      Universidad Católica de Colombia.
+      \texttt{https://elibro.net/es/ereader/uniminuto/197048}
+    \item[{[4]}] Ramírez, A. \& Rojas, L. (2016). \textit{Matemáticas básicas
+      con aplicaciones a la ingeniería}. Ecoe Ediciones.
+      \texttt{https://elibro.net/es/ereader/uniminuto/114355}
+  \end{itemize}
+
+  \vspace{0.3cm}
+  \begin{center}
+    {\Large\color{uniAzul}\textbf{¿Preguntas?}}
+  \end{center}
+\end{frame}
+
+\end{document}

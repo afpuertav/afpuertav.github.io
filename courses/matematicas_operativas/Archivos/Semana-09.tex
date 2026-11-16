@@ -1,0 +1,455 @@
+% ============================================================================
+%  MATEMÁTICAS OPERATIVAS — Sesión 9
+%  Semana 9: 5 al 10 de octubre de 2026
+%  2.3 Racionalización y sus procesos
+%  Duración prevista: 3 horas
+% ============================================================================
+\documentclass[aspectratio=169,10pt]{beamer}
+
+\usepackage[utf8]{inputenc}
+\IfFileExists{spanish.ldf}{\usepackage[spanish,es-noshorthands]{babel}}{}
+\usepackage{amsmath,amssymb}
+\usepackage{booktabs}
+\usepackage{tikz}
+
+\usetheme{Uniminuto}
+
+\uniasignatura{Matemáticas Operativas}
+\uniprofesor{Andrés Felipe Puerta Velez}
+\unicorreo{andres.puerta-v@uniminuto.edu.co}
+\uninrc{CBASBL011}
+\unisemana{Sesión 9 — Semana 9 · 5 al 10 de octubre de 2026}
+
+\newcommand{\listatiny}{\setbeamerfont{itemize/enumerate body}{size=\tiny}\tiny}
+
+\begin{document}
+
+\portada
+
+\begin{frame}{Orden del día}
+  \begin{enumerate}
+    \item Revisión de los ejercicios propuestos de la sesión 8
+    \item \azul{Tema 2.3: qué es racionalizar y para qué sirve}
+    \item Caso 1: un solo radical en el denominador
+    \item Caso 2: índice mayor que 2
+    \item Caso 3: binomios y el conjugado
+    \item Taller principal, errores frecuentes y cierre
+  \end{enumerate}
+
+  \vspace{0.25cm}
+  {\footnotesize\color{uniGris} Sesión de 3 horas. Es un tema con
+  \destacar{tres recetas} y ninguna teoría difícil. Lo que se evalúa es
+  reconocer cuál de las tres aplica, y eso se decide mirando el
+  \azul{denominador}.}
+\end{frame}
+
+% ===========================================================================
+\seccion{2.3 Racionalización y sus procesos}
+% ===========================================================================
+
+\begin{frame}{Qué es racionalizar}
+  \scriptsize
+  \begin{block}{Definición}
+    \tiny
+    Es transformar una fracción para que el \azul{denominador quede sin
+    radicales}, sin cambiar su valor. La herramienta es la misma de la sesión
+    3: \destacar{multiplicar arriba y abajo por lo mismo}.
+    \[ \frac{a}{b} = \frac{a\cdot k}{b\cdot k} \]
+  \end{block}
+
+  \vspace{0.1cm}
+  \begin{columns}[T,onlytextwidth]
+    \begin{column}{0.48\textwidth}
+      \begin{exampleblock}{Por qué se hace}
+        \tiny
+        Antes de las calculadoras, dividir entre $1{,}732\dots$ a mano era
+        penoso; dividir entre $3$ no. Hoy la razón es otra:
+        \destacar{la forma racionalizada es la forma canónica} de una
+        respuesta, y permite comparar y sumar expresiones que de otro modo
+        parecen distintas.
+      \end{exampleblock}
+    \end{column}
+    \begin{column}{0.48\textwidth}
+      \begin{alertblock}{Lo que NO cambia}
+        \tiny
+        \[ \frac{3}{\sqrt{5}} = \frac{3\sqrt{5}}{5} \]
+        Las dos valen $1{,}3416\dots$. \azul{Racionalizar no simplifica el
+        número, cambia su presentación.} Si el valor cambia, hubo un error.
+      \end{alertblock}
+    \end{column}
+  \end{columns}
+
+  \vspace{0.08cm}
+  {\tiny\color{uniGris} \destacar{Verificación gratuita:} calcule con
+  decimales la expresión de entrada y la de salida. Si no coinciden, revise.
+  Es el control más rápido de todo el tema.}
+\end{frame}
+
+\begin{frame}{Caso 1 — un solo radical cuadrático}
+  \scriptsize
+  \begin{block}{La receta}
+    \tiny
+    Multiplique arriba y abajo por \destacar{ese mismo radical}. Al cuadrado,
+    la raíz desaparece: $\sqrt{a}\cdot\sqrt{a} = a$.
+  \end{block}
+
+  \vspace{0.1cm}
+  \begin{columns}[T,onlytextwidth]
+    \begin{column}{0.48\textwidth}
+      \begin{exampleblock}{Ejemplo básico}
+        \tiny
+        \[ \frac{3}{\sqrt{5}}
+           = \frac{3}{\sqrt{5}}\cdot\frac{\sqrt{5}}{\sqrt{5}}
+           = \destacar{\frac{3\sqrt{5}}{5}} \]
+      \end{exampleblock}
+    \end{column}
+    \begin{column}{0.48\textwidth}
+      \begin{exampleblock}{Con radical arriba y abajo}
+        \tiny
+        \[ \frac{\sqrt{2}}{\sqrt{7}}
+           = \frac{\sqrt{2}\cdot\sqrt{7}}{7}
+           = \destacar{\frac{\sqrt{14}}{7}} \]
+      \end{exampleblock}
+    \end{column}
+  \end{columns}
+
+  \vspace{0.12cm}
+  \begin{alertblock}{Simplifique el radical antes de racionalizar}
+    \tiny
+    \[ \frac{6}{\sqrt{12}} = \frac{6}{2\sqrt{3}} = \frac{3}{\sqrt{3}}
+       = \frac{3\sqrt{3}}{3} = \destacar{\sqrt{3}} \]
+    Si se racionaliza sin simplificar, sale $\tfrac{6\sqrt{12}}{12}$ y
+    después hay que simplificar de todos modos. \azul{Menos pasos, menos
+    errores.}
+  \end{alertblock}
+\end{frame}
+
+\begin{frame}{Caso 2 — índice mayor que 2}
+  \scriptsize
+  \begin{block}{La receta}
+    \tiny
+    Con $\sqrt[n]{a^{m}}$ en el denominador, hay que multiplicar por
+    $\sqrt[n]{a^{\,n-m}}$: así los exponentes suman $n$ y el radical
+    desaparece. \destacar{La pregunta es siempre: ¿cuánto le falta al
+    exponente para llegar al índice?}
+  \end{block}
+
+  \vspace{0.1cm}
+  \begin{columns}[T,onlytextwidth]
+    \begin{column}{0.48\textwidth}
+      \begin{exampleblock}{$\dfrac{5}{\sqrt[3]{2}}$}
+        \tiny
+        Al exponente $1$ le faltan $2$ para llegar a $3$:
+        \[ \frac{5}{\sqrt[3]{2}}\cdot
+           \frac{\sqrt[3]{2^{2}}}{\sqrt[3]{2^{2}}}
+           = \frac{5\sqrt[3]{4}}{\sqrt[3]{2^{3}}}
+           = \destacar{\frac{5\sqrt[3]{4}}{2}} \]
+      \end{exampleblock}
+    \end{column}
+    \begin{column}{0.48\textwidth}
+      \begin{exampleblock}{$\dfrac{7}{\sqrt[3]{4}}$}
+        \tiny
+        $4 = 2^{2}$, y al $2$ le falta $1$:
+        \[ \frac{7}{\sqrt[3]{2^{2}}}\cdot
+           \frac{\sqrt[3]{2}}{\sqrt[3]{2}}
+           = \frac{7\sqrt[3]{2}}{2} \]
+        \[ = \destacar{\frac{7\sqrt[3]{2}}{2}} \]
+      \end{exampleblock}
+    \end{column}
+  \end{columns}
+
+  \vspace{0.08cm}
+  {\tiny\color{uniGris} \destacar{Error clásico:} multiplicar por
+  $\sqrt[3]{2}$ cuando el denominador es $\sqrt[3]{2}$. Eso da
+  $\sqrt[3]{4}$, que sigue siendo irracional. \azul{Con índice 3 hacen falta
+  tres factores iguales, no dos.}}
+\end{frame}
+
+\begin{frame}{Caso 3 — binomios con radicales: el conjugado}
+  \scriptsize
+  \begin{block}{La herramienta}
+    \tiny
+    El \azul{conjugado} de $a+b$ es $a-b$. Al multiplicarlos aparece la
+    diferencia de cuadrados, que elimina las raíces:
+    \[ (a+b)(a-b) = a^{2}-b^{2}
+       \qquad\Longrightarrow\qquad
+       (\sqrt{7}-\sqrt{3})(\sqrt{7}+\sqrt{3}) = 7-3 = 4 \]
+  \end{block}
+
+  \vspace{0.1cm}
+  \begin{exampleblock}{Ejemplo desarrollado}
+    \tiny
+    \[ \frac{6}{\sqrt{7}-\sqrt{3}}
+     = \frac{6}{\sqrt{7}-\sqrt{3}}\cdot
+       \frac{\sqrt{7}+\sqrt{3}}{\sqrt{7}+\sqrt{3}}
+     = \frac{6(\sqrt{7}+\sqrt{3})}{7-3}
+     = \frac{6(\sqrt{7}+\sqrt{3})}{4}
+     = \destacar{\frac{3(\sqrt{7}+\sqrt{3})}{2}} \]
+    \azul{Verificación:} la entrada vale $6\div(2{,}6458-1{,}7321)
+    = 6{,}5667$; la salida, $1{,}5\cdot(2{,}6458+1{,}7321) = 6{,}5667$
+    \checkmark
+  \end{exampleblock}
+
+  \vspace{0.06cm}
+  {\tiny\color{uniGris} \destacar{El conjugado solo cambia el signo de en
+  medio}, nunca los términos. El conjugado de $2+\sqrt{2}$ es $2-\sqrt{2}$, no
+  $-2+\sqrt{2}$ ni $2+\sqrt{2}$.}
+\end{frame}
+
+\begin{frame}{Ejercicio 1 — los tres casos}
+  \scriptsize
+  \begin{alertblock}{En parejas, 12 minutos. Identifique primero el caso.}
+    \tiny
+    \textbf{1.} $\dfrac{4}{\sqrt{6}}$ \qquad
+    \textbf{2.} $\dfrac{10}{\sqrt{20}}$ \qquad
+    \textbf{3.} $\dfrac{3}{\sqrt[3]{9}}$ \qquad
+    \textbf{4.} $\dfrac{1}{\sqrt{3}+1}$ \qquad
+    \textbf{5.} $\dfrac{4}{2+\sqrt{2}}$
+  \end{alertblock}
+
+  \vspace{0.05cm}
+  \begin{block}{Solución}
+    \tiny
+    \textbf{1.} $\destacar{\tfrac{4\sqrt{6}}{6}
+    = \tfrac{2\sqrt{6}}{3}}$ \qquad
+    \textbf{2.} $\tfrac{10}{2\sqrt5} = \tfrac{5}{\sqrt5}
+    = \destacar{\sqrt{5}}$ \qquad
+    \textbf{3.} $9=3^{2}$, falta un $3$:
+    $\tfrac{3\sqrt[3]{3}}{3} = \destacar{\sqrt[3]{3}}$
+
+    \vspace{0.08cm}
+    \textbf{4.} $\tfrac{\sqrt3-1}{3-1}
+    = \destacar{\tfrac{\sqrt{3}-1}{2}}$ \qquad
+    \textbf{5.} $\tfrac{4(2-\sqrt2)}{4-2}
+    = \tfrac{4(2-\sqrt2)}{2} = \destacar{4-2\sqrt{2}}$
+  \end{block}
+
+  \vspace{0.05cm}
+  {\tiny\color{uniGris} Los puntos \destacar{2 y 3} salen ``redondos'' porque
+  el radical desaparece del todo. \azul{Eso pasa más de lo que uno espera}, y
+  es señal de que el ejercicio se hizo bien.}
+\end{frame}
+
+\begin{frame}{Ejercicio 2 — taller principal}
+  \begin{alertblock}{En grupos de tres, 20 minutos. Se socializa en el tablero.}
+    \scriptsize
+    \begin{enumerate}\setlength{\itemsep}{0.0cm}
+      \item Racionalice: \ $\dfrac{8}{\sqrt{2}}$
+      \item Racionalice: \ $\dfrac{\sqrt{5}}{\sqrt{15}}$
+      \item Racionalice: \ $\dfrac{2}{3-\sqrt{5}}$
+      \item Racionalice: \ $\dfrac{\sqrt{5}+1}{\sqrt{5}-1}$
+      \item Racionalice: \ $\dfrac{1}{\sqrt{x}+\sqrt{y}}$ \ (con $x\neq y$)
+      \item Verifique numéricamente el punto 3 con tres decimales.
+    \end{enumerate}
+  \end{alertblock}
+\end{frame}
+
+\begin{frame}{Ejercicio 2 — solución}
+  \scriptsize
+  \begin{columns}[T,onlytextwidth]
+    \begin{column}{0.49\textwidth}
+      \begin{block}{Puntos 1 a 3}
+        \tiny
+        \textbf{1.} $\tfrac{8\sqrt2}{2} = \destacar{4\sqrt{2}}$
+
+        \vspace{0.08cm}
+        \textbf{2.} $\tfrac{\sqrt5}{\sqrt{15}}
+        = \sqrt{\tfrac{5}{15}} = \tfrac{1}{\sqrt3}
+        = \destacar{\tfrac{\sqrt{3}}{3}}$
+
+        \vspace{0.08cm}
+        \textbf{3.} $\tfrac{2(3+\sqrt5)}{9-5}
+        = \tfrac{2(3+\sqrt5)}{4}
+        = \destacar{\tfrac{3+\sqrt{5}}{2}}$
+      \end{block}
+    \end{column}
+    \begin{column}{0.49\textwidth}
+      \begin{block}{Puntos 4 a 6}
+        \tiny
+        \textbf{4.} $\tfrac{(\sqrt5+1)^{2}}{5-1}
+        = \tfrac{6+2\sqrt5}{4}
+        = \destacar{\tfrac{3+\sqrt{5}}{2}}$
+
+        \vspace{0.08cm}
+        \textbf{5.} $\destacar{\tfrac{\sqrt{x}-\sqrt{y}}{x-y}}$
+
+        \vspace{0.08cm}
+        \textbf{6.} $\tfrac{2}{3-2{,}236} = \tfrac{2}{0{,}764}
+        = 2{,}618$; \ $\tfrac{3+2{,}236}{2} = 2{,}618$ \checkmark
+      \end{block}
+    \end{column}
+  \end{columns}
+
+  \vspace{0.08cm}
+  {\tiny\color{uniGris} \destacar{Los puntos 3 y 4 dan lo mismo}, y no es
+  casualidad: $\tfrac{\sqrt5+1}{\sqrt5-1}$ y $\tfrac{2}{3-\sqrt5}$ son la
+  misma cantidad escrita de dos maneras. \azul{Ese es justamente el argumento
+  para racionalizar}: la forma canónica revela igualdades que estaban
+  escondidas.}
+\end{frame}
+
+\begin{frame}{Errores frecuentes en esta sesión}
+  \scriptsize
+  \begin{center}
+  \begin{tabular}{@{}p{5.2cm}p{6.8cm}@{}}
+    \toprule
+    \textbf{Error} & \textbf{Lo correcto} \\
+    \midrule
+    Multiplicar solo el denominador &
+      Hay que multiplicar \azul{arriba y abajo}, si no cambia el valor \\
+    \addlinespace
+    Con $\sqrt[3]{2}$, multiplicar por $\sqrt[3]{2}$ &
+      Hacen falta tres factores: multiplique por $\sqrt[3]{2^{2}}$ \\
+    \addlinespace
+    Conjugado de $2+\sqrt2$ es $-2-\sqrt2$ &
+      Es $2-\sqrt{2}$: solo cambia el signo central \\
+    \addlinespace
+    No simplificar el resultado &
+      $\tfrac{6(\sqrt7+\sqrt3)}{4}$ se reduce a $\tfrac{3(\sqrt7+\sqrt3)}{2}$ \\
+    \addlinespace
+    Racionalizar sin simplificar antes &
+      $\tfrac{6}{\sqrt{12}}$: reduzca a $\tfrac{3}{\sqrt3}$ primero \\
+    \addlinespace
+    $(\sqrt{a}-\sqrt{b})^{2} = a-b$ &
+      Es $a - 2\sqrt{ab} + b$; $a-b$ sale del \azul{producto} por el
+      conjugado \\
+    \bottomrule
+  \end{tabular}
+  \end{center}
+\end{frame}
+
+\begin{frame}{Cierre de la sesión}
+  \scriptsize
+  \begin{block}{Lo que hay que llevarse}
+    \tiny
+    \textbf{1.} Racionalizar es cambiar la presentación, no el valor: siempre
+    se puede verificar con decimales. \quad
+    \textbf{2.} Un radical cuadrático solo: multiplique por él mismo. \quad
+    \textbf{3.} Índice $n$: complete el exponente hasta $n$. \quad
+    \textbf{4.} Binomio: multiplique por el \destacar{conjugado}, que solo
+    cambia el signo del medio. \quad
+    \textbf{5.} Simplifique antes y después.
+  \end{block}
+
+  \vspace{0.1cm}
+  \begin{alertblock}{Para la próxima sesión}
+    \tiny
+    Resolver los \destacar{20 ejercicios propuestos} y la guía de la unidad en
+    Aulas Virtuales.
+
+    \vspace{0.05cm}
+    En la sesión 10 vemos \azul{logaritmos y exponenciales}: la operación que
+    responde ``¿a qué exponente hay que elevar?''. Es el último tema nuevo de
+    la Unidad 2.
+
+    \vspace{0.05cm}
+    \destacar{Recuerde: lunes 12 de octubre es festivo} (Día de la Raza).
+  \end{alertblock}
+\end{frame}
+
+\begin{frame}{Ejercicios propuestos}
+  \vspace{-0.1cm}
+  \begin{beamercolorbox}[wd=\textwidth,sep=0.10cm]{block body}
+    \centering\scriptsize
+    Racionalice y simplifique. \quad
+    \textbf{1--8:} caso 1. \quad \textbf{9--12:} caso 2. \quad
+    \textbf{13--20:} caso 3 y mixtos.
+  \end{beamercolorbox}
+  \listatiny
+  \vspace{0.15cm}
+  \begin{columns}[T,onlytextwidth]
+    \begin{column}{0.47\textwidth}
+      \begin{enumerate}\setlength{\itemsep}{0.16cm}
+        \item $\dfrac{5}{\sqrt{3}}$
+        \item $\dfrac{7}{\sqrt{7}}$
+        \item $\dfrac{12}{\sqrt{6}}$
+        \item $\dfrac{9}{\sqrt{18}}$
+        \item $\dfrac{\sqrt{3}}{\sqrt{11}}$
+        \item $\dfrac{2}{3\sqrt{5}}$
+        \item $\dfrac{x}{\sqrt{x}}$
+        \item $\dfrac{15}{\sqrt{45}}$
+        \item $\dfrac{4}{\sqrt[3]{3}}$
+        \item $\dfrac{2}{\sqrt[3]{25}}$
+      \end{enumerate}
+    \end{column}
+    \begin{column}{0.50\textwidth}
+      \begin{enumerate}\setlength{\itemsep}{0.16cm}
+        \setcounter{enumi}{10}
+        \item $\dfrac{6}{\sqrt[4]{8}}$
+        \item $\dfrac{1}{\sqrt[5]{4}}$
+        \item $\dfrac{1}{\sqrt{5}-2}$
+        \item $\dfrac{3}{\sqrt{7}+2}$
+        \item $\dfrac{4}{\sqrt{6}-\sqrt{2}}$
+        \item $\dfrac{\sqrt{3}}{\sqrt{3}+1}$
+        \item $\dfrac{\sqrt{2}+1}{\sqrt{2}-1}$
+        \item $\dfrac{5}{2\sqrt{3}-3}$
+        \item Escriba el conjugado de $\sqrt{10}-4$
+        \item ¿Por qué $(\sqrt a+\sqrt b)(\sqrt a-\sqrt b)$ no tiene
+              radicales?
+      \end{enumerate}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{Respuestas}{Autoevaluación de los ejercicios propuestos}
+  \listatiny
+  \vspace{0.15cm}
+  \begin{columns}[T,onlytextwidth]
+    \begin{column}{0.47\textwidth}
+      \begin{enumerate}\setlength{\itemsep}{0.16cm}
+        \item $\tfrac{5\sqrt{3}}{3}$
+        \item $\sqrt{7}$
+        \item $2\sqrt{6}$
+        \item $\tfrac{3\sqrt{2}}{2}$
+        \item $\tfrac{\sqrt{33}}{11}$
+        \item $\tfrac{2\sqrt{5}}{15}$
+        \item $\sqrt{x}$
+        \item $\sqrt{5}$
+        \item $\tfrac{4\sqrt[3]{9}}{3}$
+        \item $\tfrac{2\sqrt[3]{5}}{5}$
+      \end{enumerate}
+    \end{column}
+    \begin{column}{0.50\textwidth}
+      \begin{enumerate}\setlength{\itemsep}{0.16cm}
+        \setcounter{enumi}{10}
+        \item $3\sqrt[4]{2}$
+        \item $\tfrac{\sqrt[5]{8}}{2}$
+        \item $\sqrt{5}+2$
+        \item $\sqrt{7}-2$
+        \item $\sqrt{6}+\sqrt{2}$
+        \item $\tfrac{3-\sqrt{3}}{2}$
+        \item $3+2\sqrt{2}$
+        \item $\tfrac{5(2\sqrt{3}+3)}{3}$
+        \item $\sqrt{10}+4$
+        \item Porque da $a-b$: la diferencia de cuadrados elimina
+              las raíces
+      \end{enumerate}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{Referencias}
+  \footnotesize
+  \begin{itemize}
+    \item[{[1]}] Ramos del Olmo, Á. M. (2016). \textit{Matemáticas básicas
+      para el acceso a la universidad}. Ediciones Pirámide.
+      \texttt{https://elibro.net/es/ereader/uniminuto/49134}
+    \item[{[2]}] González Pulido, J. W., Chacón Benavides, J. A. \&
+      Fonseca Correa, L. Á. (2023). \textit{Matemática básica}
+      (1.\textsuperscript{a} ed.). Universidad Mariana.
+      \texttt{https://elibro.net/es/ereader/uniminuto/280647}
+    \item[{[3]}] Torrijos, M. (2018). \textit{Apuntes de matemática básica}.
+      Universidad Católica de Colombia.
+      \texttt{https://elibro.net/es/ereader/uniminuto/197048}
+    \item[{[4]}] Ramírez, A. \& Rojas, L. (2016). \textit{Matemáticas básicas
+      con aplicaciones a la ingeniería}. Ecoe Ediciones.
+      \texttt{https://elibro.net/es/ereader/uniminuto/114355}
+  \end{itemize}
+
+  \vspace{0.3cm}
+  \begin{center}
+    {\Large\color{uniAzul}\textbf{¿Preguntas?}}
+  \end{center}
+\end{frame}
+
+\end{document}

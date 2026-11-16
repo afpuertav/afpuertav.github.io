@@ -1,0 +1,1026 @@
+% ============================================================================
+%  PRECÁLCULO — Sesión 15
+%  Semana 15: 16 al 21 de noviembre de 2026
+%  3.4 Fracciones algebraicas · 3.5 Funciones trigonométricas
+%  Repaso integrador de la Unidad 3 y simulacro del Examen 3
+%  Duración prevista: 3 horas
+% ============================================================================
+\documentclass[aspectratio=169,10pt]{beamer}
+
+\usepackage[utf8]{inputenc}
+\IfFileExists{spanish.ldf}{\usepackage[spanish,es-noshorthands]{babel}}{}
+\usepackage{amsmath,amssymb}
+\usepackage{booktabs}
+\usepackage{tikz}
+\usepackage{cancel}
+
+\usetheme{Uniminuto}
+
+\uniasignatura{Precálculo}
+\uniprofesor{Andrés Felipe Puerta Velez}
+\unicorreo{andres.puerta-v@uniminuto.edu.co}
+\uninrc{MATE1161}
+\unisemana{Sesión 15 — Semana 15 · 16 al 21 de noviembre de 2026}
+
+\newcommand{\listatiny}{\setbeamerfont{itemize/enumerate body}{size=\tiny}\tiny}
+
+\begin{document}
+
+\portada
+
+\begin{frame}{Orden del día}
+  \begin{enumerate}
+    \item Llamado a lista y revisión de los ejercicios de factorización
+    \item \azul{Tema 3.4: fracciones algebraicas}
+    \item \azul{Tema 3.5: funciones trigonométricas}
+    \item Repaso integrador de la Unidad 3
+    \item Simulacro del Examen 3 y recomendaciones
+  \end{enumerate}
+
+  \vspace{0.25cm}
+  {\footnotesize\color{uniGris} Última sesión de clase del semestre. Lunes 16
+  fue festivo (Independencia de Cartagena). Hoy cerramos los dos temas que
+  faltan y dejamos la unidad lista: el \destacar{Examen 3 (30\,\%)} se presenta
+  la próxima semana en Aulas Virtuales.}
+\end{frame}
+
+% ===========================================================================
+\seccion{3.4 Fracciones algebraicas}
+% ===========================================================================
+
+\begin{frame}{Qué es una fracción algebraica}
+  \scriptsize
+  \begin{block}{Definición}
+    \scriptsize
+    Es un cociente de dos polinomios, \ $\dfrac{P(x)}{Q(x)}$, \ con
+    $Q(x)\neq 0$. Se comporta \azul{exactamente igual} que una fracción
+    numérica: las mismas reglas de simplificar, sumar, multiplicar y dividir.
+    Lo único nuevo es que \destacar{el denominador puede anularse para ciertos
+    valores de $x$}.
+  \end{block}
+
+  \vspace{0.06cm}
+  \begin{center}\tiny
+  \begin{tabular}{@{}p{3.6cm}p{4.0cm}p{4.2cm}@{}}
+    \toprule
+    \textbf{Fracción} & \textbf{Se anula el denominador si\dots} &
+    \textbf{Dominio} \\
+    \midrule
+    $\dfrac{x+1}{x-3}$ & $x-3=0 \Rightarrow x=3$ &
+      Todos los reales \azul{salvo} $3$ \\
+    \addlinespace
+    $\dfrac{5}{x^{2}-4}$ & $x^{2}-4=0 \Rightarrow x=\pm 2$ &
+      Salvo $2$ y $-2$ \\
+    \addlinespace
+    $\dfrac{x}{x^{2}+1}$ & Nunca: $x^{2}+1>0$ &
+      \destacar{Todos los reales} \\
+    \bottomrule
+  \end{tabular}
+  \end{center}
+
+  \vspace{0.04cm}
+  {\tiny\color{uniGris} \destacar{Primer reflejo de todo el tema:} antes de
+  operar, factorice el denominador y anote qué valores quedan prohibidos. Esas
+  restricciones \azul{sobreviven a la simplificación} y hay que declararlas en
+  la respuesta.}
+\end{frame}
+
+\begin{frame}{El error que cuesta más puntos en el examen}
+  \scriptsize
+  \begin{columns}[T,onlytextwidth]
+    \begin{column}{0.48\textwidth}
+      \begin{alertblock}{Mal}
+        \tiny
+        \[ \frac{x+3}{x} \;\neq\; \frac{\cancel{x}+3}{\cancel{x}} \;=\; 3 \]
+        \[ \frac{x^{2}+9}{x+3} \;\neq\; x+3 \]
+        Se tacharon términos que estaban \destacar{sumando}.
+      \end{alertblock}
+    \end{column}
+    \begin{column}{0.48\textwidth}
+      \begin{exampleblock}{Bien}
+        \tiny
+        \[ \frac{3(x+3)}{3} = x+3 \]
+        \[ \frac{(x+3)(x-1)}{(x+3)} = x-1 \]
+        Se cancelaron \destacar{factores completos}.
+      \end{exampleblock}
+    \end{column}
+  \end{columns}
+
+  \vspace{0.15cm}
+  \begin{block}{La regla, en una frase}
+    \scriptsize
+    \destacar{Solo se cancelan factores, nunca sumandos.} Y para tener factores
+    hay que \azul{factorizar primero} —de ahí que la sesión 14 fuera sobre
+    factorización—. Si el numerador o el denominador tienen un signo $+$ o $-$
+    sin paréntesis alrededor, todavía no se puede cancelar nada.
+  \end{block}
+
+  \vspace{0.08cm}
+  {\tiny\color{uniGris} Prueba rápida de que está mal: reemplace $x=1$ en
+  $\frac{x+3}{x}$: da $4$, no $3$.
+  \destacar{Un contraejemplo numérico basta para detectar el error.}}
+\end{frame}
+
+\begin{frame}{Simplificar: factorizar, cancelar, declarar}
+  \scriptsize
+  \begin{exampleblock}{Ejemplo desarrollado}
+    \scriptsize
+    \[ \frac{x^{2}-9}{x^{2}+7x+12} \]
+    \textbf{Paso 1 — factorizar arriba y abajo:}
+    \[ \frac{(x-3)(x+3)}{(x+3)(x+4)} \]
+    \textbf{Paso 2 — restricciones (del denominador original):}
+    $x\neq -3$ \ y \ $x\neq -4$.
+
+    \vspace{0.05cm}
+    \textbf{Paso 3 — cancelar el factor común y declarar:}
+    \[ \frac{x-3}{x+4}, \qquad x\neq -3,\ x\neq -4 \]
+  \end{exampleblock}
+
+  \vspace{0.08cm}
+  {\tiny\color{uniGris} Note que $x\neq -3$ \destacar{no se ve} en el resultado
+  final, pero sigue valiendo: la función original no existe en $-3$, y
+  simplificar no crea puntos nuevos. Por eso el paso 2 va \azul{antes} del
+  paso 3.}
+\end{frame}
+
+\begin{frame}{Ejercicio guiado 1 — simplificación}
+  \begin{alertblock}{En parejas, 10 minutos}
+    \scriptsize
+    Simplifique y declare las restricciones:
+    \begin{enumerate}\setlength{\itemsep}{-0.02cm}
+      \item $\dfrac{x^{2}-4}{x^{2}-4x+4}$
+      \item $\dfrac{2x^{2}+6x}{x^{2}-9}$
+      \item $\dfrac{x^{2}-x-6}{x^{2}-9}$
+      \item $\dfrac{3x^{2}-27}{6x+18}$
+    \end{enumerate}
+  \end{alertblock}
+
+  \vspace{0.04cm}
+  {\tiny\color{uniGris} Pista para el 2: saque primero el factor común
+  $2x$. Pista para el 4: el $3$ del numerador y el $6$ del denominador también
+  se simplifican.}
+\end{frame}
+
+\begin{frame}{Ejercicio guiado 1 — solución}
+  \scriptsize
+  \begin{columns}[T,onlytextwidth]
+    \begin{column}{0.49\textwidth}
+      \begin{block}{Puntos 1 y 2}
+        \tiny
+        \textbf{1.} $\dfrac{(x-2)(x+2)}{(x-2)^{2}}
+        = \destacar{\dfrac{x+2}{x-2}}$, \ $x\neq 2$
+
+        \vspace{0.12cm}
+        \textbf{2.} $\dfrac{2x(x+3)}{(x-3)(x+3)}
+        = \destacar{\dfrac{2x}{x-3}}$, \ $x\neq \pm 3$
+      \end{block}
+    \end{column}
+    \begin{column}{0.49\textwidth}
+      \begin{block}{Puntos 3 y 4}
+        \tiny
+        \textbf{3.} $\dfrac{(x-3)(x+2)}{(x-3)(x+3)}
+        = \destacar{\dfrac{x+2}{x+3}}$, \ $x\neq \pm 3$
+
+        \vspace{0.12cm}
+        \textbf{4.} $\dfrac{3(x-3)(x+3)}{6(x+3)}
+        = \destacar{\dfrac{x-3}{2}}$, \ $x\neq -3$
+      \end{block}
+    \end{column}
+  \end{columns}
+
+  \vspace{0.1cm}
+  {\tiny\color{uniGris} En el \destacar{4} el resultado ya no tiene
+  denominador con $x$, pero la restricción $x\neq -3$ se mantiene: la
+  expresión de partida no estaba definida ahí. \azul{Verificación con
+  $x=0$:} original $=\frac{-27}{18}=-1{,}5$; simplificada
+  $=\frac{-3}{2}=-1{,}5$ \checkmark}
+\end{frame}
+
+\begin{frame}{Multiplicar y dividir}
+  \scriptsize
+  \begin{columns}[T,onlytextwidth]
+    \begin{column}{0.48\textwidth}
+      \begin{block}{Multiplicación}
+        \tiny
+        \[ \frac{A}{B}\cdot\frac{C}{D} = \frac{A\cdot C}{B\cdot D} \]
+        \destacar{Nunca se desarrollan los productos.} Se factoriza todo, se
+        cancela en cruz y solo al final se escribe el resultado.
+      \end{block}
+    \end{column}
+    \begin{column}{0.48\textwidth}
+      \begin{block}{División}
+        \tiny
+        \[ \frac{A}{B}\div\frac{C}{D}
+           = \frac{A}{B}\cdot\frac{D}{C} \]
+        Se invierte \azul{la segunda} fracción y se multiplica. Igual que con
+        números.
+      \end{block}
+    \end{column}
+  \end{columns}
+
+  \vspace{0.12cm}
+  \begin{exampleblock}{Ejemplo}
+    \tiny
+    \[ \frac{x^{2}-1}{x+3}\cdot\frac{x^{2}+6x+9}{x-1}
+     = \frac{(x-1)(x+1)}{(x+3)}\cdot\frac{(x+3)^{2}}{(x-1)}
+     = (x+1)(x+3) = \destacar{x^{2}+4x+3} \]
+    Restricciones: $x\neq -3$, \ $x\neq 1$.
+  \end{exampleblock}
+
+  \vspace{0.06cm}
+  {\tiny\color{uniGris} Si hubiéramos multiplicado los polinomios de entrada,
+  habríamos tenido que factorizar un producto de grado 4 para volver a
+  cancelar. \destacar{Factorizar primero ahorra la mitad del trabajo.}}
+\end{frame}
+
+\begin{frame}{Ejercicio guiado 2 — producto y cociente}
+  \scriptsize
+  \begin{alertblock}{En parejas, 10 minutos}
+    \scriptsize
+    \begin{enumerate}\setlength{\itemsep}{0.06cm}
+      \item $\dfrac{x^{2}-9}{x+2}\cdot\dfrac{x+2}{x-3}$
+      \item $\dfrac{x+2}{x^{2}-9}\div\dfrac{x^{2}+4x+4}{x-3}$
+    \end{enumerate}
+  \end{alertblock}
+
+  \vspace{0.1cm}
+  \begin{block}{Solución}
+    \tiny
+    \textbf{1.} $\dfrac{(x-3)(x+3)}{(x+2)}\cdot\dfrac{(x+2)}{(x-3)}
+    = \destacar{x+3}$, \ $x\neq -2,\ x\neq 3$
+
+    \vspace{0.1cm}
+    \textbf{2.} $\dfrac{(x+2)}{(x-3)(x+3)}\cdot\dfrac{(x-3)}{(x+2)^{2}}
+    = \dfrac{1}{(x+3)(x+2)}
+    = \destacar{\dfrac{1}{x^{2}+5x+6}}$, \ $x\neq \pm 3,\ x\neq -2$
+  \end{block}
+
+  \vspace{0.06cm}
+  {\tiny\color{uniGris} En el \destacar{2}, $x\neq 3$ viene del denominador
+  original y $x\neq -2$ de que la fracción divisora no puede ser cero. Ambas
+  desaparecen del resultado y ambas siguen valiendo.}
+\end{frame}
+
+\begin{frame}{Sumar y restar: el mínimo común denominador}
+  \scriptsize
+  \begin{block}{El procedimiento, en cuatro pasos}
+    \tiny
+    \textbf{1.} Factorizar todos los denominadores. \quad
+    \textbf{2.} Formar el m.c.d.: cada factor distinto, con el \azul{mayor}
+    exponente que aparezca. \quad
+    \textbf{3.} Amplificar cada fracción para que llegue a ese denominador.
+    \quad
+    \textbf{4.} Sumar \destacar{solo} los numeradores y simplificar.
+  \end{block}
+
+  \vspace{0.1cm}
+  \begin{exampleblock}{Ejemplo desarrollado}
+    \tiny
+    \[ \frac{x}{x-2}-\frac{4}{x^{2}-4}
+     = \frac{x}{x-2}-\frac{4}{(x-2)(x+2)} \]
+    m.c.d. $=(x-2)(x+2)$. Amplifico la primera por $(x+2)$:
+    \[ = \frac{x(x+2)-4}{(x-2)(x+2)}
+       = \frac{x^{2}+2x-4}{x^{2}-4}, \qquad x\neq \pm 2 \]
+    El numerador $x^{2}+2x-4$ no factoriza en enteros: la respuesta se deja
+    así.
+  \end{exampleblock}
+
+  \vspace{0.06cm}
+  {\tiny\color{uniGris} \destacar{Error clásico:} olvidar el paréntesis al
+  restar. $-\,(x^{2}-3x)$ es $-x^{2}+3x$, no $-x^{2}-3x$. Cuando reste, escriba
+  el paréntesis \azul{siempre}, aunque le parezca innecesario.}
+\end{frame}
+
+\begin{frame}{Ejercicio guiado 3 — suma y resta}
+  \scriptsize
+  \begin{alertblock}{Individual, 10 minutos}
+    \tiny
+    Efectúe: \quad
+    \textbf{1.} $\dfrac{1}{x}+\dfrac{1}{x+1}$ \qquad
+    \textbf{2.} $\dfrac{3}{x+1}+\dfrac{2}{x-1}$ \qquad
+    \textbf{3.} $\dfrac{1}{x^{2}-x}-\dfrac{1}{x^{2}-1}$
+  \end{alertblock}
+
+  \vspace{0.04cm}
+  \begin{block}{Solución}
+    \tiny
+    \textbf{1.} m.c.d. $=x(x+1)$: \quad
+    $\dfrac{(x+1)+x}{x(x+1)} = \destacar{\dfrac{2x+1}{x^{2}+x}}$,
+    \ $x\neq 0,-1$
+
+    \vspace{0.08cm}
+    \textbf{2.} m.c.d. $=(x+1)(x-1)$: \quad
+    $\dfrac{3(x-1)+2(x+1)}{x^{2}-1}
+    = \destacar{\dfrac{5x-1}{x^{2}-1}}$, \ $x\neq \pm 1$
+
+    \vspace{0.05cm}
+    \textbf{3.} $\dfrac{1}{x(x-1)}-\dfrac{1}{(x-1)(x+1)}$; m.c.d.
+    $=x(x-1)(x+1)$: \quad
+    $\dfrac{(x+1)-x}{x(x-1)(x+1)} = \destacar{\dfrac{1}{x^{3}-x}}$,
+    \ $x\neq 0,\pm 1$
+  \end{block}
+\end{frame}
+
+\begin{frame}{Fracciones complejas: la fracción de fracciones}
+  \scriptsize
+  \begin{columns}[T,onlytextwidth]
+    \begin{column}{0.47\textwidth}
+      \begin{block}{Método}
+        \tiny
+        \textbf{1.} Convertir el numerador en \azul{una sola} fracción.
+        \textbf{2.} Hacer lo mismo con el denominador.
+        \textbf{3.} Dividir: multiplicar por la inversa.
+      \end{block}
+    \end{column}
+    \begin{column}{0.49\textwidth}
+      \begin{exampleblock}{Ejemplo}
+        \tiny
+        \[ \frac{\ \dfrac{1}{x}+\dfrac{1}{y}\ }
+                {\ \dfrac{1}{x}-\dfrac{1}{y}\ }
+         = \frac{\ \frac{y+x}{xy}\ }{\ \frac{y-x}{xy}\ }
+         = \frac{y+x}{xy}\cdot\frac{xy}{y-x}
+         = \destacar{\frac{x+y}{y-x}} \]
+      \end{exampleblock}
+    \end{column}
+  \end{columns}
+
+  \vspace{0.12cm}
+  \begin{block}{Otro ejemplo, paso a paso}
+    \tiny
+    \[ \frac{\ \frac{x}{x+1}-1\ }{\ 1+\frac{1}{x}\ }
+     = \frac{\ \frac{x-(x+1)}{x+1}\ }{\ \frac{x+1}{x}\ }
+     = \frac{-1}{x+1}\cdot\frac{x}{x+1}
+     = \destacar{\frac{-x}{(x+1)^{2}}}, \qquad x\neq 0,\ x\neq -1 \]
+  \end{block}
+\end{frame}
+
+\begin{frame}{Ecuaciones racionales y soluciones extrañas}
+  \scriptsize
+  \begin{block}{El procedimiento}
+    \tiny
+    \textbf{1.} Anotar las restricciones. \quad
+    \textbf{2.} Multiplicar toda la ecuación por el m.c.d. \quad
+    \textbf{3.} Resolver la ecuación polinómica que queda. \quad
+    \textbf{4.} \destacar{Descartar} las soluciones que violen alguna
+    restricción.
+  \end{block}
+
+  \vspace{0.1cm}
+  \begin{columns}[T,onlytextwidth]
+    \begin{column}{0.47\textwidth}
+      \begin{exampleblock}{Con solución}
+        \tiny
+        \[ \frac{2}{x+1}+\frac{1}{x-1}=\frac{3}{x^{2}-1} \]
+        Restricciones: $x\neq\pm1$. Por $(x+1)(x-1)$:
+        \[ 2(x-1)+(x+1)=3 \Rightarrow 3x-1=3 \]
+        \[ x=\destacar{\tfrac{4}{3}} \quad \text{(válida)} \]
+      \end{exampleblock}
+    \end{column}
+    \begin{column}{0.49\textwidth}
+      \begin{alertblock}{Sin solución}
+        \tiny
+        \[ \frac{1}{x-2}+\frac{1}{x+2}=\frac{4}{x^{2}-4} \]
+        Restricciones: $x\neq\pm2$. Por $(x-2)(x+2)$:
+        \[ (x+2)+(x-2)=4 \Rightarrow 2x=4 \Rightarrow x=2 \]
+        Pero $2$ \destacar{está prohibido}: es una \azul{solución extraña}.
+        La ecuación \destacar{no tiene solución}.
+      \end{alertblock}
+    \end{column}
+  \end{columns}
+
+  \vspace{0.05cm}
+  {\tiny\color{uniGris} El paso 4 no es opcional. Multiplicar por algo que
+  \azul{podría ser cero} puede fabricar soluciones que la ecuación original
+  jamás tuvo.}
+\end{frame}
+
+\begin{frame}{Ejercicio guiado 4 — ecuaciones racionales}
+  \scriptsize
+  \begin{alertblock}{Individual, 12 minutos}
+    \tiny
+    Resuelva: \quad
+    \textbf{1.} $\dfrac{3}{x-1}=\dfrac{2}{x+4}$ \qquad
+    \textbf{2.} $\dfrac{x}{x-2}=\dfrac{4}{x-2}+3$ \qquad
+    \textbf{3.} $\dfrac{1}{x}+\dfrac{1}{x+1}=\dfrac{5}{6}$
+  \end{alertblock}
+
+  \vspace{0.04cm}
+  \begin{block}{Solución}
+    \tiny
+    \textbf{1.} $3(x+4)=2(x-1) \Rightarrow 3x+12=2x-2 \Rightarrow
+    x=\destacar{-14}$ \ (válida: $\neq 1,\ \neq -4$)
+
+    \vspace{0.08cm}
+    \textbf{2.} Por $(x-2)$: $x = 4+3(x-2) \Rightarrow x = 3x-2
+    \Rightarrow x=\destacar{1}$ \ (válida). Comprobación:
+    $\frac{1}{-1}=-1$ y $\frac{4}{-1}+3=-1$ \checkmark
+
+    \vspace{0.05cm}
+    \textbf{3.} Por $6x(x+1)$: $6(x+1)+6x=5x(x+1) \Rightarrow
+    5x^{2}-7x-6=0 \Rightarrow (5x+3)(x-2)=0$
+    \[ x=\destacar{-\tfrac{3}{5}} \quad\text{o}\quad x=\destacar{2}
+       \qquad \text{(las dos válidas)} \]
+  \end{block}
+\end{frame}
+
+% ===========================================================================
+\seccion{3.5 Funciones trigonométricas}
+% ===========================================================================
+
+\begin{frame}{El triángulo rectángulo: tres cocientes con nombre}
+  \scriptsize
+  \begin{columns}[T,onlytextwidth]
+    \begin{column}{0.44\textwidth}
+      \vspace{0.15cm}
+      \begin{center}
+      \begin{tikzpicture}[scale=0.95,every node/.style={font=\tiny}]
+        \draw[uniAzul,very thick] (0,0)--(3.4,0)--(3.4,2.1)--cycle;
+        \draw[uniGris] (3.15,0) rectangle (3.4,0.25);
+        \draw[uniTitulo,thick] (0.75,0) arc (0:31.7:0.75);
+        \node[uniTitulo] at (1.0,0.22) {$\theta$};
+        \node[below,uniGris] at (1.7,-0.05) {adyacente};
+        \node[right,uniGris] at (3.45,1.05) {opuesto};
+        \node[above left,uniGris] at (1.9,1.05) {hipotenusa};
+      \end{tikzpicture}
+      \end{center}
+    \end{column}
+    \begin{column}{0.53\textwidth}
+      \begin{block}{Las tres razones}
+        \tiny
+        \[ \operatorname{sen}\theta = \frac{\text{op}}{\text{hip}}
+           \qquad
+           \cos\theta = \frac{\text{ady}}{\text{hip}}
+           \qquad
+           \tan\theta = \frac{\text{op}}{\text{ady}} \]
+        \vspace{-0.1cm}
+        \begin{center}
+          \destacar{SOH \quad CAH \quad TOA}
+        \end{center}
+        Y sus inversas: $\csc=\frac{1}{\operatorname{sen}}$, \
+        $\sec=\frac{1}{\cos}$, \ $\cot=\frac{1}{\tan}$.
+      \end{block}
+    \end{column}
+  \end{columns}
+
+  \vspace{0.1cm}
+  \begin{alertblock}{Lo que hace útil a la trigonometría}
+    \tiny
+    Estas razones \destacar{no dependen del tamaño del triángulo}, solo del
+    ángulo. Dos triángulos semejantes con el mismo $\theta$ dan el mismo
+    $\operatorname{sen}\theta$. Por eso se puede medir la altura de un edificio
+    \azul{sin subirse a él}: basta un ángulo y una distancia.
+  \end{alertblock}
+\end{frame}
+
+\begin{frame}{Los ángulos notables: la tabla que hay que saber}
+  \scriptsize
+  \begin{center}
+  \begin{tabular}{@{}lccccc@{}}
+    \toprule
+    & $0^{\circ}$ & $30^{\circ}$ & $45^{\circ}$ & $60^{\circ}$ &
+      $90^{\circ}$ \\
+    \midrule
+    $\operatorname{sen}$ &
+      $0$ & $\dfrac{1}{2}$ & $\dfrac{\sqrt{2}}{2}$ &
+      $\dfrac{\sqrt{3}}{2}$ & $1$ \\
+    \addlinespace
+    $\cos$ &
+      $1$ & $\dfrac{\sqrt{3}}{2}$ & $\dfrac{\sqrt{2}}{2}$ &
+      $\dfrac{1}{2}$ & $0$ \\
+    \addlinespace
+    $\tan$ &
+      $0$ & $\dfrac{\sqrt{3}}{3}$ & $1$ & $\sqrt{3}$ &
+      \destacar{no existe} \\
+    \bottomrule
+  \end{tabular}
+  \end{center}
+
+  \vspace{0.12cm}
+  \begin{exampleblock}{El truco para no memorizarla}
+    \tiny
+    Escriba $0,1,2,3,4$; divida cada uno entre $4$; saque la raíz. Obtiene
+    $\ 0,\ \frac{1}{2},\ \frac{\sqrt{2}}{2},\ \frac{\sqrt{3}}{2},\ 1$: esa es
+    la fila del \azul{seno}. La del \azul{coseno} es \destacar{la misma leída
+    al revés}. Y $\tan = \operatorname{sen}/\cos$.
+  \end{exampleblock}
+
+  \vspace{0.05cm}
+  {\tiny\color{uniGris} $\tan 90^{\circ}$ no existe porque el coseno vale $0$:
+  \destacar{no se divide entre cero}, igual que en el tema anterior.}
+\end{frame}
+
+\begin{frame}{Ejercicio guiado 5 — resolver triángulos}
+  \scriptsize
+  \begin{alertblock}{En parejas, 12 minutos \ (use calculadora en modo grados)}
+    \scriptsize
+    \begin{enumerate}\setlength{\itemsep}{0.04cm}
+      \item Los catetos de un triángulo rectángulo miden $5$ y $12$. Halle la
+            hipotenusa y las tres razones del ángulo opuesto al cateto $5$.
+      \item La hipotenusa mide $20$ y un ángulo agudo es $35^{\circ}$. Halle
+            el cateto opuesto.
+      \item Desde $40$ m de distancia, la punta de una torre se ve con un
+            ángulo de elevación de $32^{\circ}$. ¿Qué altura tiene?
+    \end{enumerate}
+  \end{alertblock}
+
+  \vspace{0.1cm}
+  {\scriptsize\color{uniGris} En el 3, dibuje el triángulo antes de calcular:
+  la distancia horizontal es el \azul{cateto adyacente} y la altura, el
+  \azul{opuesto}. Eso decide qué razón usar.}
+\end{frame}
+
+\begin{frame}{Ejercicio guiado 5 — solución}
+  \scriptsize
+  \begin{columns}[T,onlytextwidth]
+    \begin{column}{0.49\textwidth}
+      \begin{block}{Punto 1}
+        \tiny
+        $h=\sqrt{5^{2}+12^{2}}=\sqrt{169}=\destacar{13}$
+        \[ \operatorname{sen}\theta=\tfrac{5}{13}\approx 0{,}385 \qquad
+           \cos\theta=\tfrac{12}{13}\approx 0{,}923 \]
+        \[ \tan\theta=\tfrac{5}{12}\approx 0{,}417
+           \ \Rightarrow\ \theta \approx \destacar{22{,}62^{\circ}} \]
+      \end{block}
+    \end{column}
+    \begin{column}{0.49\textwidth}
+      \begin{block}{Puntos 2 y 3}
+        \tiny
+        \textbf{2.} $\operatorname{sen}35^{\circ}=\frac{op}{20}
+        \Rightarrow op = 20\operatorname{sen}35^{\circ}
+        \approx \destacar{11{,}47}$
+
+        \vspace{0.12cm}
+        \textbf{3.} $\tan 32^{\circ}=\frac{h}{40}
+        \Rightarrow h = 40\tan 32^{\circ}
+        \approx \destacar{25{,}0\ \text{m}}$
+      \end{block}
+    \end{column}
+  \end{columns}
+
+  \vspace{0.1cm}
+  {\tiny\color{uniGris} \destacar{Control de sentido común:} en el 2, el cateto
+  ($11{,}47$) tiene que ser menor que la hipotenusa ($20$) \checkmark. En el 3,
+  como $32^{\circ}<45^{\circ}$, la altura debe ser \azul{menor} que la
+  distancia horizontal: $25<40$ \checkmark. Si le da al revés, revisó mal la
+  razón.}
+\end{frame}
+
+\begin{frame}{Grados y radianes}
+  \scriptsize
+  \begin{block}{La equivalencia madre}
+    \scriptsize
+    \[ 180^{\circ} = \pi \ \text{rad}
+       \qquad\Longrightarrow\qquad
+       \text{rad} = \text{grados}\cdot\frac{\pi}{180}
+       \qquad
+       \text{grados} = \text{rad}\cdot\frac{180}{\pi} \]
+  \end{block}
+
+  \vspace{0.1cm}
+  \begin{center}
+  \begin{tabular}{@{}lcccccccc@{}}
+    \toprule
+    Grados & $30^{\circ}$ & $45^{\circ}$ & $60^{\circ}$ & $90^{\circ}$ &
+      $135^{\circ}$ & $180^{\circ}$ & $270^{\circ}$ & $360^{\circ}$ \\
+    \midrule
+    Radianes & $\frac{\pi}{6}$ & $\frac{\pi}{4}$ & $\frac{\pi}{3}$ &
+      $\frac{\pi}{2}$ & $\frac{3\pi}{4}$ & $\pi$ & $\frac{3\pi}{2}$ &
+      $2\pi$ \\
+    \bottomrule
+  \end{tabular}
+  \end{center}
+
+  \vspace{0.12cm}
+  \begin{alertblock}{Por qué existen los radianes}
+    \tiny
+    Un radián es el ángulo que abarca un arco \azul{igual al radio}. No es una
+    unidad arbitraria como el grado (¿por qué 360?): es una \destacar{razón
+    entre longitudes}, y por eso las fórmulas del cálculo solo funcionan bien
+    en radianes. En Cálculo I trabajarán casi siempre en radianes.
+  \end{alertblock}
+
+  \vspace{0.05cm}
+  {\tiny\color{uniGris} \destacar{Error frecuente en el examen:} dejar la
+  calculadora en RAD cuando el problema está en grados.
+  $\operatorname{sen}30 = 0{,}5$ en grados, pero $-0{,}988$ en radianes.
+  \azul{Verifique el modo antes de empezar.}}
+\end{frame}
+
+\begin{frame}{La circunferencia unitaria y los signos}
+  \scriptsize
+  \begin{columns}[T,onlytextwidth]
+    \begin{column}{0.42\textwidth}
+      \vspace{0.05cm}
+      \begin{center}
+      \begin{tikzpicture}[scale=0.66,every node/.style={font=\tiny}]
+        \draw[uniGris,->] (-1.7,0)--(1.9,0) node[right]{$x$};
+        \draw[uniGris,->] (0,-1.7)--(0,1.9) node[above]{$y$};
+        \draw[uniAzul,very thick] (0,0) circle (1.35);
+        \draw[uniTitulo,thick] (0,0)--(0.95,0.95);
+        \fill[uniTitulo] (0.95,0.95) circle (1.6pt);
+        \node[above right,uniTitulo] at (0.95,0.95)
+          {$(\cos\theta,\operatorname{sen}\theta)$};
+        \node at (0.85,0.42) {\textbf{I}};
+        \node at (-0.85,0.85) {\textbf{II}};
+        \node at (0.85,-0.9) {\textbf{IV}};
+        \node at (-0.85,-0.9) {\textbf{III}};
+      \end{tikzpicture}
+      \end{center}
+    \end{column}
+    \begin{column}{0.55\textwidth}
+      \begin{block}{Signos por cuadrante}
+        \tiny
+        \begin{center}
+        \begin{tabular}{@{}lccc@{}}
+          \toprule
+          & $\operatorname{sen}$ & $\cos$ & $\tan$ \\
+          \midrule
+          I \ ($0$–$90^{\circ}$)    & $+$ & $+$ & $+$ \\
+          II \ ($90$–$180^{\circ}$)  & $+$ & $-$ & $-$ \\
+          III \ ($180$–$270^{\circ}$) & $-$ & $-$ & $+$ \\
+          IV \ ($270$–$360^{\circ}$)  & $-$ & $+$ & $-$ \\
+          \bottomrule
+        \end{tabular}
+        \end{center}
+        \vspace{0.05cm}
+        Regla: \destacar{Todos, Seno, Tangente, Coseno} (I, II, III, IV).
+      \end{block}
+    \end{column}
+  \end{columns}
+
+  \vspace{0.04cm}
+  \begin{exampleblock}{La identidad que sale de aquí}
+    \tiny
+    Como el punto está sobre la circunferencia de radio $1$, cumple
+    $x^{2}+y^{2}=1$: \ $\operatorname{sen}^{2}\theta + \cos^{2}\theta = 1$.
+    \destacar{Es el teorema de Pitágoras disfrazado.} De ahí: si
+    $\cos\theta=\frac{5}{13}$ en el primer cuadrante, entonces
+    $\operatorname{sen}\theta=\sqrt{1-\frac{25}{169}}=\frac{12}{13}$ y
+    $\tan\theta=\frac{12}{5}$.
+  \end{exampleblock}
+\end{frame}
+
+\begin{frame}{Ejercicio guiado 6 — ángulos, radianes e identidad}
+  \scriptsize
+  \begin{alertblock}{Individual, 10 minutos}
+    \scriptsize
+    \begin{enumerate}\setlength{\itemsep}{0.04cm}
+      \item Convierta $135^{\circ}$ a radianes y $\frac{7\pi}{6}$ a grados.
+      \item Calcule sin calculadora:
+            $\operatorname{sen}60^{\circ}\cdot\cos 30^{\circ}
+             + \operatorname{sen}30^{\circ}\cdot\cos 60^{\circ}$.
+      \item Si $\operatorname{sen}\theta=\frac{3}{5}$ y $\theta$ está en el
+            primer cuadrante, halle $\cos\theta$ y $\tan\theta$.
+    \end{enumerate}
+  \end{alertblock}
+
+  \vspace{0.08cm}
+  \begin{block}{Solución}
+    \tiny
+    \textbf{1.} $135\cdot\frac{\pi}{180}
+    = \destacar{\frac{3\pi}{4}}$ \ rad; \quad
+    $\frac{7\pi}{6}\cdot\frac{180}{\pi}
+    = \destacar{210^{\circ}}$
+
+    \vspace{0.08cm}
+    \textbf{2.} $\frac{\sqrt{3}}{2}\cdot\frac{\sqrt{3}}{2}
+    + \frac{1}{2}\cdot\frac{1}{2}
+    = \frac{3}{4}+\frac{1}{4} = \destacar{1}$
+    \quad {\color{uniGris}(es $\operatorname{sen}(60+30)
+    = \operatorname{sen}90^{\circ}$)}
+
+    \vspace{0.08cm}
+    \textbf{3.} $\cos\theta = \sqrt{1-\frac{9}{25}}
+    = \sqrt{\frac{16}{25}} = \destacar{\frac{4}{5}}$; \quad
+    $\tan\theta = \frac{3/5}{4/5} = \destacar{\frac{3}{4}}$
+    \quad {\color{uniGris}(el triángulo 3-4-5)}
+  \end{block}
+\end{frame}
+
+% ===========================================================================
+\seccion{Repaso integrador de la Unidad 3}
+% ===========================================================================
+
+\begin{frame}{Mapa de la Unidad 3}
+  \scriptsize
+  \begin{center}
+  \begin{tabular}{@{}clp{7.4cm}@{}}
+    \toprule
+    \textbf{Tema} & \textbf{Qué se hace} & \textbf{Lo que se evalúa} \\
+    \midrule
+    3.1 & Operaciones algebraicas &
+      Reducir términos semejantes, leyes de exponentes, operar polinomios \\
+    \addlinespace
+    3.2 & Productos notables &
+      $(a\pm b)^{2}$, $(a+b)(a-b)$, $(a\pm b)^{3}$, $(x+a)(x+b)$ \\
+    \addlinespace
+    3.3 & Factorización &
+      Factor común, diferencia de cuadrados, trinomios, agrupación, cubos \\
+    \addlinespace
+    3.4 & Fracciones algebraicas &
+      Simplificar, operar, fracciones complejas, ecuaciones racionales \\
+    \addlinespace
+    3.5 & Funciones trigonométricas &
+      Razones en el triángulo, ángulos notables, radianes, identidad
+      pitagórica \\
+    \bottomrule
+  \end{tabular}
+  \end{center}
+
+  \vspace{0.1cm}
+  {\tiny\color{uniGris} Los cinco temas están \destacar{encadenados}: sin
+  productos notables no hay factorización, y sin factorización no hay
+  fracciones algebraicas. Si algo del 3.3 quedó flojo, es lo primero que hay
+  que repasar esta semana.}
+\end{frame}
+
+\begin{frame}{Simulacro del Examen 3 — parte A (álgebra)}
+  \begin{alertblock}{Individual, 20 minutos, sin apuntes}
+    \scriptsize
+    \begin{enumerate}\setlength{\itemsep}{0.03cm}
+      \item Desarrolle: \ $(3x-2)^{2}$
+      \item Factorice completamente: \ $2x^{3}-18x$
+      \item Factorice completamente: \ $3x^{3}-12x^{2}+12x$
+      \item Simplifique y declare restricciones: \
+            $\dfrac{x^{2}-16}{x^{2}+8x+16}$
+      \item Efectúe: \ $\dfrac{2}{x-3}+\dfrac{5}{x+2}$
+      \item Resuelva: \ $\dfrac{5}{x+3}=\dfrac{2}{x}$
+    \end{enumerate}
+  \end{alertblock}
+\end{frame}
+
+\begin{frame}{Simulacro — solución de la parte A}
+  \scriptsize
+  \begin{columns}[T,onlytextwidth]
+    \begin{column}{0.49\textwidth}
+      \begin{block}{Puntos 1 a 3}
+        \tiny
+        \textbf{1.} $9x^{2}-2\cdot 3x\cdot 2+4
+        = \destacar{9x^{2}-12x+4}$
+
+        \vspace{0.1cm}
+        \textbf{2.} $2x(x^{2}-9)
+        = \destacar{2x(x-3)(x+3)}$
+
+        \vspace{0.1cm}
+        \textbf{3.} $3x(x^{2}-4x+4)
+        = \destacar{3x(x-2)^{2}}$
+      \end{block}
+    \end{column}
+    \begin{column}{0.49\textwidth}
+      \begin{block}{Puntos 4 a 6}
+        \tiny
+        \textbf{4.} $\dfrac{(x-4)(x+4)}{(x+4)^{2}}
+        = \destacar{\dfrac{x-4}{x+4}}$, \ $x\neq -4$
+
+        \vspace{0.1cm}
+        \textbf{5.} $\dfrac{2(x+2)+5(x-3)}{(x-3)(x+2)}
+        = \destacar{\dfrac{7x-11}{x^{2}-x-6}}$
+
+        \vspace{0.1cm}
+        \textbf{6.} $5x=2(x+3) \Rightarrow 3x=6
+        \Rightarrow x=\destacar{2}$ \ (válida)
+      \end{block}
+    \end{column}
+  \end{columns}
+
+  \vspace{0.08cm}
+  {\tiny\color{uniGris} En el \destacar{2} y el \destacar{3}, quedarse en
+  $2x(x^{2}-9)$ o $3x(x^{2}-4x+4)$ es factorización \azul{incompleta}: vale
+  media respuesta. En el \destacar{4}, olvidar la restricción $x\neq -4$ es el
+  descuento más común de todo el examen.}
+\end{frame}
+
+\begin{frame}{Simulacro del Examen 3 — parte B (trigonometría)}
+  \begin{alertblock}{Individual, 20 minutos, calculadora en modo grados}
+    \scriptsize
+    \begin{enumerate}\setlength{\itemsep}{0.03cm}
+      \setcounter{enumi}{6}
+      \item Escriba $\operatorname{sen}$, $\cos$ y $\tan$ de $60^{\circ}$
+            \azul{sin calculadora}.
+      \item Convierta $150^{\circ}$ a radianes y $\frac{5\pi}{4}$ a grados.
+      \item En un triángulo rectángulo la hipotenusa mide $10$ y un ángulo
+            agudo es $25^{\circ}$. Halle los dos catetos.
+      \item Si $\cos\theta=\frac{5}{13}$ y $\theta$ está en el primer
+            cuadrante, halle $\operatorname{sen}\theta$ y $\tan\theta$.
+      \item Desde $50$ m de la base de un edificio, su punta se ve con un
+            ángulo de elevación de $38^{\circ}$. ¿Qué altura tiene?
+      \item ¿Por qué $\tan 90^{\circ}$ no existe?
+    \end{enumerate}
+  \end{alertblock}
+\end{frame}
+
+\begin{frame}{Simulacro — solución de la parte B}
+  \scriptsize
+  \begin{columns}[T,onlytextwidth]
+    \begin{column}{0.49\textwidth}
+      \begin{block}{Puntos 7 a 9}
+        \tiny
+        \textbf{7.} $\operatorname{sen}60^{\circ}=\frac{\sqrt{3}}{2}$, \
+        $\cos 60^{\circ}=\frac{1}{2}$, \ $\tan 60^{\circ}=\sqrt{3}$
+
+        \vspace{0.1cm}
+        \textbf{8.} $150\cdot\frac{\pi}{180}=\destacar{\frac{5\pi}{6}}$ rad;
+        \ $\frac{5\pi}{4}=\destacar{225^{\circ}}$
+
+        \vspace{0.1cm}
+        \textbf{9.} op $=10\operatorname{sen}25^{\circ}
+        \approx \destacar{4{,}23}$; \
+        ady $=10\cos 25^{\circ}\approx \destacar{9{,}06}$
+      \end{block}
+    \end{column}
+    \begin{column}{0.49\textwidth}
+      \begin{block}{Puntos 10 a 12}
+        \tiny
+        \textbf{10.} $\operatorname{sen}\theta
+        =\sqrt{1-\frac{25}{169}}=\destacar{\frac{12}{13}}$; \
+        $\tan\theta=\destacar{\frac{12}{5}}$
+
+        \vspace{0.1cm}
+        \textbf{11.} $h=50\tan 38^{\circ}
+        \approx \destacar{39{,}06\ \text{m}}$
+
+        \vspace{0.1cm}
+        \textbf{12.} Porque $\tan=\frac{\operatorname{sen}}{\cos}$ y
+        $\cos 90^{\circ}=0$: \destacar{división entre cero}.
+      \end{block}
+    \end{column}
+  \end{columns}
+
+  \vspace{0.08cm}
+  {\tiny\color{uniGris} Comprobación del \destacar{9} con Pitágoras:
+  $4{,}23^{2}+9{,}06^{2} = 17{,}9+82{,}1 = 100 = 10^{2}$ \checkmark. Del
+  \destacar{10}: $\left(\frac{12}{13}\right)^{2}+\left(\frac{5}{13}\right)^{2}
+  = \frac{144+25}{169} = 1$ \checkmark. \azul{Siempre hay una forma de
+  verificarse solo.}}
+\end{frame}
+
+\begin{frame}{Errores frecuentes de toda la Unidad 3}
+  \scriptsize
+  \begin{center}
+  \begin{tabular}{@{}p{5.6cm}p{6.4cm}@{}}
+    \toprule
+    \textbf{Error} & \textbf{Cómo evitarlo} \\
+    \midrule
+    Cancelar sumandos: $\frac{x+3}{x}=3$ &
+      Solo se cancelan \azul{factores}. Factorice primero \\
+    \addlinespace
+    $(a+b)^{2}=a^{2}+b^{2}$ &
+      Falta $2ab$. Compruebe con $a=b=1$: $4\neq 2$ \\
+    \addlinespace
+    Factorización incompleta &
+      Pregúntese si cada factor todavía se puede factorizar \\
+    \addlinespace
+    No declarar restricciones &
+      Anótelas \azul{antes} de simplificar, no después \\
+    \addlinespace
+    No verificar la solución racional &
+      Toda solución que anule un denominador se descarta \\
+    \addlinespace
+    Perder el signo al restar fracciones &
+      Escriba el paréntesis: $-\,(x^{2}-3x) = -x^{2}+3x$ \\
+    \addlinespace
+    Calculadora en RAD con datos en grados &
+      Revise el modo antes del primer cálculo \\
+    \bottomrule
+  \end{tabular}
+  \end{center}
+\end{frame}
+
+\begin{frame}{Cierre del curso}
+  \scriptsize
+  \begin{block}{Lo que se lleva de Precálculo}
+    \tiny
+    \textbf{Unidad 1:} los campos numéricos y cómo operar con ellos sin
+    calculadora. \quad
+    \textbf{Unidad 2:} ecuaciones, desigualdades y el plano cartesiano. \quad
+    \textbf{Unidad 3:} el lenguaje algebraico completo más la puerta de entrada
+    a la trigonometría.
+
+    \vspace{0.08cm}
+    Todo esto es el \destacar{prerrequisito operativo de Cálculo I}: allí no se
+    vuelve a explicar cómo factorizar ni cómo sumar fracciones algebraicas, se
+    da por sabido.
+  \end{block}
+
+  \vspace{0.1cm}
+  \begin{alertblock}{Para preparar el Examen 3 (30\,\%) — semana 16}
+    \tiny
+    \textbf{1.} Rehaga el simulacro de hoy \azul{cronometrado} y sin mirar las
+    soluciones. \quad
+    \textbf{2.} Repase los siete casos de factorización de la sesión 14: son la
+    base de casi todos los puntos. \quad
+    \textbf{3.} Memorice la tabla de ángulos notables (o el truco de las
+    raíces). \quad
+    \textbf{4.} Lleve calculadora \destacar{y verifique que esté en grados}.
+  \end{alertblock}
+
+  \vspace{0.1cm}
+  \begin{center}
+    {\footnotesize\color{uniAzul}\textbf{Gracias por el semestre.}
+    \ \ Consultas y asesorías: hasta el día anterior al examen.}
+  \end{center}
+\end{frame}
+
+\begin{frame}{Ejercicios propuestos}
+  \vspace{-0.1cm}
+  \begin{beamercolorbox}[wd=\textwidth,sep=0.10cm]{block body}
+    \centering\scriptsize
+    \textbf{1--6:} simplifique y declare restricciones. \quad
+    \textbf{7--12:} efectúe. \quad
+    \textbf{13--15:} resuelva. \quad
+    \textbf{16--20:} trigonometría.
+  \end{beamercolorbox}
+  \listatiny
+  \vspace{0.15cm}
+  \begin{columns}[T,onlytextwidth]
+    \begin{column}{0.47\textwidth}
+      \begin{enumerate}\setlength{\itemsep}{0.16cm}
+        \item $\tfrac{x^{2}-25}{x^{2}-10x+25}$
+        \item $\tfrac{x^{2}+5x+6}{x^{2}-4}$
+        \item $\tfrac{4x^{2}-1}{2x^{2}+x}$
+        \item $\tfrac{x^{3}+27}{x^{2}-9}$
+        \item $\tfrac{x^{2}-7x+12}{x^{2}-16}$
+        \item $\tfrac{x^{3}-8}{x^{2}-4}$
+        \item $\tfrac{1}{x+2}+\tfrac{1}{x-2}$
+        \item $\tfrac{x}{x^{2}-1}-\tfrac{1}{x-1}$
+        \item $\tfrac{x^{2}-9}{x+2}\cdot\tfrac{x+2}{x-3}$
+      \end{enumerate}
+    \end{column}
+    \begin{column}{0.50\textwidth}
+      \begin{enumerate}\setlength{\itemsep}{0.16cm}
+        \setcounter{enumi}{9}
+        \item $\left(1-\tfrac{1}{x}\right)\div(x-1)$
+        \item $\tfrac{3}{x+1}+\tfrac{2}{x-1}$
+        \item $\tfrac{x+2}{x^{2}-9}\div\tfrac{x^{2}+4x+4}{x-3}$
+        \item $\tfrac{5}{x+3}=\tfrac{2}{x}$
+        \item $\tfrac{1}{x-2}+\tfrac{1}{x+2}=\tfrac{4}{x^{2}-4}$
+        \item $\tfrac{x}{x+2}-\tfrac{3}{x-2}=1$
+        \item Calcule $\operatorname{sen}45^{\circ}\cdot\cos45^{\circ}$
+        \item Convierta $210^{\circ}$ a radianes
+        \item Cateto adyacente $15$ y ángulo $28^{\circ}$: halle la hipotenusa
+        \item Catetos $7$ y $24$: halle el ángulo opuesto al $7$
+        \item Escalera a $65^{\circ}$ que llega a $6$ m: ¿cuánto mide?
+      \end{enumerate}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{Respuestas a los ejercicios propuestos}
+  \listatiny
+  \vspace{0.15cm}
+  \begin{columns}[T,onlytextwidth]
+    \begin{column}{0.47\textwidth}
+      \begin{enumerate}\setlength{\itemsep}{0.16cm}
+        \item $\frac{x+5}{x-5}$, \ $x\neq 5$
+        \item $\frac{x+3}{x-2}$, \ $x\neq \pm 2$
+        \item $\frac{2x-1}{x}$, \ $x\neq 0,\ x\neq -\frac{1}{2}$
+        \item $\frac{x^{2}-3x+9}{x-3}$, \ $x\neq \pm 3$
+        \item $\frac{x-3}{x+4}$, \ $x\neq \pm 4$
+        \item $\frac{x^{2}+2x+4}{x+2}$, \ $x\neq \pm 2$
+        \item $\frac{2x}{x^{2}-4}$
+        \item $\frac{-1}{x^{2}-1}$
+        \item $x+3$, \ $x\neq -2,\ x\neq 3$
+        \item $\frac{1}{x}$, \ $x\neq 0,\ x\neq 1$
+      \end{enumerate}
+    \end{column}
+    \begin{column}{0.50\textwidth}
+      \begin{enumerate}\setlength{\itemsep}{0.16cm}
+        \setcounter{enumi}{10}
+        \item $\frac{5x-1}{x^{2}-1}$
+        \item $\frac{1}{x^{2}+5x+6}$
+        \item $x=2$
+        \item \destacar{No tiene solución} ($x=2$ es extraña)
+        \item $x=-\frac{2}{5}$
+        \item $\frac{\sqrt{2}}{2}\cdot\frac{\sqrt{2}}{2}=\frac{1}{2}$
+        \item $\frac{7\pi}{6}$ rad
+        \item $h=\frac{15}{\cos 28^{\circ}}\approx 16{,}99$
+        \item $\arctan\frac{7}{24}\approx 16{,}26^{\circ}$
+        \item $L=\frac{6}{\operatorname{sen}65^{\circ}}\approx 6{,}62$ m
+      \end{enumerate}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{Referencias}
+  \footnotesize
+  \begin{itemize}
+    \item[{[1]}] Ramos del Olmo, Á. M. (2016). \textit{Matemáticas básicas
+      para el acceso a la universidad}. Ediciones Pirámide.
+      \texttt{https://elibro.net/es/ereader/uniminuto/49134}
+    \item[{[2]}] González Pulido, J. W., Chacón Benavides, J. A. \&
+      Fonseca Correa, L. Á. (2023). \textit{Matemática básica} (1.\textsuperscript{a} ed.).
+      Universidad Mariana.
+      \texttt{https://elibro.net/es/ereader/uniminuto/280647}
+    \item[{[3]}] Placencia Valero, J. (2008). \textit{Compendio de matemática
+      básica elemental} (1.\textsuperscript{a} ed.). Editorial Tébar Flores.
+      \texttt{https://elibro.net/es/ereader/uniminuto/269758}
+  \end{itemize}
+
+  \vspace{0.35cm}
+  \begin{center}
+    {\Large\color{uniAzul}\textbf{¿Preguntas?}}
+  \end{center}
+\end{frame}
+
+\end{document}

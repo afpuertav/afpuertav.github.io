@@ -1,0 +1,770 @@
+% ============================================================================
+%  ESTADÍSTICA DESCRIPTIVA — Sesión 14
+%  Semana 14: 9 al 14 de noviembre de 2026
+%  3.3 Clasificación de variables y construcción de tablas en un caso completo
+%  3.4 Cálculo de medidas y elaboración de gráficos con herramientas
+%      tecnológicas  (R base)
+%  Duración prevista: 3 horas
+% ============================================================================
+\documentclass[aspectratio=169,10pt]{beamer}
+
+\usepackage[utf8]{inputenc}
+\IfFileExists{spanish.ldf}{\usepackage[spanish,es-noshorthands]{babel}}{}
+\usepackage{amsmath,amssymb}
+\usepackage{booktabs}
+\usepackage{tikz}
+\usepackage{listings}
+
+\usetheme{Uniminuto}
+
+\uniasignatura{Estadística descriptiva}
+\uniprofesor{Andrés Felipe Puerta Velez}
+\unicorreo{andres.puerta-v@uniminuto.edu.co}
+\uninrc{CBASBL031 - CBASBL141}
+\unisemana{Sesión 14 — Semana 14 · 9 al 14 de noviembre de 2026}
+
+\newcommand{\listatiny}{\setbeamerfont{itemize/enumerate body}{size=\tiny}\tiny}
+\newcommand{\fx}[1]{{\ttfamily\color{uniAzul}#1}}
+
+% ------------------------------------------------------------- CÓDIGO R ----
+\lstdefinestyle{Rcode}{
+  language=R,
+  basicstyle=\ttfamily\scriptsize,
+  keywordstyle=\color{uniAzul}\bfseries,
+  commentstyle=\color{uniGris}\itshape,
+  stringstyle=\color{uniTitulo},
+  showstringspaces=false,
+  numbers=none,
+  breaklines=true,
+  columns=fullflexible,
+  backgroundcolor=\color{uniCremaClaro},
+  frame=leftline, framerule=1.2pt, rulecolor=\color{uniNaranja},
+  xleftmargin=0.35cm, framexleftmargin=0.35cm,
+  framexrightmargin=0.15cm, framextopmargin=2pt, framexbottommargin=2pt,
+  aboveskip=0.15cm, belowskip=0.15cm
+}
+\lstdefinestyle{Rmini}{
+  language=R,
+  basicstyle=\ttfamily\tiny,
+  keywordstyle=\color{uniAzul}\bfseries,
+  commentstyle=\color{uniGris}\itshape,
+  stringstyle=\color{uniTitulo},
+  showstringspaces=false, numbers=none, breaklines=true,
+  columns=fullflexible,
+  backgroundcolor=\color{uniCremaClaro},
+  frame=leftline, framerule=1.2pt, rulecolor=\color{uniNaranja},
+  xleftmargin=0.35cm, framexleftmargin=0.35cm,
+  framexrightmargin=0.15cm, framextopmargin=2pt, framexbottommargin=2pt,
+  aboveskip=0.12cm, belowskip=0.12cm
+}
+\lstdefinestyle{Rout}{
+  basicstyle=\ttfamily\scriptsize\color{black},
+  showstringspaces=false, numbers=none, breaklines=true,
+  columns=fullflexible,
+  backgroundcolor=\color{uniGris!10},
+  frame=leftline, framerule=1.2pt, rulecolor=\color{uniGris},
+  xleftmargin=0.35cm, framexleftmargin=0.35cm,
+  framexrightmargin=0.15cm, framextopmargin=2pt, framexbottommargin=2pt,
+  aboveskip=0.15cm, belowskip=0.15cm
+}
+
+\begin{document}
+
+\portada
+
+\begin{frame}{Orden del día}
+  \begin{enumerate}
+    \item Llamado a lista y revisión de los ejercicios propuestos
+    \item \azul{Tema 3.3: un caso completo, de los datos crudos a la tabla}
+    \item Primeros pasos en \azul{R}: objetos, vectores y \fx{data.frame}
+    \item \azul{Tema 3.4: medidas, tablas y gráficos con R base}
+    \item Comparación de grupos y errores frecuentes
+    \item Taller en computador y cierre
+  \end{enumerate}
+
+  \vspace{0.25cm}
+  {\footnotesize\color{uniGris} Sesión de 3 horas. Traiga computador si puede;
+  si no, se trabaja en parejas. Usamos \destacar{R base}: nada de lo que
+  veremos hoy exige instalar paquetes adicionales.}
+\end{frame}
+
+\begin{frame}{Por qué R y no una hoja de cálculo}
+  \scriptsize
+  \begin{columns}[T,onlytextwidth]
+    \begin{column}{0.48\textwidth}
+      \begin{block}{Lo que gana}
+        \tiny
+        \begin{itemize}\setlength{\itemsep}{-0.05cm}
+          \item El análisis queda \azul{escrito}: se puede repetir, revisar y
+                corregir.
+          \item Si cambian los datos, se vuelve a correr el mismo guion.
+          \item Otra persona puede \azul{reproducir} exactamente su
+                resultado.
+          \item Es gratuito y es el estándar en analítica.
+        \end{itemize}
+      \end{block}
+    \end{column}
+    \begin{column}{0.48\textwidth}
+      \begin{alertblock}{Lo que cuesta}
+        \tiny
+        \begin{itemize}\setlength{\itemsep}{-0.05cm}
+          \item Hay que escribir, no hacer clic.
+          \item Los errores de sintaxis detienen todo (mayúsculas, comas,
+                paréntesis).
+          \item La curva de entrada es de unas pocas horas.
+        \end{itemize}
+      \end{alertblock}
+    \end{column}
+  \end{columns}
+
+  \vspace{0.1cm}
+  \begin{exampleblock}{La razón de fondo}
+    \tiny
+    En una hoja de cálculo, el análisis \destacar{está en los clics que usted
+    hizo} y nadie los ve. En R, el análisis \destacar{es el archivo}: cualquiera
+    puede leerlo, auditarlo y volverlo a correr dentro de un año.
+  \end{exampleblock}
+\end{frame}
+
+\begin{frame}[fragile]{Lo mínimo para empezar}
+  \footnotesize
+  \begin{columns}[T,onlytextwidth]
+    \begin{column}{0.50\textwidth}
+      \begin{block}{Cuatro ideas}
+        \tiny
+        \begin{itemize}\setlength{\itemsep}{-0.05cm}
+          \item \fx{<-} guarda un valor en un objeto.
+          \item \fx{c()} arma un vector (una columna de datos).
+          \item Una \azul{función} se llama con paréntesis:
+                \fx{mean(x)}.
+          \item \fx{\#} inicia un comentario: R lo ignora.
+        \end{itemize}
+      \end{block}
+    \end{column}
+    \begin{column}{0.46\textwidth}
+      \begin{alertblock}{Dónde se escribe}
+        \tiny
+        En RStudio: el \azul{Script} (arriba a la izquierda) se guarda; la
+        \azul{Consola} (abajo) solo ejecuta. \destacar{Escriba siempre en el
+        script} y ejecute con Ctrl+Enter.
+      \end{alertblock}
+    \end{column}
+  \end{columns}
+
+  \vspace{0.05cm}
+\begin{lstlisting}[style=Rcode]
+# Un objeto con tres numeros
+x <- c(4, 7, 10)
+mean(x)       # promedio
+length(x)     # cuantos datos hay
+\end{lstlisting}
+\begin{lstlisting}[style=Rout]
+[1] 7
+[1] 3
+\end{lstlisting}
+\end{frame}
+
+\seccion{3.3 Caso completo: Ferretería El Tornillo}
+
+\begin{frame}{Los datos crudos}
+  \footnotesize
+  Valor de compra, en miles de pesos, de 50 clientes de octubre (ya ordenados):
+
+  \vspace{0.15cm}
+  \begin{beamercolorbox}[wd=\textwidth,sep=0.12cm]{block body}
+    \centering\scriptsize\ttfamily
+    10 \ 13 \ 16 \ 19 \ 21 \ 22 \ 23 \ 24 \ 25 \ 26 \ 27 \ 28 \ 28 \ 29 \ 29 \\
+    30 \ 31 \ 32 \ 33 \ 34 \ 35 \ 35 \ 36 \ 36 \ 37 \ 38 \ 38 \ 39 \ 39 \ 41 \\
+    42 \ 43 \ 44 \ 45 \ 46 \ 47 \ 48 \ 49 \ 51 \ 53 \ 54 \ 56 \ 57 \ 58 \ 61 \\
+    63 \ 66 \ 68 \ 72 \ 80
+  \end{beamercolorbox}
+
+  \vspace{0.15cm}
+  \begin{alertblock}{Antes de calcular nada}
+    \scriptsize
+    \destacar{Contar.} $n = 50$. \quad \destacar{Mirar los extremos.}
+    $x_{\min}=10$, $x_{\max}=80$. \quad \destacar{Buscar rarezas.} ¿Hay ceros,
+    negativos, datos faltantes o valores imposibles? Aquí no, pero ese chequeo
+    es obligatorio en datos reales.
+  \end{alertblock}
+\end{frame}
+
+\begin{frame}{Paso 1 — clasificar las variables}
+  \scriptsize
+  \begin{center}
+  \begin{tabular}{@{}p{2.6cm}p{3.0cm}p{2.5cm}p{3.4cm}@{}}
+    \toprule
+    \textbf{Variable} & \textbf{Registro} & \textbf{Tipo y escala} &
+    \textbf{Cómo se guarda en R} \\
+    \midrule
+    Valor de compra & Miles de pesos & Continua, razón &
+      \fx{numeric} \\
+    \addlinespace
+    Zona del cliente & Norte / Centro / Sur & Nominal &
+      \fx{factor} \\
+    \addlinespace
+    Forma de pago & Efectivo / Tarjeta / Crédito & Nominal &
+      \fx{factor} \\
+    \addlinespace
+    Nivel de fidelidad & Nuevo / Ocasional / Frecuente & Ordinal &
+      \fx{factor(ordered = TRUE)} \\
+    \bottomrule
+  \end{tabular}
+  \end{center}
+
+  \vspace{0.1cm}
+  \begin{alertblock}{Por qué importa el tipo en R}
+    \scriptsize
+    Si una variable cualitativa queda como \fx{character}, R la ordena
+    \azul{alfabéticamente}. Si se declara \fx{factor} con niveles en el orden
+    correcto, las tablas y los gráficos respetan el orden de la escala. Es la
+    traducción exacta de lo que vimos en la sesión 2.
+  \end{alertblock}
+\end{frame}
+
+\begin{frame}[fragile]{Paso 2 — cargar los datos en R}
+  \footnotesize
+\begin{lstlisting}[style=Rcode]
+# Opcion A: escribir el vector directamente
+valor <- c(10,13,16,19,21,22,23,24,25,26,27,28,28,29,29,
+           30,31,32,33,34,35,35,36,36,37,38,38,39,39,41,
+           42,43,44,45,46,47,48,49,51,53,54,56,57,58,61,
+           63,66,68,72,80)
+
+# Opcion B: leer un archivo guardado como CSV
+# datos <- read.csv("tornillo.csv")
+# valor <- datos$valor
+
+length(valor)   # verificar que son 50
+summary(valor)  # primer vistazo
+\end{lstlisting}
+\begin{lstlisting}[style=Rout]
+[1] 50
+   Min. 1st Qu.  Median    Mean 3rd Qu.    Max.
+  10.00   28.25   37.50   39.54   48.75   80.00
+\end{lstlisting}
+
+  \vspace{-0.1cm}
+  {\tiny\color{uniGris} \fx{summary()} es el primer comando que se corre
+  siempre: en una línea entrega el resumen de cinco números y la media.}
+\end{frame}
+
+\seccion{3.4 Medidas, tablas y gráficos con R base}
+
+\begin{frame}{Las funciones que reemplazan todo el cálculo a mano}
+  \tiny
+  \begin{center}
+  \begin{tabular}{@{}p{3.2cm}p{5.0cm}p{3.4cm}@{}}
+    \toprule
+    \textbf{Medida} & \textbf{Función en R} & \textbf{Resultado} \\
+    \midrule
+    Cantidad de datos & \fx{length(valor)} & 50 \\
+    Media & \fx{mean(valor)} & 39{,}54 \\
+    Mediana & \fx{median(valor)} & 37{,}50 \\
+    Mínimo y máximo & \fx{min(valor)} \ \fx{max(valor)} & 10 \ y \ 80 \\
+    Rango & \fx{diff(range(valor))} & 70 \\
+    Cuartiles & \fx{quantile(valor)} & 28{,}25 \ y \ 48{,}75 \\
+    Percentil 90 & \fx{quantile(valor, 0.90)} & 61{,}20 \\
+    Rango intercuartílico & \fx{IQR(valor)} & 20{,}50 \\
+    Varianza (muestra) & \fx{var(valor)} & 247{,}15 \\
+    Desviación (muestra) & \fx{sd(valor)} & 15{,}72 \\
+    Coeficiente de variación & \fx{sd(valor)/mean(valor)*100} & 39{,}76\% \\
+    Resumen completo & \fx{summary(valor)} & los cinco números y la media \\
+    \bottomrule
+  \end{tabular}
+  \end{center}
+
+  \vspace{0.05cm}
+  {\tiny\color{uniGris} R \azul{no} trae una función de moda ni de asimetría en
+  la instalación base: las construimos en las dos láminas siguientes.
+  \fx{var()} y \fx{sd()} dividen entre $n-1$, es decir, son las de
+  \destacar{muestra}.}
+\end{frame}
+
+\begin{frame}[fragile]{Moda, asimetría y curtosis a mano en R}
+  \footnotesize
+\begin{lstlisting}[style=Rcode]
+# Moda: el valor mas repetido
+tab <- table(valor)
+names(tab)[tab == max(tab)]
+
+# Asimetria de Pearson (mediana)
+As2 <- 3 * (mean(valor) - median(valor)) / sd(valor)
+
+# Fisher: g1 y g2 (exceso de curtosis), con sigma poblacional
+n  <- length(valor)
+mu <- mean(valor)
+sg <- sqrt(sum((valor - mu)^2) / n)
+g1 <- sum((valor - mu)^3) / n / sg^3
+g2 <- sum((valor - mu)^4) / n / sg^4 - 3
+round(c(As2 = As2, g1 = g1, g2 = g2), 3)
+\end{lstlisting}
+\begin{lstlisting}[style=Rout]
+[1] "28" "29" "35" "36" "38" "39"
+   As2     g1     g2
+ 0.389  0.465 -0.242
+\end{lstlisting}
+
+  \vspace{-0.1cm}
+  {\tiny\color{uniGris} Seis valores empatados con dos repeticiones: en datos
+  continuos la moda \destacar{casi nunca es informativa}, y por eso se agrupa.}
+\end{frame}
+
+\begin{frame}[fragile]{La tabla de frecuencias con \fx{cut()} y \fx{table()}}
+  \footnotesize
+\begin{lstlisting}[style=Rcode]
+limites <- seq(10, 80, by = 10)          # 10,20,...,80
+clases  <- cut(valor, breaks = limites,
+               right = FALSE,            # intervalos [a, b)
+               include.lowest = TRUE)    # el 80 entra en la ultima
+fi <- table(clases)
+fi
+\end{lstlisting}
+\begin{lstlisting}[style=Rout]
+clases
+[10,20) [20,30) [30,40) [40,50) [50,60) [60,70) [70,80]
+      4      11      14       9       6       4       2
+\end{lstlisting}
+
+  \vspace{0.05cm}
+  \begin{alertblock}{Los dos argumentos que hay que entender}
+    \tiny
+    \fx{right = FALSE} produce intervalos \destacar{cerrados por izquierda y
+    abiertos por derecha}, que es la convención del curso. \quad
+    \fx{include.lowest = TRUE} cierra el \destacar{último} intervalo para que
+    el máximo no quede fuera. Sin estos dos argumentos, R usa $(a, b]$ y la
+    tabla no coincide con la que hicimos a mano.
+  \end{alertblock}
+\end{frame}
+
+\begin{frame}[fragile]{La tabla completa, con todas las frecuencias}
+  \footnotesize
+\begin{lstlisting}[style=Rcode]
+Fi <- cumsum(fi)                  # absoluta acumulada
+hi <- prop.table(fi)              # relativa
+Hi <- cumsum(hi)                  # relativa acumulada
+xi <- head(limites, -1) + 5       # marca de clase
+
+tabla <- data.frame(xi, fi = as.vector(fi), Fi = as.vector(Fi),
+                    hi = round(as.vector(hi), 3),
+                    Hi = round(as.vector(Hi), 3))
+tabla
+\end{lstlisting}
+\begin{lstlisting}[style=Rout]
+  xi fi Fi    hi    Hi
+1 15  4  4 0.080 0.080
+2 25 11 15 0.220 0.300
+3 35 14 29 0.280 0.580
+4 45  9 38 0.180 0.760
+5 55  6 44 0.120 0.880
+6 65  4 48 0.080 0.960
+7 75  2 50 0.040 1.000
+\end{lstlisting}
+
+  \vspace{-0.12cm}
+  {\tiny\color{uniGris} Es \destacar{exactamente} la tabla de la sesión 11,
+  pero en seis líneas y sin una sola cuenta a mano.}
+\end{frame}
+
+\begin{frame}[fragile]{Variables cualitativas: \fx{factor} y \fx{table}}
+  \footnotesize
+\begin{lstlisting}[style=Rcode]
+zona <- factor(zona)                       # nominal
+fidelidad <- factor(fidelidad,
+                    levels = c("Nuevo", "Ocasional", "Frecuente"),
+                    ordered = TRUE)        # ordinal: el orden manda
+
+table(zona)                                # frecuencias absolutas
+round(prop.table(table(zona)) * 100, 1)    # porcentajes
+cumsum(table(fidelidad))                   # acumulada: solo si es ordinal
+\end{lstlisting}
+
+  \vspace{0.05cm}
+  \begin{alertblock}{El detalle que decide todo}
+    \scriptsize
+    Al declarar \fx{levels = c("Nuevo","Ocasional","Frecuente")} le estamos
+    diciendo a R cuál es el \destacar{orden natural} de la escala. Sin eso,
+    R ordenaría alfabéticamente —Frecuente, Nuevo, Ocasional— y tanto la
+    acumulada como el gráfico de barras quedarían sin sentido.
+  \end{alertblock}
+
+  \vspace{0.05cm}
+  {\tiny\color{uniGris} Para cruzar dos variables cualitativas:
+  \fx{table(zona, pago)} devuelve la tabla de doble entrada, y
+  \fx{addmargins()} le agrega los totales.}
+\end{frame}
+
+\begin{frame}[fragile]{Los gráficos, uno por línea}
+  \footnotesize
+\begin{lstlisting}[style=Rmini]
+# Cualitativa: barras separadas y circular
+barplot(table(zona), col = "steelblue",
+        main = "Clientes por zona", ylab = "Frecuencia")
+pie(table(zona), main = "Participacion por zona")
+
+# Cuantitativa: histograma con NUESTROS limites de clase
+hist(valor, breaks = limites, right = FALSE,
+     main = "Valor de compra de 50 clientes",
+     xlab = "Miles de pesos", ylab = "Frecuencia", col = "steelblue")
+
+# Poligono de frecuencias sobre el histograma
+lines(c(5, xi, 85), c(0, as.vector(fi), 0), type = "b", col = "tomato")
+
+# Ojiva: acumulada sobre los limites superiores
+plot(limites, c(0, Fi), type = "b",
+     main = "Ojiva", xlab = "Miles de pesos", ylab = "Fi acumulada")
+
+# Diagrama de caja
+boxplot(valor, horizontal = TRUE, col = "steelblue",
+        main = "Valor de compra", xlab = "Miles de pesos")
+\end{lstlisting}
+
+  \vspace{-0.12cm}
+  {\tiny\color{uniGris} \fx{hist()} con \fx{breaks = limites} obliga a R a usar
+  las clases del curso; sin ese argumento, R elige las suyas con la regla de
+  Sturges y el gráfico no coincide con la tabla.}
+\end{frame}
+
+\begin{frame}[fragile]{Comparar grupos en dos líneas}
+  \footnotesize
+\begin{lstlisting}[style=Rcode]
+# Una medida por grupo
+tapply(valor, zona, mean)
+tapply(valor, zona, median)
+round(tapply(valor, zona, sd) / tapply(valor, zona, mean) * 100, 1)  # CV
+
+# Cajas paralelas: la formula se lee "valor SEGUN zona"
+boxplot(valor ~ zona, col = "steelblue",
+        main = "Valor de compra por zona",
+        xlab = "Zona", ylab = "Miles de pesos")
+
+# Los cinco numeros y los atipicos que usa el grafico
+boxplot.stats(valor)$stats   # bigote inf, Q1, mediana, Q3, bigote sup
+boxplot.stats(valor)$out     # valores atipicos
+\end{lstlisting}
+\begin{lstlisting}[style=Rout]
+[1] 10 28 37.5 49 80
+numeric(0)
+\end{lstlisting}
+
+  \vspace{-0.12cm}
+  {\tiny\color{uniGris} \fx{numeric(0)} significa ``ningún valor atípico'',
+  igual que concluimos a mano en la sesión 11. Esta lámina es toda la
+  comparación de grupos de la sesión 13, hecha en R.}
+\end{frame}
+
+\begin{frame}{¿Por qué R no da exactamente lo mismo que a mano?}
+  \tiny
+  \begin{center}
+  \begin{tabular}{@{}lrrl@{}}
+    \toprule
+    \textbf{Medida} & \textbf{A mano (agrupado)} & \textbf{R (datos crudos)} &
+    \textbf{Por qué difieren} \\
+    \midrule
+    Media    & 39{,}40 & 39{,}54 & La marca de clase reemplaza al dato real \\
+    Mediana  & 37{,}14 & 37{,}50 & La fórmula agrupada interpola dentro de la clase \\
+    Moda     & 33{,}75 & varias & Czuber estima; \fx{table()} da los valores repetidos \\
+    $Q_1$    & 27{,}73 & 28{,}25 & Distinta convención de posición \\
+    $Q_3$    & 49{,}44 & 48{,}75 & Distinta convención de posición \\
+    $s$      & 15{,}54 & 15{,}72 & Agrupamiento \\
+    \bottomrule
+  \end{tabular}
+  \end{center}
+
+  \vspace{0.1cm}
+  \begin{alertblock}{Cuál está bien}
+    \scriptsize
+    \destacar{Los dos.} El cálculo agrupado es una \azul{aproximación} que se
+    usa cuando solo se dispone de la tabla; R usa los datos originales y es más
+    exacto. Lo que \destacar{nunca} se hace es mezclarlos en un mismo informe
+    sin decir cuál se usó.
+  \end{alertblock}
+
+  \vspace{0.05cm}
+  {\tiny\color{uniGris} \fx{quantile()} tiene \azul{nueve} métodos distintos
+  (\fx{type = 1..9}); el predeterminado es el 7. \fx{fivenum()} y
+  \fx{boxplot()} usan otra convención (bisagras de Tukey), y por eso
+  \fx{quantile(valor)} da 28,25 mientras \fx{boxplot.stats()} da 28.
+  Diferencias así son normales y no son un error.}
+\end{frame}
+
+\begin{frame}{Errores frecuentes en R}
+  \scriptsize
+  \begin{center}
+  \begin{tabular}{@{}p{5.0cm}p{7.0cm}@{}}
+    \toprule
+    \textbf{Error} & \textbf{Qué pasa y cómo se corrige} \\
+    \midrule
+    \fx{Error: object 'valor' not found} &
+      No se ejecutó la línea que lo crea, o está mal escrito. R distingue
+      mayúsculas: \fx{Valor} $\ne$ \fx{valor} \\
+    \addlinespace
+    La consola muestra \fx{+} y no responde &
+      Falta cerrar un paréntesis o una comilla. Pulse \destacar{Esc} \\
+    \addlinespace
+    \fx{mean()} devuelve \fx{NA} &
+      Hay datos faltantes: use \fx{mean(valor, na.rm = TRUE)} \\
+    \addlinespace
+    La tabla no coincide con la de clase &
+      Falta \fx{right = FALSE} o \fx{include.lowest = TRUE} en \fx{cut()} \\
+    \addlinespace
+    El gráfico de barras sale desordenado &
+      La variable es \fx{character}: conviértala en \fx{factor} con
+      \fx{levels} \\
+    \addlinespace
+    \fx{sd()} distinto al esperado &
+      \fx{sd()} es de \azul{muestra} ($n-1$); la poblacional se calcula a mano \\
+    \bottomrule
+  \end{tabular}
+  \end{center}
+
+  \vspace{0.05cm}
+  {\tiny\color{uniGris} Control final infalible: \fx{sum(fi)} debe dar
+  \destacar{exactamente} \fx{length(valor)}. Si no coincide, hay datos fuera de
+  los límites de \fx{cut()}.}
+\end{frame}
+
+\begin{frame}{Taller en computador — parte 1}
+  \begin{alertblock}{En parejas (30 minutos)}
+    \scriptsize
+    Abra RStudio, cree un script nuevo y guárdelo como
+    \fx{tornillo.R}. Todo debe quedar \destacar{escrito en el script}, no en la
+    consola.
+
+    \vspace{0.2cm}
+    \begin{enumerate}\setlength{\itemsep}{-0.07cm}
+      \item Cargue los 50 datos con \fx{c()} y verifique \fx{length()}.
+      \item Corra \fx{summary()} e interprete su salida en una frase.
+      \item Calcule media, mediana, cuartiles, \fx{IQR}, \fx{var}, \fx{sd} y el
+            $CV$.
+      \item Construya \fx{clases} con \fx{cut()} y obtenga \fx{fi}.
+      \item Agregue \fx{Fi}, \fx{hi}, \fx{Hi} y \fx{xi}, y arme el
+            \fx{data.frame}.
+      \item Verifique que \fx{sum(fi) == 50} y que el último \fx{Hi} es 1.
+      \item Compare sus resultados con los calculados a mano en la sesión 11 y
+            explique cada diferencia.
+    \end{enumerate}
+  \end{alertblock}
+\end{frame}
+
+\begin{frame}{Taller en computador — parte 2}
+  \begin{alertblock}{En parejas (25 minutos)}
+    \scriptsize
+    \begin{enumerate}\setlength{\itemsep}{-0.07cm}
+      \item Haga el \azul{histograma} con \fx{breaks = limites} y
+            \fx{right = FALSE}.
+      \item Superponga el \azul{polígono} con \fx{lines()}, cerrado sobre el
+            eje.
+      \item Dibuje la \azul{ojiva} con \fx{plot()}.
+      \item Dibuje el \azul{diagrama de caja} y compárelo con el que hizo a
+            mano en la sesión 11.
+      \item Cree una variable \fx{zona} con 50 valores inventados
+            (Norte/Centro/Sur), conviértala en \fx{factor} y haga
+            \fx{table(zona)} y su gráfico de barras.
+      \item Calcule \fx{tapply(valor, zona, mean)} y haga
+            \fx{boxplot(valor \~{} zona)}. Escriba \destacar{dos frases} de
+            interpretación.
+    \end{enumerate}
+
+    \vspace{0.1cm}
+    Al cierre, dos parejas proyectan su script y el curso revisa títulos, ejes
+    y coherencia de los gráficos.
+  \end{alertblock}
+\end{frame}
+
+\begin{frame}[fragile]{El script completo, para guardar}
+  \footnotesize
+\begin{lstlisting}[style=Rmini]
+valor   <- c(10,13,16,19,21,22,23,24,25,26,27,28,28,29,29,30,31,32,33,34,
+             35,35,36,36,37,38,38,39,39,41,42,43,44,45,46,47,48,49,51,53,
+             54,56,57,58,61,63,66,68,72,80)
+limites <- seq(10, 80, by = 10)
+clases  <- cut(valor, breaks = limites, right = FALSE, include.lowest = TRUE)
+
+fi <- table(clases); Fi <- cumsum(fi)
+hi <- prop.table(fi); Hi <- cumsum(hi)
+xi <- head(limites, -1) + 5
+tabla <- data.frame(xi, fi = as.vector(fi), Fi = as.vector(Fi),
+                    hi = round(as.vector(hi), 3), Hi = round(as.vector(Hi), 3))
+
+medidas <- c(n = length(valor), media = mean(valor), mediana = median(valor),
+             Q1 = quantile(valor, .25), Q3 = quantile(valor, .75),
+             IQR = IQR(valor), s = sd(valor),
+             CV = sd(valor) / mean(valor) * 100)
+
+hist(valor, breaks = limites, right = FALSE, col = "steelblue",
+     main = "Valor de compra", xlab = "Miles de pesos")
+boxplot(valor, horizontal = TRUE, col = "steelblue")
+\end{lstlisting}
+
+  \vspace{-0.12cm}
+  {\tiny\color{uniGris} Diecisiete líneas reemplazan tres sesiones de cálculo a
+  mano. \destacar{Pero solo tienen sentido si usted sabe qué está calculando}:
+  esa es la diferencia entre las sesiones 3 a 11 y esta.}
+\end{frame}
+
+\begin{frame}{Lista de verificación antes de entregar}
+  \scriptsize
+  \begin{columns}[T,onlytextwidth]
+    \begin{column}{0.48\textwidth}
+      \begin{block}{Script y cálculos}
+        \tiny\setbeamerfont{itemize/enumerate body}{size=\tiny}
+        \begin{itemize}\setlength{\itemsep}{-0.05cm}
+          \item \fx{length(valor)} coincide con el $n$ declarado
+          \item \fx{sum(fi)} $=$ \fx{length(valor)} y el último \fx{Hi} es 1
+          \item Se usó \fx{sd()} sabiendo que es de muestra
+          \item Ninguna cifra está digitada a mano en el informe
+          \item El script corre completo \azul{de arriba abajo} sin errores
+        \end{itemize}
+      \end{block}
+    \end{column}
+    \begin{column}{0.48\textwidth}
+      \begin{block}{Tablas y gráficos}
+        \tiny\setbeamerfont{itemize/enumerate body}{size=\tiny}
+        \begin{itemize}\setlength{\itemsep}{-0.05cm}
+          \item Cada tabla y figura está numerada y titulada
+          \item \fx{main}, \fx{xlab} y \fx{ylab} escritos con unidades
+          \item El histograma usa \fx{breaks = limites}
+          \item El polígono está cerrado sobre el eje
+          \item Cada figura se menciona en el texto
+        \end{itemize}
+      \end{block}
+    \end{column}
+  \end{columns}
+
+  \vspace{0.05cm}
+  \begin{alertblock}{La prueba definitiva}
+    \tiny
+    Cierre R, ábralo de nuevo y corra el script \destacar{desde la primera
+    línea}. Si todo se reproduce sin tocar nada, el trabajo está bien hecho.
+  \end{alertblock}
+\end{frame}
+
+\begin{frame}{Cierre de la sesión}
+  \begin{block}{Lo que debe quedar claro hoy}
+    \scriptsize
+    \begin{itemize}\setlength{\itemsep}{0.02cm}
+      \item En R el análisis \azul{es un archivo}: se guarda, se audita y se
+            repite.
+      \item \fx{summary()}, \fx{mean()}, \fx{median()}, \fx{quantile()},
+            \fx{IQR()}, \fx{var()} y \fx{sd()} cubren toda la Unidad 2.
+      \item \fx{cut()} + \fx{table()} + \fx{cumsum()} + \fx{prop.table()}
+            construyen la tabla de la Unidad 1.
+      \item \fx{hist()}, \fx{barplot()}, \fx{plot()} y \fx{boxplot()} dan todos
+            los gráficos del curso.
+      \item Los resultados con datos crudos \destacar{difieren un poco} de los
+            agrupados, y hay que declarar cuál se usó.
+      \item R no piensa: el criterio sobre qué medida y qué gráfico usar sigue
+            siendo suyo.
+    \end{itemize}
+  \end{block}
+
+  \vspace{0.08cm}
+  \begin{alertblock}{Trabajo independiente}
+    \tiny
+    Terminar el script del taller. En la sesión 15 trabajamos la
+    \destacar{coherencia entre análisis y conclusiones} y la sustentación oral,
+    y hacemos el repaso para el Examen 3.
+  \end{alertblock}
+\end{frame}
+
+\begin{frame}{Ejercicios propuestos}
+  \vspace{-0.1cm}
+  \begin{beamercolorbox}[wd=\textwidth,sep=0.10cm]{block body}
+    \centering\scriptsize
+    \textbf{1--8:} funciones. \quad \textbf{9--14:} tablas y gráficos. \quad
+    \textbf{15--20:} criterio y verificación.
+  \end{beamercolorbox}
+  \listatiny
+  \begin{columns}[T,onlytextwidth]
+    \begin{column}{0.47\textwidth}
+      \begin{enumerate}\setlength{\itemsep}{0.16cm}
+        \item Función para la media de \fx{valor}
+        \item Función para la mediana
+        \item Función para el tercer cuartil
+        \item Función para el percentil 40
+        \item ¿\fx{sd()} es de muestra o de población?
+        \item ¿Cómo se calcula el $CV$ en R?
+        \item Función para contar los clientes de la zona Norte
+        \item ¿Qué hace \fx{summary(valor)}?
+        \item ¿Qué argumentos de \fx{cut()} dan intervalos $[a,b)$?
+        \item ¿Cómo se obtiene \fx{Hi} a partir de \fx{hi}?
+      \end{enumerate}
+    \end{column}
+    \begin{column}{0.50\textwidth}
+      \begin{enumerate}\setlength{\itemsep}{0.16cm}
+        \setcounter{enumi}{10}
+        \item ¿Cómo se fuerza el histograma a usar nuestras clases?
+        \item ¿Cómo se comparan medias por zona en una línea?
+        \item ¿Qué gráfico usa para \fx{zona}? ¿Y para \fx{valor}?
+        \item ¿Qué devuelve \fx{boxplot.stats(valor)\$out}?
+        \item ¿Por qué \fx{mean(valor)} no coincide con la media agrupada?
+        \item ¿Cuál de las dos reportaría y por qué?
+        \item ¿Qué significa que \fx{mean()} devuelva \fx{NA}?
+        \item ¿Por qué \fx{quantile()} y \fx{fivenum()} difieren?
+        \item ¿Por qué una cualitativa debe ser \fx{factor} y no
+              \fx{character}?
+        \item ¿Cuál es la prueba de que el script está bien hecho?
+      \end{enumerate}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{Respuestas}{Autoevaluación de los ejercicios propuestos}
+  \listatiny
+  \begin{columns}[T,onlytextwidth]
+    \begin{column}{0.47\textwidth}
+      \begin{enumerate}\setlength{\itemsep}{0.16cm}
+        \item \fx{mean(valor)}
+        \item \fx{median(valor)}
+        \item \fx{quantile(valor, 0.75)}
+        \item \fx{quantile(valor, 0.40)}
+        \item De muestra: divide entre $n-1$
+        \item \fx{sd(valor)/mean(valor)*100}
+        \item \fx{sum(zona == "Norte")} o \fx{table(zona)}
+        \item Mínimo, $Q_1$, mediana, media, $Q_3$ y máximo
+        \item \fx{right = FALSE} e \fx{include.lowest = TRUE}
+        \item \fx{cumsum(hi)}
+      \end{enumerate}
+    \end{column}
+    \begin{column}{0.50\textwidth}
+      \begin{enumerate}\setlength{\itemsep}{0.16cm}
+        \setcounter{enumi}{10}
+        \item \fx{hist(valor, breaks = limites, right = FALSE)}
+        \item \fx{tapply(valor, zona, mean)}
+        \item \fx{barplot()} e \fx{hist()}, respectivamente
+        \item Los valores atípicos; \fx{numeric(0)} si no hay
+        \item Porque la agrupada usa marcas de clase
+        \item La de datos crudos, si se tienen; y se declara
+        \item Que hay datos faltantes: use \fx{na.rm = TRUE}
+        \item Usan convenciones distintas de cuartil
+        \item Para fijar los niveles y su orden
+        \item Que corre completo desde cero en una sesión nueva
+      \end{enumerate}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{Referencias}
+  \footnotesize
+  \begin{itemize}
+    \item[{[1]}] Monroy Saldívar, S. (2008). \textit{Estadística descriptiva}.
+      Instituto Politécnico Nacional.
+      \texttt{https://elibro.net/es/lc/uniminuto/titulos/74722}
+    \item[{[2]}] Ordóñez Fernández, F. F. \& González Fernández, J. (2021).
+      \textit{Estadística descriptiva paso a paso}. Ediciones Pirámide.
+      \texttt{https://elibro.net/es/lc/uniminuto/titulos/215449}
+    \item[{[3]}] Llinás Solano, H. (2014). \textit{Introducción a la
+      estadística con aplicaciones en ciencias sociales}. Universidad del
+      Norte. \texttt{https://elibro.net/es/lc/uniminuto/titulos/70062}
+    \item[{[4]}] R Core Team (2025). \textit{An Introduction to R}.
+      \texttt{https://cran.r-project.org/doc/manuals/R-intro.pdf}
+  \end{itemize}
+
+  \vspace{0.25cm}
+  \begin{center}
+    {\Large\color{uniAzul}\textbf{¿Preguntas?}}
+  \end{center}
+\end{frame}
+
+\end{document}

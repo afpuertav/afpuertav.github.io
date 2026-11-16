@@ -1,0 +1,548 @@
+% ============================================================================
+%  ESTADÍSTICA INFERENCIAL — Sesión 5
+%  Semana 5: 7 al 12 de septiembre de 2026
+%  1.7 Muestreo probabilístico · 1.8 Muestreo no probabilístico
+%  1.9 Cálculo del tamaño de la muestra · 1.10 Aplicaciones
+%  Cierre de la Unidad 1 y repaso para el Examen 1
+% ============================================================================
+\documentclass[aspectratio=169,10pt]{beamer}
+
+\usepackage[utf8]{inputenc}
+\IfFileExists{spanish.ldf}{\usepackage[spanish,es-noshorthands]{babel}}{}
+\usepackage{amsmath,amssymb}
+\usepackage{booktabs}
+\usepackage{tikz}
+\usepackage{listings}
+
+\usetheme{Uniminuto}
+
+\uniasignatura{Estadística inferencial}
+\uniprofesor{Andrés Felipe Puerta Velez}
+\unicorreo{andres.puerta-v@uniminuto.edu.co}
+\uninrc{CBASBL061}
+\unisemana{Sesión 5 — Semana 5 · 7 al 12 de septiembre de 2026}
+
+\newcommand{\listatiny}{\setbeamerfont{itemize/enumerate body}{size=\tiny}\tiny}
+
+\newcommand{\fx}[1]{{\ttfamily\color{uniAzul}#1}}
+
+% ------------------------------------------------------------- CÓDIGO R ----
+\lstdefinestyle{Rcode}{
+  language=R,
+  basicstyle=\ttfamily\scriptsize,
+  keywordstyle=\color{uniAzul}\bfseries,
+  commentstyle=\color{uniGris}\itshape,
+  stringstyle=\color{uniTitulo},
+  showstringspaces=false, numbers=none, breaklines=true,
+  columns=fullflexible,
+  backgroundcolor=\color{uniCremaClaro},
+  frame=leftline, framerule=1.2pt, rulecolor=\color{uniNaranja},
+  xleftmargin=0.35cm, framexleftmargin=0.35cm,
+  framexrightmargin=0.15cm, framextopmargin=2pt, framexbottommargin=2pt,
+  aboveskip=0.15cm, belowskip=0.15cm
+}
+\lstdefinestyle{Rmini}{
+  language=R,
+  basicstyle=\ttfamily\tiny,
+  keywordstyle=\color{uniAzul}\bfseries,
+  commentstyle=\color{uniGris}\itshape,
+  stringstyle=\color{uniTitulo},
+  showstringspaces=false, numbers=none, breaklines=true,
+  columns=fullflexible,
+  backgroundcolor=\color{uniCremaClaro},
+  frame=leftline, framerule=1.2pt, rulecolor=\color{uniNaranja},
+  xleftmargin=0.35cm, framexleftmargin=0.35cm,
+  framexrightmargin=0.15cm, framextopmargin=2pt, framexbottommargin=2pt,
+  aboveskip=0.12cm, belowskip=0.12cm
+}
+\lstdefinestyle{Rout}{
+  basicstyle=\ttfamily\tiny\color{black},
+  showstringspaces=false, numbers=none, breaklines=true,
+  columns=fullflexible,
+  backgroundcolor=\color{uniGris!10},
+  frame=leftline, framerule=1.2pt, rulecolor=\color{uniGris},
+  xleftmargin=0.35cm, framexleftmargin=0.35cm,
+  framexrightmargin=0.15cm, framextopmargin=2pt, framexbottommargin=2pt,
+  aboveskip=0.12cm, belowskip=0.12cm
+}
+
+\begin{document}
+
+\portada
+
+\begin{frame}{Orden del día}
+  \begin{enumerate}
+    \item Llamado a lista y revisión de los ejercicios propuestos
+    \item Repaso: dónde quedamos
+    \item \azul{Temas 1.7 y 1.8: muestreo probabilístico y no probabilístico}
+    \item \azul{Tema 1.9: cálculo del tamaño de la muestra}
+    \item \azul{Tema 1.10: aplicaciones del muestreo en el entorno}
+    \item Ejercicios en clase y \destacar{repaso para el Examen 1}
+  \end{enumerate}
+\end{frame}
+
+\begin{frame}{Repaso: dónde quedamos}
+  En la sesión 4 distinguimos \azul{parámetro} (población, fijo) de
+  \azul{estadístico} (muestra, aleatorio), y vimos que una muestra grande mal
+  elegida es peor que una pequeña bien elegida.
+
+  \vspace{0.25cm}
+  \begin{alertblock}{Las dos preguntas de hoy}
+    \footnotesize
+    \begin{enumerate}
+      \item \destacar{¿Cómo} se elige la muestra? $\rightarrow$ técnicas de
+            muestreo.
+      \item \destacar{¿Cuántos} elementos se necesitan? $\rightarrow$ cálculo
+            del tamaño de la muestra.
+    \end{enumerate}
+  \end{alertblock}
+
+  \vspace{0.15cm}
+  {\footnotesize\color{uniGris} Con esto se cierra la unidad 1. El
+  \destacar{Examen 1} es la próxima semana: 14 al 19 de septiembre.}
+\end{frame}
+
+\seccion{1.7 y 1.8 Técnicas de muestreo}
+
+\begin{frame}{Muestreo probabilístico}
+  Todo elemento de la población tiene una \destacar{probabilidad conocida y
+  mayor que cero} de ser seleccionado. Solo así se puede calcular el error
+  muestral y hacer inferencia.
+
+  \vspace{0.15cm}
+  \scriptsize
+  \begin{center}
+  \begin{tabular}{@{}p{2.5cm}p{4.5cm}p{4.5cm}@{}}
+    \toprule
+    \textbf{Técnica} & \textbf{En qué consiste} & \textbf{Cuándo conviene} \\
+    \midrule
+    Aleatorio simple & Cada elemento con igual probabilidad; sorteo o números
+      aleatorios & Población pequeña y homogénea, con marco muestral completo \\
+    \addlinespace
+    Sistemático & Se elige un arranque al azar y luego cada $k$-ésimo elemento,
+      con $k=N/n$ & Listas ordenadas, líneas de producción \\
+    \addlinespace
+    Estratificado & Se divide en estratos homogéneos y se muestrea dentro de
+      cada uno & La población tiene grupos claramente distintos \\
+    \addlinespace
+    Por conglomerados & Se divide en grupos, se sortean grupos completos y se
+      observan enteros & Población dispersa geográficamente; abarata el trabajo \\
+    \bottomrule
+  \end{tabular}
+  \end{center}
+\end{frame}
+
+\begin{frame}{Estratificado frente a conglomerados}
+  \begin{columns}[T,onlytextwidth]
+    \begin{column}{0.48\textwidth}
+      \begin{block}{Estratificado}
+        \footnotesize
+        Los estratos son \azul{homogéneos por dentro} y distintos entre sí.
+        Se toma una parte de \emph{cada} estrato.
+
+        \vspace{0.15cm}
+        \emph{Ejemplo:} clientes por ciudad; se encuesta en todas las ciudades.
+      \end{block}
+    \end{column}
+    \begin{column}{0.48\textwidth}
+      \begin{exampleblock}{Por conglomerados}
+        \footnotesize
+        Los conglomerados son \azul{heterogéneos por dentro} y parecidos entre
+        sí. Se eligen \emph{algunos} y se observan completos.
+
+        \vspace{0.15cm}
+        \emph{Ejemplo:} se sortean 8 sucursales y se encuesta a todos sus
+        clientes.
+      \end{exampleblock}
+    \end{column}
+  \end{columns}
+
+  \vspace{0.25cm}
+  \begin{alertblock}{Afijación proporcional}
+    \footnotesize
+    En el estratificado, lo habitual es repartir $n$ en proporción al tamaño de
+    cada estrato: $n_i = n\cdot N_i/N$. Con $N=1000$ repartido en 600, 300 y 100
+    y $n=200$, corresponden \destacar{120, 60 y 20}.
+  \end{alertblock}
+\end{frame}
+
+\begin{frame}{Muestreo no probabilístico}
+  No se conoce la probabilidad de selección. \destacar{No permite calcular
+  error muestral} ni generalizar con rigor, pero es útil en estudios
+  exploratorios.
+
+  \vspace{0.2cm}
+  \footnotesize
+  \begin{center}
+  \begin{tabular}{@{}p{2.8cm}p{8.4cm}@{}}
+    \toprule
+    \textbf{Técnica} & \textbf{En qué consiste} \\
+    \midrule
+    Por conveniencia & Se toma lo que está a la mano: los que pasan por la
+      entrada, los que contestan el formulario. \\
+    Por cuotas & Se fijan cupos por grupo (edad, sexo) y el encuestador los
+      llena como pueda. \\
+    Por juicio o intencional & El investigador elige los casos que considera
+      representativos o informativos. \\
+    Bola de nieve & Cada participante refiere a otros. Útil en poblaciones
+      difíciles de ubicar. \\
+    \bottomrule
+  \end{tabular}
+  \end{center}
+
+  \vspace{0.15cm}
+  {\scriptsize\color{uniGris} Si un estudio reporta ``margen de error'' pero la
+  muestra fue por conveniencia, ese margen no significa nada\,[2].}
+\end{frame}
+
+\seccion{1.9 Cálculo del tamaño de la muestra}
+
+\begin{frame}{Fórmulas del tamaño de muestra para una proporción}
+  \begin{columns}[T,onlytextwidth]
+    \begin{column}{0.48\textwidth}
+      \begin{block}{Población infinita o muy grande}
+        \[ n=\frac{z^{2}\,p\,q}{e^{2}},\qquad q=1-p \]
+      \end{block}
+    \end{column}
+    \begin{column}{0.48\textwidth}
+      \begin{block}{Población finita de tamaño $N$}
+        \[ n=\frac{N\,z^{2}\,p\,q}{e^{2}(N-1)+z^{2}\,p\,q} \]
+      \end{block}
+    \end{column}
+  \end{columns}
+
+  \vspace{0.25cm}
+  \footnotesize
+  \begin{center}
+  \begin{tabular}{@{}llll@{}}
+    \toprule
+    \textbf{Símbolo} & \textbf{Qué es} & \textbf{Valor típico} & \textbf{Nota} \\
+    \midrule
+    $z$ & Valor crítico normal & 1{,}645 / 1{,}96 / 2{,}576 & para 90\% /
+      95\% / 99\% \\
+    $p$ & Proporción esperada & 0{,}5 si no se conoce & $p=0{,}5$ maximiza $n$ \\
+    $e$ & Error máximo admitido & 0{,}03 a 0{,}05 & en puntos de proporción \\
+    \bottomrule
+  \end{tabular}
+  \end{center}
+
+  \vspace{0.15cm}
+  {\scriptsize\color{uniGris} El resultado \emph{siempre} se redondea hacia
+  arriba: 384{,}16 significa 385 encuestas.}
+\end{frame}
+
+\begin{frame}{Cómo se comporta $n$}
+  \begin{columns}[T,onlytextwidth]
+    \begin{column}{0.48\textwidth}
+      \begin{exampleblock}{Al 95\% con $p=0{,}5$}
+        \footnotesize
+        \begin{center}
+        \begin{tabular}{@{}cr@{}}
+          \toprule
+          Error $e$ & $n$ \\
+          \midrule
+          5\% & 385 \\
+          3\% & 1\,068 \\
+          2\% & 2\,401 \\
+          \bottomrule
+        \end{tabular}
+        \end{center}
+      \end{exampleblock}
+    \end{column}
+    \begin{column}{0.48\textwidth}
+      \begin{alertblock}{Lecciones}
+        \footnotesize
+        \begin{itemize}
+          \item Reducir el error a la mitad \azul{cuadruplica} la muestra:
+                $n$ depende de $1/e^{2}$.
+          \item Más confianza (99\%) exige más muestra.
+          \item El tamaño de la población casi no importa cuando $N$ es grande:
+                de $N=2\,500$ a $N=\infty$, $n$ pasa de 334 a 385.
+        \end{itemize}
+      \end{alertblock}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{Ejercicio 1 — en clase}
+  \begin{alertblock}{Individual (8 minutos)}
+    Una cadena quiere estimar la proporción de clientes satisfechos, con
+    \destacar{95\% de confianza} ($z=1{,}96$) y un error máximo del
+    \destacar{5\%}. No hay estudios previos, así que se toma $p=0{,}5$.
+
+    \vspace{0.25cm}
+    \begin{enumerate}
+      \item Calcule $n$ suponiendo población muy grande.
+      \item Recalcule si la población es de $N=1\,200$ clientes.
+      \item ¿Cuánto cambia $n$ si el error exigido baja al 3\%?
+      \item Con $N=1\,200$ y $n=292$, ¿cada cuántos elementos se tomaría uno en
+            un muestreo sistemático?
+    \end{enumerate}
+  \end{alertblock}
+\end{frame}
+
+\begin{frame}{Ejercicio 1 — solución}
+  \small
+  \begin{block}{Cálculos}
+    \begin{align*}
+      \text{1.}\;& n=\frac{1{,}96^{2}(0{,}5)(0{,}5)}{0{,}05^{2}}
+                    =\frac{0{,}9604}{0{,}0025}=384{,}16 \Rightarrow \azul{385}\\[0.3em]
+      \text{2.}\;& n=\frac{1200(0{,}9604)}{0{,}0025(1199)+0{,}9604}
+                    =\frac{1152{,}48}{3{,}9579}=291{,}18 \Rightarrow \azul{292}\\[0.3em]
+      \text{3.}\;& n=\frac{0{,}9604}{0{,}0009}=1067{,}11 \Rightarrow \azul{1068}
+    \end{align*}
+  \end{block}
+
+  \begin{exampleblock}{Punto 4}
+    \footnotesize
+    $k=N/n=1200/292\approx 4$: arranque al azar entre 1 y 4 y luego uno de cada 4.
+  \end{exampleblock}
+\end{frame}
+
+\begin{frame}{Ejercicio 2 — en clase}
+  \begin{alertblock}{En parejas (8 minutos)}
+    Una empresa tiene \destacar{4\,500 empleados} distribuidos así: 2\,700 en
+    Operaciones, 1\,350 en Administración y 450 en Dirección. Se hará una
+    encuesta de clima con \destacar{$n=300$}.
+
+    \vspace{0.25cm}
+    \begin{enumerate}
+      \item ¿Cuántos empleados se encuestarían en cada área con afijación
+            proporcional?
+      \item ¿Qué técnica de muestreo se está usando y por qué es preferible al
+            aleatorio simple en este caso?
+      \item Si en lugar de eso se encuestara a los primeros 300 que respondan
+            un correo, ¿qué tipo de muestreo sería y qué problema tendría?
+    \end{enumerate}
+  \end{alertblock}
+\end{frame}
+
+\begin{frame}{Ejercicio 2 — solución}
+  \begin{columns}[T,onlytextwidth]
+    \begin{column}{0.46\textwidth}
+      \footnotesize
+      \begin{center}
+      \begin{tabular}{@{}lrrr@{}}
+        \toprule
+        Área & $N_i$ & Peso & $n_i$ \\
+        \midrule
+        Operaciones    & 2\,700 & 0{,}60 & \azul{180} \\
+        Administración & 1\,350 & 0{,}30 & \azul{90} \\
+        Dirección      &   450  & 0{,}10 & \azul{30} \\
+        \midrule
+        Total          & 4\,500 & 1{,}00 & 300 \\
+        \bottomrule
+      \end{tabular}
+      \end{center}
+    \end{column}
+    \begin{column}{0.50\textwidth}
+      \begin{block}{Punto 2}
+        \footnotesize
+        Es \azul{muestreo estratificado} con afijación proporcional. Garantiza
+        que Dirección quede representada: con aleatorio simple podría no salir
+        ningún directivo, porque son solo el 10\%.
+      \end{block}
+      \begin{alertblock}{Punto 3}
+        \footnotesize
+        Sería \destacar{por conveniencia}. Responden los más motivados o los
+        más inconformes: el resultado queda sesgado y no se puede calcular
+        error muestral.
+      \end{alertblock}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\seccion{Repaso para el Examen 1}
+
+\begin{frame}{Mapa de la Unidad 1}
+  \scriptsize
+  \begin{center}
+  \begin{tabular}{@{}llp{6.6cm}@{}}
+    \toprule
+    \textbf{Tema} & \textbf{Sesión} & \textbf{Lo esencial} \\
+    \midrule
+    Conjuntos y eventos & 1 & $\cup$, $\cap$, $A^{c}$, $A\setminus B$,
+      $A\triangle B$; excluyentes; $\#(A\cup B)=\#A+\#B-\#(A\cap B)$ \\
+    Conteo & 2 & Multiplicación; $n!$; $P(n,r)$; $n^{r}$; $C(n,r)$;
+      permutaciones con repetidos \\
+    Probabilidad & 3 & Laplace, enfoques, axiomas, complemento, regla de la suma \\
+    Condicional & 4 & $P(A\mid B)$, regla de la multiplicación, independencia,
+      Bayes \\
+    Muestreo & 4--5 & Parámetro vs. estadístico; técnicas; tamaño de muestra \\
+    \bottomrule
+  \end{tabular}
+  \end{center}
+
+  \vspace{0.2cm}
+  \begin{alertblock}{Examen 1 — semana 6}
+    \footnotesize
+    \destacar{14 al 19 de septiembre}, en Aulas Virtuales (Moodle), presencial
+    en el aula, individual, con tiempo límite. Vale el \destacar{33,3\%}.
+    Se permite calculadora y formulario.
+  \end{alertblock}
+\end{frame}
+
+\begin{frame}{Errores frecuentes que conviene evitar}
+  \small
+  \begin{itemize}
+    \item Usar Laplace cuando los resultados \azul{no} son equiprobables (la
+          suma de dos dados).
+    \item Sumar probabilidades sin descontar la intersección.
+    \item Confundir \azul{excluyentes} con \azul{independientes}.
+    \item Usar $P(n,r)$ cuando el orden no importa, o $C(n,r)$ cuando sí.
+    \item Olvidar que sin reemplazo las extracciones son dependientes.
+    \item Redondear $n$ hacia abajo, o usar la fórmula infinita cuando $N$ es
+          pequeño.
+    \item Invertir el condicionamiento: $P(A\mid B)$ no es $P(B\mid A)$.
+  \end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]{Muestreo y tamaño de muestra, en R}
+  \scriptsize
+\begin{lstlisting}[style=Rmini]
+set.seed(2026)
+marco <- 1:1200                       # marco muestral de N = 1200
+
+sample(marco, 60)                     # aleatorio simple
+seq(sample(1:20, 1), 1200, by = 20)   # sistematico, k = N/n = 20
+
+# Estratificado: 60 unidades repartidas proporcionalmente
+estrato <- rep(c("A", "B", "C"), times = c(600, 400, 200))
+tapply(marco, estrato, function(u) sample(u, round(length(u) * 60 / 1200)))
+
+# Tamano de muestra para proporcion, poblacion infinita
+n0 <- function(p, e, conf = 0.95) ceiling(qnorm(1 - (1 - conf)/2)^2 * p * (1 - p) / e^2)
+n0(0.5, 0.05)                          # el caso mas conservador
+ceiling(n0(0.5, 0.05) / (1 + (n0(0.5, 0.05) - 1) / 1200))   # con correccion
+\end{lstlisting}
+\begin{lstlisting}[style=Rout]
+[1] 385
+[1] 292
+\end{lstlisting}
+
+  \vspace{-0.1cm}
+  {\tiny\color{uniGris} Escribir la fórmula como \destacar{función} permite
+  probar en segundos qué pasa si el error admisible baja al 3\% o si la
+  confianza sube al 99\%: se cambia un argumento, no toda la cuenta.}
+\end{frame}
+
+\begin{frame}{Cierre de la sesión}
+  \begin{block}{Lo que debe quedar claro hoy}
+    \begin{itemize}
+      \item Solo el muestreo probabilístico permite calcular error e inferir.
+      \item Estratificado: parte de cada grupo. Conglomerados: algunos grupos
+            completos.
+      \item $n=z^{2}pq/e^{2}$, con corrección por población finita si $N$ es
+            pequeño; siempre se redondea hacia arriba.
+      \item $n$ depende de $1/e^{2}$: exigir el doble de precisión cuesta
+            cuatro veces más muestra.
+    \end{itemize}
+  \end{block}
+
+  \vspace{0.2cm}
+  \begin{alertblock}{Para el Examen 1 (semana 6)}
+    \footnotesize
+    Resolver los \destacar{20 ejercicios de la lámina siguiente} y repasar los
+    de las sesiones 1 a 4: son el mejor simulacro disponible.
+  \end{alertblock}
+\end{frame}
+
+\begin{frame}{Ejercicios propuestos}
+  \vspace{-0.1cm}
+  \begin{beamercolorbox}[wd=\textwidth,sep=0.10cm]{block body}
+    \centering\scriptsize
+    $z=1{,}645$ (90\%), $1{,}96$ (95\%), $2{,}576$ (99\%). Redondee hacia arriba.
+  \end{beamercolorbox}
+  \listatiny
+  \vspace{0.15cm}
+  \begin{columns}[T,onlytextwidth]
+    \begin{column}{0.47\textwidth}
+      \begin{enumerate}\setlength{\itemsep}{0.16cm}
+        \item Infinita, 95\%, $p=0{,}5$, $e=0{,}05$
+        \item Infinita, 95\%, $p=0{,}5$, $e=0{,}03$
+        \item Infinita, 95\%, $p=0{,}5$, $e=0{,}02$
+        \item Infinita, 99\%, $p=0{,}5$, $e=0{,}05$
+        \item Infinita, 90\%, $p=0{,}5$, $e=0{,}05$
+        \item Infinita, 95\%, $p=0{,}30$, $e=0{,}05$
+        \item Infinita, 95\%, $p=0{,}80$, $e=0{,}05$
+        \item Finita, $N=800$, 95\%, $e=0{,}05$
+        \item Finita, $N=2\,500$, 95\%, $e=0{,}05$
+        \item Finita, $N=150$, 95\%, $e=0{,}05$
+      \end{enumerate}
+    \end{column}
+    \begin{column}{0.50\textwidth}
+      \begin{enumerate}\setlength{\itemsep}{0.16cm}
+        \setcounter{enumi}{10}
+        \item Sistemático, $N=2\,000$, $n=200$: valor de $k$
+        \item Sistemático, $N=1\,500$, $n=100$: valor de $k$
+        \item Estratos 600/300/100, $n=200$: reparto
+        \item Estratos 2\,700/1\,350/450, $n=300$: reparto
+        \item Técnica: se sortean 8 sucursales completas
+        \item Técnica: se encuesta a quien pase por la entrada
+        \item Técnica: cada participante refiere al siguiente
+        \item ¿Por qué se usa $p=0{,}5$ sin información previa?
+        \item Si $e$ pasa de 0{,}05 a 0{,}025, ¿cuánto crece $n$?
+        \item ¿Hay margen de error con muestreo por conveniencia?
+      \end{enumerate}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{Respuestas}{Autoevaluación de los ejercicios propuestos}
+  \listatiny
+  \vspace{0.15cm}
+  \begin{columns}[T,onlytextwidth]
+    \begin{column}{0.47\textwidth}
+      \begin{enumerate}\setlength{\itemsep}{0.16cm}
+        \item $384{,}16\Rightarrow 385$
+        \item $1067{,}11\Rightarrow 1\,068$
+        \item $2401\Rightarrow 2\,401$
+        \item $663{,}58\Rightarrow 664$
+        \item $270{,}60\Rightarrow 271$
+        \item $322{,}69\Rightarrow 323$
+        \item $245{,}86\Rightarrow 246$
+        \item $259{,}86\Rightarrow 260$
+        \item $333{,}02\Rightarrow 334$
+        \item $108{,}09\Rightarrow 109$
+      \end{enumerate}
+    \end{column}
+    \begin{column}{0.50\textwidth}
+      \begin{enumerate}\setlength{\itemsep}{0.16cm}
+        \setcounter{enumi}{10}
+        \item $k=10$
+        \item $k=15$
+        \item $120$, $60$ y $20$
+        \item $180$, $90$ y $30$
+        \item Por conglomerados
+        \item Por conveniencia
+        \item Bola de nieve
+        \item Porque $pq$ es máximo en $p=0{,}5$: da el $n$ más grande y por
+              tanto seguro
+        \item Por $4$ \;{\color{uniTitulo}($n\propto 1/e^{2}$)}
+        \item No: la probabilidad de selección es desconocida
+      \end{enumerate}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{Referencias}
+  \footnotesize
+  \begin{itemize}
+    \item[{[1]}] Díaz Rodríguez, M. (2022). \textit{Estadística inferencial
+      aplicada}. Universidad del Norte.
+      \texttt{https://elibro.net/es/lc/uniminuto/titulos/221614}
+    \item[{[2]}] Llinás Solano, H. (2014). \textit{Introducción a la
+      estadística con aplicaciones en ciencias sociales}. Universidad del
+      Norte. \texttt{https://elibro.net/es/lc/uniminuto/titulos/70062}
+    \item[{[3]}] Contento Rubio, M. R. (2019). \textit{Estadística con
+      aplicaciones en R}. Editorial Utadeo.
+      \texttt{https://elibro.net/es/lc/uniminuto/titulos/220926}
+  \end{itemize}
+
+  \vspace{0.3cm}
+  \begin{center}
+    {\Large\color{uniAzul}\textbf{Éxitos en el Examen 1}}
+  \end{center}
+\end{frame}
+
+\end{document}

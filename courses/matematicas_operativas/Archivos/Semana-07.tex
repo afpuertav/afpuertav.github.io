@@ -1,0 +1,465 @@
+% ============================================================================
+%  MATEMÁTICAS OPERATIVAS — Sesión 7
+%  Semana 7: 21 al 26 de septiembre de 2026
+%  2.1 Potenciación y sus propiedades
+%  Duración prevista: 3 horas
+% ============================================================================
+\documentclass[aspectratio=169,10pt]{beamer}
+
+\usepackage[utf8]{inputenc}
+\IfFileExists{spanish.ldf}{\usepackage[spanish,es-noshorthands]{babel}}{}
+\usepackage{amsmath,amssymb}
+\usepackage{booktabs}
+\usepackage{tikz}
+
+\usetheme{Uniminuto}
+
+\uniasignatura{Matemáticas Operativas}
+\uniprofesor{Andrés Felipe Puerta Velez}
+\unicorreo{andres.puerta-v@uniminuto.edu.co}
+\uninrc{CBASBL011}
+\unisemana{Sesión 7 — Semana 7 · 21 al 26 de septiembre de 2026}
+
+\newcommand{\listatiny}{\setbeamerfont{itemize/enumerate body}{size=\tiny}\tiny}
+
+\begin{document}
+
+\portada
+
+\begin{frame}{Orden del día}
+  \begin{enumerate}
+    \item Retroalimentación del Examen 1
+    \item \azul{Tema 2.1: qué es una potencia}
+    \item Las cinco propiedades y las dos definiciones especiales
+    \item Exponentes negativos y notación científica
+    \item Taller principal, errores frecuentes y cierre
+  \end{enumerate}
+
+  \vspace{0.25cm}
+  {\footnotesize\color{uniGris} Sesión de 3 horas. Empieza la Unidad 2. Es la
+  parte más \destacar{mecánica} del curso: hay cinco reglas, se aplican, y
+  quien las practica sube de nota. La dificultad no está en entenderlas sino
+  en no confundirlas entre sí.}
+\end{frame}
+
+% ===========================================================================
+\seccion{2.1 Potenciación y sus propiedades}
+% ===========================================================================
+
+\begin{frame}{Qué es una potencia}
+  \scriptsize
+  \begin{block}{Definición}
+    \tiny
+    \[ a^{n} = \underbrace{a\cdot a\cdot\dots\cdot a}_{n \text{ veces}} \]
+    $a$ es la \azul{base}, $n$ el \azul{exponente}. La potenciación es una
+    multiplicación abreviada, igual que la multiplicación es una suma
+    abreviada.
+  \end{block}
+
+  \vspace{0.1cm}
+  \begin{columns}[T,onlytextwidth]
+    \begin{column}{0.48\textwidth}
+      \begin{exampleblock}{Por qué importa}
+        \tiny
+        Un crecimiento del $10\%$ mensual durante un año no es un
+        $120\%$: es $1{,}1^{12} \approx 3{,}14$, o sea un
+        \destacar{214\%}. \azul{Lo exponencial siempre supera a la
+        intuición lineal.}
+      \end{exampleblock}
+    \end{column}
+    \begin{column}{0.48\textwidth}
+      \begin{alertblock}{Lo que ya sabemos de la sesión 2}
+        \tiny
+        $(-2)^{4} = 16$ pero $-2^{4} = -16$. \destacar{El paréntesis decide
+        si el signo se eleva.} Esa regla sigue valiendo todo este tema.
+      \end{alertblock}
+    \end{column}
+  \end{columns}
+
+  \vspace{0.1cm}
+  {\tiny\color{uniGris} \destacar{Base negativa:} exponente par da positivo,
+  impar da negativo. Por eso $(-2)^{3}\cdot(-2)^{2} = -8\cdot 4 = -32$, que
+  también es $(-2)^{5}$.}
+\end{frame}
+
+\begin{frame}{Las cinco propiedades}
+  \scriptsize
+  \begin{center}
+  \begin{tabular}{@{}p{4.0cm}p{4.0cm}p{4.0cm}@{}}
+    \toprule
+    \textbf{Propiedad} & \textbf{Regla} & \textbf{Ejemplo} \\
+    \midrule
+    Producto de igual base &
+      $a^{m}\cdot a^{n} = a^{m+n}$ &
+      $2^{3}\cdot 2^{5} = 2^{8} = 256$ \\
+    \addlinespace
+    Cociente de igual base &
+      $\dfrac{a^{m}}{a^{n}} = a^{m-n}$ &
+      $\dfrac{x^{7}}{x^{3}} = x^{4}$ \\
+    \addlinespace
+    Potencia de potencia &
+      $(a^{m})^{n} = a^{m\cdot n}$ &
+      $(x^{3})^{4} = x^{12}$ \\
+    \addlinespace
+    Potencia de un producto &
+      $(ab)^{n} = a^{n}b^{n}$ &
+      $(2x)^{4} = 16x^{4}$ \\
+    \addlinespace
+    Potencia de un cociente &
+      $\left(\dfrac{a}{b}\right)^{n} = \dfrac{a^{n}}{b^{n}}$ &
+      $\left(\dfrac{3}{5}\right)^{3} = \dfrac{27}{125}$ \\
+    \bottomrule
+  \end{tabular}
+  \end{center}
+
+  \vspace{0.06cm}
+  {\tiny\color{uniGris} \destacar{Las dos primeras exigen la misma base.}
+  $2^{3}\cdot 3^{5}$ no se puede juntar. Y \azul{nunca} hay una regla para
+  $a^{m}+a^{n}$: las potencias que se suman no se simplifican.}
+\end{frame}
+
+\begin{frame}{Las dos definiciones que hay que aceptar}
+  \scriptsize
+  \begin{columns}[T,onlytextwidth]
+    \begin{column}{0.48\textwidth}
+      \begin{block}{Exponente cero}
+        \tiny
+        \[ a^{0} = 1 \qquad (a\neq 0) \]
+        \azul{Por qué:} $\dfrac{a^{n}}{a^{n}} = a^{n-n} = a^{0}$, y una
+        cantidad dividida entre sí misma es $1$. No es un capricho, es la
+        única definición que hace coherente la regla del cociente.
+      \end{block}
+    \end{column}
+    \begin{column}{0.48\textwidth}
+      \begin{block}{Exponente negativo}
+        \tiny
+        \[ a^{-n} = \frac{1}{a^{n}}
+           \qquad
+           \left(\frac{a}{b}\right)^{-n}
+           = \left(\frac{b}{a}\right)^{n} \]
+        \azul{Por qué:} $\dfrac{a^{2}}{a^{5}} = a^{-3}$, y también
+        $\dfrac{1}{a^{3}}$. Las dos cosas tienen que coincidir.
+      \end{block}
+    \end{column}
+  \end{columns}
+
+  \vspace{0.12cm}
+  \begin{alertblock}{Un exponente negativo no produce un resultado negativo}
+    \tiny
+    \[ 7^{-2} = \frac{1}{49} \qquad\text{(positivo)}
+       \qquad\qquad
+       \left(\frac{2}{3}\right)^{-3}
+       = \left(\frac{3}{2}\right)^{3} = \frac{27}{8} \]
+    \destacar{El signo del exponente indica posición (arriba o abajo), no
+    signo del resultado.} Este es el error más repetido del examen 2.
+  \end{alertblock}
+\end{frame}
+
+\begin{frame}{Ejemplo guiado — combinar propiedades}
+  \scriptsize
+  \begin{exampleblock}{Simplifique \ $\dfrac{(x^{2}y^{3})^{4}}{(x^{3}y)^{2}}$}
+    \tiny
+    \textbf{Paso 1 — potencia de un producto y de una potencia:}
+    \[ \frac{x^{8}y^{12}}{x^{6}y^{2}} \]
+    \textbf{Paso 2 — cociente de igual base, restando exponentes:}
+    \[ x^{8-6}\,y^{12-2} = \destacar{x^{2}y^{10}} \]
+  \end{exampleblock}
+
+  \vspace{0.1cm}
+  \begin{exampleblock}{Simplifique \ $(4x^{3})^{2}\cdot(2x)^{-1}$}
+    \tiny
+    \[ 16x^{6}\cdot\frac{1}{2x}
+     = \frac{16x^{6}}{2x} = \destacar{8x^{5}} \]
+  \end{exampleblock}
+
+  \vspace{0.06cm}
+  {\tiny\color{uniGris} \destacar{Orden recomendado:} primero quite todos los
+  paréntesis con la regla de potencia de potencia; después junte bases
+  iguales; y solo al final convierta los exponentes negativos. Hacerlo al
+  revés multiplica los errores.}
+\end{frame}
+
+\begin{frame}{Ejercicio 1 — aplicar las propiedades}
+  \scriptsize
+  \begin{alertblock}{Individual, 12 minutos}
+    \tiny
+    \textbf{1.} $2^{5}\cdot 2^{-2}$ \qquad
+    \textbf{2.} $\dfrac{3^{5}\cdot 3^{-2}}{3^{4}}$ \qquad
+    \textbf{3.} $(3x^{2})^{3}$ \qquad
+    \textbf{4.} $\left(\tfrac{3}{5}\right)^{-2}$ \qquad
+    \textbf{5.} $\dfrac{(x^{3}y^{2})^{2}}{xy^{3}}$
+  \end{alertblock}
+
+  \vspace{0.05cm}
+  \begin{block}{Solución}
+    \tiny
+    \textbf{1.} $2^{5-2} = 2^{3} = \destacar{8}$ \qquad
+    \textbf{2.} $3^{5-2-4} = 3^{-1} = \destacar{\tfrac{1}{3}}$ \qquad
+    \textbf{3.} $3^{3}x^{6} = \destacar{27x^{6}}$
+
+    \vspace{0.08cm}
+    \textbf{4.} $\left(\tfrac{5}{3}\right)^{2} = \destacar{\tfrac{25}{9}}$
+    \qquad
+    \textbf{5.} $\dfrac{x^{6}y^{4}}{xy^{3}} = \destacar{x^{5}y}$
+  \end{block}
+
+  \vspace{0.05cm}
+  {\tiny\color{uniGris} En el \destacar{3}, el error típico es escribir
+  $3x^{6}$: el exponente $3$ afecta \azul{también} al coeficiente. En el
+  \destacar{4}, invertir la fracción es más rápido y seguro que calcular
+  $\tfrac{1}{(3/5)^{2}}$.}
+\end{frame}
+
+\begin{frame}{Notación científica}
+  \scriptsize
+  \begin{block}{Para qué sirve}
+    \tiny
+    Escribe cualquier número como $m\times 10^{k}$ con $1\le m < 10$. Sirve
+    para manejar cantidades muy grandes o muy pequeñas
+    \azul{sin contar ceros}, y para operar rápido.
+    \[ 0{,}00045 = 4{,}5\times 10^{-4}
+       \qquad
+       320\,000 = 3{,}2\times 10^{5} \]
+  \end{block}
+
+  \vspace{0.1cm}
+  \begin{columns}[T,onlytextwidth]
+    \begin{column}{0.48\textwidth}
+      \begin{exampleblock}{Multiplicar}
+        \tiny
+        Se multiplican los números y se \azul{suman} los exponentes:
+        \[ (3{,}2\times 10^{4})(2{,}5\times 10^{-6}) \]
+        \[ = 8\times 10^{-2} = \destacar{0{,}08} \]
+      \end{exampleblock}
+    \end{column}
+    \begin{column}{0.48\textwidth}
+      \begin{exampleblock}{Dividir}
+        \tiny
+        Se dividen los números y se \azul{restan} los exponentes:
+        \[ \frac{6\times 10^{8}}{3\times 10^{5}}
+           = 2\times 10^{3} = \destacar{2\,000} \]
+      \end{exampleblock}
+    \end{column}
+  \end{columns}
+
+  \vspace{0.08cm}
+  {\tiny\color{uniGris} \azul{Regla del signo del exponente:} si el número es
+  \destacar{grande}, el exponente es positivo; si es \destacar{menor que 1},
+  negativo. La coma se corre tantos lugares como indique el exponente.}
+\end{frame}
+
+\begin{frame}{Ejercicio 2 — taller principal}
+  \begin{alertblock}{En grupos de tres, 20 minutos. Se socializa en el tablero.}
+    \scriptsize
+    \begin{enumerate}\setlength{\itemsep}{0.0cm}
+      \item Simplifique: \ $(2x^{2}y)^{3}$
+      \item Simplifique: \ $(x^{-2}y^{3})^{-2}$
+      \item Calcule: \ $\dfrac{2^{4}\cdot 3^{2}}{2^{2}\cdot 3^{3}}$
+      \item Calcule: \ $(-3)^{2}\cdot(-3)^{3}$
+      \item Escriba en notación científica $0{,}0000082$ y $47\,300\,000$.
+      \item Una población de $8\,000$ crece un $5\%$ anual. ¿Cuánta habrá en
+            $4$ años? Escriba la operación como potencia.
+    \end{enumerate}
+  \end{alertblock}
+\end{frame}
+
+\begin{frame}{Ejercicio 2 — solución}
+  \scriptsize
+  \begin{columns}[T,onlytextwidth]
+    \begin{column}{0.49\textwidth}
+      \begin{block}{Puntos 1 a 3}
+        \tiny
+        \textbf{1.} $2^{3}x^{6}y^{3} = \destacar{8x^{6}y^{3}}$
+
+        \vspace{0.08cm}
+        \textbf{2.} $x^{4}y^{-6} = \destacar{\dfrac{x^{4}}{y^{6}}}$
+
+        \vspace{0.08cm}
+        \textbf{3.} $2^{4-2}\cdot 3^{2-3} = 4\cdot 3^{-1}
+        = \destacar{\tfrac{4}{3}}$
+      \end{block}
+    \end{column}
+    \begin{column}{0.49\textwidth}
+      \begin{block}{Puntos 4 a 6}
+        \tiny
+        \textbf{4.} $(-3)^{5} = \destacar{-243}$
+
+        \vspace{0.08cm}
+        \textbf{5.} $8{,}2\times 10^{-6}$ \ y \
+        $4{,}73\times 10^{7}$
+
+        \vspace{0.08cm}
+        \textbf{6.} $8\,000\cdot 1{,}05^{4}
+        \approx \destacar{9\,724}$ habitantes
+      \end{block}
+    \end{column}
+  \end{columns}
+
+  \vspace{0.08cm}
+  {\tiny\color{uniGris} En el \destacar{2}, el exponente $-2$ multiplica a los
+  de adentro: $(-2)(-2)=4$ y $(3)(-2)=-6$. En el \destacar{6}, sumar
+  $5\%$ cuatro veces daría $9\,600$: la diferencia de $124$ es el
+  \azul{interés sobre el interés}, y crece con los años.}
+\end{frame}
+
+\begin{frame}{Errores frecuentes en esta sesión}
+  \scriptsize
+  \begin{center}
+  \begin{tabular}{@{}p{5.0cm}p{7.0cm}@{}}
+    \toprule
+    \textbf{Error} & \textbf{Lo correcto} \\
+    \midrule
+    $2^{3}\cdot 2^{5} = 4^{8}$ &
+      La base \azul{no} cambia: $2^{8}$ \\
+    \addlinespace
+    $(3x^{2})^{3} = 3x^{6}$ &
+      El exponente afecta al coeficiente: $27x^{6}$ \\
+    \addlinespace
+    $7^{-2} = -49$ &
+      Es $\tfrac{1}{49}$: el signo indica posición, no valor \\
+    \addlinespace
+    $x^{2}+x^{3} = x^{5}$ &
+      No hay regla para la suma; solo para el producto \\
+    \addlinespace
+    $(x^{3})^{4} = x^{7}$ &
+      Se \azul{multiplican} los exponentes: $x^{12}$ \\
+    \addlinespace
+    $0^{0} = 1$ sin condición &
+      $a^{0}=1$ requiere $a\neq 0$ \\
+    \bottomrule
+  \end{tabular}
+  \end{center}
+\end{frame}
+
+\begin{frame}{Cierre de la sesión}
+  \scriptsize
+  \begin{block}{Lo que hay que llevarse}
+    \tiny
+    \textbf{1.} Producto y cociente de igual base: se suman o restan
+    exponentes. \quad
+    \textbf{2.} Potencia de potencia: se multiplican. \quad
+    \textbf{3.} $(ab)^{n}$ reparte el exponente a \azul{todos} los factores,
+    coeficiente incluido. \quad
+    \textbf{4.} $a^{0}=1$ y $a^{-n}=\tfrac{1}{a^{n}}$. \quad
+    \textbf{5.} Las potencias que se \destacar{suman} no se simplifican.
+  \end{block}
+
+  \vspace{0.1cm}
+  \begin{alertblock}{Para la próxima sesión}
+    \tiny
+    Resolver los \destacar{20 ejercicios propuestos} y la guía de la unidad en
+    Aulas Virtuales.
+
+    \vspace{0.05cm}
+    En la sesión 8 vemos \azul{radicación}. La clave es que un radical
+    \destacar{es una potencia de exponente fraccionario}:
+    $\sqrt[n]{a^{m}} = a^{m/n}$. Todo lo de hoy se reutiliza tal cual, así que
+    conviene tener las cinco propiedades frescas.
+  \end{alertblock}
+\end{frame}
+
+\begin{frame}{Ejercicios propuestos}
+  \vspace{-0.1cm}
+  \begin{beamercolorbox}[wd=\textwidth,sep=0.10cm]{block body}
+    \centering\scriptsize
+    \textbf{1--10:} simplifique dejando exponentes positivos. \quad
+    \textbf{11--16:} calcule. \quad
+    \textbf{17--20:} notación científica y aplicación.
+  \end{beamercolorbox}
+  \listatiny
+  \vspace{0.15cm}
+  \begin{columns}[T,onlytextwidth]
+    \begin{column}{0.47\textwidth}
+      \begin{enumerate}\setlength{\itemsep}{0.16cm}
+        \item $x^{9}\cdot x^{-4}$
+        \item $\dfrac{x^{9}}{x^{4}}$
+        \item $(x^{4})^{3}$
+        \item $(3x^{2})^{3}$
+        \item $(2x^{2}y)^{3}$
+        \item $\dfrac{(x^{3}y^{2})^{2}}{xy^{3}}$
+        \item $(x^{-2}y^{3})^{-2}$
+        \item $\dfrac{(2a^{3})^{2}}{4a^{4}}$
+        \item $\left(\dfrac{x^{2}}{y}\right)^{3}$
+        \item $\dfrac{a^{5}b^{-2}}{a^{-1}b^{3}}$
+      \end{enumerate}
+    \end{column}
+    \begin{column}{0.50\textwidth}
+      \begin{enumerate}\setlength{\itemsep}{0.16cm}
+        \setcounter{enumi}{10}
+        \item $2^{5}\cdot 2^{-2}$
+        \item $4^{-2}$
+        \item $\left(\tfrac{3}{5}\right)^{-2}$
+        \item $\left(\tfrac{2}{7}\right)^{0}$
+        \item $(-3)^{2}\cdot(-3)^{3}$
+        \item $\dfrac{2^{4}\cdot 3^{2}}{2^{2}\cdot 3^{3}}$
+        \item Escriba $0{,}00061$ en notación científica
+        \item Escriba $5{,}4\times 10^{6}$ en forma decimal
+        \item $(4\times 10^{5})(3\times 10^{-2})$
+        \item Un capital de $\$2\,000\,000$ crece $3\%$ anual: ¿cuánto en
+              $5$ años?
+      \end{enumerate}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{Respuestas}{Autoevaluación de los ejercicios propuestos}
+  \listatiny
+  \vspace{0.15cm}
+  \begin{columns}[T,onlytextwidth]
+    \begin{column}{0.47\textwidth}
+      \begin{enumerate}\setlength{\itemsep}{0.16cm}
+        \item $x^{5}$
+        \item $x^{5}$
+        \item $x^{12}$
+        \item $27x^{6}$
+        \item $8x^{6}y^{3}$
+        \item $x^{5}y$
+        \item $\dfrac{x^{4}}{y^{6}}$
+        \item $a^{2}$
+        \item $\dfrac{x^{6}}{y^{3}}$
+        \item $\dfrac{a^{6}}{b^{5}}$
+      \end{enumerate}
+    \end{column}
+    \begin{column}{0.50\textwidth}
+      \begin{enumerate}\setlength{\itemsep}{0.16cm}
+        \setcounter{enumi}{10}
+        \item $8$
+        \item $\tfrac{1}{16}$
+        \item $\tfrac{25}{9}$
+        \item $1$
+        \item $-243$
+        \item $\tfrac{4}{3}$
+        \item $6{,}1\times 10^{-4}$
+        \item $5\,400\,000$
+        \item $1{,}2\times 10^{4}=12\,000$
+        \item $2\,000\,000\cdot 1{,}03^{5}\approx \$2\,318\,548$
+      \end{enumerate}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{Referencias}
+  \footnotesize
+  \begin{itemize}
+    \item[{[1]}] Ramos del Olmo, Á. M. (2016). \textit{Matemáticas básicas
+      para el acceso a la universidad}. Ediciones Pirámide.
+      \texttt{https://elibro.net/es/ereader/uniminuto/49134}
+    \item[{[2]}] González Pulido, J. W., Chacón Benavides, J. A. \&
+      Fonseca Correa, L. Á. (2023). \textit{Matemática básica}
+      (1.\textsuperscript{a} ed.). Universidad Mariana.
+      \texttt{https://elibro.net/es/ereader/uniminuto/280647}
+    \item[{[3]}] Torrijos, M. (2018). \textit{Apuntes de matemática básica}.
+      Universidad Católica de Colombia.
+      \texttt{https://elibro.net/es/ereader/uniminuto/197048}
+    \item[{[4]}] Ramírez, A. \& Rojas, L. (2016). \textit{Matemáticas básicas
+      con aplicaciones a la ingeniería}. Ecoe Ediciones.
+      \texttt{https://elibro.net/es/ereader/uniminuto/114355}
+  \end{itemize}
+
+  \vspace{0.3cm}
+  \begin{center}
+    {\Large\color{uniAzul}\textbf{¿Preguntas?}}
+  \end{center}
+\end{frame}
+
+\end{document}

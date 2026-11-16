@@ -1,1 +1,13 @@
 Claude outputs/
+
+# LaTeX: auxiliares de compilación
+*.aux
+*.log
+*.nav
+*.out
+*.snm
+*.toc
+*.vrb
+*.fls
+*.fdb_latexmk
+*.synctex.gz
