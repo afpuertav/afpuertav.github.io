@@ -63,8 +63,12 @@
     },
     "home.about.heading": { es: "Sobre mí", en: "About me" },
     "home.about.text": {
-      es: "Estudiante de maestría en Matemáticas Aplicadas, ingeniero mecánico (con énfasis en diseño integrado de sistemas técnicos) y técnico en desarrollo de software. Con experiencia en mecánica computacional, modelado e impresión 3D, robótica, automatización y maquinaria de taller, complementada con formación en programación, inteligencia artificial y gestión de proyectos. He trabajado como asistente de investigación, asistente académico y logístico, ingeniero de proyectos, analista de calidad de IA y tutor independiente. Actualmente soy profesor de cátedra en la Universidad EAFIT y desarrollo proyectos de procesamiento de lenguaje natural, estadística y ciencia de datos en el contexto de la investigación aplicada.",
-      en: "Master’s student in Applied Mathematics with a bachelor’s degree in Mechanical Engineering (specializing in integrated design of technical systems) and a technical degree in Software Development. Skilled in computational mechanics, 3D modeling and printing, robotics, automation, and workshop machinery. Complemented by training in programming, artificial intelligence, and project management. Experienced in roles such as research, academic, and logistics assistant, project engineer, AI quality analyst, and independent tutor. Currently an adjunct professor at Universidad EAFIT, working on projects involving natural language processing, statistics, and data science within the context of applied research."
+      es: "Soy magíster en matemáticas aplicadas, ingeniero mecánico (con énfasis en diseño integrado de sistemas técnicos) y técnico en desarrollo de software. Me desempeño como profesor de la facultad de ingeniería y ciencias básicas en la Corporación Universitaria Minuto de Dios y como profesor de cátedra en la Universidad EAFIT. He desarrollado proyectos de procesamiento de lenguaje natural, estadística y ciencia de datos en el contexto de la investigación aplicada. Además cuento con experiencia en mecánica computacional, modelado e impresión 3D, robótica, automatización y maquinaria de taller, complementada con formación en programación, inteligencia artificial y gestión de proyectos. He trabajado como asistente de investigación, asistente académico y logístico, ingeniero de proyectos, analista de calidad de IA y tutor independiente.",
+      en: "I am a Master of Science in applied mathematics, a mechanical engineer (specializing in integrated design of technical systems), and a software development technician. I work as a professor in the faculty of engineering and basic sciences at Corporación Universitaria Minuto de Dios (UNIMINUTO) and as an adjunct professor at Universidad EAFIT. I have developed projects in natural language processing, statistics, and data science within the context of applied research. I also have experience in computational mechanics, 3D modeling and printing, robotics, automation, and workshop machinery, complemented by training in programming, artificial intelligence, and project management. I have worked as a research, academic, and logistics assistant, project engineer, AI quality analyst, and independent tutor."
+    },
+    "cv.about.text": {
+      es: "Magíster en matemáticas aplicadas, ingeniero mecánico (con énfasis en diseño integrado de sistemas técnicos) y técnico en desarrollo de software. Se desempeña como profesor de la facultad de ingeniería y ciencias básicas en la Corporación Universitaria Minuto de Dios y como profesor de cátedra en la Universidad EAFIT. Ha desarrollado proyectos de procesamiento de lenguaje natural, estadística y ciencia de datos en el contexto de la investigación aplicada. Además cuenta con experiencia en mecánica computacional, modelado e impresión 3D, robótica, automatización y maquinaria de taller, complementada con formación en programación, inteligencia artificial y gestión de proyectos. Ha trabajado como asistente de investigación, asistente académico y logístico, ingeniero de proyectos, analista de calidad de IA y tutor independiente.",
+      en: "Master of Science in applied mathematics, mechanical engineer (specializing in integrated design of technical systems), and software development technician. Serves as a professor in the faculty of engineering and basic sciences at Corporación Universitaria Minuto de Dios (UNIMINUTO) and as an adjunct professor at Universidad EAFIT. Has developed projects in natural language processing, statistics, and data science within the context of applied research. Also experienced in computational mechanics, 3D modeling and printing, robotics, automation, and workshop machinery, complemented by training in programming, artificial intelligence, and project management. Has worked as a research, academic, and logistics assistant, project engineer, AI quality analyst, and independent tutor."
     },
     "home.carousel.heading": {
       es: "Proyectos en imágenes",
@@ -95,24 +99,24 @@
     },
 
     "cv.edu.msc": {
-      es: "Maestría en Matemáticas Aplicadas",
-      en: "Master of Science in Applied Mathematics"
+      es: "Maestría en matemáticas aplicadas",
+      en: "Master of Science in applied mathematics"
     },
     "cv.edu.msc.meta": {
-      es: "Universidad EAFIT — en curso, grado previsto 2026",
-      en: "Universidad EAFIT — in progress, expected 2026"
+      es: "Universidad EAFIT — 2026",
+      en: "Universidad EAFIT — 2026"
     },
     "cv.edu.bsc": {
-      es: "Ingeniería Mecánica",
-      en: "Bachelor of Science in Mechanical Engineering"
+      es: "Ingeniería mecánica",
+      en: "Bachelor of Science in mechanical engineering"
     },
     "cv.edu.bsc.meta": {
       es: "Universidad EAFIT — 2024",
       en: "Universidad EAFIT — 2024"
     },
     "cv.edu.assoc": {
-      es: "Tecnología en Desarrollo de Software",
-      en: "Associate Degree in Software Development"
+      es: "Técnica en desarrollo de software",
+      en: "Technical degree in software development"
     },
     "cv.edu.assoc.meta": {
       es: "Politécnico Jaime Isaza Cadavid — 2019",
@@ -127,13 +131,21 @@
       es: "Universidad EAFIT · jul 2026 – actualidad",
       en: "Universidad EAFIT · Jul 2026 – present"
     },
+    "cv.exp.uniminuto": {
+      es: "Profesor, facultad de ingeniería y ciencias básicas",
+      en: "Professor, faculty of engineering and basic sciences"
+    },
+    "cv.exp.uniminuto.meta": {
+      es: "UNIMINUTO · jul 2026 – actualidad",
+      en: "UNIMINUTO · Jul 2026 – present"
+    },
     "cv.exp.db": {
       es: "Asistente de investigación: integración de bases de datos heterogéneas",
       en: "Research assistant: heterogeneous database integration"
     },
     "cv.exp.db.meta": {
-      es: "Universidad EAFIT · ene 2024 – actualidad",
-      en: "Universidad EAFIT · Jan 2024 – present"
+      es: "Universidad EAFIT · ene 2024 – dic 2026",
+      en: "Universidad EAFIT · Jan 2024 – Dec 2026"
     },
     "cv.exp.stats2": {
       es: "Monitor de Estadística General",
@@ -192,8 +204,8 @@
       en: "Universidad EAFIT · Aug 2023 – Jan 2024"
     },
     "cv.exp.preproject": {
-      es: "Asistente académico de preproyecto",
-      en: "Pre-project academic assistant"
+      es: "Asistente académico de anteproyecto",
+      en: "Project proposal academic assistant"
     },
     "cv.exp.preproject.meta": {
       es: "Universidad EAFIT · jul 2023 – dic 2023",
