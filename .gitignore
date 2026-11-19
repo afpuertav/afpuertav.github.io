@@ -11,3 +11,30 @@ Claude outputs/
 *.fls
 *.fdb_latexmk
 *.synctex.gz
+
+# Presentaciones LaTeX de los cursos: solo se versionan .tex, .pdf y lo necesario para compilar (.sty, .png, latexmkrc).
+# Todo lo demás (.aux, .log, .out, .nav, .snm, .toc, .vrb, .fls, .fdb_latexmk, .synctex.gz, .bbl, .blg, etc.) se ignora.
+courses/estadistica_descriptiva/Archivos/*
+courses/estadistica_inferencial/Archivos/*
+courses/matematicas_operativas/Archivos/*
+courses/precalculo/Archivos/*
+!courses/estadistica_descriptiva/Archivos/*.tex
+!courses/estadistica_descriptiva/Archivos/*.pdf
+!courses/estadistica_descriptiva/Archivos/*.sty
+!courses/estadistica_descriptiva/Archivos/*.png
+!courses/estadistica_descriptiva/Archivos/*latexmkrc
+!courses/estadistica_inferencial/Archivos/*.tex
+!courses/estadistica_inferencial/Archivos/*.pdf
+!courses/estadistica_inferencial/Archivos/*.sty
+!courses/estadistica_inferencial/Archivos/*.png
+!courses/estadistica_inferencial/Archivos/*latexmkrc
+!courses/matematicas_operativas/Archivos/*.tex
+!courses/matematicas_operativas/Archivos/*.pdf
+!courses/matematicas_operativas/Archivos/*.sty
+!courses/matematicas_operativas/Archivos/*.png
+!courses/matematicas_operativas/Archivos/*latexmkrc
+!courses/precalculo/Archivos/*.tex
+!courses/precalculo/Archivos/*.pdf
+!courses/precalculo/Archivos/*.sty
+!courses/precalculo/Archivos/*.png
+!courses/precalculo/Archivos/*latexmkrc

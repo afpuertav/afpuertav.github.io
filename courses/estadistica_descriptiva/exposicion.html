@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Exposición final - Estadística Descriptiva</title>
+    <style>
+        :root {
+            --primary-color: #2c3e50;
+            --secondary-color: #3498db;
+            --accent-color: #e74c3c;
+            --light-color: #ecf0f1;
+            --success-color: #27ae60;
+            --warning-color: #f39c12;
+            --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+        body { background-color: #f5f7fa; color: #333; line-height: 1.6; padding: 20px; max-width: 1200px; margin: 0 auto; }
+        header { text-align: center; margin-bottom: 30px; padding: 20px; background-color: white; border-radius: 10px; box-shadow: var(--shadow); }
+        h1 { color: var(--primary-color); margin-bottom: 10px; font-size: 2.2rem; }
+        h2 { color: var(--primary-color); margin-bottom: 14px; }
+        .subtitle { color: var(--secondary-color); font-size: 1.1rem; margin-bottom: 20px; }
+        .instructions { background-color: var(--light-color); padding: 15px; border-radius: 8px; margin-bottom: 25px; border-left: 5px solid var(--secondary-color); }
+        .instructions h3 { color: var(--primary-color); margin-bottom: 10px; }
+        .panel { background-color: white; padding: 25px; border-radius: 10px; box-shadow: var(--shadow); margin-bottom: 25px; }
+        .panel > p { margin-bottom: 14px; }
+
+        /* Documentos */
+        .doc-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 14px; }
+        .doc-card { display: flex; flex-direction: column; gap: 6px; padding: 14px 16px; border: 2px solid #ddd; border-radius: 8px;
+                    text-decoration: none; color: inherit; transition: all 0.2s; }
+        .doc-card:hover, .doc-card:focus-visible { background-color: #f0f8ff; border-color: var(--secondary-color); }
+        .doc-num { display: inline-flex; align-items: center; justify-content: center; width: 30px; height: 30px; border-radius: 50%;
+                   background-color: var(--primary-color); color: white; font-weight: bold; }
+        .doc-title { font-weight: 600; color: var(--primary-color); }
+        .doc-desc { font-size: 0.92rem; color: #555; }
+        .doc-cta { margin-top: auto; font-size: 0.9rem; color: var(--secondary-color); font-weight: 600; }
+
+        /* Datos del grupo */
+        .meta-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 14px; margin-bottom: 8px; }
+        .meta-grid label { display: flex; flex-direction: column; gap: 4px; font-weight: 600; color: var(--primary-color); font-size: 0.95rem; }
+        .meta-grid input { padding: 9px 11px; border: 2px solid #ddd; border-radius: 8px; font-size: 1rem; font-weight: normal; }
+        .meta-grid input:focus { outline: none; border-color: var(--secondary-color); }
+
+        /* Plantilla */
+        .exam-container { display: grid; grid-template-columns: 2fr 1fr; gap: 25px; align-items: start; }
+        .criterion { margin-bottom: 30px; padding-bottom: 20px; border-bottom: 1px solid #eee; }
+        .criterion:last-child { border-bottom: none; margin-bottom: 0; }
+        .criterion-header { display: flex; justify-content: space-between; align-items: center; gap: 12px; margin-bottom: 6px; }
+        .criterion-title { display: flex; align-items: center; gap: 12px; font-size: 1.15rem; font-weight: 600; color: var(--primary-color); }
+        .criterion-weight { background-color: var(--light-color); color: var(--primary-color); padding: 3px 12px; border-radius: 14px; font-size: 0.9rem; white-space: nowrap; }
+        .criterion-avg { font-size: 0.95rem; color: #555; margin-bottom: 12px; }
+        .question { padding: 12px 0; border-top: 1px dashed #e3e3e3; }
+        .question-text { margin-bottom: 8px; }
+        .scale { display: flex; flex-wrap: wrap; gap: 8px; border: none; }
+        .scale legend { position: absolute; left: -9999px; }
+        .scale input { position: absolute; opacity: 0; width: 0; height: 0; }
+        .scale label { width: 44px; height: 44px; display: flex; align-items: center; justify-content: center; border: 2px solid #ddd; border-radius: 8px;
+                       cursor: pointer; font-weight: 600; transition: all 0.2s; user-select: none; }
+        .scale label:hover { background-color: #f0f8ff; border-color: var(--secondary-color); }
+        .scale input:checked + label { background-color: #e1f0ff; border-color: var(--secondary-color); color: var(--primary-color); }
+        .scale input:focus-visible + label { outline: 3px solid var(--secondary-color); outline-offset: 2px; }
+        .scale-help { font-size: 0.85rem; color: #777; margin-top: 6px; }
+
+        .control-panel { background-color: white; padding: 25px; border-radius: 10px; box-shadow: var(--shadow); position: sticky; top: 20px; }
+        .control-panel h2 { font-size: 1.2rem; }
+        .result-row { display: flex; justify-content: space-between; gap: 10px; padding: 7px 0; border-bottom: 1px solid #eee; font-size: 0.95rem; }
+        .result-row span:last-child { font-weight: 600; white-space: nowrap; }
+        .total-box { margin-top: 18px; padding: 16px; border-radius: 8px; background-color: var(--light-color); text-align: center; }
+        .total-grade { font-size: 2.6rem; font-weight: 700; color: var(--primary-color); line-height: 1.1; }
+        .total-points { color: #555; margin-top: 4px; }
+        .pending { margin-top: 12px; font-size: 0.9rem; color: #8a5a00; background: #fff5e0; border-left: 4px solid var(--warning-color); padding: 8px 10px; border-radius: 4px; }
+        .pending.ok { color: #155724; background: #d4edda; border-left-color: var(--success-color); }
+        .button-group { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 18px; }
+        .btn { padding: 11px 18px; border: none; border-radius: 8px; font-size: 1rem; font-weight: 600; cursor: pointer; transition: all 0.2s; }
+        .btn-primary { background-color: var(--secondary-color); color: white; }
+        .btn-primary:hover { background-color: #2380c4; }
+        .btn-secondary { background-color: var(--light-color); color: var(--primary-color); }
+        .btn-secondary:hover { background-color: #d8dde0; }
+        .formula { margin-top: 16px; font-size: 0.85rem; color: #666; }
+        footer { text-align: center; margin-top: 30px; padding: 20px; color: #777; }
+
+        @media (max-width: 900px) {
+            .exam-container { grid-template-columns: 1fr; }
+            .control-panel { position: static; }
+        }
+        @media print {
+            body { background: white; padding: 0; }
+            .no-print, .btn, .button-group { display: none !important; }
+            .panel, header, .control-panel { box-shadow: none; border: 1px solid #ccc; }
+            .exam-container { grid-template-columns: 1fr; }
+            .control-panel { position: static; break-inside: avoid; }
+            .criterion { break-inside: avoid; }
+            .scale input:checked + label { background-color: #cfe3f7 !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+        }
+    </style>
+</head>
+<body>
+    <p class="no-print" style="margin:0 0 20px;padding:0.6rem 1rem;background:#1553AD;font:0.95rem/1.4 'Segoe UI',Arial,sans-serif;border-radius:6px"><a href="index.html" style="color:#fff;text-decoration:none">&larr; Estadística Descriptiva</a></p>
+
+    <header>
+        <h1>Exposición final - Estadística Descriptiva</h1>
+        <p class="subtitle">CBASBL031 · UNIMINUTO — Unidad 3: interpretación y toma de decisiones (reemplaza el examen 3)</p>
+    </header>
+
+    <div class="instructions">
+        <h3>En qué consiste</h3>
+        <p>Los estudiantes escogerán un tema de su preferencia, en un contexto donde deben tomar una decisión entre dos alternativas basada en la estadística descriptiva. Una IA les entrega datos simulados; el grupo los analiza, decide y lo presenta en una cartelera hecha a mano.</p>
+        <p style="margin-top:10px;">A diferencia de los simuladores de parcial, aquí no hay preguntas con una única respuesta correcta: la página reúne los documentos de la exposición y una plantilla de calificación para evaluar el trabajo de cada grupo con la rúbrica del curso.</p>
+    </div>
+
+    <section class="panel" aria-labelledby="docs-title">
+        <h2 id="docs-title">Documentos de la exposición</h2>
+        <p>Los documentos están numerados en el orden en que se usan. Todos se descargan con un clic.</p>
+        <div class="doc-grid" id="doc-grid"></div>
+    </section>
+
+    <section class="panel no-print-border" aria-labelledby="plantilla-title">
+        <h2 id="plantilla-title">Plantilla de calificación</h2>
+        <p>Califica cada pregunta de 0 a 5. El promedio de las preguntas de cada criterio se pondera con los puntos de la rúbrica (100 en total) y el resultado se convierte a una nota sobre 5,0. Las preguntas sin calificar cuentan como 0.</p>
+        <div class="meta-grid">
+            <label>Grupo<input type="text" id="meta-grupo" autocomplete="off"></label>
+            <label>Tema<input type="text" id="meta-tema" autocomplete="off"></label>
+            <label>Integrantes<input type="text" id="meta-integrantes" autocomplete="off"></label>
+            <label>Evaluador<input type="text" id="meta-evaluador" autocomplete="off"></label>
+            <label>Fecha<input type="date" id="meta-fecha"></label>
+        </div>
+        <p class="scale-help">Escala: 0 = no aparece o es incorrecto · 1 = muy deficiente · 2 = deficiente · 3 = aceptable · 4 = bueno · 5 = excelente.</p>
+    </section>
+
+    <div class="exam-container">
+        <section class="panel" aria-label="Preguntas de la plantilla" style="margin-bottom:0">
+            <div id="criteria-container"></div>
+        </section>
+
+        <aside class="control-panel" aria-label="Resultado">
+            <h2>Resultado</h2>
+            <div id="result-rows"></div>
+            <div class="total-box">
+                <div class="total-grade" id="total-grade">0,0</div>
+                <div class="total-points" id="total-points">0,0 de 100 puntos</div>
+            </div>
+            <div class="pending" id="pending"></div>
+            <div class="button-group no-print">
+                <button type="button" class="btn btn-primary" id="print-btn">Imprimir o guardar PDF</button>
+                <button type="button" class="btn btn-secondary" id="clear-btn">Limpiar plantilla</button>
+            </div>
+            <p class="formula">Nota = puntos totales ÷ 20. Puntos de un criterio = (promedio de sus preguntas ÷ 5) × peso del criterio.</p>
+        </aside>
+    </div>
+
+    <footer>
+        <p>Exposición final de Estadística Descriptiva</p>
+    </footer>
+
+    <script>
+        /* Documentos (carpeta exposicion/, mismo nombre que ven los estudiantes). */
+        const DOCS = [
+            { n: 1, file: "1 Instrucciones de la tarea de exposicion.pdf", title: "Instrucciones de la tarea de exposición",
+              desc: "Qué hay que hacer, requisitos, tiempos y evaluación." },
+            { n: 2, file: "2 Instructivo de la conversacion con la IA.pdf", title: "Instructivo de la conversación con la IA",
+              desc: "Paso a paso, con capturas, para conversar con la IA y descargar el archivo de datos." },
+            { n: 3, file: "3 analisis_descriptivo_plantilla.R", title: "Código de R",
+              desc: "Hace el análisis descriptivo completo; solo se cambia la sección de parámetros." },
+            { n: 4, file: "4 Instructivo del codigo de R.pdf", title: "Instructivo del código de R",
+              desc: "Cómo usar el código del documento 3 en Posit Cloud, paso a paso." },
+            { n: 5, file: "5 Ejemplo de cartelera (English).pdf", title: "Ejemplo de cartelera (English)",
+              desc: "Cómo puede verse una cartelera terminada, en inglés, que es el idioma exigido." },
+            { n: 6, file: "6 Ejemplo de cartelera (version en espanol).pdf", title: "Ejemplo de cartelera (versión en español)",
+              desc: "El mismo ejemplo, en español, solo para consulta." },
+            { n: 7, file: "7 Prompt para la IA.txt", title: "Prompt para la IA",
+              desc: "El texto que se copia y se pega en la IA; se usa en el documento 2." }
+        ];
+
+        /* Rúbrica: 6 criterios (100 puntos) y sus preguntas, calificadas de 0 a 5. */
+        const CRITERIOS = [
+            { id: "calculos", titulo: "Cálculos y limpieza de los datos", peso: 20, preguntas: [
+                "¿Informan cuántos datos tenía el archivo y cuántos quedaron después de la limpieza?",
+                "¿Detectaron y trataron los datos faltantes y los valores imposibles, justificando cada decisión?",
+                "¿Las tablas de frecuencia y las medidas están bien calculadas (n, clases justificadas, cifras con unidad)?",
+                "¿El anexo incluye los datos originales de la IA, sin modificar?"
+            ]},
+            { id: "variables", titulo: "Elección de variables, medidas y gráficos", peso: 15, preguntas: [
+                "¿Clasifican bien el tipo y la escala de la variable principal y justifican las columnas usadas y descartadas?",
+                "¿Las medidas elegidas son válidas para la escala y coherentes con la forma de los datos?",
+                "¿Los gráficos son adecuados, están en la misma escala para las dos alternativas y bien rotulados?"
+            ]},
+            { id: "interpretacion", titulo: "Interpretación y coherencia", peso: 25, preguntas: [
+                "¿Los tres hallazgos (centro, dispersión y forma o segmento) están en lenguaje común, con cifra, unidad y n?",
+                "¿Revisan las contradicciones aparentes entre medidas y las resuelven con el gráfico?",
+                "¿Las afirmaciones se limitan a los casos observados, sin causas inventadas ni saltos de escala?",
+                "¿Tratan los atípicos con criterio (vallas de 1,5 veces el RIC) y responden qué pasa si se quitan los casos extremos?"
+            ]},
+            { id: "decision", titulo: "Limitaciones y decisión", peso: 15, preguntas: [
+                "¿Enuncian limitaciones reales del estudio, incluyendo que los datos son simulados?",
+                "¿La recomendación es clara, de una frase, y está anclada a una cifra del análisis?",
+                "¿La decisión es coherente con las cifras y gráficos presentados?"
+            ]},
+            { id: "ia", titulo: "Uso crítico de la IA y trazabilidad", peso: 5, preguntas: [
+                "¿El anexo permite reproducir el trabajo (conversación con la IA, prompt, archivo de datos y diseño oculto revelado)?",
+                "¿Registran errores de la IA o propios y explican cómo los detectaron y corrigieron?"
+            ]},
+            { id: "cartelera", titulo: "Cartelera (en inglés) y sustentación oral (en español)", peso: 20, preguntas: [
+                "¿La cartelera está en inglés, hecha a mano, de 70 × 100 cm como mínimo y se lee desde el fondo del salón?",
+                "¿Incluye todas las secciones: problema y decisión, datos, gráficos en la misma escala, ficha comparativa, tres hallazgos, limitaciones y decisión?",
+                "¿La sustentación, en español, es clara, ordenada y respeta el tiempo (6 minutos de exposición)?",
+                "¿Cada integrante responde con dominio las preguntas que recibe?"
+            ]}
+        ];
+
+        const STORAGE_KEY = "exposicion-descriptiva-plantilla-v1";
+        const fmt = (v, k) => v.toFixed(k).replace(".", ",");
+        let estado = { meta: {}, notas: {} };
+
+        function cargar() {
+            try { const s = window.localStorage.getItem(STORAGE_KEY); if (s) { const o = JSON.parse(s); if (o && o.notas) estado = o; } } catch (e) {}
+        }
+        function guardar() {
+            try { window.localStorage.setItem(STORAGE_KEY, JSON.stringify(estado)); } catch (e) {}
+        }
+
+        function construirDocs() {
+            const grid = document.getElementById("doc-grid");
+            DOCS.forEach(d => {
+                const a = document.createElement("a");
+                a.className = "doc-card";
+                a.href = "exposicion/" + encodeURIComponent(d.file);
+                a.setAttribute("download", d.file);
+                const ext = d.file.split(".").pop().toUpperCase();
+                a.innerHTML = '<span class="doc-num">' + d.n + '</span>' +
+                    '<span class="doc-title"></span><span class="doc-desc"></span>' +
+                    '<span class="doc-cta">Descargar (' + ext + ')</span>';
+                a.querySelector(".doc-title").textContent = d.title;
+                a.querySelector(".doc-desc").textContent = d.desc;
+                grid.appendChild(a);
+            });
+        }
+
+        function construirPlantilla() {
+            const cont = document.getElementById("criteria-container");
+            const filas = document.getElementById("result-rows");
+            CRITERIOS.forEach((c, ci) => {
+                const sec = document.createElement("section");
+                sec.className = "criterion";
+                let html = '<div class="criterion-header"><div class="criterion-title"><span class="doc-num">' + (ci + 1) + '</span><span></span></div>' +
+                           '<span class="criterion-weight">' + c.peso + ' puntos</span></div>' +
+                           '<div class="criterion-avg" id="avg-' + c.id + '"></div>';
+                c.preguntas.forEach((q, qi) => {
+                    const name = c.id + "-" + qi;
+                    html += '<div class="question"><p class="question-text"></p><fieldset class="scale"><legend></legend>';
+                    for (let v = 0; v <= 5; v++) {
+                        html += '<input type="radio" name="' + name + '" id="' + name + '-' + v + '" value="' + v + '">' +
+                                '<label for="' + name + '-' + v + '">' + v + '</label>';
+                    }
+                    html += '</fieldset></div>';
+                });
+                sec.innerHTML = html;
+                sec.querySelector(".criterion-title span:last-child").textContent = c.titulo;
+                const qs = sec.querySelectorAll(".question");
+                c.preguntas.forEach((q, qi) => {
+                    qs[qi].querySelector(".question-text").textContent = (ci + 1) + "." + (qi + 1) + " " + q;
+                    qs[qi].querySelector("legend").textContent = "Calificación de la pregunta " + (ci + 1) + "." + (qi + 1);
+                });
+                cont.appendChild(sec);
+
+                const fila = document.createElement("div");
+                fila.className = "result-row";
+                fila.innerHTML = '<span></span><span id="res-' + c.id + '"></span>';
+                fila.firstChild.textContent = (ci + 1) + ". " + c.titulo;
+                filas.appendChild(fila);
+            });
+
+            cont.addEventListener("change", e => {
+                if (e.target.matches('input[type="radio"]')) {
+                    estado.notas[e.target.name] = Number(e.target.value);
+                    guardar();
+                    calcular();
+                }
+            });
+        }
+
+        function aplicarEstado() {
+            document.querySelectorAll('#criteria-container input[type="radio"]').forEach(r => {
+                r.checked = estado.notas[r.name] === Number(r.value);
+            });
+            ["grupo", "tema", "integrantes", "evaluador", "fecha"].forEach(k => {
+                const el = document.getElementById("meta-" + k);
+                if (el) el.value = estado.meta[k] || "";
+            });
+        }
+
+        function calcular() {
+            let total = 0, faltan = 0;
+            CRITERIOS.forEach(c => {
+                let suma = 0;
+                c.preguntas.forEach((q, qi) => {
+                    const v = estado.notas[c.id + "-" + qi];
+                    if (typeof v === "number") suma += v; else faltan++;
+                });
+                const prom = suma / c.preguntas.length;
+                const puntos = prom / 5 * c.peso;
+                total += puntos;
+                document.getElementById("avg-" + c.id).textContent = "Promedio del criterio: " + fmt(prom, 2) + " de 5,0 → " + fmt(puntos, 1) + " de " + c.peso + " puntos";
+                document.getElementById("res-" + c.id).textContent = fmt(puntos, 1) + " / " + c.peso;
+            });
+            document.getElementById("total-grade").textContent = fmt(total / 20, 1);
+            document.getElementById("total-points").textContent = fmt(total, 1) + " de 100 puntos";
+            const p = document.getElementById("pending");
+            if (faltan === 0) { p.textContent = "Todas las preguntas están calificadas."; p.className = "pending ok"; }
+            else { p.textContent = "Faltan " + faltan + (faltan === 1 ? " pregunta" : " preguntas") + " por calificar (cuentan como 0)."; p.className = "pending"; }
+        }
+
+        document.addEventListener("DOMContentLoaded", () => {
+            cargar();
+            construirDocs();
+            construirPlantilla();
+            aplicarEstado();
+            calcular();
+            ["grupo", "tema", "integrantes", "evaluador", "fecha"].forEach(k => {
+                document.getElementById("meta-" + k).addEventListener("input", e => { estado.meta[k] = e.target.value; guardar(); });
+            });
+            document.getElementById("print-btn").addEventListener("click", () => window.print());
+            document.getElementById("clear-btn").addEventListener("click", () => {
+                if (!window.confirm("¿Borrar todas las calificaciones y los datos del grupo?")) return;
+                estado = { meta: {}, notas: {} };
+                guardar();
+                aplicarEstado();
+                calcular();
+            });
+        });
+    </script>
+</body>
+</html>
